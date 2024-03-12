@@ -1,0 +1,45 @@
+.entre-semana {
+  background-color: rgb(241, 239, 239);
+  min-height: 100vh;
+  min-width: 100vw;
+
+  &__body {
+    background-color: white;
+  }
+
+  &__header {
+    padding: 50px 0 0 0;
+    border-top: none;
+    border-bottom-style: double;
+  }
+
+  legend {
+    font-size: 1rem;
+    margin-bottom: -2px;
+    color: white;
+    width: 530px;
+    padding-left: 10px;
+  }
+
+  &__title-tesoros {
+    background-color: gray;
+  }
+
+  &__title-maestros {
+    background-color: rgb(220, 141, 37);
+  }
+
+  &__title-vida {
+    background-color: rgb(151, 44, 5);
+  }
+  .title-number{
+    display: inline-block;
+    width: 20px;
+    text-align: right;
+  }
+  .text-title-custom {
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 24px;
+  }
+}

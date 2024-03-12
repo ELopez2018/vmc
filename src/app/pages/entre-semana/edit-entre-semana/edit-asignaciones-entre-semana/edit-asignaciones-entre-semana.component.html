@@ -1,0 +1,141 @@
+<div class="container-fluid p-5">
+  <div class="row">
+    <table class="table">
+      <thead class="table-primary">
+        <tr>
+          <!-- <th scope="col" class="text-center">Id</th> -->
+          <th scope="col" class="text-center">No</th>
+          <th scope="col" class="text-center">Titulo</th>
+          <th scope="col" colspan="1" class="text-center">Tiempo</th>
+          <th scope="col" class="text-center"></th>
+          <th scope="col" class="text-center">Responsable</th>
+          <th scope="col" class="text-center">Ayudante</th>
+          <th scope="col" colspan="1" class="text-center">Seccion</th>
+          <th scope="col" class="text-center">Tips</th>
+          <th scope="col" class="text-center"></th>
+          <th scope="col" class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of assignmentList">
+          <!-- <td class="text-center">
+            <span>{{ item.id }}</span>
+          </td> -->
+          <td class="text-center">
+            <input
+              type="text"
+              name="number"
+              [(ngModel)]="item.number"
+              class="form-control size50px"
+              placeholder="number"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </td>
+          <td class="">
+            <input
+              type="text"
+              name="title"
+              [(ngModel)]="item.title"
+              class="form-control sizeMin500px"
+              placeholder="title"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </td>
+          <td class="text-center">
+            <input
+              type="text"
+              name="time"
+              [(ngModel)]="item.time"
+              class="form-control size50px"
+              placeholder="time"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </td>
+          <td class="text-center">
+            <input
+              type="text"
+              name="timeType"
+              [(ngModel)]="item.timeType"
+              class="form-control size50px"
+              placeholder="mins, Hrs."
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </td>
+          <td class="text-center">
+            <select
+              class="form-select form-select-sm"
+              aria-label="Small select example"
+            >
+              <option selected>Selecciones</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+            <!-- <span>{{ item.responsible }}</span> -->
+          </td>
+          <td class="text-center">
+            <select
+              class="form-select form-select-sm"
+              aria-label="Small select example"
+            >
+              <option selected>Selecciones</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+            <!-- <span>{{ item.assistant }}</span> -->
+          </td>
+          <td class="text-center">
+            <span
+              class="badge"
+              [title]="item.sectionMeeting"
+              [ngClass]="{
+                'text-bg-success':
+                  item.sectionMeeting == 'TESOROS DE LA BIBLIA',
+                'text-bg-warning':
+                  item.sectionMeeting == 'SEAMOS MEJORES MAESTROS',
+                'text-bg-danger':
+                  item.sectionMeeting == 'NUESTRA VIDA CRISTIANA'
+              }"
+              >{{ changeSeccion(item.sectionMeeting) }}</span
+            >
+            <span></span>
+          </td>
+          <td class="text-center">
+            <input
+              type="text"
+              name="tips"
+              [(ngModel)]="item.tips"
+              class="form-control"
+              placeholder="Estudiante..."
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+            <!-- <span>{{ item.tips }}</span> -->
+          </td>
+          <td class="text-center">
+            <select
+              [(ngModel)]="item.showTips"
+              class="form-select form-select-sm"
+              aria-label="Small select example"
+            >
+              <option selected>Selecciones</option>
+              <option value="true">Mostar</option>
+              <option value="false">Ocultar</option>
+            </select>
+            <!-- <span>{{ item.showTips }}</span> -->
+          </td>
+          <td>
+            <button type="button" class="btn btn-primary">Primary</button>
+
+            <button type="button" class="btn btn-danger">Danger</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

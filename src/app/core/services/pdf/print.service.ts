@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Utils } from '@root/shared/utils';
-import * as pdfMake from "pdfmake/build/pdfmake";
+import * as pdfMake from "pdfmake/build/pdfMake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { Subscription } from 'rxjs';
@@ -10,8 +9,8 @@ import { Subscription } from 'rxjs';
   providedIn: 'root'
 })
 export class PrintService {
-  subs: Subscription = new Subscription();
-  numOrderService = "0000"
+
+
   constructor(
   ) {
   }
@@ -130,7 +129,7 @@ export class PrintService {
       ]
 
     }
-    pdfMake.createPdf(dd).download('ORDEN DE SERVICIO ' + this.numOrderService + '.pdf')
+    pdfMake.createPdf(dd).download('Reunion VMC.pdf')
   }
 }
 

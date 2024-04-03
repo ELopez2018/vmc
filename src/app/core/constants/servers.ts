@@ -1,3 +1,6 @@
 export const Servers = {
-  APIS: 'http://localhost:7700'
+  URL: 'http://localhost:7700'
+}
+export const Apis = {
+  USERS: '/users'
 }

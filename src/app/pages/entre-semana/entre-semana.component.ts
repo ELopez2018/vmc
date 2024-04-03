@@ -11,7 +11,9 @@ export class EntreSemanaComponent implements OnInit {
   public semanas = SemanasMock;
   constructor( private meetingsService: MeetingsService) { }
   ngOnInit(): void {
-
+    this.meetingsService.getAllWeek().subscribe(data=>{
+      this.semanas = data
+    })
   }
 
 }

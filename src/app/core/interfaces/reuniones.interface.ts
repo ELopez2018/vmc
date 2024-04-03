@@ -23,7 +23,7 @@ export interface Asignacion {
   pos: number;
   seccion: string;
 }
-export interface Semana {
+export interface Week {
   id: number;
   week: string;
   weekNumber: number;

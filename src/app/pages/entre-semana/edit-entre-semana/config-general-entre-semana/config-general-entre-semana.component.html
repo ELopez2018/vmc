@@ -1,4 +1,121 @@
-<div class="container-fluid p-3">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6">Numero de semana: {{ week.weekNumber }}</div>
+    <div class="col-md-6">Fecha: {{ week.week }}</div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+        <thead class="table-primary">
+          <tr>
+            <th scope="col" class="text-center">Cancion inicial</th>
+            <th scope="col" class="text-center">Oracion inicial</th>
+            <th scope="col" class="text-center">Presidente</th>
+            <th scope="col" class="text-center">Consejero Auxiliar</th>
+            <th scope="col" class="text-center">Cancion Intermedia</th>
+            <th scope="col" class="text-center">Cancion Final</th>
+            <th scope="col" class="text-center">Oracion Final</th>
+            <th scope="col" class="text-center"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr [formGroup]="form">
+            <td class="">
+              <input
+                type="text"
+                name="openingSong"
+                formControlName="openingSong"
+                class="form-control sizeMin500px text-center"
+                aria-label="Username"
+                aria-describedby="basic-addon1"
+              />
+            </td>
+            <td class="text-center">
+              <select
+                formControlName="openingPrayer"
+                class="form-select form-select-sm"
+                aria-label="Small select example"
+              >
+                <option selected>Selecciones</option>
+                <option [ngValue]="item" *ngFor="let item of publishers">
+                  {{ item.fullName }}
+                </option>
+              </select>
+            </td>
+            <td class="text-center">
+              <select
+                formControlName="president"
+                class="form-select form-select-sm"
+                aria-label="Small select example"
+              >
+                <option selected>Selecciones</option>
+                <option [ngValue]="item" *ngFor="let item of publishers">
+                  {{ item.fullName }}
+                </option>
+              </select>
+            </td>
+            <td class="text-center">
+              <select
+                formControlName="president"
+                class="form-select form-select-sm"
+                aria-label="Small select example"
+              >
+                <option selected>Selecciones</option>
+                <option [ngValue]="item" *ngFor="let item of publishers">
+                  {{ item.fullName }}
+                </option>
+              </select>
+            </td>
+            <td class="text-center">
+              <input
+                type="text"
+                name="timeType"
+                formControlName="intermediateSong"
+                class="form-control size50px text-center"
+                aria-label="Username"
+                aria-describedby="basic-addon1"
+              />
+            </td>
+            <td class="text-center">
+              <input
+                type="text"
+                name="timeType"
+                formControlName="finalSong"
+                class="form-control size50px text-center"
+                aria-label="Username"
+                aria-describedby="basic-addon1"
+              />
+            </td>
+            <td class="text-center">
+              <select
+                formControlName="president"
+                class="form-select form-select-sm"
+                aria-label="Small select example"
+              >
+                <option selected>Selecciones</option>
+                <option [ngValue]="item" *ngFor="let item of publishers">
+                  {{ item.fullName }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <button mat-icon-button type="button" class="btn btn-primary">
+                <mat-icon>save</mat-icon>
+              </button>
+
+              <button mat-icon-button type="button" class="btn btn-danger">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="container-fluid p-3">
   <fieldset>
     <legend>REUNION ENTRE SEMANA</legend>
     <div class="row">
@@ -123,5 +240,4 @@
       </div>
     </div>
   </fieldset>
-</div>
-
+</div> -->

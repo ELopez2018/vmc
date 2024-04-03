@@ -16,7 +16,7 @@
     <div class="mt-3 entre-semana__reunion pe-4">
       <div class="row">
         <div class="col-md-6 fw-bold">
-         <a routerLink="editar"> {{ semana.week }} </a> | LECTURA SEMANAL DE LA BIBLIA
+         <a [routerLink]="['editar']" [queryParams]="{ id: semana.weekNumber}"> {{ semana.week }} </a> | LECTURA SEMANAL DE LA BIBLIA
         </div>
         <div class="col-md-2 text-end text-title-custom">Presidente</div>
         <div class="col-md-4">{{ semana.president }}</div>
@@ -56,10 +56,10 @@
         </legend>
         <div
           class="row entre-semana__tesoros"
-          *ngFor="let item of semana.assignments; let i; as: index"
+          *ngFor="let item of semana.assignments;"
         >
           <div
-            class="col-md-6 mt-1"
+            class="col-md-7 mt-1"
             *ngIf="item.sectionMeeting == 'TESOROS DE LA BIBLIA'"
           >
             <span class="mx-2">0:00</span>
@@ -67,7 +67,7 @@
             {{ item.title + " (" + item.time + " " + item.timeType + ")" }}
           </div>
           <div
-            class="col-md-2 mt-1 text-end text-title-custom"
+            class="col-md-1 mt-1 text-end text-title-custom"
             *ngIf="item.sectionMeeting == 'TESOROS DE LA BIBLIA'"
           >
             <span *ngIf="item.showTips">{{ item.tips }}</span>
@@ -89,7 +89,7 @@
           *ngFor="let item of semana.assignments"
         >
           <div
-            class="col-md-6 mt-1"
+            class="col-md-7 mt-1"
             *ngIf="item.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
           >
             <span class="mx-2">0:00</span>
@@ -97,7 +97,7 @@
             {{ item.title + " (" + item.time + " " + item.timeType + ")" }}
           </div>
           <div
-            class="col-md-2 mt-1 text-end text-title-custom"
+            class="col-md-1 mt-1 text-end text-title-custom"
             *ngIf="item.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
           >
             <span *ngIf="item.showTips">{{ item.tips }}</span>
@@ -124,7 +124,7 @@
           *ngFor="let item of semana.assignments"
         >
           <div
-            class="col-md-6 mt-1"
+            class="col-md-7 mt-1"
             *ngIf="item.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
             <span class="mx-2">0:00</span>
@@ -132,7 +132,7 @@
             {{ item.title + " (" + item.time + " " + item.timeType + ")" }}
           </div>
           <div
-            class="col-md-2 mt-1 text-end text-title-custom"
+            class="col-md-1 mt-1 text-end text-title-custom"
             *ngIf="item.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
             <span *ngIf="item.showTips">{{ item.tips }}</span>
@@ -151,11 +151,11 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-6 mt-1">
+        <div class="col-md-7 mt-1">
           <span class="mx-2">0:00</span>
           <span class="fw-bold"> Canción {{ semana.finalSong }} </span>
         </div>
-        <div class="col-md-2 mt-1 text-end text-title-custom">
+        <div class="col-md-1 mt-1 text-end text-title-custom">
           <small>Oracion:</small>
         </div>
         <div class="col-md-4 mt1">{{ semana.finalPrayer }}</div>

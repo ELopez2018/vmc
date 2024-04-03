@@ -6,7 +6,8 @@ import { EntreSemanaComponent } from './entre-semana.component';
 import { EditEntreSemanaComponent } from './edit-entre-semana/edit-entre-semana.component';
 import { ConfigGeneralEntreSemanaComponent } from './edit-entre-semana/config-general-entre-semana/config-general-entre-semana.component';
 import { EditAsignacionesEntreSemanaComponent } from './edit-entre-semana/edit-asignaciones-entre-semana/edit-asignaciones-entre-semana.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
@@ -20,7 +21,9 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     EntreSemanaRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class EntreSemanaModule { }

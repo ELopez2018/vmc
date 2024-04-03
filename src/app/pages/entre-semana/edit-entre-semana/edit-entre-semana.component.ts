@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Assignment, Semana } from 'src/app/core/interfaces/reuniones.interface';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Assignment, Week } from 'src/app/core/interfaces/reuniones.interface';
 import { MeetingsService } from 'src/app/core/services/meetings/meetings.service';
 
 @Component({
@@ -8,14 +9,26 @@ import { MeetingsService } from 'src/app/core/services/meetings/meetings.service
   styleUrls: ['./edit-entre-semana.component.scss']
 })
 export class EditEntreSemanaComponent implements OnInit {
-  public semanas: Semana[]=[];
-  public assignmentList: Assignment[]=[];
-  constructor( private meetingsService: MeetingsService) { }
+  public semanas: Week[] = [];
+  public semana!: Week;
+  public assignmentList: Assignment[] = [];
+  private id!: number;
+  public publishers: any[]=[];
+  @Output() onFind: EventEmitter<Week> = new EventEmitter()
+  constructor(private meetingsService: MeetingsService, private route: ActivatedRoute) { }
   ngOnInit(): void {
-    this.meetingsService.getByNumberWeek(16).subscribe(data=>{
-      this.semanas = [data];
-      this.assignmentList = data.assignments;
-    })
+    this.id = <number | null>this.route.snapshot.queryParamMap.get('id') ?? 0;
+    if (this.id) {
+      this.meetingsService.getByNumberWeek(this.id).subscribe(data => {
+        this.semana = data;
+        this.assignmentList = data.assignments;
+        this.onFind.emit(this.semana)
+      })
+    }
+  }
+
+  setPublishers(publishers: any[]){
+    this.publishers= publishers
   }
 
 }

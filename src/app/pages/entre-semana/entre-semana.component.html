@@ -76,7 +76,7 @@
             class="col-md-4 mt-1"
             *ngIf="item.sectionMeeting == 'TESOROS DE LA BIBLIA'"
           >
-            {{ item.responsible }}
+            {{ item.responsible?.fullName }}
           </div>
         </div>
       </fieldset>
@@ -106,8 +106,8 @@
             class="col-md-4 mt-1"
             *ngIf="item.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
           >
-            {{ item.responsible
-            }}{{ item.assistant ? "/" + item.assistant : item.assistant }}
+            {{ item.responsible?.fullName
+            }}{{ item.assistant ? "/" + item.assistant.fullName : item.assistant }}
           </div>
         </div>
       </fieldset>
@@ -141,7 +141,7 @@
             class="col-md-4 mt-1"
             *ngIf="item.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
-            {{ item.responsible }}
+            {{ item.responsible?.fullName }}
           </div>
         </div>
       </fieldset>

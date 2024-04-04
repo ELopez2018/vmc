@@ -1,10 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { PrinterComponent } from './shared/printer/printer.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'entre-semana', pathMatch: "full" },
   {
     path: 'entre-semana', loadChildren: () => import('./pages/entre-semana/entre-semana.module').then(m => m.EntreSemanaModule),
+  },
+  {
+    path: 'imprimir', component: PrinterComponent,
   },
 
 ];

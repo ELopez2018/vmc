@@ -1,0 +1,6 @@
+<div [ngSwitch]="modalType">
+  <div *ngSwitchDefault></div>
+  <div *ngSwitchCase="typeOfModals.ASSIGN_PUB">
+    <app-modal></app-modal>
+  </div>
+</div>

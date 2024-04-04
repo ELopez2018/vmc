@@ -9,9 +9,7 @@ import { MeetingsService } from 'src/app/core/services/meetings/meetings.service
   styleUrls: ['./edit-entre-semana.component.scss']
 })
 export class EditEntreSemanaComponent implements OnInit {
-  public semanas: Week[] = [];
   public semana!: Week;
-  public assignmentList: Assignment[] = [];
   private id!: number;
   public publishers: any[]=[];
   @Output() onFind: EventEmitter<Week> = new EventEmitter()
@@ -21,7 +19,7 @@ export class EditEntreSemanaComponent implements OnInit {
     if (this.id) {
       this.meetingsService.getByNumberWeek(this.id).subscribe(data => {
         this.semana = data;
-        this.assignmentList = data.assignments;
+        console.log(data);
         this.onFind.emit(this.semana)
       })
     }

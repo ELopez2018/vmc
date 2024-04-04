@@ -1,86 +1,537 @@
 import { Injectable } from '@angular/core';
-import * as pdfMake from "pdfmake/build/pdfMake";
+import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { Subscription } from 'rxjs';
-(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
+import { Week } from '../../interfaces/reuniones.interface';
+import { SemanasMock } from 'src/app/pages/entre-semana/mocks/semanas.mock';
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class PrintService {
-
+export class PrintPdfService {
+  private congregation = "ALBORADA";
 
   constructor(
   ) {
+    (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
   }
+  numOrderService = "0000"
+  config = {
+    subTitleInvoice: "RECIBO DE GIRO",
+    sizeQr: '140',
+    textQR: "https://aex.com.co/",
+    terms: ""
+  }
+  invoice: any = {
+    prefix: "DSTA",
+    id: "68467",
+    client: "Estarlin enrique lopez",
+    doumentNumber: "13206008",
+    address: "Colombia",
+    cellphone: "3204454846",
+    email: "estarlin.elv@gmail.com",
+    valueFrom: 50000,
+    currencyFrom: 'COP',
+    date: "02/02/2024 10:21am",
+    beneficiaries: [
+      {
+        fullname: "Adriana Lopez",
+        addres: "Venezuela",
+        email: "adri@gmail.com",
+        cellphone: "3204454846",
+        doumentNumber: "17347687",
+        bankName: "Banesco",
+        accountType: "Corriennte",
+        accountNumber: "01340327953271040096",
+        valueTo: 438.60,
+        currencyTo: "VES"
 
-  private makeHeader() {
-    return [
-      { text: 'AEX', style: 'header' },
+      },
+      {
+        fullname: "Adriana Lopez",
+        addres: "Venezuela",
+        email: "adri@gmail.com",
+        cellphone: "3204454846",
+        doumentNumber: "17347687",
+        bankName: "Banesco",
+        accountType: "Corriennte",
+        accountNumber: "01340327953271040096",
+        valueTo: 438.60,
+        currencyTo: "VES"
+
+      }
     ]
   }
 
-  private makeQCodeQr() {
+
+  private makeHeader(pageBreak: boolean) {
     return [
       {
-        qr: 'Another paragraph, this time a little bit longer to make sure, this line will be divided into at least two lines',
-        fit: '200',
-        eccLevel: 'H'
-      }
-    ]
-  }
-
-
-  private makeTable() {
-    return [{
-      //layout: 'lightHorizontalLines', // optional
-      table: {
-        // headers are automatically repeated if the table spans over multiple pages
-        // you can declare how many rows should be treated as headers
-        //headerRows: 1,
-        //widths: ['*', 'auto', 100, '*'],
-        widths: ['*', '*'],
-        body: [
-          [
-            { text: 'DOCUMENTO', style: 'tabletitles', },
-            { text: 'qr', style: 'tabletitles', },
-          ],
-          [
-            {
-              text: "descripcion", style: 'tableItem'
+        pageBreak: pageBreak ? 'before': '',
+        table: {
+          widths: ['auto', '*'],
+          body: [
+            [{
+              text: this.congregation, style: "header_a", border: [false, false, false, true]
             },
-            ...this.makeQCodeQr(),
-          ],
-
+            {
+              text: "Programa para la reunión de entre semana", style: "header_b", border: [false, false, false, true]
+            }]
+          ]
+        },
+      },
+    ]
+  }
+  private makeBody(week: Week) {
+    return [
+      {
+        table: {
+          widths: ['auto', 200, 110, '*'],
+          body: [
+            [
+              {
+                text: week.week + " |", style: "sub_title", border: [false, false, false, false]
+              },
+              {
+                text: "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]
+              },
+              {
+                text: "Presidente:", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: week.president?.fullName , style: "tips_l", border: [false, false, false, false]
+              }
+            ],
+            [
+              {
+                text: "", style: "sub_title", border: [false, false, false, false]
+              },
+              {
+                text: "", style: "sub_title", border: [false, false, false, false]
+              },
+              {
+                text: "Consejero de la sala auxiliar:", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: week.adviser?.fullName, style: "tips_l", border: [false, false, false, false]
+              }
+            ],
+          ]
+        },
+      },
+      {
+        table: {
+          widths: ['auto', 250, 100, '*'],
+          body: [
+            [
+              {
+                text: "0:00", style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: "• Canción " + week.openingSong, style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: "Oracion:", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: week.openingPrayer?.fullName, style: "tips_l", border: [false, false, false, false]
+              }
+            ],
+            [
+              {
+                text: "0:00", style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: `• Palabras de introducción ( ${week.introTime} ${week.timeType})` , style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: "", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: "", style: "tips_l", border: [false, false, false, false]
+              }
+            ],
+          ]
+        },
+      },
+    ]
+  }
+  private makeHeaderTreasures() {
+    return [
+      {
+        table: {
+          widths: [270, 110, '*'],
+          body: [
+            [
+              {
+                text: "TESOROS DE LA BIBLIA", style: "treasures", border: [false, false, false, false], fillColor: '#2a6b77',
+              },
+              {
+                text: "", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: "Auditorio principal", style: "tips_c", border: [false, false, false, false]
+              },
+            ],
+          ]
+        },
+      },
+    ]
+  }
+  private makeContentTreasures(week: Week) {
+  const treasures =  week.assignments.filter(data=> data.sectionMeeting == 'TESOROS DE LA BIBLIA')
+  const content: any=[];
+    treasures.forEach(asigment=>{
+      content.push(
+        [
+          {
+            text: "0:00", style: "titles", border: [false, false, false, false]
+          },
+          {
+            text: `${asigment.number}. ${asigment.title} (${asigment.time} ${asigment.timeType})`, style: "fontTreasures", border: [false, false, false, false]
+          },
+          {
+            text: asigment.showTips ? asigment.tips : null, style: "tips_r", border: [false, false, false, false]
+          },
+          {
+            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName: asigment.responsible?.fullName  , style: "tips_l", border: [false, false, false, false]
+          }
         ]
-      }
-    }
+      )
+    })
+    return [
+      {
+        table: {
+          widths: ['auto', 250, 100, '*'],
+          body: content
+        },
+      },
     ]
   }
 
-  public print() {
-    const dd: any = {
+  private makeHeaderTeachers(){
+    return [
+      {
+        table: {
+          widths: [270, 110, '*'],
+          body: [
+            [
+              {
+                text: "SEAMOS MEJORES MAESTROS", style: "teachers", border: [false, false, false, false], fillColor: '#9b6d17',
+              },
+              {
+                text: "", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: "Auditorio principal", style: "tips_c", border: [false, false, false, false]
+              },
+            ],
+          ]
+        },
+      },
+    ]
+  }
+  private makeContentTeachers(week: Week){
+    const treasures =  week.assignments.filter(data=> data.sectionMeeting == 'SEAMOS MEJORES MAESTROS')
+    const content: any=[];
+    treasures.forEach(asigment=>{
+      content.push(
+        [
+          {
+            text: "0:00", style: "titles", border: [false, false, false, false]
+          },
+          {
+            text: `${asigment.number}. ${asigment.title} (${asigment.time} ${asigment.timeType})`, style: "fontTeachers", border: [false, false, false, false]
+          },
+          {
+            text: asigment.showTips ? asigment.tips : null, style: "tips_r", border: [false, false, false, false]
+          },
+          {
+            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName: asigment.responsible?.fullName  , style: "tips_l", border: [false, false, false, false]
+          }
+        ]
+      )
+    })
+    return [
+      {
+        table: {
+          widths: ['auto', 250, 100, '*'],
+          body: content
+        },
+      },
+    ]
+  }
+  private makeHeaderLife(){
+    return [
+      {
+        table: {
+          widths: [270, 110, '*'],
+          body: [
+            [
+              {
+                text: "NUESTRA VIDA CRISTIANA", style: "life", border: [false, false, false, false], fillColor: '#942926',
+              },
+              {
+                text: "", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: "Auditorio principal", style: "tips_c", border: [false, false, false, false]
+              },
+            ],
+          ]
+        },
+      },
+    ]
+  }
+  private makeContentLife(week: Week){
+    const treasures =  week.assignments.filter(data=> data.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
+    const content: any=[];
+    treasures.forEach(asigment=>{
+      content.push(
+        [
+          {
+            text: "0:00", style: "titles", border: [false, false, false, false]
+          },
+          {
+            text: `${asigment.number}. ${asigment.title} (${asigment.time} ${asigment.timeType})`, style: "fontLife", border: [false, false, false, false]
+          },
+          {
+            text: asigment.showTips ? asigment.tips : null, style: "tips_r", border: [false, false, false, false]
+          },
+          {
+            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName: asigment.responsible?.fullName  , style: "tips_l", border: [false, false, false, false]
+          }
+        ]
+      )
+    })
+    return [
+      {
+        table: {
+          widths: ['auto', 250, 100, '*'],
+          body: content
+        },
+      },
+    ]
+  }
+
+  private makeIntermediateSong(week: Week){
+    return [
+      {
+        table: {
+          widths: ['auto', 250, 100, '*'],
+          body: [
+            [
+              {
+                text: "0:00", style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: "• Canción " + week.intermediateSong, style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: "", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: "", style: "tips_l", border: [false, false, false, false]
+              }
+            ],
+          ]
+        },
+      }
+    ]
+  }
+  private makeFinalBlock(week: Week){
+
+    return [
+      {
+        table: {
+          widths: ['auto', 250, 100, '*'],
+          body: [
+            [
+              {
+                text: "0:00", style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: "• Palabras de conclusión (3 min.)", style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: "", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: "", style: "tips_l", border: [false, false, false, false]
+              }
+            ],
+            [
+              {
+                text: "0:00", style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: "• Canción " + week.finalSong, style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: "Oracion", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: week.finalPrayer?.fullName, style: "tips_l", border: [false, false, false, false]
+              }
+            ],
+          ]
+        },
+       //pageBreak: 'after'
+      },
+
+    ]
+  }
+
+
+  public print(weeks: Week[]) {
+    pdfMake.createPdf(this.makeDocumet(weeks)).open()
+  }
+  public download(weeks: Week[]) {
+    pdfMake.createPdf(this.makeDocumet(weeks)).download('Nota - ' + this.invoice.prefix + this.invoice.id + '.pdf')
+  }
+
+  public getStream(weeks: Week[]) {
+    pdfMake.createPdf(this.makeDocumet(weeks)).getStream()
+  }
+
+  public async getBlob(weeks: Week[]): Promise<Blob> {
+    return new Promise<Blob>((resolve, reject) => {
+      const pdf = pdfMake.createPdf(this.makeDocumet(weeks));
+      pdf.getBlob((data: Blob) => {
+        resolve(data);
+        if (!data) {
+          reject("PrintPdfServiceget->Blob: No sea impreso nada. Revise el servicio");
+        }
+      });
+    });
+  }
+  private makeDocumet(weeks: Week[]): any {
+    const contenido: any[] =[]
+    let pageBreak = false;
+    weeks.forEach(week=>{
+      contenido.push(
+        ...this.makeHeader(pageBreak),
+        "\n",
+        ...this.makeBody(week),
+        "\n",
+        ...this.makeHeaderTreasures(),
+        ...this.makeContentTreasures(week),
+
+        "\n",
+        ...this.makeHeaderTeachers(),
+        ...this.makeContentTeachers(week),
+        "\n",
+        ...this.makeHeaderLife(),
+        ...this.makeIntermediateSong(week),
+        ...this.makeContentLife(week),
+        ...this.makeFinalBlock(week),
+      )
+      pageBreak= true
+    })
+
+    return {
+      pageSize: 'LETTER',
+      // by default we use portrait, you can change it to landscape if you wish
+      pageOrientation: 'portrait',
+      // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
+      pageMargins: [30, 30, 30, 30],
+
       content: [
-        ...this.makeHeader(),
-        ...this.makeTable(),
-        'First paragraph',
-        'Another paragraph, this time a little bit longer to make sure, this line will be divided into at least two lines'
+        // ...this.makeHeader(),
+        // "\n",
+        // ...this.makeBody(),
+        // "\n",
+        // ...this.makeHeaderTreasures(),
+        // ...this.makeContentTreasures(),
+
+        // "\n",
+        // ...this.makeHeaderTeachers(),
+        // ...this.makeContentTeachers(),
+        // "\n",
+        // ...this.makeHeaderLife(),
+        // ...this.makeIntermediateSong(),
+        // ...this.makeContentLife(),
+        // ...this.makeFinalBlock(),
+        ...contenido
       ],
+      ...this.styles()
+    }
+  }
+  private styles() {
+    return {
       styles: {
-        header: {
-          fontSize: 21,
-          bold: true
+        header_a: {
+          fontSize: 11,
+          bold: true,
+          margin: [0, 5, 0, 0]
+        },
+        header_b: {
+          fontSize: 14,
+          bold: true,
+          alignment: 'right',
+        },
+        sub_title: {
+          fontSize: 11,
+          alignment: 'left',
+          bold: true,
+        },
+        tips_r: {
+          fontSize: 7,
+          bold: true,
+          alignment: 'right',
+          margin: [0, 6, 0, 0]
+        },
+        tips_l: {
+          fontSize: 9,
+          alignment: 'left',
+          margin: [0, 3, 0, 0]
+        },
+        tips_c: {
+          fontSize: 8,
+          alignment: 'left',
+          margin: [0, 7, 0, 0]
         },
         titles: {
           bold: true,
-          fontSize: 18,
-          alignment: 'center',
+          fontSize: 11,
+          margin: [0, 3, 0, 0],
         },
-        subtitles: {
+
+        treasures: {
           bold: true,
-          fontSize: 16,
-          alignment: 'center',
+          fontSize: 10,
+          color: "#fff",
+          margin: [0, 3, 0, 0],
+        },
+        teachers: {
+          bold: true,
+          fontSize: 10,
+          color: "#fff",
+          margin: [0, 3, 0, 0],
+        },
+        life: {
+          bold: true,
+          fontSize: 10,
+          color: "#fff",
+          margin: [0, 3, 0, 0],
+        },
+        fontTreasures: {
+          bold: true,
+          fontSize: 10,
+          color: "#2a6b77",
+          margin: [0, 3, 0, 0],
+        },
+        fontTeachers: {
+          bold: true,
+          fontSize: 10,
+          color: "#9b6d17",
+          margin: [0, 3, 0, 0],
+        },
+        fontLife: {
+          bold: true,
+          fontSize: 10,
+          color: "#942926",
+          margin: [0, 3, 0, 0],
         },
         subtitles2: {
           bold: true,
@@ -92,9 +543,17 @@ export class PrintService {
           alignment: 'center',
           fillColor: '#ddebf7',
         },
-        tableItem: {
-          fontSize: 10,
+        tableItemLeft: {
+          fontSize: 9,
+          alignment: 'left',
+        },
+        tableItemCenter: {
+          fontSize: 9,
           alignment: 'center',
+        },
+        tableItemRight: {
+          fontSize: 9,
+          alignment: 'right',
         },
         bold: {
           bold: true,
@@ -119,17 +578,7 @@ export class PrintService {
         }
       }
     }
-    pdfMake.createPdf(dd).open()
   }
-  download() {
-    var dd = {
-      content: [
-        'First paragraph',
-        'Another paragraph, this time a little bit longer to make sure, this line will be divided into at least two lines'
-      ]
 
-    }
-    pdfMake.createPdf(dd).download('Reunion VMC.pdf')
-  }
 }
 

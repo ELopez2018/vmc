@@ -28,21 +28,22 @@ export interface Week {
   week: string;
   weekNumber: number;
   openingSong: string;
-  openingPrayer: any;
-  president: any;
+  openingPrayer: Publisher;
+  president: Publisher;
   introTime: number;
   timeType: string;
   intermediateSong: string;
   finalSong: string;
-  finalPrayer: any;
+  finalPrayer: Publisher;
   assignments: Assignment[];
+  adviser?: Publisher;
 }
 export interface Assignment {
   id?: number;
   time?: any;
   timeType: string;
-  responsible?: any;
-  assistant?: any;
+  responsible?: Publisher;
+  assistant?: Publisher;
   assignmentNumber?: number;
   title: string;
   pointNumber?: any;
@@ -51,4 +52,22 @@ export interface Assignment {
   showTips: boolean;
   number: number;
   position?: any;
+  meeting?: any;
+}
+export interface Publisher {
+  id: number;
+  fullName: string;
+  image?: any;
+  firstName: string;
+  secondName: string;
+  lastName: string;
+  surname: string;
+  birthdate?: any;
+  gender?: any;
+  documentNumber?: any;
+  documentType?: any;
+  cellPhone?: any;
+  phone?: any;
+  email?: any;
+  designations: any[];
 }

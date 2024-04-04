@@ -67,23 +67,38 @@
               />
             </td>
             <td class="text-center">
-              <select
+
+              <div class="input-group mb-3">
+                <input   [value]="item.responsible?.fullName" type="text" class="form-control"  aria-label="responsible" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary"(click)="assigResponsible(item)"  type="button" id="button-addon2"><mat-icon>person_add</mat-icon></button>
+              </div>
+              <!-- <select
+                [(ngModel)]="item.responsible"
+                class="form-select form-select-sm"
+                aria-label="Small select example"
+              >
+                <option value="" disabled selected>Seleccione</option>
+                <option *ngFor="let item of publishers" [ngValue]="item">
+                  {{ item.fullName }}
+                </option>
+              </select> -->
+              <!-- <span>{{ item.responsible }}</span> -->
+            </td>
+            <td class="text-center">
+              <div class="input-group mb-3">
+                <input   [value]="item.assistant?.fullName" type="text" class="form-control"  aria-label="responsible" aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2"><mat-icon>person_add</mat-icon></button>
+              </div>
+              <!-- <select
+                [(ngModel)]="item.assistant"
                 class="form-select form-select-sm"
                 aria-label="Small select example"
               >
                 <option selected>Selecciones</option>
-                <option value="1" *ngFor="let item of publishers">{{ item. fullName }}</option>
-              </select>
-              <!-- <span>{{ item.responsible }}</span> -->
-            </td>
-            <td class="text-center">
-              <select
-                class="form-select form-select-sm"
-                aria-label="Small select example"
-              >
-              <option selected>Selecciones</option>
-              <option value="1" *ngFor="let item of publishers">{{ item. fullName }}</option>
-              </select>
+                <option [ngValue]="item" *ngFor="let item of publishers">
+                  {{ item.fullName }}
+                </option>
+              </select> -->
               <!-- <span>{{ item.assistant }}</span> -->
             </td>
             <td class="text-center">
@@ -108,25 +123,30 @@
                 name="tips"
                 [(ngModel)]="item.tips"
                 class="form-control"
-                placeholder="Estudiante..."
                 aria-label="Username"
                 aria-describedby="basic-addon1"
               />
               <!-- <span>{{ item.tips }}</span> -->
             </td>
             <td class="text-center">
-              <div class=" form-switch text-center">
-                <input class="form-check-input" [(ngModel)]="item.showTips" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+              <div class="form-switch text-center">
+                <input
+                  class="form-check-input"
+                  [(ngModel)]="item.showTips"
+                  type="checkbox"
+                  role="switch"
+                  id="flexSwitchCheckDefault"
+                />
               </div>
-
             </td>
             <td>
-              <button mat-icon-button type="button" class="btn btn-primary">
+              <button
+                (click)="update(item)"
+                mat-icon-button
+                type="button"
+                class="btn btn-primary"
+              >
                 <mat-icon>save</mat-icon>
-              </button>
-
-              <button mat-icon-button type="button" class="btn btn-danger">
-                <mat-icon>delete_outline</mat-icon>
               </button>
             </td>
           </tr>

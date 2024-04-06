@@ -47,3 +47,24 @@ fieldset {
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.fieldset {
+  border: 2px solid gainsboro;
+  padding: 10px;
+  margin: 10px;
+  width: 100%;
+  legend {
+    padding: 3px 5px;
+    width: min-content;
+    background-color: white;
+    font-size: 18px;
+  }
+}
+.modal-dialog {
+  overflow:hidden;
+  max-width: max-content;
+  max-height:  max-content;
+  margin-right: auto;
+  margin-left: auto;
+}

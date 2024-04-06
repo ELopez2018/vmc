@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { Week } from '../../interfaces/reuniones.interface';
 import { SemanasMock } from 'src/app/pages/entre-semana/mocks/semanas.mock';
+import { Meeting } from '../../interfaces/reuniones.interface';
+import { Utils } from 'src/app/shared/Utils';
 
 
 @Injectable({
@@ -82,7 +83,7 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeBody(week: Week) {
+  private makeBody(week: Meeting) {
     return [
       {
         table: {
@@ -90,7 +91,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: week.week + " |", style: "sub_title", border: [false, false, false, false]
+                text: Utils.showDayOfMeeting(week.week)  + " |", style: "sub_title", border: [false, false, false, false]
               },
               {
                 text: "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]
@@ -113,7 +114,7 @@ export class PrintPdfService {
                 text: "Consejero de la sala auxiliar:", style: "tips_r", border: [false, false, false, false]
               },
               {
-                text: week.adviser?.fullName, style: "tips_l", border: [false, false, false, false]
+                text: week.assistantAdviser?.fullName, style: "tips_l", border: [false, false, false, false]
               }
             ],
           ]
@@ -178,10 +179,10 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeContentTreasures(week: Week) {
-  const treasures =  week.assignments.filter(data=> data.sectionMeeting == 'TESOROS DE LA BIBLIA')
+  private makeContentTreasures(week: Meeting) {
+  const treasures =  week.assignments.filter((data:any)=> data.sectionMeeting == 'TESOROS DE LA BIBLIA')
   const content: any=[];
-    treasures.forEach(asigment=>{
+    treasures.forEach((asigment: any)=>{
       content.push(
         [
           {
@@ -231,10 +232,10 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeContentTeachers(week: Week){
-    const treasures =  week.assignments.filter(data=> data.sectionMeeting == 'SEAMOS MEJORES MAESTROS')
+  private makeContentTeachers(week: Meeting){
+    const treasures =  week.assignments.filter((data:any)=> data.sectionMeeting == 'SEAMOS MEJORES MAESTROS')
     const content: any=[];
-    treasures.forEach(asigment=>{
+    treasures.forEach((asigment: any)=>{
       content.push(
         [
           {
@@ -283,10 +284,10 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeContentLife(week: Week){
-    const treasures =  week.assignments.filter(data=> data.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
+  private makeContentLife(week: Meeting){
+    const treasures =  week.assignments.filter((data: any)=> data.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
     const content: any=[];
-    treasures.forEach(asigment=>{
+    treasures.forEach((asigment: any)=>{
       content.push(
         [
           {
@@ -314,7 +315,7 @@ export class PrintPdfService {
     ]
   }
 
-  private makeIntermediateSong(week: Week){
+  private makeIntermediateSong(week: Meeting){
     return [
       {
         table: {
@@ -339,7 +340,7 @@ export class PrintPdfService {
       }
     ]
   }
-  private makeFinalBlock(week: Week){
+  private makeFinalBlock(week: Meeting){
 
     return [
       {
@@ -383,18 +384,18 @@ export class PrintPdfService {
   }
 
 
-  public print(weeks: Week[]) {
+  public print(weeks: Meeting[]) {
     pdfMake.createPdf(this.makeDocumet(weeks)).open()
   }
-  public download(weeks: Week[]) {
+  public download(weeks: Meeting[]) {
     pdfMake.createPdf(this.makeDocumet(weeks)).download('Nota - ' + this.invoice.prefix + this.invoice.id + '.pdf')
   }
 
-  public getStream(weeks: Week[]) {
+  public getStream(weeks: Meeting[]) {
     pdfMake.createPdf(this.makeDocumet(weeks)).getStream()
   }
 
-  public async getBlob(weeks: Week[]): Promise<Blob> {
+  public async getBlob(weeks: Meeting[]): Promise<Blob> {
     return new Promise<Blob>((resolve, reject) => {
       const pdf = pdfMake.createPdf(this.makeDocumet(weeks));
       pdf.getBlob((data: Blob) => {
@@ -405,7 +406,7 @@ export class PrintPdfService {
       });
     });
   }
-  private makeDocumet(weeks: Week[]): any {
+  private makeDocumet(weeks: Meeting[]): any {
     const contenido: any[] =[]
     let pageBreak = false;
     weeks.forEach(week=>{
@@ -479,7 +480,7 @@ export class PrintPdfService {
           fontSize: 7,
           bold: true,
           alignment: 'right',
-          margin: [0, 6, 0, 0]
+          margin: [0, 5, 0, 0]
         },
         tips_l: {
           fontSize: 9,

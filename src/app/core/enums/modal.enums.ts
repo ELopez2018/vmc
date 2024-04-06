@@ -28,5 +28,6 @@ export enum ModalTitleEnums {
 }
 
 export enum ModalTypeEnums {
-  ASSIGN_PUB ="assignPublisher"
+  ASSIGN_PUB ="assignPublisher",
+  PRINTER ="printer"
 }

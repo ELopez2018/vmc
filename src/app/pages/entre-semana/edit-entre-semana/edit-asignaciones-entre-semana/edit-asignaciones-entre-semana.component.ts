@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Assignment, Week } from 'src/app/core/interfaces/reuniones.interface';
+import { Assignment, Meeting } from 'src/app/core/interfaces/reuniones.interface';
 import { SemanasMock } from '../../mocks/semanas.mock';
 import { UsersService } from '../../../../core/services/users/users.service';
 import { AssignmentService } from 'src/app/core/services/assignment/assignment.service';
 import { ModalService } from '../../../../core/services/modal/modal.service';
+import { ActivatedRoute } from '@angular/router';
+import { MeetingsService } from 'src/app/core/services/meetings/meetings.service';
 
 @Component({
   selector: 'vmc-edit-asignaciones-entre-semana',
@@ -11,17 +13,20 @@ import { ModalService } from '../../../../core/services/modal/modal.service';
   styleUrls: ['./edit-asignaciones-entre-semana.component.scss']
 })
 export class EditAsignacionesEntreSemanaComponent implements OnInit {
-  @Input() public week!: Week;
+  @Input() public week!: Meeting;
   @Input() public assignmentList: Assignment[] = [];
-  @Output() onGetPublishers: EventEmitter<any>= new EventEmitter();
+  @Output() onGetPublishers: EventEmitter<any> = new EventEmitter();
   public publishers: any[] = [];
   public oldMens: any[] = [];
   public ministerialSerf: any[] = [];
+  private id!: number;
   constructor(
     private usersService: UsersService,
     private assignmentService: AssignmentService,
-    private modalService:ModalService
-    ) {}
+    private modalService: ModalService,
+    private route: ActivatedRoute,
+    private meetingsService: MeetingsService,
+  ) { }
   ngOnInit(): void {
     this.usersService.getAllUsers().subscribe(data => {
       this.publishers = data
@@ -50,19 +55,38 @@ export class EditAsignacionesEntreSemanaComponent implements OnInit {
     return "";
   }
 
-  update(assignment: Assignment){
-    console.log(assignment);
-    assignment.meeting ={ id: this.week.id}
+  update(assignment: Assignment) {
+    assignment.meeting = { id: this.week.id }
     this.assignmentService.updateAssignment(assignment)
-    .subscribe(data=>{
-      console.log(data);
-    })
+      .subscribe(data => {
+        this.refreshMeeting()
+      })
   }
-  assigResponsible(assignment: Assignment){
+  assigResponsible(assignment: Assignment) {
     console.log("modal");
-    this.modalService.assignPublisher().then(data=>{
-      console.log(data);
-      assignment.responsible = data
-    })
+    this.modalService.assignPublisher()
+      .then(data => {
+        assignment.responsible = data
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+  assigAssistant(assignment: Assignment) {
+    this.modalService.assignPublisher()
+      .then(data => {
+        assignment.assistant = data
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
+  refreshMeeting(){
+    this.id = <number | null>this.route.snapshot.queryParamMap.get('id') ?? 0;
+    if (this.id) {
+      this.meetingsService.getByNumberWeek(this.id).subscribe(data => {
+        this.week = data;
+      })
+    }
   }
 }

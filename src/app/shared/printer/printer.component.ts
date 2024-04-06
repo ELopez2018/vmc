@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PrintPdfService } from '../../core/services/pdf/print.service';
 import { MeetingsService } from '../../core/services/meetings/meetings.service';
-import { Week } from 'src/app/core/interfaces/reuniones.interface';
+import { Meeting } from 'src/app/core/interfaces/reuniones.interface';
+import { DataService } from '../../core/services/data/data.service';
 
 @Component({
   selector: 'app-printer',
@@ -13,17 +14,25 @@ export class PrinterComponent implements OnInit {
   @ViewChild('pdfViewerAutoLoad') pdfViewerAutoLoad: any;
 
   constructor(private printService: PrintPdfService,
-    private meetingsService: MeetingsService
-    ) { }
+    private meetingsService: MeetingsService,
+    private dataService: DataService
+  ) { }
 
   ngOnInit(): void {
-    this.meetingsService.getAllWeek().subscribe(data=>{
-      this.printVoucher(data)
+    this.dataService.getMeeting().subscribe(data => {
+      if (data && data.length > 0) {
+        this.printMeetings(data)
+      } else {
+        this.meetingsService.getAllWeek().subscribe(data => {
+          this.printMeetings(data)
+        })
+
+      }
     })
 
   }
 
-  printVoucher(weeks: Week[]) {
+  printMeetings(weeks: Meeting[]) {
     this.printService.getBlob(weeks)
       .then(data => {
         this.pdfViewerAutoLoad.pdfSrc = data
@@ -34,7 +43,7 @@ export class PrinterComponent implements OnInit {
       })
   }
 
-  download(){
+  download() {
     const dataIpm: any = {
 
     }

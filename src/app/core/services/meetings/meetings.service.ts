@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Servers } from '../../constants/servers';
 import { HttpClient } from '@angular/common/http';
-import { Week } from '../../interfaces/reuniones.interface';
+import { Meeting } from '../../interfaces/reuniones.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +19,12 @@ export class MeetingsService {
     const url = `${this.server}/meetings/current`
     return this.httpClient.get(url)
   }
-  getByNumberWeek(week: number): Observable<Week> {
+  getByNumberWeek(week: number): Observable<Meeting> {
     const url = `${this.server}/meetings/by-number-week?numberWeek=${week}`
-    return this.httpClient.get<Week>(url)
+    return this.httpClient.get<Meeting>(url)
+  }
+  updateMeeting(meeting: Meeting) {
+    const url = `${this.server}/meetings`
+    return this.httpClient.put<Meeting>(url,meeting)
   }
 }

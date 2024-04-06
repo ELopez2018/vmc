@@ -11,9 +11,10 @@ export class AssignmentService {
   private server = Servers.URL
   private api = Apis
   constructor(private httpClient: HttpClient) { }
-  
+
   updateAssignment(assignment: Assignment): Observable<any> {
     const url = `${this.server}${this.api.ASSIGNMENT}`
     return this.httpClient.put(url, assignment)
   }
-}
+
+ }

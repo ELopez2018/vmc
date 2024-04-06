@@ -6,6 +6,7 @@ import { PdfJsViewerModule } from 'ng2-pdfjs-viewer';
 import { PrinterComponent } from './printer/printer.component';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalContainerComponent } from './modal/modal-container/modal-container.component';
+import { SearchPublisherComponent } from './modal/search-publisher/search-publisher.component';
 
 const MODULES = [
   MaterialModule,
@@ -15,7 +16,8 @@ const MODULES = [
 ];
 const COMPONENTS = [
   PrinterComponent,
-  ModalContainerComponent
+  ModalContainerComponent,
+  SearchPublisherComponent
 ]
 
 @NgModule({

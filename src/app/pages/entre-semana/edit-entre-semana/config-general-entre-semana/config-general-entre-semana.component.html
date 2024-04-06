@@ -1,7 +1,8 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-6">Numero de semana: {{ week.weekNumber }}</div>
-    <div class="col-md-6">Fecha: {{ week.week }}</div>
+    <div class="col-md-4 h2">Numero de semana: {{ week.weekNumber }}</div>
+    <div class="col-md-4 h2">Semana del {{ week.week }}</div>
+    <div class="col-md-4 h2">Dia de la reunion: {{ showDayOfMeeting(week.week) }}</div>
   </div>
   <div class="row">
     <div class="col-md-12">
@@ -32,40 +33,64 @@
               />
             </td>
             <td class="text-center">
-              <select
-                formControlName="openingPrayer"
-                class="form-select form-select-sm"
-                aria-label="Small select example"
-              >
-                <option selected>Selecciones</option>
-                <option [ngValue]="item" *ngFor="let item of publishers">
-                  {{ item.fullName }}
-                </option>
-              </select>
+              <div class="input-group mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  aria-label="openingPrayer"
+                  aria-describedby="button-addon2"
+                  [value]="openingPrayer"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  id="button-addon2"
+                  (click)="assigOpeningPrayer()"
+                >
+                  <mat-icon>person_add</mat-icon>
+                </button>
+              </div>
             </td>
             <td class="text-center">
-              <select
-                formControlName="president"
-                class="form-select form-select-sm"
-                aria-label="Small select example"
-              >
-                <option selected>Selecciones</option>
-                <option [ngValue]="item" *ngFor="let item of publishers">
-                  {{ item.fullName }}
-                </option>
-              </select>
+              <div class="input-group mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  aria-label="president"
+                  [value]="president"
+                  aria-describedby="button-addon2"
+                  (click)="assigPresident()"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  id="button-addon2"
+                  (click)="assigPresident()"
+                >
+                  <mat-icon>person_add</mat-icon>
+                </button>
+              </div>
             </td>
             <td class="text-center">
-              <select
-                formControlName="president"
-                class="form-select form-select-sm"
-                aria-label="Small select example"
-              >
-                <option selected>Selecciones</option>
-                <option [ngValue]="item" *ngFor="let item of publishers">
-                  {{ item.fullName }}
-                </option>
-              </select>
+              <div class="input-group mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  aria-label="assistantAdviser"
+                  aria-describedby="button-addon2"
+                  [value]="assistantAdviser"
+                  (click)="assigAssistantAdviser()"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  id="button-addon2"
+                  (click)="assigAssistantAdviser()"
+                >
+                  <mat-icon>person_add</mat-icon>
+
+                </button>
+              </div>
             </td>
             <td class="text-center">
               <input
@@ -80,32 +105,41 @@
             <td class="text-center">
               <input
                 type="text"
-                name="timeType"
+                name="finalSong"
                 formControlName="finalSong"
                 class="form-control size50px text-center"
-                aria-label="Username"
+                aria-label="finalSong"
                 aria-describedby="basic-addon1"
               />
             </td>
             <td class="text-center">
-              <select
-                formControlName="president"
-                class="form-select form-select-sm"
-                aria-label="Small select example"
-              >
-                <option selected>Selecciones</option>
-                <option [ngValue]="item" *ngFor="let item of publishers">
-                  {{ item.fullName }}
-                </option>
-              </select>
+              <div class="input-group mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  aria-label="finalPrayer"
+                  aria-describedby="button-addon2"
+                  [value]="finalPrayer"
+                  (click)="assigFinalPrayer()"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  id="button-addon2"
+                  (click)="assigFinalPrayer()"
+                >
+                  <mat-icon>person_add</mat-icon>
+                </button>
+              </div>
             </td>
             <td>
-              <button mat-icon-button type="button" class="btn btn-primary">
+              <button
+                mat-icon-button
+                (click)="save()"
+                type="button"
+                class="btn btn-primary"
+              >
                 <mat-icon>save</mat-icon>
-              </button>
-
-              <button mat-icon-button type="button" class="btn btn-danger">
-                <mat-icon>delete_outline</mat-icon>
               </button>
             </td>
           </tr>

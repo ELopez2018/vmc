@@ -1,4 +1,4 @@
-import { Week } from "src/app/core/interfaces/reuniones.interface";
+import { Meeting } from "src/app/core/interfaces/reuniones.interface";
 
 export const SemanasMock: any[] = [
   {

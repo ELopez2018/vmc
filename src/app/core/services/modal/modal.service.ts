@@ -8,15 +8,17 @@ import { ModalTitleEnums, ModalIconEnums, ModalResponseEnums, ModalTypeEnums } f
   providedIn: 'root',
 })
 export class ModalService {
-  constructor(private ngbModal: NgbModal) { }
+  constructor(
+    private ngbModal: NgbModal
+  ) { }
 
-  modalOptions: NgbModalOptions = {
+  private modalOptions: NgbModalOptions = {
     backdrop: 'static',
     backdropClass: 'customBackdrop',
     centered: true,
   };
 
-  public modalRef!: NgbModalRef;
+  private modalRef!: NgbModalRef;
 
   public yesOrNot(
     titulo: ModalTitleEnums,
@@ -37,6 +39,12 @@ export class ModalService {
   ) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
+    return this.modalRef.result
+  }
+  public printer(
+  ) {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.modalType = ModalTypeEnums.PRINTER;
     return this.modalRef.result
   }
   public close() {

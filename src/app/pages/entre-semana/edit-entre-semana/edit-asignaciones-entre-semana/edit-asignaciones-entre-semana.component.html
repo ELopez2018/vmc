@@ -29,8 +29,8 @@
                 [(ngModel)]="item.number"
                 class="form-control size50px"
                 placeholder="number"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
+                aria-label="number"
+                aria-describedby="number"
               />
             </td>
             <td class="">
@@ -40,8 +40,8 @@
                 [(ngModel)]="item.title"
                 class="form-control sizeMin500px"
                 placeholder="title"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
+                aria-label="title"
+                aria-describedby="title"
               />
             </td>
             <td class="text-center">
@@ -51,8 +51,8 @@
                 [(ngModel)]="item.time"
                 class="form-control size50px"
                 placeholder="time"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
+                aria-label="time"
+                aria-describedby="time"
               />
             </td>
             <td class="text-center">
@@ -62,8 +62,8 @@
                 [(ngModel)]="item.timeType"
                 class="form-control size50px"
                 placeholder="mins, Hrs."
-                aria-label="Username"
-                aria-describedby="basic-addon1"
+                aria-label="timeType"
+                aria-describedby="timeType"
               />
             </td>
             <td class="text-center">
@@ -87,7 +87,7 @@
             <td class="text-center">
               <div class="input-group mb-3">
                 <input   [value]="item.assistant?.fullName" type="text" class="form-control"  aria-label="responsible" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary" type="button" id="button-addon2"><mat-icon>person_add</mat-icon></button>
+                <button class="btn btn-outline-secondary"(click)="assigAssistant(item)" type="button" id="button-addon2"><mat-icon>person_add</mat-icon></button>
               </div>
               <!-- <select
                 [(ngModel)]="item.assistant"
@@ -101,9 +101,9 @@
               </select> -->
               <!-- <span>{{ item.assistant }}</span> -->
             </td>
-            <td class="text-center">
+            <td class="text-center pt-3">
               <span
-                class="badge"
+                class="badge py-2"
                 [title]="item.sectionMeeting"
                 [ngClass]="{
                   'text-bg-success':
@@ -128,7 +128,7 @@
               />
               <!-- <span>{{ item.tips }}</span> -->
             </td>
-            <td class="text-center">
+            <td class="text-center pt-3">
               <div class="form-switch text-center">
                 <input
                   class="form-check-input"
@@ -139,7 +139,7 @@
                 />
               </div>
             </td>
-            <td>
+            <td class="">
               <button
                 (click)="update(item)"
                 mat-icon-button

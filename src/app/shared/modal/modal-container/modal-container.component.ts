@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalTypeEnums } from 'src/app/core/enums/modal.enums';
+import { Publisher } from 'src/app/core/interfaces/reuniones.interface';
 
 @Component({
   selector: 'app-modal',
@@ -35,6 +36,8 @@ export class ModalContainerComponent implements OnInit {
   close() {
     this.activeModal.close('close');
   }
-
+  onClicked(item: Publisher){
+    this.activeModal.close(item);
+  }
 
 }

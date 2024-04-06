@@ -23,13 +23,14 @@ export interface Asignacion {
   pos: number;
   seccion: string;
 }
-export interface Week {
+export interface Meeting {
   id: number;
   week: string;
   weekNumber: number;
   openingSong: string;
   openingPrayer: Publisher;
   president: Publisher;
+  assistantAdviser: Publisher;
   introTime: number;
   timeType: string;
   intermediateSong: string;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { SemanasMock } from 'src/app/pages/entre-semana/mocks/semanas.mock';
-import { Meeting } from '../../interfaces/reuniones.interface';
+import { Assignment, Meeting } from '../../interfaces/reuniones.interface';
 import { Utils } from 'src/app/shared/Utils';
 
 
@@ -126,7 +126,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: "0:00", style: "titles", border: [false, false, false, false]
+                text: Utils.adapterTime(week.startTimeOpeningSong), style: "titles", border: [false, false, false, false]
               },
               {
                 text: "• Canción " + week.openingSong, style: "titles", border: [false, false, false, false]
@@ -140,7 +140,7 @@ export class PrintPdfService {
             ],
             [
               {
-                text: "0:00", style: "titles", border: [false, false, false, false]
+                text:  Utils.adapterTime(week.startTimeIntro), style: "titles", border: [false, false, false, false]
               },
               {
                 text: `• Palabras de introducción ( ${week.introTime} ${week.timeType})` , style: "titles", border: [false, false, false, false]
@@ -180,13 +180,13 @@ export class PrintPdfService {
     ]
   }
   private makeContentTreasures(week: Meeting) {
-  const treasures =  week.assignments.filter((data:any)=> data.sectionMeeting == 'TESOROS DE LA BIBLIA')
+  const treasures =  week.assignments.filter((data:Assignment)=> data.sectionMeeting == 'TESOROS DE LA BIBLIA')
   const content: any=[];
-    treasures.forEach((asigment: any)=>{
+    treasures.forEach((asigment: Assignment)=>{
       content.push(
         [
           {
-            text: "0:00", style: "titles", border: [false, false, false, false]
+            text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
           },
           {
             text: `${asigment.number}. ${asigment.title} (${asigment.time} ${asigment.timeType})`, style: "fontTreasures", border: [false, false, false, false]
@@ -233,13 +233,13 @@ export class PrintPdfService {
     ]
   }
   private makeContentTeachers(week: Meeting){
-    const treasures =  week.assignments.filter((data:any)=> data.sectionMeeting == 'SEAMOS MEJORES MAESTROS')
+    const treasures =  week.assignments.filter((data:Assignment)=> data.sectionMeeting == 'SEAMOS MEJORES MAESTROS')
     const content: any=[];
-    treasures.forEach((asigment: any)=>{
+    treasures.forEach((asigment: Assignment)=>{
       content.push(
         [
           {
-            text: "0:00", style: "titles", border: [false, false, false, false]
+            text:Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
           },
           {
             text: `${asigment.number}. ${asigment.title} (${asigment.time} ${asigment.timeType})`, style: "fontTeachers", border: [false, false, false, false]
@@ -285,13 +285,13 @@ export class PrintPdfService {
     ]
   }
   private makeContentLife(week: Meeting){
-    const treasures =  week.assignments.filter((data: any)=> data.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
+    const treasures =  week.assignments.filter((data: Assignment)=> data.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
     const content: any=[];
-    treasures.forEach((asigment: any)=>{
+    treasures.forEach((asigment: Assignment)=>{
       content.push(
         [
           {
-            text: "0:00", style: "titles", border: [false, false, false, false]
+            text: Utils.adapterTime(asigment.startTime) , style: "titles", border: [false, false, false, false]
           },
           {
             text: `${asigment.number}. ${asigment.title} (${asigment.time} ${asigment.timeType})`, style: "fontLife", border: [false, false, false, false]
@@ -323,7 +323,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: "0:00", style: "titles", border: [false, false, false, false]
+                text:  Utils.adapterTime(week.startTimeIntermediateSong), style: "titles", border: [false, false, false, false]
               },
               {
                 text: "• Canción " + week.intermediateSong, style: "titles", border: [false, false, false, false]
@@ -349,7 +349,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: "0:00", style: "titles", border: [false, false, false, false]
+                text:  Utils.adapterTime(week.startTimeConclusionWords), style: "titles", border: [false, false, false, false]
               },
               {
                 text: "• Palabras de conclusión (3 min.)", style: "titles", border: [false, false, false, false]
@@ -363,7 +363,7 @@ export class PrintPdfService {
             ],
             [
               {
-                text: "0:00", style: "titles", border: [false, false, false, false]
+                text:  Utils.adapterTime(week.startTimeFinalSong), style: "titles", border: [false, false, false, false]
               },
               {
                 text: "• Canción " + week.finalSong, style: "titles", border: [false, false, false, false]

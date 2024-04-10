@@ -22,4 +22,8 @@ export class EntreSemanaComponent implements OnInit {
       return Utils.showDayOfMeeting(fechaSemana)
   }
 
+  adapterTime(dateTime: any){
+   return Utils.adapterTime(dateTime)
+  }
+
 }

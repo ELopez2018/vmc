@@ -1,15 +1,17 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-4 h2">Numero de semana: {{ week.weekNumber }}</div>
-    <div class="col-md-4 h2">Semana del {{ week.week }}</div>
-    <div class="col-md-4 h2">Dia de la reunion: {{ showDayOfMeeting(week.week) }}</div>
+<div class="row">
+  <div class="col-sm-4 h2">
+    Dia de la reunion: {{ showDayOfMeeting(week.week) }}
   </div>
-  <div class="row">
-    <div class="col-md-12">
+  <div class="col-sm-4 h2">Numero de semana: {{ week.weekNumber }}</div>
+  <div class="col-sm-4 h2">Semana del {{ week.week }}</div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="table-responsive">
       <table class="table">
         <thead class="table-primary">
           <tr>
-            <th scope="col" class="text-center">Cancion inicial</th>
+            <th rowspan="2" class="text-center">Cancion I.</th>
             <th scope="col" class="text-center">Oracion inicial</th>
             <th scope="col" class="text-center">Presidente</th>
             <th scope="col" class="text-center">Consejero Auxiliar</th>
@@ -22,18 +24,18 @@
 
         <tbody>
           <tr [formGroup]="form">
-            <td class="">
+            <td class="row">
               <input
                 type="text"
                 name="openingSong"
                 formControlName="openingSong"
-                class="form-control sizeMin500px text-center"
-                aria-label="Username"
+                class="form-control  text-center col"
+                aria-label="openingSong"
                 aria-describedby="basic-addon1"
               />
             </td>
             <td class="text-center">
-              <div class="input-group mb-3">
+              <div class="input-group sizeMin180px">
                 <input
                   type="text"
                   class="form-control"
@@ -52,7 +54,7 @@
               </div>
             </td>
             <td class="text-center">
-              <div class="input-group mb-3">
+              <div class="input-group sizeMin180px">
                 <input
                   type="text"
                   class="form-control"
@@ -72,7 +74,7 @@
               </div>
             </td>
             <td class="text-center">
-              <div class="input-group mb-3">
+              <div class="input-group sizeMin180px">
                 <input
                   type="text"
                   class="form-control"
@@ -88,7 +90,6 @@
                   (click)="assigAssistantAdviser()"
                 >
                   <mat-icon>person_add</mat-icon>
-
                 </button>
               </div>
             </td>
@@ -113,7 +114,7 @@
               />
             </td>
             <td class="text-center">
-              <div class="input-group mb-3">
+              <div class="input-group sizeMin180px">
                 <input
                   type="text"
                   class="form-control"
@@ -148,130 +149,87 @@
     </div>
   </div>
 </div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="table-responsive">
+      <table class="table">
+        <thead class="table-primary">
+          <tr>
+            <th scope="col" class="text-center">Cancion Inicial</th>
+            <th scope="col" class="text-center">Introduccion</th>
+            <th scope="col" class="text-center">Cancion Vida</th>
+            <th scope="col" class="text-center">Conclusion</th>
+            <th scope="col" class="text-center">Cancion Final</th>
+            <th scope="col" class="text-center"></th>
+          </tr>
+        </thead>
 
-<!-- <div class="container-fluid p-3">
-  <fieldset>
-    <legend>REUNION ENTRE SEMANA</legend>
-    <div class="row">
-      <div class="col-md-5"><span>No de Semana</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
+        <tbody>
+          <tr [formGroup]="form">
+            <td>
+              <input
+                type="time"
+                name="startTimeOpeningSong"
+                formControlName="startTimeOpeningSong"
+                class="form-control  text-center col"
+                aria-label="startTimeOpeningSong"
+                aria-describedby="basic-addon1"
+              />
+            </td>
+            <td class="text-center">
+                <input
+                  type="time"
+                  class="form-control"
+                  aria-label="startTimeIntro"
+                  aria-describedby="button-addon2"
+                  name="startTimeIntro"
+                  formControlName="startTimeIntro"
+                />
+            </td>
+            <td class="text-center">
+              <input
+              type="time"
+              class="form-control"
+              aria-label="startTimeIntermediateSong"
+              aria-describedby="button-addon2"
+              name="startTimeIntermediateSong"
+              formControlName="startTimeIntermediateSong"
+            />
+            </td>
+            <td class="text-center">
+              <input
+              type="time"
+              class="form-control"
+              aria-label="startTimeConclusionWords"
+              aria-describedby="button-addon2"
+              name="startTimeConclusionWords"
+              formControlName="startTimeConclusionWords"
+            />
+            </td>
+            <td class="text-center">
+              <input
+                type="time"
+                name="startTimeFinalSong"
+                formControlName="startTimeFinalSong"
+                class="form-control size50px text-center"
+                aria-label="startTimeFinalSong"
+                aria-describedby="basic-addon1"
+              />
+            </td>
+            <td>
+              <button
+                mat-icon-button
+                (click)="save()"
+                type="button"
+                class="btn btn-primary"
+              >
+                <mat-icon>save</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="row">
-      <div class="col-md-5"><span>Semana</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5"><span>Cancion inicial</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5"><span>Oracion inicial</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5"><span>Presidente</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5"><span>Consejero Auxiliar</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5"><span>Tiempo de Introduccion</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5"><span>Medida</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5"><span>Cancion NUESTRA VIDA CRISTIANA</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5"><span>Cancion Final</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-5"><span>Oracion Final</span></div>
-      <div class="col-md-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Open this select menu</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    </div>
-  </fieldset>
-</div> -->
+  </div>
+</div>
+

@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { NgbModal, NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ModalContainerComponent } from "src/app/shared/modal/modal-container/modal-container.component";
 import { ModalTitleEnums, ModalIconEnums, ModalResponseEnums, ModalTypeEnums } from "../../enums/modal.enums";
+import { Assignment } from "../../interfaces/reuniones.interface";
 
 
 @Injectable({
@@ -35,14 +36,14 @@ export class ModalService {
     return this.modalRef.result
   }
 
-  public assignPublisher(
+  public assignPublisher(assignment?: Assignment
   ) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
+    this.modalRef.componentInstance.assignment = assignment;
     return this.modalRef.result
   }
-  public printer(
-  ) {
+  public printer() {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.PRINTER;
     return this.modalRef.result

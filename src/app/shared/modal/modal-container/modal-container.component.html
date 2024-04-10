@@ -1,7 +1,11 @@
 <div [ngSwitch]="modalType">
   <div *ngSwitchDefault></div>
   <div *ngSwitchCase="typeOfModals.ASSIGN_PUB">
-    <search-publisher (onClicked)="onClicked($event)" ></search-publisher>
+    <search-publisher
+      (onClicked)="onClicked($event)"
+      [assignment]="assignment"
+      *ngIf="assignment"
+    ></search-publisher>
   </div>
   <div *ngSwitchCase="typeOfModals.PRINTER">
     <app-printer></app-printer>

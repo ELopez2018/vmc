@@ -63,8 +63,8 @@ export class EditAsignacionesEntreSemanaComponent implements OnInit {
       })
   }
   assigResponsible(assignment: Assignment) {
-    console.log("modal");
-    this.modalService.assignPublisher()
+    console.log(assignment);
+    this.modalService.assignPublisher(assignment)
       .then(data => {
         assignment.responsible = data
       })
@@ -73,7 +73,7 @@ export class EditAsignacionesEntreSemanaComponent implements OnInit {
       })
   }
   assigAssistant(assignment: Assignment) {
-    this.modalService.assignPublisher()
+    this.modalService.assignPublisher(assignment)
       .then(data => {
         assignment.assistant = data
       })
@@ -81,7 +81,7 @@ export class EditAsignacionesEntreSemanaComponent implements OnInit {
         console.log(error);
       })
   }
-  refreshMeeting(){
+  refreshMeeting() {
     this.id = <number | null>this.route.snapshot.queryParamMap.get('id') ?? 0;
     if (this.id) {
       this.meetingsService.getByNumberWeek(this.id).subscribe(data => {

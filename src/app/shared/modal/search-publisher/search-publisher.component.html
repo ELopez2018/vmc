@@ -4,21 +4,41 @@
       <h1 class="text-center">PUBLICADORES DE LA CONGREGACION</h1>
     </div>
   </div>
+  <div class="row" *ngIf="frequentPublishers && frequentPublishers.length">
+    <div class="col-md-12">
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered table-sm cursor-hover">
+          <thead>
+            <tr>
+              <th class="text-center" scope="col">Publicador</th>
+              <th class="text-center" scope="col">Asignaciones</th>
+              <th scope="col "></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of frequentPublishers" (click)="selected(item.publisher)" >
+              <td>{{ item.publisher.fullName }}</td>
+              <td class="text-center">{{ item.total }}</td>
+              <td class="text-center"><mat-icon>check_circle</mat-icon></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-12">
       <div class="table-responsive">
-        <table class="table table-hover table-bordered cursor-hover">
+        <table class="table table-hover table-sm table-bordered cursor-hover">
           <thead>
             <tr>
-              <th scope="col">fullName</th>
-              <th scope="col">email</th>
+              <th scope="col">Publicador</th>
               <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of publishers" (click)="selected(item)" >
               <td>{{ item.fullName }}</td>
-              <td>{{ item.email }}</td>
               <td class="text-center"><mat-icon>check_circle</mat-icon></td>
             </tr>
           </tbody>

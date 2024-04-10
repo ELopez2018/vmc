@@ -1,12 +1,13 @@
-<div class="container-fluid pb-5">
-  <div class="row">
-    <div class="col-md-12">
+<div class="row">
+  <div class="col-sm-12">
+    <div class="table-responsive">
       <table class="table">
         <thead class="table-primary">
           <tr>
             <!-- <th scope="col" class="text-center">Id</th> -->
             <th scope="col" class="text-center">No</th>
             <th scope="col" class="text-center">Titulo</th>
+            <th scope="col" colspan="1" class="text-center">Inicio</th>
             <th scope="col" colspan="1" class="text-center">Tiempo</th>
             <th scope="col" class="text-center"></th>
             <th scope="col" class="text-center">Responsable</th>
@@ -19,9 +20,6 @@
         </thead>
         <tbody>
           <tr *ngFor="let item of assignmentList">
-            <!-- <td class="text-center">
-              <span>{{ item.id }}</span>
-            </td> -->
             <td class="text-center">
               <input
                 type="text"
@@ -39,6 +37,17 @@
                 name="title"
                 [(ngModel)]="item.title"
                 class="form-control sizeMin500px"
+                placeholder="title"
+                aria-label="title"
+                aria-describedby="title"
+              />
+            </td>
+            <td class="">
+              <input
+                type="time"
+                name="title"
+                [(ngModel)]="item.startTime"
+                class="form-control"
                 placeholder="title"
                 aria-label="title"
                 aria-describedby="title"
@@ -67,39 +76,42 @@
               />
             </td>
             <td class="text-center">
-
-              <div class="input-group mb-3">
-                <input   [value]="item.responsible?.fullName" type="text" class="form-control"  aria-label="responsible" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary"(click)="assigResponsible(item)"  type="button" id="button-addon2"><mat-icon>person_add</mat-icon></button>
+              <div class="input-group sizeMin180px">
+                <input
+                  [value]="item.responsible?.fullName"
+                  type="text"
+                  class="form-control "
+                  aria-label="responsible"
+                  aria-describedby="button-addon2"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  (click)="assigResponsible(item)"
+                  type="button"
+                  id="button-addon2"
+                >
+                  <mat-icon>person_add</mat-icon>
+                </button>
               </div>
-              <!-- <select
-                [(ngModel)]="item.responsible"
-                class="form-select form-select-sm"
-                aria-label="Small select example"
-              >
-                <option value="" disabled selected>Seleccione</option>
-                <option *ngFor="let item of publishers" [ngValue]="item">
-                  {{ item.fullName }}
-                </option>
-              </select> -->
-              <!-- <span>{{ item.responsible }}</span> -->
             </td>
             <td class="text-center">
-              <div class="input-group mb-3">
-                <input   [value]="item.assistant?.fullName" type="text" class="form-control"  aria-label="responsible" aria-describedby="button-addon2">
-                <button class="btn btn-outline-secondary"(click)="assigAssistant(item)" type="button" id="button-addon2"><mat-icon>person_add</mat-icon></button>
+              <div class="input-group  sizeMin180px" >
+                <input
+                  [value]="item.assistant?.fullName"
+                  type="text"
+                  class="form-control "
+                  aria-label="responsible"
+                  aria-describedby="button-addon2"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  (click)="assigAssistant(item)"
+                  type="button"
+                  id="button-addon2"
+                >
+                  <mat-icon>person_add</mat-icon>
+                </button>
               </div>
-              <!-- <select
-                [(ngModel)]="item.assistant"
-                class="form-select form-select-sm"
-                aria-label="Small select example"
-              >
-                <option selected>Selecciones</option>
-                <option [ngValue]="item" *ngFor="let item of publishers">
-                  {{ item.fullName }}
-                </option>
-              </select> -->
-              <!-- <span>{{ item.assistant }}</span> -->
             </td>
             <td class="text-center pt-3">
               <span
@@ -122,7 +134,7 @@
                 type="text"
                 name="tips"
                 [(ngModel)]="item.tips"
-                class="form-control"
+                class="form-control sizeMin180px"
                 aria-label="Username"
                 aria-describedby="basic-addon1"
               />

@@ -30,7 +30,7 @@
       </div>
       <div class="row ms-3">
         <div class="col-md-6">
-          <span class="mx-2">0:00</span>
+          <span class="mx-2">{{ adapterTime(semana.startTimeOpeningSong) }}</span>
           <span class="fw-bold"> Canción {{ semana.openingSong }} </span>
         </div>
         <div class="col-md-2 text-end text-title-custom">Oración</div>
@@ -44,7 +44,7 @@
         <div class="col-md-8"></div>
         <div class="col-md-4 text-end text-title-custom"></div>
         <div class="col-md-12 mb-2 ">
-          <span class="mx-2">0:00</span> Palabras de introducción ({{
+          <span class="mx-2">{{ adapterTime(semana.startTimeIntro) }}</span> Palabras de introducción ({{
             semana.introTime + " " + semana.timeType
           }})
         </div>
@@ -66,7 +66,7 @@
             <span class="title-number">{{ item.number }}.</span>
             {{ item.title + " (" + item.time + " " + item.timeType + ")" }} -->
             <div class="row">
-              <div class="col-md-1 ms-2" >0:00</div>
+              <div class="col-md-1 ms-2" >{{  adapterTime(item.startTime) }}</div>
               <div class="col-md-11 big-title  p-0 m-0" [title]="item.title" ><span class="title-number">{{ item.number }}.</span> {{ item.title + " (" + item.time + " " + item.timeType + ")" }}</div>
             </div>
           </div>
@@ -100,7 +100,7 @@
             <span class="title-number">{{ item.number }}.</span>
             {{ item.title + " (" + item.time + " " + item.timeType + ")" }} -->
             <div class="row">
-              <div class="col-md-1 ms-2" >0:00</div>
+              <div class="col-md-1 ms-2" >{{  adapterTime(item.startTime) }}</div>
               <div class="col-md-11 big-title  p-0 m-0" [title]="item.title" ><span class="title-number">{{ item.number }}.</span> {{ item.title + " (" + item.time + " " + item.timeType + ")" }}</div>
             </div>
           </div>
@@ -123,7 +123,7 @@
         <legend class="entre-semana__title-vida">NUESTRA VIDA CRISTIANA</legend>
         <div class="row">
           <div class="col-md-12">
-            <span class="mx-2">0:00</span>
+            <span class="mx-2">{{ adapterTime(semana.startTimeIntermediateSong) }}</span>
             <span class="fw-bold"> Canción {{ semana.intermediateSong }} </span>
           </div>
         </div>
@@ -136,7 +136,7 @@
             *ngIf="item.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
           <div class="row">
-            <div class="col-md-1 ms-2" >0:00</div>
+            <div class="col-md-1 ms-2" >{{ adapterTime(item.startTime) }}</div>
             <div class="col-md-11 big-title  p-0 m-0" [title]="item.title" ><span class="title-number">{{ item.number }}.</span> {{ item.title + " (" + item.time + " " + item.timeType + ")" }}</div>
           </div>
 
@@ -151,18 +151,19 @@
             class="col-md-3 mt-1"
             *ngIf="item.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
-            {{ item.responsible?.fullName }}
+          {{ item.responsible ? item.responsible.fullName: ''}}
+          {{ item.assistant ? "/" + item.assistant.fullName : item.assistant }}
           </div>
         </div>
       </fieldset>
       <div class="row ms-3">
         <div class="col-md-12 mt-1">
-          <span class="mx-2">0:00</span> Palabras de conclusión
+          <span class="mx-2">{{adapterTime(semana.startTimeConclusionWords)}}</span> Palabras de conclusión
         </div>
       </div>
       <div class="row ms-3">
         <div class="col-md-7 mt-1">
-          <span class="mx-2">0:00</span>
+          <span class="mx-2">{{ adapterTime(semana.startTimeFinalSong) }}</span>
           <span class="fw-bold"> Canción {{ semana.finalSong }} </span>
         </div>
         <div class="col-md-1 mt-1 text-end text-title-custom">

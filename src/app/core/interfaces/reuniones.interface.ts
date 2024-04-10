@@ -28,13 +28,18 @@ export interface Meeting {
   week: string;
   weekNumber: number;
   openingSong: string;
+  startTimeOpeningSong: string;
   openingPrayer: Publisher;
   president: Publisher;
   assistantAdviser: Publisher;
   introTime: number;
+  startTimeIntro: string;
   timeType: string;
   intermediateSong: string;
+  startTimeIntermediateSong: string;
+  startTimeConclusionWords: string;
   finalSong: string;
+  startTimeFinalSong: string
   finalPrayer: Publisher;
   assignments: Assignment[];
   adviser?: Publisher;
@@ -45,15 +50,15 @@ export interface Assignment {
   timeType: string;
   responsible?: Publisher;
   assistant?: Publisher;
-  assignmentNumber?: number;
   title: string;
-  pointNumber?: any;
-  tips?: string;
+  pointNumber: number;
+  tips: string;
   sectionMeeting: string;
   showTips: boolean;
   number: number;
-  position?: any;
-  meeting?: any;
+  position: number;
+  meeting: any;
+  startTime: any;
 }
 export interface Publisher {
   id: number;

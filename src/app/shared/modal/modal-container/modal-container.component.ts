@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalTypeEnums } from 'src/app/core/enums/modal.enums';
-import { Publisher } from 'src/app/core/interfaces/reuniones.interface';
+import { Assignment, Publisher } from 'src/app/core/interfaces/reuniones.interface';
 
 @Component({
   selector: 'app-modal',
@@ -19,6 +19,7 @@ export class ModalContainerComponent implements OnInit {
   @Input() Icon: string = '';
   @Input() textButton: string = 'Crear';
   @Input() modalType: string = 'info';
+  @Input() assignment!: Assignment ;
 
   public typeOfModals= ModalTypeEnums
 

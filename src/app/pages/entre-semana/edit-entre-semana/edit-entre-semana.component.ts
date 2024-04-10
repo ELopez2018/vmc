@@ -24,18 +24,15 @@ export class EditEntreSemanaComponent implements OnInit {
   ngOnInit(): void {
     this.getMeeting()
   }
-
   getMeeting() {
     this.id = <number | null>this.route.snapshot.queryParamMap.get('id') ?? 0;
     if (this.id) {
       this.meetingsService.getByNumberWeek(this.id).subscribe(data => {
         this.semana = data;
-        console.log(data);
         this.onFind.emit(this.semana)
       })
     }
   }
-
   setPublishers(publishers: any[]) {
     this.publishers = publishers
   }

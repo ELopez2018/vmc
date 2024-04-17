@@ -59,6 +59,8 @@ export interface Assignment {
   position: number;
   meeting: any;
   startTime: any;
+  numberWeek: number,
+  assignmentType: string
 }
 export interface Publisher {
   id: number;

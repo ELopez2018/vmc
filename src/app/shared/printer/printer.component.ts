@@ -23,7 +23,7 @@ export class PrinterComponent implements OnInit {
       if (data && data.length > 0) {
         this.printMeetings(data)
       } else {
-        this.meetingsService.getAllWeek().subscribe(data => {
+        this.meetingsService.getWeeksValids().subscribe(data => {
           this.printMeetings(data)
         })
 

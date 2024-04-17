@@ -13,7 +13,7 @@ export class EntreSemanaComponent implements OnInit {
   public semanas: Meeting[] = SemanasMock;
   constructor(private meetingsService: MeetingsService) { }
   ngOnInit(): void {
-    this.meetingsService.getAllWeek().subscribe(data => {
+    this.meetingsService.getWeeksValids().subscribe(data => {
       this.semanas = data
     })
   }
@@ -24,6 +24,11 @@ export class EntreSemanaComponent implements OnInit {
 
   adapterTime(dateTime: any){
    return Utils.adapterTime(dateTime)
+  }
+
+  filter(weeks:  Meeting[]){
+
+    return weeks.filter(week=>Utils.showFirstDateOfWeek(week.week))
   }
 
 }

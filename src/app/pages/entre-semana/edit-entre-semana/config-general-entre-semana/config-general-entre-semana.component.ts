@@ -4,6 +4,7 @@ import { Meeting, Publisher } from 'src/app/core/interfaces/reuniones.interface'
 import { MeetingsService } from '../../../../core/services/meetings/meetings.service';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
 import { Utils } from 'src/app/shared/Utils';
+import { OtherAssignment, SectionMeeting } from 'src/app/core/enums/meetings.enums';
 
 @Component({
   selector: 'vmc-config-general-entre-semana',
@@ -74,7 +75,10 @@ save() {
 }
 assigOpeningPrayer() {
   console.log("modal");
-  this.modalService.assignPublisher()
+  const assignments = this.week.assignments[0]
+  assignments.numberWeek = this.week.weekNumber
+  assignments.assignmentType=OtherAssignment.OPENING_PRAYER
+  this.modalService.assignPublisher(assignments)
     .then((data: Publisher) => {
       this.form.get('openingPrayer')?.setValue(data)
     })
@@ -84,7 +88,10 @@ assigOpeningPrayer() {
 }
 assigPresident() {
   console.log("modal");
-  this.modalService.assignPublisher()
+  const assignments = this.week.assignments[0]
+  assignments.numberWeek = this.week.weekNumber
+  assignments.assignmentType=OtherAssignment.PRESIDENT
+  this.modalService.assignPublisher(assignments)
     .then((data: Publisher) => {
       this.form.get('president')?.setValue(data)
     })
@@ -93,18 +100,22 @@ assigPresident() {
     })
 }
 assigAssistantAdviser() {
-  console.log("modal");
-  this.modalService.assignPublisher()
-    .then((data: Publisher) => {
-      this.form.get('assistantAdviser')?.setValue(data)
-    })
-    .catch(error => {
-      console.log(error);
-    })
+  // console.log("modal");
+  // const assignments = this.week.assignments[0]
+  // assignments.assignmentType=OtherAssignment.PRESIDENT
+  // this.modalService.assignPublisher()
+  //   .then((data: Publisher) => {
+  //     this.form.get('assistantAdviser')?.setValue(data)
+  //   })
+  //   .catch(error => {
+  //     console.log(error);
+  //   })
 }
 assigFinalPrayer() {
-  console.log("modal");
-  this.modalService.assignPublisher()
+  const assignments = this.week.assignments[0]
+  assignments.numberWeek = this.week.weekNumber
+  assignments.assignmentType=OtherAssignment.FINAL_PRAYER
+  this.modalService.assignPublisher(assignments)
     .then((data: Publisher) => {
       this.form.get('finalPrayer')?.setValue(data)
     })

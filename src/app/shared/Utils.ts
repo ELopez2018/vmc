@@ -15,7 +15,6 @@ export class Utils {
   }
 
   public static adapterTime(dateTime: string) {
-    console.log(dateTime);
     if(! dateTime){
       return '0.00'
     }
@@ -26,4 +25,9 @@ export class Utils {
     }
     return `${newHora}:${minutos}`
   }
+
+  public static showFirstDateOfWeek(fechaSemana: string) {
+  console.log(fechaSemana);
+    return true;
+}
 }

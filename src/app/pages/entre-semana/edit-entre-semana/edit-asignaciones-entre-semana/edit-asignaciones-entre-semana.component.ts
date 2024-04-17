@@ -63,7 +63,7 @@ export class EditAsignacionesEntreSemanaComponent implements OnInit {
       })
   }
   assigResponsible(assignment: Assignment) {
-    console.log(assignment);
+    assignment.numberWeek =this.week.weekNumber
     this.modalService.assignPublisher(assignment)
       .then(data => {
         assignment.responsible = data
@@ -73,6 +73,7 @@ export class EditAsignacionesEntreSemanaComponent implements OnInit {
       })
   }
   assigAssistant(assignment: Assignment) {
+    assignment.numberWeek =this.week.weekNumber
     this.modalService.assignPublisher(assignment)
       .then(data => {
         assignment.assistant = data

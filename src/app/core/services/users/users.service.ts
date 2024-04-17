@@ -11,8 +11,6 @@ export class UsersService {
   private api = Apis
   constructor(private httpClient: HttpClient) { }
 
-
-
   getAllUsers(): Observable<any> {
     const url = `${this.server}${this.api.USERS}`
     return this.httpClient.get(url)

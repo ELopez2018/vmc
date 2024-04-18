@@ -37,7 +37,10 @@ export class MeetingsService {
     const url = `${this.server}/meetings/current-weeks`
     return this.httpClient.get(url)
   }
-
-
+  getUpdateWeeksFromJW(): Observable<any> {
+    const url = `${this.server}/meetings/automatic?quantity=1`
+    return this.httpClient.get(url)
+  }
+///meetings/automatic?quantity=1
   // /current-weeks
 }

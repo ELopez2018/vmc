@@ -11,48 +11,21 @@
       <table class="table">
         <thead class="table-primary">
           <tr>
-            <th rowspan="2" class="text-center">Cancion I.</th>
-            <th scope="col" class="text-center">Oracion inicial</th>
+
             <th scope="col" class="text-center">Presidente</th>
+            <th scope="col" class="text-center">Oracion inicial</th>
             <th scope="col" class="text-center">Consejero Auxiliar</th>
-            <th scope="col" class="text-center">Cancion Intermedia</th>
-            <th scope="col" class="text-center">Cancion Final</th>
             <th scope="col" class="text-center">Oracion Final</th>
+            <th rowspan="2" class="text-center">Cancion inicial</th>
+            <th scope="col" class="text-center">Cancion Vida</th>
+            <th scope="col" class="text-center">Cancion Final</th>
+
             <th scope="col" class="text-center"></th>
           </tr>
         </thead>
 
         <tbody>
           <tr [formGroup]="form">
-            <td class="row">
-              <input
-                type="text"
-                name="openingSong"
-                formControlName="openingSong"
-                class="form-control  text-center col"
-                aria-label="openingSong"
-                aria-describedby="basic-addon1"
-              />
-            </td>
-            <td class="text-center">
-              <div class="input-group sizeMin180px">
-                <input
-                  type="text"
-                  class="form-control"
-                  aria-label="openingPrayer"
-                  aria-describedby="button-addon2"
-                  [value]="openingPrayer"
-                />
-                <button
-                  class="btn btn-outline-secondary"
-                  type="button"
-                  id="button-addon2"
-                  (click)="assigOpeningPrayer()"
-                >
-                  <mat-icon>person_add</mat-icon>
-                </button>
-              </div>
-            </td>
             <td class="text-center">
               <div class="input-group sizeMin180px">
                 <input
@@ -78,6 +51,26 @@
                 <input
                   type="text"
                   class="form-control"
+                  aria-label="openingPrayer"
+                  aria-describedby="button-addon2"
+                  [value]="openingPrayer"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  id="button-addon2"
+                  (click)="assigOpeningPrayer()"
+                >
+                  <mat-icon>person_add</mat-icon>
+                </button>
+              </div>
+            </td>
+
+            <td class="text-center">
+              <div class="input-group sizeMin180px">
+                <input
+                  type="text"
+                  class="form-control"
                   aria-label="assistantAdviser"
                   aria-describedby="button-addon2"
                   [value]="assistantAdviser"
@@ -92,26 +85,6 @@
                   <mat-icon>person_add</mat-icon>
                 </button>
               </div>
-            </td>
-            <td class="text-center">
-              <input
-                type="text"
-                name="timeType"
-                formControlName="intermediateSong"
-                class="form-control size50px text-center"
-                aria-label="Username"
-                aria-describedby="basic-addon1"
-              />
-            </td>
-            <td class="text-center">
-              <input
-                type="text"
-                name="finalSong"
-                formControlName="finalSong"
-                class="form-control size50px text-center"
-                aria-label="finalSong"
-                aria-describedby="basic-addon1"
-              />
             </td>
             <td class="text-center">
               <div class="input-group sizeMin180px">
@@ -133,6 +106,41 @@
                 </button>
               </div>
             </td>
+
+            <td class="">
+              <input
+                type="text"
+                name="openingSong"
+                formControlName="openingSong"
+                class="form-control  text-center col"
+                aria-label="openingSong"
+                aria-describedby="basic-addon1"
+              />
+            </td>
+
+
+
+            <td class="text-center">
+              <input
+                type="text"
+                name="timeType"
+                formControlName="intermediateSong"
+                class="form-control size50px text-center"
+                aria-label="Username"
+                aria-describedby="basic-addon1"
+              />
+            </td>
+            <td class="text-center">
+              <input
+                type="text"
+                name="finalSong"
+                formControlName="finalSong"
+                class="form-control size50px text-center"
+                aria-label="finalSong"
+                aria-describedby="basic-addon1"
+              />
+            </td>
+
             <td>
               <button
                 mat-icon-button

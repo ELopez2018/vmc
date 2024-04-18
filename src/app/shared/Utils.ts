@@ -11,7 +11,14 @@ export class Utils {
 
     // Guarda la fecha en el formato deseado
 
-    return fecha.toISOString().split('T')[0]
+    //return fecha.toISOString().split('T')[0]
+
+     // Guarda la fecha en el formato deseado "DD/MM/YYYY"
+     const dia = String(fecha.getDate() + 1).padStart(2, '0');
+     const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // El mes es base 0, por eso se suma 1
+     const año = fecha.getFullYear();
+
+     return `${dia}-${mes}-${año}`;
   }
 
   public static adapterTime(dateTime: string) {
@@ -27,7 +34,6 @@ export class Utils {
   }
 
   public static showFirstDateOfWeek(fechaSemana: string) {
-  console.log(fechaSemana);
     return true;
 }
 }

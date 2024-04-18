@@ -488,9 +488,11 @@ export class PrintPdfService {
           margin: [0, 3, 0, 0]
         },
         tips_c: {
-          fontSize: 8,
+          fontSize: 7,
+          bold: true,
           alignment: 'left',
-          margin: [0, 7, 0, 0]
+          color: "#b6b4b4",
+          margin: [0, 8, 0, 0]
         },
         titles: {
           bold: true,

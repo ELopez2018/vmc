@@ -10,7 +10,7 @@ import { Utils } from 'src/app/shared/Utils';
   styleUrls: ['./entre-semana.component.scss']
 })
 export class EntreSemanaComponent implements OnInit {
-  public semanas: Meeting[] = SemanasMock;
+  public semanas: Meeting[] = [];
   constructor(private meetingsService: MeetingsService) { }
   ngOnInit(): void {
     this.meetingsService.getWeeksValids().subscribe(data => {
@@ -30,5 +30,9 @@ export class EntreSemanaComponent implements OnInit {
 
     return weeks.filter(week=>Utils.showFirstDateOfWeek(week.week))
   }
-
+  getDataFromJW(){
+    this.meetingsService.getUpdateWeeksFromJW().subscribe(data=>{
+      console.log(data);
+    })
+  }
 }

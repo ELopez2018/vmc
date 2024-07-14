@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SemanasMock } from './mocks/semanas.mock';
 import { MeetingsService } from '../../core/services/meetings/meetings.service';
-import { Meeting, Program } from 'src/app/core/interfaces/reuniones.interface';
+import { Meeting, Program, WeeklyProgram } from 'src/app/core/interfaces/reuniones.interface';
 import { Utils } from 'src/app/shared/Utils';
+import { ModalService } from 'src/app/core/services/modal/modal.service';
 
 @Component({
   selector: 'vmc-entre-semana',
@@ -11,11 +12,13 @@ import { Utils } from 'src/app/shared/Utils';
 })
 export class EntreSemanaComponent implements OnInit {
   public semanas: Program[] = [];
-  porAsignar="Por asignar";
-  constructor(private meetingsService: MeetingsService) { }
+  porAsignar = "por asignar";
+  constructor(
+    private meetingsService: MeetingsService,
+    private modalService: ModalService,
+  ) { }
   ngOnInit(): void {
     this.meetingsService.getWeeksValids().subscribe(data => {
-      console.log(data);
       this.semanas = data
     })
   }
@@ -35,5 +38,26 @@ export class EntreSemanaComponent implements OnInit {
     this.meetingsService.getUpdateWeeksFromJW().subscribe(data => {
       console.log(data);
     })
+  }
+
+  changeProgram(item: Program, type: string) {
+    console.log(item);
+    console.log(type);
+  }
+
+  changeWeeklyProgram(item: WeeklyProgram, type: string) {
+    console.log('switch');
+    switch (type) {
+      case "responsible":
+        console.log('intro');
+        this.modalService.assignPublisherWeeklyProgram(item)
+        break;
+
+      default:
+        console.log(item);
+        console.log(type);
+        break;
+    }
+
   }
 }

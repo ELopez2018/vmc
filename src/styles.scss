@@ -68,3 +68,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-right: auto;
   margin-left: auto;
 }
+
+.fieldset-basic {
+  border: 2px solid gainsboro;
+  padding: 10px;
+  margin: 10px;
+  width: 97%;
+  legend {
+    padding: 3px 5px;
+    width: min-content;
+    background-color: white;
+    font-size: 18px;
+  }
+}

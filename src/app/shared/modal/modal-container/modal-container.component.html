@@ -6,6 +6,9 @@
       *ngIf="assignment"
     ></search-publisher>
   </div>
+  <div *ngSwitchCase="typeOfModals.RESPONSIBLE">
+    <app-printer></app-printer>
+  </div>
   <div *ngSwitchCase="typeOfModals.PRINTER">
     <app-printer></app-printer>
   </div>

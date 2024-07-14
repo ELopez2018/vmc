@@ -21,7 +21,7 @@
   >
     <div class="row entre-semana__header">
       <div class="col-md-4">
-        <div class="entre-semana__congregacion pt-2">
+        <div class="entre-semana__congregacion pt-2 ">
           {{ semana.congregation.name }}
         </div>
       </div>
@@ -63,18 +63,25 @@
       </div>
       <div class="row ms-3">
         <div class="col-md-7">
-          <span class="mx-2 hover">{{
-            adapterTime(semana.startTimeOpeningSong)
-          }}</span>
-          <span class="fw-bold hover">
+          <span
+            class="mx-2 hover"
+            (click)="changeProgram(semana, 'startTimeOpeningSong')"
+            >{{ adapterTime(semana.startTimeOpeningSong) }}</span
+          >
+          <span
+            class="fw-bold hover"
+            (click)="changeProgram(semana, 'openingSong')"
+          >
             Canción {{ semana.meeting.openingSong }}
           </span>
         </div>
         <div class="col-md-2 text-end text-title-custom">Oración</div>
         <div class="col-md-3 hover">
-          {{
-            semana.openingPrayer ? semana.openingPrayer.fullName : porAsignar
-          }}
+          <span class="hover" (click)="changeProgram(semana, 'openingPrayer')">
+            {{
+              semana.openingPrayer ? semana.openingPrayer.fullName : porAsignar
+            }}
+          </span>
         </div>
       </div>
       <div class="row entre-semana__tesoros ms-3">
@@ -85,10 +92,12 @@
         <div class="col-md-8"></div>
         <div class="col-md-4 text-end text-title-custom"></div>
         <div class="col-md-12 mb-2">
-          <span class="mx-2 hover">{{
-            adapterTime(semana.startTimeIntro)
-          }}</span>
-          <span class="hover"
+          <span
+            class="mx-2 hover"
+            (click)="changeProgram(semana, 'startTimeIntro')"
+            >{{ adapterTime(semana.startTimeIntro) }}</span
+          >
+          <span class="hover" (click)="changeProgram(semana, 'introTime')"
             >Palabras de introducción ({{
               semana.meeting.introTime + " " + semana.meeting.timeType
             }})
@@ -109,18 +118,21 @@
             *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
           >
             <div class="row">
-              <div class="col-md-1 ms-2 hover">
+              <div class="col-md-1 ms-2 hover" (click)="changeWeeklyProgram(item, 'startTime')">
                 {{ adapterTime(item.assignment.startTime) }}
               </div>
               <div
-                class="col-md-11 big-title p-0 m-0 hover"
+                class="col-md-11 big-title p-0 m-0"
                 [title]="item.assignment.title"
               >
                 <span class="title-number hover"
+                (click)="changeWeeklyProgram(item, 'number')"
                   >{{ item.assignment.number }}.</span
                 >
 
-                <span class="hover">
+                <span class="hover"
+                (click)="changeWeeklyProgram(item, 'title')"
+                >
                   {{
                     item.assignment.title +
                       " (" +
@@ -137,15 +149,24 @@
             class="col-md-2 mt-1 text-end text-title-custom"
             *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
           >
-            <span class="hover" *ngIf="item.assignment.showTips">{{
+            <span
+            class="hover"
+            *ngIf="item.assignment.showTips"
+            (click)="changeWeeklyProgram(item, 'tips')"
+            >{{
               item.assignment.tips
             }}</span>
           </div>
           <div
-            class="col-md-3 mt-1 hover"
+            class="col-md-3 mt-1 "
             *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
           >
+          <span
+          class="hover"
+          (click)="changeWeeklyProgram(item, 'responsible')"
+          >
             {{ item.responsible?.fullName ?? porAsignar }}
+          </span>
           </div>
         </div>
       </fieldset>
@@ -162,17 +183,23 @@
             *ngIf="item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
           >
             <div class="row">
-              <div class="col-md-1 ms-2 hover">
+              <div class="col-md-1 ms-2 hover"
+              (click)="changeWeeklyProgram(item, 'startTime')"
+              >
                 {{ adapterTime(item.assignment.startTime) }}
               </div>
               <div
-                class="col-md-11 big-title p-0 m-0 hover"
+                class="col-md-11 big-title p-0 m-0"
                 [title]="item.assignment.title"
               >
-                <span class="title-number hover"
+                <span
+                class="title-number hover"
+                (click)="changeWeeklyProgram(item, 'number')"
                   >{{ item.assignment.number }}.</span
                 >
-                <span class="hover">
+                <span class="hover"
+                (click)="changeWeeklyProgram(item, 'title')"
+                >
                   {{
                     item.assignment.title +
                       " (" +
@@ -189,7 +216,10 @@
             class="col-md-2 mt-1 text-end text-title-custom"
             *ngIf="item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
           >
-            <span class="hover" *ngIf="item.assignment.showTips">{{
+            <span class="hover"
+            *ngIf="item.assignment.showTips"
+            (click)="changeWeeklyProgram(item, 'tips')"
+            >{{
               item.assignment.tips
             }}</span>
           </div>
@@ -197,12 +227,17 @@
             class="col-md-3 mt-1"
             *ngIf="item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
           >
-            <span class="hover">
+            <span class="hover"
+            (click)="changeWeeklyProgram(item, 'responsible')"
+            >
               {{ item.responsible?.fullName ?? porAsignar }}
             </span>
-            <span class="hover">
+            <span class="hover"
+            (click)="changeWeeklyProgram(item, 'assistant')"
+            >
+
               {{
-                item.assistant ? "/" + item.assistant.fullName : item.assistant
+                item.assistant ? "/" + item.assistant.fullName : "/" +  porAsignar
               }}
             </span>
           </div>
@@ -212,10 +247,15 @@
         <legend class="entre-semana__title-vida">NUESTRA VIDA CRISTIANA</legend>
         <div class="row">
           <div class="col-md-12 mt-1">
-            <span class="mx-2 hover">{{
+            <span
+            class="mx-2 hover"
+            (click)="changeProgram(semana, 'startTimeIntermediateSong')"
+            >{{
               adapterTime(semana.startTimeIntermediateSong)
             }}</span>
-            <span class="fw-bold hover">
+            <span class="fw-bold hover"
+            (click)="changeProgram(semana, 'intermediateSong')"
+            >
               Canción {{ semana.meeting.intermediateSong }}
             </span>
           </div>
@@ -229,7 +269,9 @@
             *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
             <div class="row">
-              <div class="col-md-1 ms-2 hover">
+              <div class="col-md-1 ms-2 hover"
+              (click)="changeWeeklyProgram(item, 'startTime')"
+              >
                 {{ adapterTime(item.assignment.startTime) }}
               </div>
               <div
@@ -237,9 +279,12 @@
                 [title]="item.assignment.title"
               >
                 <span class="title-number hover"
+                (click)="changeWeeklyProgram(item, 'number')"
                   >{{ item.assignment.number }}.</span
                 >
-                <span class="hover">
+                <span class="hover"
+                (click)="changeWeeklyProgram(item, 'title')"
+                >
                   {{
                     item.assignment.title +
                       " (" +
@@ -256,20 +301,26 @@
             class="col-md-2 mt-1 text-end text-title-custom"
             *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
-            <span class="hover" *ngIf="item.assignment.showTips">{{
+            <span class="hover" *ngIf="item.assignment.showTips"
+            (click)="changeWeeklyProgram(item, 'tips')"
+            >{{
               item.assignment.tips
             }}</span>
           </div>
           <div
-            class="col-md-3 mt-1 hover"
+            class="col-md-3 mt-1"
             *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
-            <span class="hover">
+            <span class="hover"
+            (click)="changeWeeklyProgram(item, 'responsible')"
+            >
               {{ item.responsible ? item.responsible.fullName : porAsignar }}
             </span>
-            <span class="hover">
+            <span class="hover"
+            (click)="changeWeeklyProgram(item, 'assistant')"
+            >
               {{
-                item.assistant ? "/" + item.assistant.fullName : item.assistant
+                item.assistant ? "/" + item.assistant.fullName :"/" +  porAsignar
               }}
             </span>
           </div>
@@ -277,7 +328,9 @@
       </fieldset>
       <div class="row ms-3">
         <div class="col-md-12 mt-1">
-          <span class="mx-2 hover">{{
+          <span class="mx-2 hover"
+          (click)="changeProgram(semana, 'startTimeConclusionWords')"
+          >{{
             adapterTime(semana.startTimeConclusionWords)
           }}</span>
           Palabras de conclusión
@@ -285,11 +338,21 @@
       </div>
       <div class="row ms-3">
         <div class="col-md-7 mt-1">
-          <span class="mx-2 hover">{{ adapterTime(semana.startTimeFinalSong) }}</span>
-          <span class="fw-bold hover"> Canción {{ semana.meeting.finalSong }} </span>
+          <span class="mx-2 hover"
+          (click)="changeProgram(semana, 'startTimeFinalSong')"
+          >{{
+            adapterTime(semana.startTimeFinalSong)
+          }}</span>
+          <span class="fw-bold hover"
+          (click)="changeProgram(semana, 'finalSong')"
+          >
+            Canción {{ semana.meeting.finalSong }}
+          </span>
         </div>
         <div class="col-md-2 mt-1 text-end text-title-custom">Oracion:</div>
-        <div class="col-md-3 hover">
+        <div class="col-md-3 hover"
+        (click)="changeProgram(semana, 'finalPrayer')"
+        >
           {{ semana.finalPrayer ? semana.finalPrayer.fullName : porAsignar }}
         </div>
       </div>

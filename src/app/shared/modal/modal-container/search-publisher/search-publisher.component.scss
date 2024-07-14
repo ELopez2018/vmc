@@ -1,8 +1,12 @@
 .container {
   width: 50vw;
-  height: 95vh;
+  height: 50vh;
   overflow-y: auto;
 }
 .cursor-hover {
   cursor: pointer;
+}
+.table-container {
+  height: 42vh;
+  overflow: auto;
 }

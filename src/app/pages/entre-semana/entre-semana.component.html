@@ -21,7 +21,9 @@
   >
     <div class="row entre-semana__header">
       <div class="col-md-4">
-        <div class="entre-semana__congregacion pt-2">Alborada</div>
+        <div class="entre-semana__congregacion pt-2">
+          {{ semana.congregation.name }}
+        </div>
       </div>
       <div class="col-md-8 h4 text-end pe-3">
         <div class="entre-semana__title">
@@ -34,15 +36,15 @@
         <div class="col-md-7 fw-bold">
           <a
             [routerLink]="['editar']"
-            [queryParams]="{ id: semana.weekNumber }"
+            [queryParams]="{ id: semana.meeting.weekNumber }"
           >
-            {{ showDayOfMeeting(semana.week) }}
+            {{ showDayOfMeeting(semana.meeting.week) }}
           </a>
           | LECTURA SEMANAL DE LA BIBLIA
         </div>
         <div class="col-md-2 text-end text-title-custom">Presidente</div>
-        <div class="col-md-3">
-          {{ semana.president ? semana.president.fullName : "" }}
+        <div class="col-md-3 hover">
+          {{ semana.president ? semana.president.fullName : porAsignar }}
         </div>
       </div>
 
@@ -51,20 +53,28 @@
         <div class="col-md-2 text-end text-title-custom">
           Consejero Auxiliar
         </div>
-        <div class="col-md-3">
-          {{ semana.assistantAdviser ? semana.assistantAdviser.fullName : "" }}
+        <div class="col-md-3 hover">
+          {{
+            semana.assistantAdviser
+              ? semana.assistantAdviser.fullName
+              : porAsignar
+          }}
         </div>
       </div>
       <div class="row ms-3">
         <div class="col-md-7">
-          <span class="mx-2">{{
+          <span class="mx-2 hover">{{
             adapterTime(semana.startTimeOpeningSong)
           }}</span>
-          <span class="fw-bold"> Canción {{ semana.openingSong }} </span>
+          <span class="fw-bold hover">
+            Canción {{ semana.meeting.openingSong }}
+          </span>
         </div>
         <div class="col-md-2 text-end text-title-custom">Oración</div>
-        <div class="col-md-3">
-          {{ semana.openingPrayer ? semana.openingPrayer.fullName : "" }}
+        <div class="col-md-3 hover">
+          {{
+            semana.openingPrayer ? semana.openingPrayer.fullName : porAsignar
+          }}
         </div>
       </div>
       <div class="row entre-semana__tesoros ms-3">
@@ -75,10 +85,14 @@
         <div class="col-md-8"></div>
         <div class="col-md-4 text-end text-title-custom"></div>
         <div class="col-md-12 mb-2">
-          <span class="mx-2">{{ adapterTime(semana.startTimeIntro) }}</span>
-          Palabras de introducción ({{
-            semana.introTime + " " + semana.timeType
-          }})
+          <span class="mx-2 hover">{{
+            adapterTime(semana.startTimeIntro)
+          }}</span>
+          <span class="hover"
+            >Palabras de introducción ({{
+              semana.meeting.introTime + " " + semana.meeting.timeType
+            }})
+          </span>
         </div>
       </div>
 
@@ -88,31 +102,50 @@
         </legend>
         <div
           class="row entre-semana__tesoros"
-          *ngFor="let item of semana.assignments"
+          *ngFor="let item of semana.weeklyProgram"
         >
           <div
             class="col-md-7 mt-1"
-            *ngIf="item.sectionMeeting == 'TESOROS DE LA BIBLIA'"
+            *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
           >
             <div class="row">
-              <div class="col-md-1 ms-2">{{ adapterTime(item.startTime) }}</div>
-              <div class="col-md-11 big-title p-0 m-0" [title]="item.title">
-                <span class="title-number">{{ item.number }}.</span>
-                {{ item.title + " (" + item.time + " " + item.timeType + ")" }}
+              <div class="col-md-1 ms-2 hover">
+                {{ adapterTime(item.assignment.startTime) }}
+              </div>
+              <div
+                class="col-md-11 big-title p-0 m-0 hover"
+                [title]="item.assignment.title"
+              >
+                <span class="title-number hover"
+                  >{{ item.assignment.number }}.</span
+                >
+
+                <span class="hover">
+                  {{
+                    item.assignment.title +
+                      " (" +
+                      item.assignment.time +
+                      " " +
+                      item.assignment.timeType +
+                      ")"
+                  }}
+                </span>
               </div>
             </div>
           </div>
           <div
             class="col-md-2 mt-1 text-end text-title-custom"
-            *ngIf="item.sectionMeeting == 'TESOROS DE LA BIBLIA'"
+            *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
           >
-            <span *ngIf="item.showTips">{{ item.tips }}</span>
+            <span class="hover" *ngIf="item.assignment.showTips">{{
+              item.assignment.tips
+            }}</span>
           </div>
           <div
-            class="col-md-3 mt-1"
-            *ngIf="item.sectionMeeting == 'TESOROS DE LA BIBLIA'"
+            class="col-md-3 mt-1 hover"
+            *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
           >
-            {{ item.responsible?.fullName }}
+            {{ item.responsible?.fullName ?? porAsignar }}
           </div>
         </div>
       </fieldset>
@@ -122,34 +155,56 @@
         </legend>
         <div
           class="row entre-semana__tesoros"
-          *ngFor="let item of semana.assignments"
+          *ngFor="let item of semana.weeklyProgram"
         >
           <div
             class="col-md-7 mt-1"
-            *ngIf="item.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
+            *ngIf="item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
           >
             <div class="row">
-              <div class="col-md-1 ms-2">{{ adapterTime(item.startTime) }}</div>
-              <div class="col-md-11 big-title p-0 m-0" [title]="item.title">
-                <span class="title-number">{{ item.number }}.</span>
-                {{ item.title + " (" + item.time + " " + item.timeType + ")" }}
+              <div class="col-md-1 ms-2 hover">
+                {{ adapterTime(item.assignment.startTime) }}
+              </div>
+              <div
+                class="col-md-11 big-title p-0 m-0 hover"
+                [title]="item.assignment.title"
+              >
+                <span class="title-number hover"
+                  >{{ item.assignment.number }}.</span
+                >
+                <span class="hover">
+                  {{
+                    item.assignment.title +
+                      " (" +
+                      item.assignment.time +
+                      " " +
+                      item.assignment.timeType +
+                      ")"
+                  }}
+                </span>
               </div>
             </div>
           </div>
           <div
             class="col-md-2 mt-1 text-end text-title-custom"
-            *ngIf="item.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
+            *ngIf="item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
           >
-            <span *ngIf="item.showTips">{{ item.tips }}</span>
+            <span class="hover" *ngIf="item.assignment.showTips">{{
+              item.assignment.tips
+            }}</span>
           </div>
           <div
             class="col-md-3 mt-1"
-            *ngIf="item.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
+            *ngIf="item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'"
           >
-            {{ item.responsible?.fullName
-            }}{{
-              item.assistant ? "/" + item.assistant.fullName : item.assistant
-            }}
+            <span class="hover">
+              {{ item.responsible?.fullName ?? porAsignar }}
+            </span>
+            <span class="hover">
+              {{
+                item.assistant ? "/" + item.assistant.fullName : item.assistant
+              }}
+            </span>
           </div>
         </div>
       </fieldset>
@@ -157,48 +212,72 @@
         <legend class="entre-semana__title-vida">NUESTRA VIDA CRISTIANA</legend>
         <div class="row">
           <div class="col-md-12 mt-1">
-            <span class="mx-2">{{
+            <span class="mx-2 hover">{{
               adapterTime(semana.startTimeIntermediateSong)
             }}</span>
-            <span class="fw-bold"> Canción {{ semana.intermediateSong }} </span>
+            <span class="fw-bold hover">
+              Canción {{ semana.meeting.intermediateSong }}
+            </span>
           </div>
         </div>
         <div
           class="row entre-semana__tesoros"
-          *ngFor="let item of semana.assignments"
+          *ngFor="let item of semana.weeklyProgram"
         >
           <div
             class="col-md-7"
-            *ngIf="item.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
+            *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
             <div class="row">
-              <div class="col-md-1 ms-2">{{ adapterTime(item.startTime) }}</div>
-              <div class="col-md-11 big-title p-0 m-0" [title]="item.title">
-                <span class="title-number">{{ item.number }}.</span>
-                {{ item.title + " (" + item.time + " " + item.timeType + ")" }}
+              <div class="col-md-1 ms-2 hover">
+                {{ adapterTime(item.assignment.startTime) }}
+              </div>
+              <div
+                class="col-md-11 big-title p-0 m-0 hover"
+                [title]="item.assignment.title"
+              >
+                <span class="title-number hover"
+                  >{{ item.assignment.number }}.</span
+                >
+                <span class="hover">
+                  {{
+                    item.assignment.title +
+                      " (" +
+                      item.assignment.time +
+                      " " +
+                      item.assignment.timeType +
+                      ")"
+                  }}
+                </span>
               </div>
             </div>
           </div>
           <div
             class="col-md-2 mt-1 text-end text-title-custom"
-            *ngIf="item.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
+            *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
-            <span *ngIf="item.showTips">{{ item.tips }}</span>
+            <span class="hover" *ngIf="item.assignment.showTips">{{
+              item.assignment.tips
+            }}</span>
           </div>
           <div
-            class="col-md-3 mt-1"
-            *ngIf="item.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
+            class="col-md-3 mt-1 hover"
+            *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
           >
-            {{ item.responsible ? item.responsible.fullName : "" }}
-            {{
-              item.assistant ? "/" + item.assistant.fullName : item.assistant
-            }}
+            <span class="hover">
+              {{ item.responsible ? item.responsible.fullName : porAsignar }}
+            </span>
+            <span class="hover">
+              {{
+                item.assistant ? "/" + item.assistant.fullName : item.assistant
+              }}
+            </span>
           </div>
         </div>
       </fieldset>
       <div class="row ms-3">
         <div class="col-md-12 mt-1">
-          <span class="mx-2">{{
+          <span class="mx-2 hover">{{
             adapterTime(semana.startTimeConclusionWords)
           }}</span>
           Palabras de conclusión
@@ -206,12 +285,12 @@
       </div>
       <div class="row ms-3">
         <div class="col-md-7 mt-1">
-          <span class="mx-2">{{ adapterTime(semana.startTimeFinalSong) }}</span>
-          <span class="fw-bold"> Canción {{ semana.finalSong }} </span>
+          <span class="mx-2 hover">{{ adapterTime(semana.startTimeFinalSong) }}</span>
+          <span class="fw-bold hover"> Canción {{ semana.meeting.finalSong }} </span>
         </div>
         <div class="col-md-2 mt-1 text-end text-title-custom">Oracion:</div>
-        <div class="col-md-3">
-          {{ semana.finalPrayer ? semana.finalPrayer.fullName : "" }}
+        <div class="col-md-3 hover">
+          {{ semana.finalPrayer ? semana.finalPrayer.fullName : porAsignar }}
         </div>
       </div>
     </div>

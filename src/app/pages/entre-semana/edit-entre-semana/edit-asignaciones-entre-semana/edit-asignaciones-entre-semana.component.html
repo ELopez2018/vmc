@@ -25,7 +25,7 @@
                 type="text"
                 name="number"
                 [(ngModel)]="item.number"
-                class="form-control size50px"
+                class="form-control form-control-sm size50px"
                 placeholder="number"
                 aria-label="number"
                 aria-describedby="number"
@@ -36,7 +36,7 @@
                 type="text"
                 name="title"
                 [(ngModel)]="item.title"
-                class="form-control sizeMin500px"
+                class="form-control form-control-sm sizeMin500px"
                 placeholder="title"
                 aria-label="title"
                 aria-describedby="title"
@@ -47,7 +47,7 @@
                 type="time"
                 name="title"
                 [(ngModel)]="item.startTime"
-                class="form-control"
+                class="form-control form-control-sm"
                 placeholder="title"
                 aria-label="title"
                 aria-describedby="title"
@@ -58,7 +58,7 @@
                 type="text"
                 name="time"
                 [(ngModel)]="item.time"
-                class="form-control size50px"
+                class="form-control form-control-sm size50px"
                 placeholder="time"
                 aria-label="time"
                 aria-describedby="time"
@@ -69,18 +69,18 @@
                 type="text"
                 name="timeType"
                 [(ngModel)]="item.timeType"
-                class="form-control size50px"
+                class="form-control form-control-sm size50px"
                 placeholder="mins, Hrs."
                 aria-label="timeType"
                 aria-describedby="timeType"
               />
             </td>
             <td class="text-center">
-              <div class="input-group sizeMin180px">
+              <div class="input-group input-group-sm sizeMin180px">
                 <input
-                  [value]="item.responsible?.fullName"
+
                   type="text"
-                  class="form-control "
+                  class="form-control form-control-sm "
                   aria-label="responsible"
                   aria-describedby="button-addon2"
                 />
@@ -95,11 +95,11 @@
               </div>
             </td>
             <td class="text-center">
-              <div class="input-group  sizeMin180px" >
+              <div class="input-group input-group-sm sizeMin180px" >
                 <input
-                  [value]="item.assistant?.fullName"
+
                   type="text"
-                  class="form-control "
+                  class="form-control form-control-sm "
                   aria-label="responsible"
                   aria-describedby="button-addon2"
                 />
@@ -134,7 +134,7 @@
                 type="text"
                 name="tips"
                 [(ngModel)]="item.tips"
-                class="form-control sizeMin180px"
+                class="form-control form-control-sm sizeMin180px"
                 aria-label="Username"
                 aria-describedby="basic-addon1"
               />

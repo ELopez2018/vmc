@@ -15,8 +15,7 @@
     <div class="row">
       <div class="col-md-12">
         <vmc-edit-asignaciones-entre-semana
-        *ngIf="semana && semana.assignments && semana.assignments.length > 0"
-        [assignmentList]="semana.assignments"
+
         [week]="semana"
         (onGetPublishers)="setPublishers($event)"
         >

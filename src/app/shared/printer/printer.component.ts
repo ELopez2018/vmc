@@ -33,14 +33,14 @@ export class PrinterComponent implements OnInit {
   }
 
   printMeetings(weeks: Meeting[]) {
-    this.printService.getBlob(weeks)
-      .then(data => {
-        this.pdfViewerAutoLoad.pdfSrc = data
-        this.pdfViewerAutoLoad.refresh()
-      })
-      .catch(error => {
-        console.error(error);
-      })
+    // this.printService.getBlob(weeks)
+    //   .then(data => {
+    //     this.pdfViewerAutoLoad.pdfSrc = data
+    //     this.pdfViewerAutoLoad.refresh()
+    //   })
+    //   .catch(error => {
+    //     console.error(error);
+    //   })
   }
 
   download() {

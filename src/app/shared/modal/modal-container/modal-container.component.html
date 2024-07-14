@@ -3,7 +3,6 @@
   <div *ngSwitchCase="typeOfModals.ASSIGN_PUB">
     <search-publisher
       (onClicked)="onClicked($event)"
-      [assignment]="assignment"
       *ngIf="assignment"
     ></search-publisher>
   </div>

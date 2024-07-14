@@ -56,31 +56,31 @@ export class EditAsignacionesEntreSemanaComponent implements OnInit {
   }
 
   update(assignment: Assignment) {
-    assignment.meeting = { id: this.week.id }
-    this.assignmentService.updateAssignment(assignment)
-      .subscribe(data => {
-        this.refreshMeeting()
-      })
+    // assignment.meeting = { id: this.week.id }
+    // this.assignmentService.updateAssignment(assignment)
+    //   .subscribe(data => {
+    //     this.refreshMeeting()
+    //   })
   }
   assigResponsible(assignment: Assignment) {
-    assignment.numberWeek =this.week.weekNumber
-    this.modalService.assignPublisher(assignment)
-      .then(data => {
-        assignment.responsible = data
-      })
-      .catch(error => {
-        console.log(error);
-      })
+    // assignment.numberWeek =this.week.weekNumber
+    // this.modalService.assignPublisher(assignment)
+    //   .then(data => {
+    //     assignment.responsible = data
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   })
   }
   assigAssistant(assignment: Assignment) {
-    assignment.numberWeek =this.week.weekNumber
-    this.modalService.assignPublisher(assignment)
-      .then(data => {
-        assignment.assistant = data
-      })
-      .catch(error => {
-        console.log(error);
-      })
+    // assignment.numberWeek =this.week.weekNumber
+    // this.modalService.assignPublisher(assignment)
+    //   .then(data => {
+    //     assignment.assistant = data
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   })
   }
   refreshMeeting() {
     this.id = <number | null>this.route.snapshot.queryParamMap.get('id') ?? 0;

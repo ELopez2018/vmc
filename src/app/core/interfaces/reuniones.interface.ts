@@ -1,15 +1,3 @@
-// export interface Semanas {
-//   semana: string;
-//   cancionInicial: string;
-//   oracionInicial: string;
-//   presidente: string;
-//   tiempoIntro: number;
-//   unidad: string;
-//   cancionIntermedia: string;
-//   cancionFinal: string;
-//   oracionFinal: string;
-//   asignaciones: Asignacion[];
-// }
 export interface Asignacion {
   tips: string;
   showtips: boolean;
@@ -22,45 +10,6 @@ export interface Asignacion {
   ayudante: string;
   pos: number;
   seccion: string;
-}
-export interface Meeting {
-  id: number;
-  week: string;
-  weekNumber: number;
-  openingSong: string;
-  startTimeOpeningSong: string;
-  openingPrayer: Publisher;
-  president: Publisher;
-  assistantAdviser: Publisher;
-  introTime: number;
-  startTimeIntro: string;
-  timeType: string;
-  intermediateSong: string;
-  startTimeIntermediateSong: string;
-  startTimeConclusionWords: string;
-  finalSong: string;
-  startTimeFinalSong: string
-  finalPrayer: Publisher;
-  assignments: Assignment[];
-  adviser?: Publisher;
-}
-export interface Assignment {
-  id?: number;
-  time?: any;
-  timeType: string;
-  responsible?: Publisher;
-  assistant?: Publisher;
-  title: string;
-  pointNumber: number;
-  tips: string;
-  sectionMeeting: string;
-  showTips: boolean;
-  number: number;
-  position: number;
-  meeting: any;
-  startTime: any;
-  numberWeek: number,
-  assignmentType: string
 }
 export interface Publisher {
   id: number;
@@ -78,4 +27,60 @@ export interface Publisher {
   phone?: any;
   email?: any;
   designations: any[];
+}
+/// news
+export interface Program {
+  id: number;
+  meeting: Meeting;
+  startTimeOpeningSong: string;
+  startTimeIntro: string;
+  startTimeIntermediateSong: string;
+  startTimeFinalSong: string;
+  startTimeConclusionWords: string;
+  openingPrayer?: Publisher;
+  president?: Publisher;
+  assistantAdviser?: Publisher;
+  finalPrayer?: Publisher;
+  congregation: Congregation;
+  weeklyProgram: WeeklyProgram[];
+}
+export interface WeeklyProgram {
+  id: number;
+  assignment: Assignment;
+  responsible?: Publisher;
+  assistant?: Publisher;
+  congregation: Congregation;
+  program: number;
+}
+export interface Assignment {
+  id: number;
+  time?: number | number;
+  timeType: string;
+  title: string;
+  pointNumber?: any;
+  tips?: string;
+  sectionMeeting: string;
+  showTips: boolean;
+  number: number;
+  position: any;
+  startTime: string;
+}
+export interface Congregation {
+  id: number;
+  name: string;
+  number: string;
+  hour: string;
+  assistantAdviser: Publisher;
+}
+export interface Meeting {
+  id: number;
+  week: string;
+  weekNumber: number;
+  openingSong: string;
+  introTime: number;
+  timeType: string;
+  intermediateSong: string;
+  finalSong: string;
+  url: string;
+  assignmentType: any;
 }

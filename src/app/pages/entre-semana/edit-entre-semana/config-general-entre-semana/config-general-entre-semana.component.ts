@@ -22,47 +22,47 @@ export class ConfigGeneralEntreSemanaComponent implements OnInit {
     private modalService: ModalService
   ) {
     if (this.week) {
-      this.form = this.formBuilder.group({
-        week: new FormControl(this.week.week),
-        weekNumber: new FormControl(this.week.weekNumber),
-        openingSong: new FormControl(this.week.openingSong),
-        startTimeOpeningSong: new FormControl(this.week.startTimeOpeningSong),
-        openingPrayer: new FormControl(this.week.openingPrayer),
-        startTimeIntro: new FormControl(this.week.startTimeIntro),
-        president: new FormControl(this.week.president),
-        introTime: new FormControl(this.week.introTime),
-        timeType: new FormControl(this.week.timeType),
-        intermediateSong: new FormControl(this.week.intermediateSong),
-        startTimeIntermediateSong: new FormControl(this.week.startTimeIntermediateSong),
-        finalSong: new FormControl(this.week.finalSong),
-        startTimeFinalSong: new FormControl(this.week.startTimeFinalSong),
-        startTimeConclusionWords: new FormControl(this.week.startTimeConclusionWords),
-        finalPrayer: new FormControl(this.week.finalPrayer),
-        id: new FormControl(this.week.id),
-        assistantAdviser: new FormControl(this.week.assistantAdviser),
-      })
+      // this.form = this.formBuilder.group({
+      //   week: new FormControl(this.week.week),
+      //   weekNumber: new FormControl(this.week.weekNumber),
+      //   openingSong: new FormControl(this.week.openingSong),
+      //   startTimeOpeningSong: new FormControl(this.week.startTimeOpeningSong),
+      //   openingPrayer: new FormControl(this.week.openingPrayer),
+      //   startTimeIntro: new FormControl(this.week.startTimeIntro),
+      //   president: new FormControl(this.week.president),
+      //   introTime: new FormControl(this.week.introTime),
+      //   timeType: new FormControl(this.week.timeType),
+      //   intermediateSong: new FormControl(this.week.intermediateSong),
+      //   startTimeIntermediateSong: new FormControl(this.week.startTimeIntermediateSong),
+      //   finalSong: new FormControl(this.week.finalSong),
+      //   startTimeFinalSong: new FormControl(this.week.startTimeFinalSong),
+      //   startTimeConclusionWords: new FormControl(this.week.startTimeConclusionWords),
+      //   finalPrayer: new FormControl(this.week.finalPrayer),
+      //   id: new FormControl(this.week.id),
+      //   assistantAdviser: new FormControl(this.week.assistantAdviser),
+      // })
     }
   }
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      week: new FormControl(this.week.week),
-      weekNumber: new FormControl(this.week.weekNumber),
-      openingSong: new FormControl(this.week.openingSong),
-      startTimeOpeningSong: new FormControl(this.week.startTimeOpeningSong),
-      openingPrayer: new FormControl(this.week.openingPrayer),
-      startTimeIntro: new FormControl(this.week.startTimeIntro),
-      president: new FormControl(this.week.president),
-      introTime: new FormControl(this.week.introTime),
-      timeType: new FormControl(this.week.timeType),
-      intermediateSong: new FormControl(this.week.intermediateSong),
-      startTimeIntermediateSong: new FormControl(this.week.startTimeIntermediateSong),
-      finalSong: new FormControl(this.week.finalSong),
-      startTimeFinalSong: new FormControl(this.week.startTimeFinalSong),
-      startTimeConclusionWords: new FormControl(this.week.startTimeConclusionWords),
-      finalPrayer: new FormControl(this.week.finalPrayer),
-      id: new FormControl(this.week.id),
-      assistantAdviser: new FormControl(this.week.assistantAdviser),
-    })
+    // this.form = this.formBuilder.group({
+    //   week: new FormControl(this.week.week),
+    //   weekNumber: new FormControl(this.week.weekNumber),
+    //   openingSong: new FormControl(this.week.openingSong),
+    //   startTimeOpeningSong: new FormControl(this.week.startTimeOpeningSong),
+    //   openingPrayer: new FormControl(this.week.openingPrayer),
+    //   startTimeIntro: new FormControl(this.week.startTimeIntro),
+    //   president: new FormControl(this.week.president),
+    //   introTime: new FormControl(this.week.introTime),
+    //   timeType: new FormControl(this.week.timeType),
+    //   intermediateSong: new FormControl(this.week.intermediateSong),
+    //   startTimeIntermediateSong: new FormControl(this.week.startTimeIntermediateSong),
+    //   finalSong: new FormControl(this.week.finalSong),
+    //   startTimeFinalSong: new FormControl(this.week.startTimeFinalSong),
+    //   startTimeConclusionWords: new FormControl(this.week.startTimeConclusionWords),
+    //   finalPrayer: new FormControl(this.week.finalPrayer),
+    //   id: new FormControl(this.week.id),
+    //   assistantAdviser: new FormControl(this.week.assistantAdviser),
+    // })
       console.log(this.form);
 }
 
@@ -74,30 +74,30 @@ save() {
   })
 }
 assigOpeningPrayer() {
-  console.log("modal");
-  const assignments = this.week.assignments[0]
-  assignments.numberWeek = this.week.weekNumber
-  assignments.assignmentType=OtherAssignment.OPENING_PRAYER
-  this.modalService.assignPublisher(assignments)
-    .then((data: Publisher) => {
-      this.form.get('openingPrayer')?.setValue(data)
-    })
-    .catch(error => {
-      console.log(error);
-    })
+  // console.log("modal");
+  // const assignments = this.week.assignments[0]
+  // assignments.numberWeek = this.week.weekNumber
+  // assignments.assignmentType=OtherAssignment.OPENING_PRAYER
+  // this.modalService.assignPublisher(assignments)
+  //   .then((data: Publisher) => {
+  //     this.form.get('openingPrayer')?.setValue(data)
+  //   })
+  //   .catch(error => {
+  //     console.log(error);
+  //   })
 }
 assigPresident() {
-  console.log("modal");
-  const assignments = this.week.assignments[0]
-  assignments.numberWeek = this.week.weekNumber
-  assignments.assignmentType=OtherAssignment.PRESIDENT
-  this.modalService.assignPublisher(assignments)
-    .then((data: Publisher) => {
-      this.form.get('president')?.setValue(data)
-    })
-    .catch(error => {
-      console.log(error);
-    })
+  // console.log("modal");
+  // const assignments = this.week.assignments[0]
+  // assignments.numberWeek = this.week.weekNumber
+  // assignments.assignmentType=OtherAssignment.PRESIDENT
+  // this.modalService.assignPublisher(assignments)
+  //   .then((data: Publisher) => {
+  //     this.form.get('president')?.setValue(data)
+  //   })
+  //   .catch(error => {
+  //     console.log(error);
+  //   })
 }
 assigAssistantAdviser() {
   // console.log("modal");
@@ -112,16 +112,16 @@ assigAssistantAdviser() {
   //   })
 }
 assigFinalPrayer() {
-  const assignments = this.week.assignments[0]
-  assignments.numberWeek = this.week.weekNumber
-  assignments.assignmentType=OtherAssignment.FINAL_PRAYER
-  this.modalService.assignPublisher(assignments)
-    .then((data: Publisher) => {
-      this.form.get('finalPrayer')?.setValue(data)
-    })
-    .catch(error => {
-      console.log(error);
-    })
+  // const assignments = null
+  // assignments.numberWeek = this.week.weekNumber
+  // assignments.assignmentType=OtherAssignment.FINAL_PRAYER
+  // this.modalService.assignPublisher(assignments)
+  //   .then((data: Publisher) => {
+  //     this.form.get('finalPrayer')?.setValue(data)
+  //   })
+  //   .catch(error => {
+  //     console.log(error);
+  //   })
 }
 
   get president() {

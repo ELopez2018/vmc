@@ -15,16 +15,31 @@
   </div>
   <div *ngSwitchCase="typeOfModals.TITLE_AND_TIME">
     <title-and-time
-    (onClicked)="onClicked($event)"
-    [assignment]="assignment"
+      (onClicked)="onClicked($event)"
+      [assignment]="assignment"
     ></title-and-time>
   </div>
   <div *ngSwitchCase="typeOfModals.CHANGE_SONGS">
     <change-song
-    (onClicked)="onClicked($event)"
-    [program]="program"
+      [song]="song"
+      (onClicked)="onClicked($event)"
+      [program]="program"
     ></change-song>
   </div>
-
-
+  <div *ngSwitchCase="typeOfModals.ERROR">
+    <error-modal
+      [type]="errorType"
+      [message]="errorMessage"
+      (onClicked)="onClicked($event)"
+      [title]="title"
+    ></error-modal>
+  </div>
+  <div *ngSwitchCase="typeOfModals.SUCCESS">
+    <info-modal
+      [type]="title"
+      [message]="mensaje"
+      (onClicked)="onClicked($event)"
+      [title]="subTitle"
+    ></info-modal>
+  </div>
 </div>

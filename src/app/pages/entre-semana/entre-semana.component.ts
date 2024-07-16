@@ -58,6 +58,9 @@ export class EntreSemanaComponent implements OnInit {
               console.log(data);
             })
           })
+          .catch(data => {
+            console.log(data);
+          })
         break;
       case "startTimeIntro":
         this.modalService.selectedHour()
@@ -66,6 +69,9 @@ export class EntreSemanaComponent implements OnInit {
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
               console.log(data);
             })
+          })
+          .catch(data => {
+            console.log(data);
           })
         break;
       case "startTimeIntermediateSong":
@@ -76,6 +82,9 @@ export class EntreSemanaComponent implements OnInit {
               console.log(data);
             })
           })
+          .catch(data => {
+            console.log(data);
+          })
         break;
       case "startTimeConclusionWords":
         this.modalService.selectedHour()
@@ -84,6 +93,9 @@ export class EntreSemanaComponent implements OnInit {
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
               console.log(data);
             })
+          })
+          .catch(data => {
+            console.log(data);
           })
         break;
       case "startTimeFinalSong":
@@ -94,6 +106,9 @@ export class EntreSemanaComponent implements OnInit {
               console.log(data);
             })
           })
+          .catch(data => {
+            console.log(data);
+          })
         break;
       case "openingPrayer":
         this.modalService.assignPublisherProgram(item)
@@ -102,6 +117,21 @@ export class EntreSemanaComponent implements OnInit {
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
               console.log(data);
             })
+          })
+          .catch(data => {
+            console.log(data);
+          })
+        break;
+      case "finalPrayer":
+        this.modalService.assignPublisherProgram(item)
+          .then(data => {
+            item.finalPrayer = data;
+            this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
+              console.log(data);
+            })
+          })
+          .catch(data => {
+            console.log(data);
           })
         break;
       case "president":
@@ -112,6 +142,9 @@ export class EntreSemanaComponent implements OnInit {
               console.log(data);
             })
           })
+          .catch(data => {
+            console.log(data);
+          })
         break;
       case "assistantAdviser":
         this.modalService.assignPublisherProgram(item)
@@ -121,32 +154,44 @@ export class EntreSemanaComponent implements OnInit {
               console.log(data);
             })
           })
+          .catch(data => {
+            console.log(data);
+          })
         break;
       case "openingSong":
-        this.modalService.changeSong(item)
+        this.modalService.changeSong(item, item.meeting.openingSong)
           .then(data => {
             item.meeting.openingSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
               console.log(data);
             })
           })
+          .catch(data => {
+            console.log(data);
+          })
         break;
       case "intermediateSong":
-        this.modalService.changeSong(item)
+        this.modalService.changeSong(item, item.meeting.intermediateSong)
           .then(data => {
             item.meeting.intermediateSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
               console.log(data);
             })
           })
+          .catch(data => {
+            console.log(data);
+          })
         break;
       case "finalSong":
-        this.modalService.changeSong(item)
+        this.modalService.changeSong(item, item.meeting.finalSong)
           .then(data => {
             item.meeting.finalSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
               console.log(data);
             })
+          })
+          .catch(data => {
+            console.log(data);
           })
         break;
       default:
@@ -165,6 +210,9 @@ export class EntreSemanaComponent implements OnInit {
               console.log("saved responsible", data);
             })
           })
+          .catch(data => {
+            console.log(data);
+          })
         break;
       case "assistant":
         this.modalService.assignPublisherWeeklyProgram(item)
@@ -173,6 +221,9 @@ export class EntreSemanaComponent implements OnInit {
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
               console.log("saved assistant", data);
             })
+          })
+          .catch(data => {
+            console.log(data);
           })
         break;
       case "startTime":
@@ -183,6 +234,9 @@ export class EntreSemanaComponent implements OnInit {
               console.log("saved startTime", data);
             })
           })
+          .catch(data => {
+            console.log(data);
+          })
         break;
       case "title":
         this.modalService.setTitleAndTime(item)
@@ -191,6 +245,9 @@ export class EntreSemanaComponent implements OnInit {
             this.assignmentService.updateAssignment(item.assignment).subscribe(data => {
               console.log("saved setTitleAndTime", data);
             })
+          })
+          .catch(data => {
+            console.log(data);
           })
         break;
       default:

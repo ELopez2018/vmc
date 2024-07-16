@@ -13,7 +13,7 @@ import { Program } from 'src/app/core/interfaces/reuniones.interface';
 export class ChangeSongComponent implements OnInit {
   @Input() public program!: Program;
   @Output() onClicked: EventEmitter<any> = new EventEmitter()
-  song: any;
+  @Input() public song: any;
   constructor() {
   }
 

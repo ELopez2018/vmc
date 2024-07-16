@@ -11,6 +11,8 @@ import { SelectHourComponent } from './modal/modal-container/select-hour/select-
 import { TitleAndTimeComponent } from './modal/modal-container/title-and-time/title-and-time.component';
 import { ChangeSongComponent } from './modal/modal-container/change-song/change-song.component';
 import { FormsModule } from '@angular/forms';
+import { ErrorModalComponent } from './modal/modal-container/error-modal/error-modal.component';
+import { InfoModalComponent } from './modal/modal-container/info-modal/info-modal.component';
 
 const MODULES = [
   MaterialModule,
@@ -20,12 +22,14 @@ const MODULES = [
   FormsModule,
   SelectHourComponent,
   TitleAndTimeComponent,
-  ChangeSongComponent
+  ChangeSongComponent,
+  ErrorModalComponent
 ];
 const COMPONENTS = [
   PrinterComponent,
   ModalContainerComponent,
-  SearchPublisherComponent
+  SearchPublisherComponent,
+  InfoModalComponent
 ]
 
 @NgModule({

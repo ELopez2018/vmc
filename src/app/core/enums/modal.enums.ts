@@ -24,7 +24,8 @@ export enum ModalTitleEnums {
   SIN_SALDO = 'Saldo Insuficiente',
   MONTO_EXCEDIDO = 'Monto Excedido',
   ERROR = 'Error',
-  INFORMACION = 'Información'
+  INFORMACION = 'Información',
+  GREAT = 'GENIAL'
 }
 
 export enum ModalTypeEnums {
@@ -34,4 +35,6 @@ export enum ModalTypeEnums {
   SELECT_HOUR = "selectHour",
   TITLE_AND_TIME = "titleAndTime",
   CHANGE_SONGS = "changeSongs",
+  ERROR = "error",
+  SUCCESS = "success",
 }

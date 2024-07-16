@@ -36,27 +36,25 @@ export class ModalService {
     return this.modalRef.result
   }
 
-  public assignPublisherWeeklyProgram(assignment?: WeeklyProgram
-  ) {
+  public assignPublisherWeeklyProgram(assignment?: WeeklyProgram) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
     this.modalRef.componentInstance.assignment = assignment;
     return this.modalRef.result
   }
 
-  public assignPublisherProgram(program?: Program
-  ) {
+  public assignPublisherProgram(program?: Program) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
     this.modalRef.componentInstance.assignment = <WeeklyProgram>{};
     return this.modalRef.result
   }
 
-  public changeSong(program?: Program
-  ) {
+  public changeSong(program: Program, song: string) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.CHANGE_SONGS;
     this.modalRef.componentInstance.program = program;
+    this.modalRef.componentInstance.song = song;
     return this.modalRef.result
   }
 
@@ -74,6 +72,22 @@ export class ModalService {
   public printer() {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.PRINTER;
+    return this.modalRef.result
+  }
+  public errorHandler(error: any, title: string) {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.modalType = ModalTypeEnums.ERROR;
+    this.modalRef.componentInstance.errorType = ModalTitleEnums.ERROR;
+    this.modalRef.componentInstance.errorMessage = error;
+    this.modalRef.componentInstance.errorTitle = title;
+    return this.modalRef.result
+  }
+  public info(subtitle: string, message: string, title: ModalTitleEnums, type: ModalTypeEnums) {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.mensaje = message;
+    this.modalRef.componentInstance.subTitle = subtitle;
+    this.modalRef.componentInstance.title = title;
+    this.modalRef.componentInstance.modalType = type;
     return this.modalRef.result
   }
   public close() {

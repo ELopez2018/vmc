@@ -4,12 +4,27 @@
     <search-publisher
       (onClicked)="onClicked($event)"
       *ngIf="assignment"
+      [assignment]="assignment"
     ></search-publisher>
   </div>
-  <div *ngSwitchCase="typeOfModals.RESPONSIBLE">
-    <app-printer></app-printer>
+  <div *ngSwitchCase="typeOfModals.SELECT_HOUR">
+    <select-hour (onSelected)="onClicked($event)"></select-hour>
   </div>
   <div *ngSwitchCase="typeOfModals.PRINTER">
     <app-printer></app-printer>
   </div>
+  <div *ngSwitchCase="typeOfModals.TITLE_AND_TIME">
+    <title-and-time
+    (onClicked)="onClicked($event)"
+    [assignment]="assignment"
+    ></title-and-time>
+  </div>
+  <div *ngSwitchCase="typeOfModals.CHANGE_SONGS">
+    <change-song
+    (onClicked)="onClicked($event)"
+    [program]="program"
+    ></change-song>
+  </div>
+
+
 </div>

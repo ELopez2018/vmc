@@ -4,17 +4,76 @@
       <div class="col-md-12">
         <mat-tab-group animationDuration="0ms">
           <mat-tab label="Disponibles">
+            <fieldset class="fieldset-basic" *ngIf="assignment && assignment.assignment">
+              <legend></legend>
+
+              <div class="row">
+                <div class="col-md-2">
+                  <span>Asignación:</span>
+                </div>
+                <div class="col-md-6 h6">
+                  <span>{{ assignment.assignment.title }}</span>
+                </div>
+                <div class="col-md-2">
+                  <div>Tiempo:</div>
+                </div>
+                <div class="col-md-2">
+                  <span>
+                    {{ assignment.assignment.time }}
+                    {{ assignment.assignment.timeType }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- <div class="row">
+                <div class="col-md-2">
+                  <div>Responsable:</div>
+                </div>
+                <div class="col-md-6 h6">
+                  <span>{{ assignment.responsible?.fullName}}</span>
+                </div>
+                <div class="col-md-2">
+                  <div>Ayudante:</div>
+                </div>
+                <div class="col-md-2">
+                  <span>
+                    {{ assignment.assistant?.fullName }}
+                  </span>
+                </div>
+              </div> -->
+
+              <div class="row">
+                <div class="col-md-2">
+                  <div>Tips:</div>
+                </div>
+                <div class="col-md-6 h6">
+                  <input class="form-control col-md-8 mb-3" [(ngModel)]=" assignment.assignment.tips"  type="text" id="tips" name="tips">
+                </div>
+                <div class="col-md-2">
+                  <div>Mostrar:</div>
+                </div>
+                <div class="col-md-2">
+                  <mat-slide-toggle [(ngModel)]="assignment.assignment.showTips"></mat-slide-toggle>
+                </div>
+              </div>
+
+            </fieldset>
             <div class="">
               <fieldset class="fieldset-basic table-container">
                 <legend></legend>
-                <div class="table-responsive">
+
+                <mat-spinner *ngIf="showSpinner"></mat-spinner>
+
+                <div
+                  class="table-responsive"
+                  *ngIf="publishers && publishers.length > 0"
+                >
                   <table
                     class="table table-hover table-sm table-bordered cursor-hover"
                   >
                     <thead>
                       <tr>
                         <th scope="col">Publicador</th>
-                        <th scope="col"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -23,9 +82,6 @@
                         (click)="selected(item)"
                       >
                         <td>{{ item.fullName }}</td>
-                        <td class="text-center">
-                          <mat-icon>check_circle</mat-icon>
-                        </td>
                       </tr>
                     </tbody>
                   </table>

@@ -70,7 +70,7 @@ export interface Congregation {
   name: string;
   number: string;
   hour: string;
-  assistantAdviser: Publisher;
+  assistantAdviser?: Publisher | undefined | null;
 }
 export interface Meeting {
   id: number;

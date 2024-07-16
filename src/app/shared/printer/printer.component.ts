@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PrintPdfService } from '../../core/services/pdf/print.service';
 import { MeetingsService } from '../../core/services/meetings/meetings.service';
-import { Meeting } from 'src/app/core/interfaces/reuniones.interface';
+import { Meeting, Program } from 'src/app/core/interfaces/reuniones.interface';
 import { DataService } from '../../core/services/data/data.service';
 
 @Component({
@@ -32,15 +32,15 @@ export class PrinterComponent implements OnInit {
 
   }
 
-  printMeetings(weeks: Meeting[]) {
-    // this.printService.getBlob(weeks)
-    //   .then(data => {
-    //     this.pdfViewerAutoLoad.pdfSrc = data
-    //     this.pdfViewerAutoLoad.refresh()
-    //   })
-    //   .catch(error => {
-    //     console.error(error);
-    //   })
+  printMeetings(weeks: Program[]) {
+    this.printService.getBlob(weeks)
+      .then(data => {
+        this.pdfViewerAutoLoad.pdfSrc = data
+        this.pdfViewerAutoLoad.refresh()
+      })
+      .catch(error => {
+        console.error(error);
+      })
   }
 
   download() {

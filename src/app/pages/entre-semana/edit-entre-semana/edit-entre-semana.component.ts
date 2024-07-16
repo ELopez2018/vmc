@@ -37,7 +37,7 @@ export class EditEntreSemanaComponent implements OnInit {
     this.publishers = publishers
   }
   print() {
-    this.dataService.setMeeting([this.semana])
+    // this.dataService.setMeeting([this.semana])
     this.modalService.printer()
   }
 

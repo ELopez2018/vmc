@@ -15,4 +15,9 @@ export class UsersService {
     const url = `${this.server}${this.api.USERS}`
     return this.httpClient.get(url)
   }
+
+  getUsersByCongregation(congregationId: number): Observable<any> {
+    const url = `${this.server}${this.api.USERS}/by-congregation/${congregationId}`
+    return this.httpClient.get(url)
+  }
 }

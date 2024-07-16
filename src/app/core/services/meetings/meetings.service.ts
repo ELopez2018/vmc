@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Servers } from '../../constants/servers';
 import { HttpClient } from '@angular/common/http';
-import { Meeting, Program } from '../../interfaces/reuniones.interface';
+import { Meeting, Program, WeeklyProgram } from '../../interfaces/reuniones.interface';
 import { OtherAssignment } from '../../enums/meetings.enums';
 
 @Injectable({
@@ -50,6 +50,12 @@ export class MeetingsService {
     const url = `${this.server}/meetings/automatic`
     return this.httpClient.get(url)
   }
-  ///meetings/automatic?quantity=1
-  // /current-weeks
+  saveOrUpdateWeeklyProgram(weeklyProgram: WeeklyProgram) {
+    const url = `${this.server}/meetings/weekly-program`
+    return this.httpClient.post<WeeklyProgram>(url, weeklyProgram)
+  }
+  saveOrUpdateProgram(program: Program) {
+    const url = `${this.server}/meetings/program`
+    return this.httpClient.post<Program>(url, program)
+  }
 }

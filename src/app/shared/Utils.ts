@@ -1,9 +1,9 @@
 export class Utils {
   public static showDayOfMeeting(fechaSemana: string) {
     const fecha = new Date(fechaSemana);
-    const diaSemana = fecha.getDay();  // 0 (Domingo) a 6 (Sábado)
+    const diaSemana = fecha.getDay() + 1;  // 0 (Domingo) a 6 (Sábado)
     // Calcula el número de d ías que hay que restar para llegar al jueves
-    let diaReunion = 1; // 0 (Domingo) a 6 (Sábado)
+    let diaReunion = 2; // 0 (Domingo) a 6 (Sábado)
     const diasHastaJueves = (diaReunion - diaSemana + 7) % 7;
 
     // Ajusta la fecha al jueves correspondiente

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { NgbModal, NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ModalContainerComponent } from "src/app/shared/modal/modal-container/modal-container.component";
 import { ModalTitleEnums, ModalIconEnums, ModalResponseEnums, ModalTypeEnums } from "../../enums/modal.enums";
-import { Assignment, WeeklyProgram } from "../../interfaces/reuniones.interface";
+import { Assignment, Program, WeeklyProgram } from "../../interfaces/reuniones.interface";
 
 
 @Injectable({
@@ -41,6 +41,34 @@ export class ModalService {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
     this.modalRef.componentInstance.assignment = assignment;
+    return this.modalRef.result
+  }
+
+  public assignPublisherProgram(program?: Program
+  ) {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
+    this.modalRef.componentInstance.assignment = <WeeklyProgram>{};
+    return this.modalRef.result
+  }
+
+  public changeSong(program?: Program
+  ) {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.modalType = ModalTypeEnums.CHANGE_SONGS;
+    this.modalRef.componentInstance.program = program;
+    return this.modalRef.result
+  }
+
+  public selectedHour() {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.modalType = ModalTypeEnums.SELECT_HOUR;
+    return this.modalRef.result
+  }
+  public setTitleAndTime(item: WeeklyProgram) {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.modalType = ModalTypeEnums.TITLE_AND_TIME;
+    this.modalRef.componentInstance.assignment = item;
     return this.modalRef.result
   }
   public printer() {

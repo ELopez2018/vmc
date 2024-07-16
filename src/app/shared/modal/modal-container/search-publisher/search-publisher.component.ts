@@ -5,6 +5,7 @@ import { Assignment, Meeting, Publisher, WeeklyProgram } from 'src/app/core/inte
 import { PublisherDto } from 'src/app/core/interfaces/publishers.interface';
 import { OtherAssignment } from 'src/app/core/enums/meetings.enums';
 import { MeetingsService } from 'src/app/core/services/meetings/meetings.service';
+import { DataService } from 'src/app/core/services/data/data.service';
 
 @Component({
   selector: 'search-publisher',
@@ -16,24 +17,23 @@ export class SearchPublisherComponent implements OnInit {
   @Input() public assignment!: WeeklyProgram;
   public frequentPublishers!: PublisherDto[];
   @Output() onClicked: EventEmitter<Publisher> = new EventEmitter()
+  showSpinner = true;
   constructor(
-    private usersService: UsersService,
-    private assignmentService: AssignmentService,
-    private meetingsService: MeetingsService
-  ) { }
-
-  ngOnInit() {
-    this.getPublisher()
-
+    private dataService: DataService
+  ) {
+    this.subscrp()
   }
 
-  getPublisher() {
-    this.usersService
-      .getAllUsers()
-      .subscribe(data => {
+  ngOnInit() {
+  }
+
+  subscrp() {
+    this.dataService.getPubliherList$().subscribe(data => {
+      if (data) {
         this.publishers = data
-        console.log(this.assignment);
-      })
+        this.showSpinner = false;
+      }
+    })
   }
   selected(item: Publisher) {
     this.onClicked.emit(item)

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalTypeEnums } from 'src/app/core/enums/modal.enums';
-import { Assignment, Publisher } from 'src/app/core/interfaces/reuniones.interface';
+import { Assignment, Program, Publisher, WeeklyProgram } from 'src/app/core/interfaces/reuniones.interface';
 
 @Component({
   selector: 'app-modal',
@@ -19,9 +19,10 @@ export class ModalContainerComponent implements OnInit {
   @Input() Icon: string = '';
   @Input() textButton: string = 'Crear';
   @Input() modalType: string = 'info';
-  @Input() assignment!: Assignment ;
+  @Input() assignment!: WeeklyProgram;
+  @Input() program!: Program;
 
-  public typeOfModals= ModalTypeEnums
+  public typeOfModals = ModalTypeEnums
 
   private values: any | null = <any>{};
   constructor(public activeModal: NgbActiveModal) { }
@@ -37,7 +38,7 @@ export class ModalContainerComponent implements OnInit {
   close() {
     this.activeModal.close('close');
   }
-  onClicked(item: Publisher){
+  onClicked(item: Publisher) {
     this.activeModal.close(item);
   }
 

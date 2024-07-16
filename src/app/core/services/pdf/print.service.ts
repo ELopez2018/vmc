@@ -68,7 +68,7 @@ export class PrintPdfService {
   private makeHeader(pageBreak: boolean) {
     return [
       {
-        pageBreak: pageBreak ? 'before': '',
+        pageBreak: pageBreak ? 'before' : '',
         table: {
           widths: ['auto', '*'],
           body: [
@@ -91,7 +91,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: Utils.showDayOfMeeting(week.meeting.week)  + " |", style: "sub_title", border: [false, false, false, false]
+                text: Utils.showDayOfMeeting(week.meeting.week) + " |", style: "sub_title", border: [false, false, false, false]
               },
               {
                 text: "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]
@@ -100,7 +100,7 @@ export class PrintPdfService {
                 text: "Presidente:", style: "tips_r", border: [false, false, false, false]
               },
               {
-                text: week.president?.fullName , style: "tips_l", border: [false, false, false, false]
+                text: week.president?.fullName, style: "tips_l", border: [false, false, false, false]
               }
             ],
             [
@@ -140,10 +140,10 @@ export class PrintPdfService {
             ],
             [
               {
-                text:  Utils.adapterTime(week.startTimeIntro), style: "titles", border: [false, false, false, false]
+                text: Utils.adapterTime(week.startTimeIntro), style: "titles", border: [false, false, false, false]
               },
               {
-                text: `• Palabras de introducción ( ${week.meeting.introTime} ${week.meeting.timeType})` , style: "titles", border: [false, false, false, false]
+                text: `• Palabras de introducción ( ${week.meeting.introTime} ${week.meeting.timeType})`, style: "titles", border: [false, false, false, false]
               },
               {
                 text: "", style: "tips_r", border: [false, false, false, false]
@@ -180,9 +180,9 @@ export class PrintPdfService {
     ]
   }
   private makeContentTreasures(week: Program) {
-  const treasures =  week.weeklyProgram.filter((data:WeeklyProgram)=> data.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA')
-  const content: any=[];
-    treasures.forEach((asigment: WeeklyProgram)=>{
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgram) => data.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA')
+    const content: any = [];
+    treasures.forEach((asigment: WeeklyProgram) => {
       content.push(
         [
           {
@@ -195,7 +195,7 @@ export class PrintPdfService {
             text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
           },
           {
-            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName: asigment.responsible?.fullName  , style: "tips_l", border: [false, false, false, false]
+            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
           }
         ]
       )
@@ -210,7 +210,7 @@ export class PrintPdfService {
     ]
   }
 
-  private makeHeaderTeachers(){
+  private makeHeaderTeachers() {
     return [
       {
         table: {
@@ -232,14 +232,14 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeContentTeachers(week: Program){
-    const treasures =  week.weeklyProgram.filter((data:WeeklyProgram)=> data.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS')
-    const content: any=[];
-    treasures.forEach((asigment: WeeklyProgram)=>{
+  private makeContentTeachers(week: Program) {
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgram) => data.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS')
+    const content: any = [];
+    treasures.forEach((asigment: WeeklyProgram) => {
       content.push(
         [
           {
-            text:Utils.adapterTime(asigment.assignment.startTime), style: "titles", border: [false, false, false, false]
+            text: Utils.adapterTime(asigment.assignment.startTime), style: "titles", border: [false, false, false, false]
           },
           {
             text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTeachers", border: [false, false, false, false]
@@ -248,7 +248,7 @@ export class PrintPdfService {
             text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
           },
           {
-            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName: asigment.responsible?.fullName  , style: "tips_l", border: [false, false, false, false]
+            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
           }
         ]
       )
@@ -262,7 +262,7 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeHeaderLife(){
+  private makeHeaderLife() {
     return [
       {
         table: {
@@ -284,14 +284,14 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeContentLife(week: Program){
-    const treasures =  week.weeklyProgram.filter((data: WeeklyProgram)=> data.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
-    const content: any=[];
-    treasures.forEach((asigment: WeeklyProgram)=>{
+  private makeContentLife(week: Program) {
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgram) => data.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
+    const content: any = [];
+    treasures.forEach((asigment: WeeklyProgram) => {
       content.push(
         [
           {
-            text: Utils.adapterTime(asigment.assignment.startTime) , style: "titles", border: [false, false, false, false]
+            text: Utils.adapterTime(asigment.assignment.startTime), style: "titles", border: [false, false, false, false]
           },
           {
             text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontLife", border: [false, false, false, false]
@@ -300,7 +300,7 @@ export class PrintPdfService {
             text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
           },
           {
-            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName: asigment.responsible?.fullName  , style: "tips_l", border: [false, false, false, false]
+            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
           }
         ]
       )
@@ -315,7 +315,7 @@ export class PrintPdfService {
     ]
   }
 
-  private makeIntermediateSong(week: Program){
+  private makeIntermediateSong(week: Program) {
     return [
       {
         table: {
@@ -323,7 +323,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text:  Utils.adapterTime(week.startTimeIntermediateSong), style: "titles", border: [false, false, false, false]
+                text: Utils.adapterTime(week.startTimeIntermediateSong), style: "titles", border: [false, false, false, false]
               },
               {
                 text: "• Canción " + week.meeting.intermediateSong, style: "titles", border: [false, false, false, false]
@@ -340,7 +340,7 @@ export class PrintPdfService {
       }
     ]
   }
-  private makeFinalBlock(week: Program){
+  private makeFinalBlock(week: Program) {
 
     return [
       {
@@ -349,7 +349,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text:  Utils.adapterTime(week.startTimeConclusionWords), style: "titles", border: [false, false, false, false]
+                text: Utils.adapterTime(week.startTimeConclusionWords), style: "titles", border: [false, false, false, false]
               },
               {
                 text: "• Palabras de conclusión (3 min.)", style: "titles", border: [false, false, false, false]
@@ -363,7 +363,7 @@ export class PrintPdfService {
             ],
             [
               {
-                text:  Utils.adapterTime(week.startTimeFinalSong), style: "titles", border: [false, false, false, false]
+                text: Utils.adapterTime(week.startTimeFinalSong), style: "titles", border: [false, false, false, false]
               },
               {
                 text: "• Canción " + week.meeting.finalSong, style: "titles", border: [false, false, false, false]
@@ -377,7 +377,7 @@ export class PrintPdfService {
             ],
           ]
         },
-       //pageBreak: 'after'
+        //pageBreak: 'after'
       },
 
     ]
@@ -396,6 +396,7 @@ export class PrintPdfService {
   }
 
   public async getBlob(weeks: Program[]): Promise<Blob> {
+    this.congregation = weeks[0].congregation.name
     return new Promise<Blob>((resolve, reject) => {
       const pdf = pdfMake.createPdf(this.makeDocumet(weeks));
       pdf.getBlob((data: Blob) => {
@@ -407,9 +408,9 @@ export class PrintPdfService {
     });
   }
   private makeDocumet(weeks: Program[]): any {
-    const contenido: any[] =[]
+    const contenido: any[] = []
     let pageBreak = false;
-    weeks.forEach(week=>{
+    weeks.forEach(week => {
       contenido.push(
         ...this.makeHeader(pageBreak),
         "\n",
@@ -427,7 +428,7 @@ export class PrintPdfService {
         ...this.makeContentLife(week),
         ...this.makeFinalBlock(week),
       )
-      pageBreak= true
+      pageBreak = true
     })
 
     return {

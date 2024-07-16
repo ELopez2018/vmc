@@ -24,7 +24,7 @@ export class SearchPublisherComponent implements OnInit {
 
   ngOnInit() {
     this.getPublisher()
-    console.log(this.assignment);
+
   }
 
   getPublisher() {
@@ -32,6 +32,7 @@ export class SearchPublisherComponent implements OnInit {
       .getAllUsers()
       .subscribe(data => {
         this.publishers = data
+        console.log(this.assignment);
       })
   }
   selected(item: Publisher) {

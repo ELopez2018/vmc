@@ -132,7 +132,7 @@ export class PrintPdfService {
                 text: "• Canción " + week.meeting.openingSong, style: "titles", border: [false, false, false, false]
               },
               {
-                text: "Oracion:", style: "tips_r", border: [false, false, false, false]
+                text: "Oración:", style: "tips_r", border: [false, false, false, false]
               },
               {
                 text: week.openingPrayer?.fullName, style: "tips_l", border: [false, false, false, false]
@@ -369,7 +369,7 @@ export class PrintPdfService {
                 text: "• Canción " + week.meeting.finalSong, style: "titles", border: [false, false, false, false]
               },
               {
-                text: "Oracion", style: "tips_r", border: [false, false, false, false]
+                text: "Oración", style: "tips_r", border: [false, false, false, false]
               },
               {
                 text: week.finalPrayer?.fullName, style: "tips_l", border: [false, false, false, false]

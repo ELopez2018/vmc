@@ -26,7 +26,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
     private dataService: DataService,
     private fb: FormBuilder,
     private usersService: UsersService,
-    private modalService: ModalService
+    private modalService: ModalService,
   ) {
     this._locale = 'co';
     this._adapter.setLocale(this._locale);
@@ -38,19 +38,19 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   ngOnInit() {
 
     this.formulario = this.fb.group({
-      fullName: new FormControl(""),
-      image: new FormControl(""),
-      firstName: new FormControl("Estarlin"),
-      secondName: new FormControl("Enrique"),
-      lastName: new FormControl("Valero"),
-      surname: new FormControl("Lopez"),
-      birthdate: new FormControl(""),
-      gender: new FormControl("Masculino"),
-      documentNumber: new FormControl("1365875"),
-      documentType: new FormControl("ce"),
-      cellPhone: new FormControl("3204454846"),
-      phone: new FormControl(""),
-      email: new FormControl("estarlin.elv1@gmail.com"),
+      fullName: new FormControl(null),
+      image: new FormControl(null),
+      firstName: new FormControl(null),
+      secondName: new FormControl(null),
+      lastName: new FormControl(null),
+      surname: new FormControl(null),
+      birthdate: new FormControl(null),
+      gender: new FormControl(null),
+      documentNumber: new FormControl(null),
+      documentType: new FormControl(null),
+      cellPhone: new FormControl(null),
+      phone: new FormControl(null),
+      email: new FormControl(null),
       congregation: new FormControl(this.congregationSelected ?? null)
     })
   }
@@ -58,9 +58,11 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   save() {
     const values: Publisher = this.formulario.getRawValue()
     values.fullName = `${values.firstName} ${values.secondName} ${values.surname} ${values.lastName}`
+    values.congregation = this.congregationSelected
     this.usersService.save(values).subscribe(data => {
       this.modalService.info("Se han guardados los datos", "El usuario fue almacenado", ModalTitleEnums.GREAT, ModalTypeEnums.SUCCESS)
       this.formulario.reset()
+      this.dataService.getPublishersFromDB()
     }, error => {
       this.modalService.errorHandler(error.error, "No se puede guardar.".toUpperCase())
     })
@@ -86,7 +88,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       congregationid: new FormControl(this.congregationSelected.id ?? 0)
     })
 
-        this.formulario = this.fb.group({
+    this.formulario = this.fb.group({
       fullName: new FormControl(""),
       image: new FormControl(""),
       firstName: new FormControl("Estarlin"),
@@ -99,8 +101,8 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       documentType: new FormControl("ce"),
       cellPhone: new FormControl("3204454846"),
       phone: new FormControl(""),
-      email: new FormControl("estarlin.elv@gmail.com"),
-      congregationid: new FormControl(this.congregationSelected.id ?? 0)
+      email: new FormControl("estarlin.elv1@gmail.com"),
+      congregation: new FormControl(this.congregationSelected ?? null)
     })
 
     */

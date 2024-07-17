@@ -34,7 +34,7 @@ export class MeetingsService {
     return this.httpClient.get<any[]>(url)
   }
   getWeeksValids(): Observable<any> {
-    const url = `${this.server}/meetings/current-weeks`
+    const url = `${this.server}/meetings/current-weeks/2`
     return this.httpClient.get<Program[]>(url).pipe(
       map(data => {
         data.forEach(program => {

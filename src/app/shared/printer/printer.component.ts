@@ -3,6 +3,7 @@ import { PrintPdfService } from '../../core/services/pdf/print.service';
 import { MeetingsService } from '../../core/services/meetings/meetings.service';
 import { Meeting, Program } from 'src/app/core/interfaces/reuniones.interface';
 import { DataService } from '../../core/services/data/data.service';
+import { ModalService } from '../../core/services/modal/modal.service';
 
 @Component({
   selector: 'app-printer',
@@ -15,16 +16,20 @@ export class PrinterComponent implements OnInit {
 
   constructor(private printService: PrintPdfService,
     private meetingsService: MeetingsService,
-    private dataService: DataService
+    private dataService: DataService,
+    private modalService: ModalService
   ) { }
 
   ngOnInit(): void {
+    this.modalService.loading()
     this.dataService.getMeeting().subscribe(data => {
       if (data && data.length > 0) {
         this.printMeetings(data)
+        this.modalService.close()
       } else {
         this.meetingsService.getWeeksValids().subscribe(data => {
           this.printMeetings(data)
+          this.modalService.close()
         })
 
       }

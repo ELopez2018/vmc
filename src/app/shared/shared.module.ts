@@ -13,6 +13,7 @@ import { ChangeSongComponent } from './modal/modal-container/change-song/change-
 import { FormsModule } from '@angular/forms';
 import { ErrorModalComponent } from './modal/modal-container/error-modal/error-modal.component';
 import { InfoModalComponent } from './modal/modal-container/info-modal/info-modal.component';
+import { LoaderComponent } from './modal/modal-container/loader/loader.component';
 
 const MODULES = [
   MaterialModule,
@@ -29,7 +30,8 @@ const COMPONENTS = [
   PrinterComponent,
   ModalContainerComponent,
   SearchPublisherComponent,
-  InfoModalComponent
+  InfoModalComponent,
+  LoaderComponent
 ]
 
 @NgModule({

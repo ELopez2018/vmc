@@ -1,5 +1,5 @@
 export const CongregationMock = {
-  "id": 1,
+  "id": 2,
   "name": "Central",
   "number": "23036",
   "day": 1,

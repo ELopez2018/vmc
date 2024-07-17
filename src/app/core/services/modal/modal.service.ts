@@ -90,6 +90,13 @@ export class ModalService {
     this.modalRef.componentInstance.modalType = type;
     return this.modalRef.result
   }
+
+  public loading() {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.modalType = ModalTypeEnums.LOADER;
+    return this.modalRef.result
+  }
+
   public close() {
     if (this.modalRef) {
       this.modalRef.dismiss()

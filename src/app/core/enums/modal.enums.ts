@@ -37,4 +37,5 @@ export enum ModalTypeEnums {
   CHANGE_SONGS = "changeSongs",
   ERROR = "error",
   SUCCESS = "success",
+  LOADER = "loader",
 }

@@ -26,6 +26,7 @@ export interface Publisher {
   cellPhone?: any;
   phone?: any;
   email?: any;
+  congregation: any;
   designations: any[];
 }
 /// news

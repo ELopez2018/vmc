@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Meeting, Program, Publisher, Congregation } from '../../interfaces/reuniones.interface';
 import { UsersService } from '../users/users.service';
+import { ConfigsService } from '../configs/configs.service';
+import { Generic } from '../../interfaces/configs.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,24 @@ export class DataService {
   private congregation$: BehaviorSubject<Congregation> = new BehaviorSubject<Congregation>(<Congregation>{})
   private publisherListTemp: Publisher[] = [];
   private congregation!: Congregation;
-  constructor(private usersService: UsersService) { }
+  private publisher$: BehaviorSubject<Publisher> = new BehaviorSubject<Publisher>(<Publisher>{})
+  private designations$: BehaviorSubject<Generic[]> = new BehaviorSubject<Generic[]>([])
+
+  constructor(private usersService: UsersService, private configsService: ConfigsService) { }
+
+  public setDesignations(designations: any) {
+    this.designations$.next(designations)
+  }
+  public getDesignations(): Observable<Generic[]> {
+    return this.designations$.asObservable()
+  }
+
+  public setPublisher(publisher: Publisher) {
+    this.publisher$.next(publisher)
+  }
+  public getPublisher(): Observable<Publisher> {
+    return this.publisher$.asObservable()
+  }
 
   public setMeeting(meetings: Program[]) {
     this.meetings.next(meetings)
@@ -43,5 +62,13 @@ export class DataService {
   }
   public getCongregation$(): Observable<Congregation> {
     return this.congregation$.asObservable()
+  }
+
+  public getConfigs() {
+    this.configsService.getAllDesignations().subscribe(data => {
+      this.setDesignations(data)
+    })
+
+
   }
 }

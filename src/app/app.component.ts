@@ -1,11 +1,13 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { DataService } from './core/services/data/data.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
   title = 'vmc';
   showFiller = true;
 
@@ -25,10 +27,11 @@ export class AppComponent {
 
   private _mobileQueryListener: () => void;
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private dataService: DataService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+    this.dataService.getConfigs()
   }
 
   ngOnDestroy(): void {

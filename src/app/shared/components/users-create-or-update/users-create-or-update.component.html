@@ -21,7 +21,7 @@
             <td>
               <mat-form-field appearance="fill">
                 <mat-label>Tipo de Documento</mat-label>
-                <mat-select [(value)]="selected"  formControlName="documentType">
+                <mat-select   formControlName="documentType">
                   <mat-option>None</mat-option>
                   <mat-option value="CC">Cédula Ciudadanía</mat-option>
                   <mat-option value="CE">Cédula Extranjería</mat-option>
@@ -85,7 +85,7 @@
             <td>
               <mat-form-field appearance="fill">
                 <mat-label>Género</mat-label>
-                <mat-select [(value)]="selected" formControlName="gender">
+                <mat-select formControlName="gender">
                   <mat-option>None</mat-option>
                   <mat-option value="Masculino">Masculino</mat-option>
                   <mat-option value="Femenino">Femenino</mat-option>

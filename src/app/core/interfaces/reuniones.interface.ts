@@ -52,6 +52,7 @@ export interface WeeklyProgram {
   assistant?: Publisher;
   congregation: Congregation;
   program: number;
+  startTime: string;
 }
 export interface Assignment {
   id: number;

@@ -111,10 +111,10 @@ export class PrintPdfService {
                 text: "", style: "sub_title", border: [false, false, false, false]
               },
               {
-                text: "Consejero de la sala auxiliar:", style: "tips_r", border: [false, false, false, false]
+                text: "", style: "tips_r", border: [false, false, false, false]
               },
               {
-                text: week.assistantAdviser?.fullName, style: "tips_l", border: [false, false, false, false]
+                text: "", style: "tips_l", border: [false, false, false, false]
               }
             ],
           ]
@@ -186,7 +186,7 @@ export class PrintPdfService {
       content.push(
         [
           {
-            text: Utils.adapterTime(asigment.assignment.startTime), style: "titles", border: [false, false, false, false]
+            text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
           },
           {
             text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTreasures", border: [false, false, false, false]
@@ -195,7 +195,7 @@ export class PrintPdfService {
             text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
           },
           {
-            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
+            text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
           }
         ]
       )
@@ -239,7 +239,7 @@ export class PrintPdfService {
       content.push(
         [
           {
-            text: Utils.adapterTime(asigment.assignment.startTime), style: "titles", border: [false, false, false, false]
+            text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
           },
           {
             text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTeachers", border: [false, false, false, false]
@@ -248,7 +248,7 @@ export class PrintPdfService {
             text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
           },
           {
-            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
+            text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
           }
         ]
       )
@@ -291,7 +291,7 @@ export class PrintPdfService {
       content.push(
         [
           {
-            text: Utils.adapterTime(asigment.assignment.startTime), style: "titles", border: [false, false, false, false]
+            text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
           },
           {
             text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontLife", border: [false, false, false, false]
@@ -300,7 +300,7 @@ export class PrintPdfService {
             text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
           },
           {
-            text: asigment.assistant ? asigment.responsible?.fullName + "/" + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
+            text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
           }
         ]
       )
@@ -479,14 +479,17 @@ export class PrintPdfService {
         },
         tips_r: {
           fontSize: 7,
+          //color: "#ea002e",
           bold: true,
           alignment: 'right',
-          margin: [0, 5, 0, 0]
+          margin: [0, 4, 0, 0]
         },
         tips_l: {
-          fontSize: 9,
+          fontSize: 8,
+          bold: true,
+          color: "#ea002e",
           alignment: 'left',
-          margin: [0, 3, 0, 0]
+          margin: [0, 2, 0, 0]
         },
         tips_c: {
           fontSize: 7,

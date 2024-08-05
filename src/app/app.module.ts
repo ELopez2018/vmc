@@ -7,10 +7,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MaterialModule } from './shared/material.module';
+import { PublisherListComponent } from './pages/publisher-list/publisher-list.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PublisherListComponent
   ],
   imports: [
     BrowserModule,

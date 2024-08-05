@@ -2,63 +2,73 @@
   padding:10px 20px 10px 20px;
   background-color: rgb(241, 239, 239);
   min-height: 100vh;
-  width: 57vw;
-
-  &__body {
-    background-color: white;
-  }
-
-  &__header {
-    padding: 50px 0 0 0;
-    border-top: none;
-    border-bottom-style: double;
-  }
-
-  legend {
-    font-size: 1rem;
-    margin-bottom: -2px;
-    color: white;
-    width: 530px;
-    padding-left: 10px;
-  }
-
-  &__title-tesoros {
-    background-color: gray;
-  }
-
-  &__title-maestros {
-    background-color: rgb(220, 141, 37);
-  }
-
-  &__title-vida {
-    background-color: rgb(151, 44, 5);
-  }
-
-  .title-number {
-    display: inline-block;
-    width: 20px;
-    text-align: right;
-  }
-
-  .text-title-custom {
-    font-size: 12px;
-    font-weight: bold;
-    line-height: 24px;
-  }
-
-  .big-title {
-    white-space: nowrap;
-    /* Prevents the text from wrapping */
-    overflow: hidden;
-    /* Hides the overflowing text */
-    text-overflow: ellipsis;
-    /* Displays an ellipsis (...) when the text overflows */
-    width: 500px;
-  }
-
-  .hover:hover {
-    cursor: pointer;
-    background-color: rgb(184, 189, 189);
-  }
-
+  width: 95vw;
+  margin: 0 auto;
 }
+
+@media (min-width: 992px) {
+  .entre-semana {
+    padding:10px 20px 10px 20px;
+    background-color: rgb(241, 239, 239);
+    min-height: 100vh;
+    width: 70vw;
+    margin: 0;
+    &__body {
+      background-color: white;
+    }
+
+    &__header {
+      padding: 50px 0 0 0;
+      border-top: none;
+      border-bottom-style: double;
+    }
+
+    legend {
+      font-size: 1rem;
+      margin-bottom: -2px;
+      color: white;
+      width: 530px;
+      padding-left: 10px;
+    }
+
+    &__title-tesoros {
+      background-color: gray;
+    }
+
+    &__title-maestros {
+      background-color: rgb(220, 141, 37);
+    }
+
+    &__title-vida {
+      background-color: rgb(151, 44, 5);
+    }
+
+    .title-number {
+      display: inline-block;
+      width: 20px;
+      text-align: right;
+    }
+
+    .text-title-custom {
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 24px;
+    }
+
+    .big-title {
+      white-space: nowrap;
+      /* Prevents the text from wrapping */
+      overflow: hidden;
+      /* Hides the overflowing text */
+      text-overflow: ellipsis;
+      /* Displays an ellipsis (...) when the text overflows */
+      width: 500px;
+    }
+
+    .hover:hover {
+      cursor: pointer;
+      background-color: rgb(184, 189, 189);
+    }
+
+  }
+ }

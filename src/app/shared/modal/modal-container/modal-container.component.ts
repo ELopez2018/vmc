@@ -27,6 +27,7 @@ export class ModalContainerComponent implements OnInit {
   @Input() errorType!: string;
   @Input() title!: string;
   @Input() subTitle!: string;
+  @Input() assignmentType!: string;
 
   public typeOfModals = ModalTypeEnums
 

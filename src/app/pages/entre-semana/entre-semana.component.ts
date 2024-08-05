@@ -8,6 +8,7 @@ import { DataService } from '../../core/services/data/data.service';
 import { Congregation } from '../../core/interfaces/reuniones.interface';
 import { CongregationMock } from './mocks/congregation.mock';
 import { AssignmentService } from 'src/app/core/services/assignment/assignment.service';
+import { AssignmentType } from 'src/app/core/enums/assignments.enums';
 
 @Component({
   selector: 'vmc-entre-semana',
@@ -18,6 +19,7 @@ export class EntreSemanaComponent implements OnInit {
   public semanas: Program[] = [];
   porAsignar = "por asignar";
   public congregation: Congregation = CongregationMock
+  public assignmentType: string = ""
   constructor(
     private meetingsService: MeetingsService,
     private modalService: ModalService,
@@ -110,8 +112,8 @@ export class EntreSemanaComponent implements OnInit {
             console.log(data);
           })
         break;
-      case "openingPrayer":
-        this.modalService.assignPublisherProgram(item)
+      case AssignmentType.OPENING_PRAYER:
+        this.modalService.assignPublisherProgram(item, AssignmentType.OPENING_PRAYER)
           .then(data => {
             item.openingPrayer = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
@@ -122,8 +124,8 @@ export class EntreSemanaComponent implements OnInit {
             console.log(data);
           })
         break;
-      case "finalPrayer":
-        this.modalService.assignPublisherProgram(item)
+      case AssignmentType.FINAL_PRAYER:
+        this.modalService.assignPublisherProgram(item, AssignmentType.FINAL_PRAYER)
           .then(data => {
             item.finalPrayer = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
@@ -134,8 +136,8 @@ export class EntreSemanaComponent implements OnInit {
             console.log(data);
           })
         break;
-      case "president":
-        this.modalService.assignPublisherProgram(item)
+      case AssignmentType.PRESIDENT:
+        this.modalService.assignPublisherProgram(item, AssignmentType.PRESIDENT)
           .then(data => {
             item.president = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
@@ -199,11 +201,69 @@ export class EntreSemanaComponent implements OnInit {
     }
   }
 
+  selectAssignmentType(item: WeeklyProgram, type: string) {
+    switch (item.assignment.number) {
+      case 1:
+        this.assignmentType = AssignmentType.ASSIGNMENT_1
+        break;
+      case 2:
+        this.assignmentType = AssignmentType.ASSIGNMENT_2
+        break;
+      case 3:
+        this.assignmentType = AssignmentType.ASSIGNMENT_3
+        break;
+      default:
+        this.assignmentType = this.selectAssignmentTypeByTitle(item.assignment.title)
+        if (type == "assistant" && this.assignmentType == AssignmentType.CONGREGATION_BIBLE_STUDY) {
+          this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY_READER
+        } else if (type == "assistant" && this.assignmentType != AssignmentType.CONGREGATION_BIBLE_STUDY) {
+          this.assignmentType += "Assistant"
+        }
+    }
 
+    console.log(this.assignmentType);
+  }
+  selectAssignmentTypeByTitle(title: string) {
+    if (title.includes("Lo que hizo")) {
+      return AssignmentType.WHAT_HE_DID
+    }
+    if (title.includes("Imite a")) {
+      return AssignmentType.IMITATE
+    }
+    if (title.includes("Empiece conversaciones")) {
+      return AssignmentType.STARTING_A_CONVERSATION
+    }
+    if (title.includes("Haga revisitas")) {
+      return AssignmentType.FOLLOWING_UP
+    }
+    if (title.includes("Explique sus creencias")) {
+      return AssignmentType.EXPLAINING_YOUR_BELIEFS
+    }
+    if (title.includes("Haga discípulos")) {
+      return AssignmentType.MAKING_DISCIPLES
+    }
+    if (title.includes("Estudio bíblico de la congregación")) {
+      return AssignmentType.CONGREGATION_BIBLE_STUDY
+    }
+    if (title.includes("Necesidades de la congregación")) {
+      return AssignmentType.LOCAL_NEEDS
+    }
+    return "";
+  }
   changeWeeklyProgram(item: WeeklyProgram, type: string) {
+    if (
+      item.assignment.sectionMeeting.includes("NUESTRA VIDA CRISTIANA")
+      && !item.assignment.title.includes("Estudio bíblico de la congregación")
+      && !item.assignment.title.includes("Necesidades de la congregación")) {
+      this.assignmentType = AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS
+    } else {
+      this.selectAssignmentType(item, type)
+    }
+
+    console.log(this.assignmentType);
     switch (type) {
       case "responsible":
-        this.modalService.assignPublisherWeeklyProgram(item)
+        this.modalService.assignPublisherWeeklyProgram(item, this.assignmentType)
           .then(data => {
             item.responsible = data
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
@@ -215,7 +275,7 @@ export class EntreSemanaComponent implements OnInit {
           })
         break;
       case "assistant":
-        this.modalService.assignPublisherWeeklyProgram(item)
+        this.modalService.assignPublisherWeeklyProgram(item, this.assignmentType)
           .then(data => {
             item.assistant = data
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
@@ -229,7 +289,7 @@ export class EntreSemanaComponent implements OnInit {
       case "startTime":
         this.modalService.selectedHour()
           .then(data => {
-            item.assignment.startTime = data
+            item.startTime = data
             this.assignmentService.updateAssignment(item.assignment).subscribe(data => {
               console.log("saved startTime", data);
             })

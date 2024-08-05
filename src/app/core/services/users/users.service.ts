@@ -32,4 +32,15 @@ export class UsersService {
     return this.httpClient.post<Publisher>(url, publisher)
       .pipe(tap(data => console.log(data)))
   }
+
+  getPublihersByAssignment(assignment: string, congregationId: number): Observable<any> {
+    this.loaderService.setLoaderSearchPublisher(true);
+    const url = `${this.server}${this.api.USERS}/by-congregation/by-assignment?assignment=${assignment}&congregationId=${congregationId}`
+    return this.httpClient.get<any>(url)
+      .pipe(tap(data => {
+        this.loaderService.setLoaderSearchPublisher(false);
+        // console.log(data)
+      }))
+  }
 }
+//users/by-congregation/by-assignment?assignment=president&congregationId=2

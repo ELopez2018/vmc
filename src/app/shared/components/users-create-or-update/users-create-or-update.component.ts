@@ -57,7 +57,8 @@ export class UsersCreateOrUpdateComponent implements OnInit {
 
   save() {
     const values: Publisher = this.formulario.getRawValue()
-    values.fullName = `${values.firstName} ${values.secondName} ${values.surname} ${values.lastName}`
+    const nameParts = [values.firstName, values.secondName, values.surname, values.lastName].filter(Boolean);
+    values.fullName = nameParts.join(' ').trim();
     values.congregation = this.congregationSelected
     this.usersService.save(values).subscribe(data => {
       this.modalService.info("Se han guardados los datos", "El usuario fue almacenado", ModalTitleEnums.GREAT, ModalTypeEnums.SUCCESS)

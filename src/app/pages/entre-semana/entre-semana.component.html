@@ -39,6 +39,7 @@
           </a>
           | LECTURA SEMANAL DE LA BIBLIA
         </div>
+
         <div class="col-md-2 text-end text-title-custom">Presidente</div>
         <div class="col-md-3 hover">
           <span (click)="changeProgram(semana, 'president')">
@@ -110,6 +111,7 @@
       <fieldset class="mb-2">
         <legend class="entre-semana__title-tesoros">
           TESOROS DE LA BIBLIA
+          <mat-icon (click)="addAssign(semana, 'TESOROS DE LA BIBLIA')">add_circle_outline</mat-icon>
         </legend>
         <div
           class="row entre-semana__tesoros"
@@ -179,6 +181,7 @@
       <fieldset class="mb-2">
         <legend class="entre-semana__title-maestros">
           SEAMOS MEJORES MAESTROS
+          <mat-icon (click)="addAssign(semana, 'SEAMOS MEJORES MAESTROS')">add_circle_outline</mat-icon>
         </legend>
         <div
           class="row entre-semana__tesoros"
@@ -255,7 +258,10 @@
         </div>
       </fieldset>
       <fieldset>
-        <legend class="entre-semana__title-vida">NUESTRA VIDA CRISTIANA</legend>
+        <legend class="entre-semana__title-vida">
+          NUESTRA VIDA CRISTIANA
+          <mat-icon (click)="addAssign(semana, 'NUESTRA VIDA CRISTIANA')">add_circle_outline</mat-icon>
+        </legend>
         <div class="row">
           <div class="col-md-12 mt-1">
             <span

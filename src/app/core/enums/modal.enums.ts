@@ -1,3 +1,4 @@
+//import { AddAssignmentComponent } from '../../pages/entre-semana/add-assignment/add-assignment.component';
 export enum ModalResponseEnums {
   SI = 'Si',
   NO = 'No',
@@ -38,4 +39,5 @@ export enum ModalTypeEnums {
   ERROR = "error",
   SUCCESS = "success",
   LOADER = "loader",
+  ADDASSIG = "addAssignmentComponent",
 }

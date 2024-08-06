@@ -6,7 +6,7 @@
         <mat-label>Congregación</mat-label>
         <mat-select [disabled]="false"  [(value)]="congregationSelected">
           <mat-option>None</mat-option>
-          <mat-option [value]="congregationSelected">{{congregationSelected.name}}</mat-option>
+          <mat-option [value]="congregationSelected" *ngFor="let item of allCongregations" >{{item.name}}</mat-option>
           <!-- <mat-option value="option2" disabled>Option 2 (disabled)</mat-option> -->
         </mat-select>
       </mat-form-field>

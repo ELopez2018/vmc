@@ -1,5 +1,5 @@
 .entre-semana {
-  padding:10px 20px 10px 20px;
+  padding: 10px 20px 10px 20px;
   background-color: rgb(241, 239, 239);
   min-height: 100vh;
   width: 95vw;
@@ -8,11 +8,12 @@
 
 @media (min-width: 992px) {
   .entre-semana {
-    padding:10px 20px 10px 20px;
+    padding: 10px 20px 10px 20px;
     background-color: rgb(241, 239, 239);
     min-height: 100vh;
     width: 70vw;
     margin: 0;
+
     &__body {
       background-color: white;
     }
@@ -29,6 +30,15 @@
       color: white;
       width: 530px;
       padding-left: 10px;
+      position: relative;
+
+      & mat-icon {
+        position: absolute;
+        right: 10px;
+        &:hover {
+          cursor: pointer;
+        }
+      }
     }
 
     &__title-tesoros {
@@ -71,4 +81,4 @@
     }
 
   }
- }
+}

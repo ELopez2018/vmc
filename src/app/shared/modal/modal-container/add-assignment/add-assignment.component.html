@@ -1,0 +1,21 @@
+<div class="row m-4">
+  <h4>Agregar parte a la Reunión</h4>
+  <div class="col-md-12">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm table-bordered cursor-hover">
+        <thead>
+          <tr>
+            <th class="text-center" scope="col">N</th>
+            <th class="text-center" scope="col">Titulo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of week.weeklyProgram">
+            <td>{{ item.assignment.number}}</td>
+            <td>{{ item.assignment.title}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

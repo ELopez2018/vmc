@@ -16,7 +16,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     EntreSemanaComponent,
     EditEntreSemanaComponent,
     ConfigGeneralEntreSemanaComponent,
-    EditAsignacionesEntreSemanaComponent
+    EditAsignacionesEntreSemanaComponent,
   ],
   imports: [
     CommonModule,

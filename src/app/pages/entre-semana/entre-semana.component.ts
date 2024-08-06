@@ -9,6 +9,7 @@ import { Congregation } from '../../core/interfaces/reuniones.interface';
 import { CongregationMock } from './mocks/congregation.mock';
 import { AssignmentService } from 'src/app/core/services/assignment/assignment.service';
 import { AssignmentType } from 'src/app/core/enums/assignments.enums';
+import { SectionMeeting } from '../../core/enums/meetings.enums';
 
 @Component({
   selector: 'vmc-entre-semana',
@@ -313,7 +314,10 @@ export class EntreSemanaComponent implements OnInit {
       default:
         break;
     }
-
+  }
+  addAssign(item: Program, sectionMeeting: string) {
+    console.log(item, sectionMeeting);
+    this.modalService.AddAssignment(item, sectionMeeting)
   }
 }
 //

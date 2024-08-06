@@ -44,8 +44,12 @@
     ></info-modal>
   </div>
   <div *ngSwitchCase="typeOfModals.LOADER">
-    <loader
-
-    ></loader>
+    <loader></loader>
+  </div>
+  <div *ngSwitchCase="typeOfModals.ADDASSIG">
+    <vmc-add-assignment
+    [week]="program"
+    [sectionMeeting]="sectionMeeting"
+    ></vmc-add-assignment>
   </div>
 </div>

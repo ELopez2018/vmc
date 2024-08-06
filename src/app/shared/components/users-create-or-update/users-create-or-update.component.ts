@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { UsersService } from 'src/app/core/services/users/users.service';
 import { ModalService } from '../../../core/services/modal/modal.service';
 import { ModalTitleEnums, ModalTypeEnums } from 'src/app/core/enums/modal.enums';
+import { CongregationsService } from 'src/app/core/services/congregations/congregations.service';
 
 @Component({
   selector: 'users-create-or-update',
@@ -20,6 +21,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   selected = 'option2';
   congregationSelected!: Congregation;
   public formulario!: FormGroup;
+  public allCongregations: Congregation[] = [];
   constructor(
     private _adapter: DateAdapter<any>,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
@@ -27,6 +29,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
     private fb: FormBuilder,
     private usersService: UsersService,
     private modalService: ModalService,
+    private congregationsService: CongregationsService
   ) {
     this._locale = 'co';
     this._adapter.setLocale(this._locale);
@@ -36,7 +39,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.getAllCong()
     this.formulario = this.fb.group({
       fullName: new FormControl(null),
       image: new FormControl(null),
@@ -53,6 +56,12 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       email: new FormControl(null),
       congregation: new FormControl(this.congregationSelected ?? null)
     })
+  }
+
+  getAllCong() {
+    this.congregationsService
+      .getAllCongregations()
+      .subscribe(data => this.allCongregations = data)
   }
 
   save() {

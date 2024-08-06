@@ -7,4 +7,5 @@ export const Apis = {
   ASSIGNMENT: '/assignment',
   MEETINGS: '/assignment',
   CONFIGS: '/configs',
+  CONGREGATIONS: '/congregations',
 }

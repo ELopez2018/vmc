@@ -98,6 +98,13 @@ export class ModalService {
     this.modalRef.componentInstance.modalType = ModalTypeEnums.LOADER;
     return this.modalRef.result
   }
+  public AddAssignment(program: Program, sectionMeeting: string) {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.modalType = ModalTypeEnums.ADDASSIG;
+    this.modalRef.componentInstance.program = program;
+    this.modalRef.componentInstance.sectionMeeting = sectionMeeting;
+    return this.modalRef.result
+  }
 
   public close() {
     if (this.modalRef) {

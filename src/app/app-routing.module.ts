@@ -9,23 +9,12 @@ import { HomeComponent } from './core/home/home.component';
 const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: "full" },
   {
-    path: 'entre-semana', loadChildren: () => import('./pages/entre-semana/entre-semana.module').then(m => m.EntreSemanaModule),
-  },
-  {
-    path: 'imprimir', component: PrinterComponent,
+    path: 'tablero', loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule),
   },
   {
     path: 'inicio', component: HomeComponent,
   },
-  {
-    path: 'publicador', component: UsersCreateOrUpdateComponent,
-  },
-  {
-    path: 'publicadores', component: PublisherListComponent,
-  },
-  {
-    path: 'privilegios', component: PublisherPrivilegesComponent,
-  },
+
 
 ];
 

@@ -20,12 +20,21 @@ export class Utils {
     return `${dia}-${mes}-${año}`;
   }
 
-  public static adapterTime(dateTime: string) {
+  public static adapterTime(dateTime: any) {
+    let horas: number;
+    let minutos: number;
     if (!dateTime) {
       return '0.00'
     }
-    const [horas, minutos] = dateTime.split(":").slice(0, 2);
-    let newHora = parseInt(horas)
+    if ( dateTime.length > 1) {
+      horas =dateTime[0]
+      minutos =dateTime[1]
+    } else {
+      const tiempo =  dateTime.split(":").slice(0, 2);
+      horas = tiempo[0]
+      minutos =tiempo[1]
+    }
+    let newHora = horas
     if (newHora >= 13) {
       newHora -= 12
     }

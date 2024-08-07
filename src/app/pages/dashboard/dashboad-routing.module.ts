@@ -5,32 +5,40 @@ import { UsersCreateOrUpdateComponent } from 'src/app/shared/components/users-cr
 import { PrinterComponent } from 'src/app/shared/printer/printer.component';
 import { PublisherListComponent } from '../publisher-list/publisher-list.component';
 import { PublisherPrivilegesComponent } from '../publisher-privileges/publisher-privileges.component';
+import { DashboardComponent } from './dashboard.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'entre-semana', pathMatch: "full" },
   {
-    path: 'entre-semana', loadChildren: () => import('../entre-semana/entre-semana.module').then(m => m.EntreSemanaModule),
+    path: '',
+    component: DashboardComponent,
+    children: [
+      {
+        path: '', redirectTo: 'entre-semana', pathMatch:"full"
+      },
+      {
+        path: 'entre-semana', loadChildren: () => import('../entre-semana/entre-semana.module').then(m => m.EntreSemanaModule),
+      },
+      {
+        path: 'imprimir', component: PrinterComponent,
+      },
+      {
+        path: 'publicador', component: UsersCreateOrUpdateComponent,
+      },
+      {
+        path: 'publicadores', component: PublisherListComponent,
+      },
+      {
+        path: 'privilegios', component: PublisherPrivilegesComponent,
+      },
+
+    ]
   },
-  {
-    path: 'imprimir', component: PrinterComponent,
-  },
-  {
-    path: 'inicio', component: HomeComponent,
-  },
-  {
-    path: 'publicador', component: UsersCreateOrUpdateComponent,
-  },
-  {
-    path: 'publicadores', component: PublisherListComponent,
-  },
-  {
-    path: 'privilegios', component: PublisherPrivilegesComponent,
-  },
+
 
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports:[RouterModule]
 })
-export class AppRoutingModule { }
+export class DashboardRoutingModule { }

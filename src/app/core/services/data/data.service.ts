@@ -4,6 +4,7 @@ import { Meeting, Program, Publisher, Congregation } from '../../interfaces/reun
 import { UsersService } from '../users/users.service';
 import { ConfigsService } from '../configs/configs.service';
 import { Generic } from '../../interfaces/configs.interface';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,10 @@ export class DataService {
   private congregation!: Congregation;
   private publisher$: BehaviorSubject<Publisher> = new BehaviorSubject<Publisher>(<Publisher>{})
   private designations$: BehaviorSubject<Generic[]> = new BehaviorSubject<Generic[]>([])
-
-  constructor(private usersService: UsersService, private configsService: ConfigsService) { }
+  jwtUtils!: JwtHelperService;
+  constructor(private usersService: UsersService, private configsService: ConfigsService) {
+    this.jwtUtils = new JwtHelperService()
+   }
 
   public setDesignations(designations: any) {
     this.designations$.next(designations)
@@ -68,7 +71,15 @@ export class DataService {
     this.configsService.getAllDesignations().subscribe(data => {
       this.setDesignations(data)
     })
+  }
 
-
+  public setConfigFromStorage(){
+    const tokenStr = localStorage.getItem("token")
+    let tokenObj;
+    if(tokenStr){
+      tokenObj = JSON.parse(tokenStr)
+      this.setPublisher(this.jwtUtils.decodeToken(tokenObj.token).data);
+      this.setCongregation(this.jwtUtils.decodeToken(tokenObj.token).data.congregation)
+    }
   }
 }

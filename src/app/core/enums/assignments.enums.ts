@@ -14,6 +14,7 @@ export enum AssignmentType {
   EXPLAINING_YOUR_BELIEFS = 'explainingYourBeliefs',
   EXPLAINING_YOUR_BELIEFS_ASSISTANT = 'explainingYourBeliefsAssistant',
   MAKING_DISCIPLES = 'makingDisciples',
+  MAKING_DISCIPLES_ASSISTANT = 'makingDisciplesAssistant',
   CONGREGATION_BIBLE_STUDY = 'congregationBibleStudy',
   CONGREGATION_BIBLE_STUDY_READER = 'congregationBibleStudyReader',
   LOCAL_NEEDS = 'localNeeds',

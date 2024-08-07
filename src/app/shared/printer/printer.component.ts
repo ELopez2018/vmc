@@ -4,6 +4,7 @@ import { MeetingsService } from '../../core/services/meetings/meetings.service';
 import { Meeting, Program } from 'src/app/core/interfaces/reuniones.interface';
 import { DataService } from '../../core/services/data/data.service';
 import { ModalService } from '../../core/services/modal/modal.service';
+import { Congregation } from '../../core/interfaces/reuniones.interface';
 
 @Component({
   selector: 'app-printer',
@@ -13,7 +14,7 @@ import { ModalService } from '../../core/services/modal/modal.service';
 export class PrinterComponent implements OnInit {
   @ViewChild('pdfViewerOnDemand') pdfViewerOnDemand: any;
   @ViewChild('pdfViewerAutoLoad') pdfViewerAutoLoad: any;
-
+private congregation!: Congregation
   constructor(private printService: PrintPdfService,
     private meetingsService: MeetingsService,
     private dataService: DataService,
@@ -21,13 +22,16 @@ export class PrinterComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.dataService.getCongregation$().subscribe(data => {
+      this.congregation=data;
+    })
     this.modalService.loading()
     this.dataService.getMeeting().subscribe(data => {
       if (data && data.length > 0) {
         this.printMeetings(data)
         this.modalService.close()
       } else {
-        this.meetingsService.getWeeksValids().subscribe(data => {
+        this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
           this.printMeetings(data)
           this.modalService.close()
         })

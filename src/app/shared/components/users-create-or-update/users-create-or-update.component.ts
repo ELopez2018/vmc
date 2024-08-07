@@ -19,9 +19,10 @@ import { CongregationsService } from 'src/app/core/services/congregations/congre
 })
 export class UsersCreateOrUpdateComponent implements OnInit {
   selected = 'option2';
-  congregationSelected!: Congregation;
+  public congregationSelected!: Congregation;
   public formulario!: FormGroup;
   public allCongregations: Congregation[] = [];
+  public isAdmin=false;
   constructor(
     private _adapter: DateAdapter<any>,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
@@ -33,13 +34,10 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   ) {
     this._locale = 'co';
     this._adapter.setLocale(this._locale);
-    this.dataService.getCongregation$().subscribe(data => {
-      this.congregationSelected = data
-    })
+    this.getAllCong()
   }
 
   ngOnInit() {
-    this.getAllCong()
     this.formulario = this.fb.group({
       fullName: new FormControl(null),
       image: new FormControl(null),
@@ -48,13 +46,17 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       lastName: new FormControl(null),
       surname: new FormControl(null),
       birthdate: new FormControl(null),
-      gender: new FormControl(null),
+      gender: new FormControl("Femenino"),
       documentNumber: new FormControl(null),
-      documentType: new FormControl(null),
+      documentType: new FormControl("CC"),
       cellPhone: new FormControl(null),
       phone: new FormControl(null),
       email: new FormControl(null),
       congregation: new FormControl(this.congregationSelected ?? null)
+    })
+    this.dataService.getCongregation$().subscribe(data => {
+     this.congregationSelected = data
+      console.log(this.congregationSelected);
     })
   }
 
@@ -77,6 +79,10 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       this.modalService.errorHandler(error.error, "No se puede guardar.".toUpperCase())
     })
 
+  }
+
+  onChange() {
+    console.log(this.congregationSelected);
   }
 
 }

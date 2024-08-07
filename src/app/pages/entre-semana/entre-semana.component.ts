@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SemanasMock } from './mocks/semanas.mock';
 import { MeetingsService } from '../../core/services/meetings/meetings.service';
-import { Meeting, Program, WeeklyProgram } from 'src/app/core/interfaces/reuniones.interface';
+import { Meeting, Program, Publisher, WeeklyProgram } from 'src/app/core/interfaces/reuniones.interface';
 import { Utils } from 'src/app/shared/Utils';
 import { ModalService } from 'src/app/core/services/modal/modal.service';
 import { DataService } from '../../core/services/data/data.service';
@@ -21,6 +21,8 @@ export class EntreSemanaComponent implements OnInit {
   porAsignar = "por asignar";
   public congregation: Congregation = CongregationMock
   public assignmentType: string = ""
+  public Superintendente!: Publisher
+  public showSpinner= false;
   constructor(
     private meetingsService: MeetingsService,
     private modalService: ModalService,
@@ -28,10 +30,21 @@ export class EntreSemanaComponent implements OnInit {
     private assignmentService: AssignmentService
   ) { }
   ngOnInit(): void {
-    this.meetingsService.getWeeksValids().subscribe(data => {
-      this.semanas = data
+    this.dataService.getPublisher().subscribe(data => {
+      this.Superintendente = data
     })
-    this.dataService.setCongregation(this.congregation)
+
+    this.dataService.getCongregation$().subscribe(data => {
+      this.congregation = data
+    })
+    this.showSpinner=true;
+    this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
+      this.semanas = data
+      this.showSpinner=false;
+    }, error=>{
+      this.showSpinner=false;
+    })
+    //this.dataService.setCongregation(this.congregation)
   }
 
   showDayOfMeeting(fechaSemana: string) {

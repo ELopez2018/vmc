@@ -74,9 +74,10 @@
 
                 <mat-spinner *ngIf="showSpinner"></mat-spinner>
 
-                <div
+                <ng-container *ngIf="!isAssigment">
+                  <div
                   class="table-responsive"
-                  *ngIf="usedPublishersList && usedPublishersList.length > 0"
+                  *ngIf="usedPublishersList && usedPublishersList.length > 0 && !isAssigment"
                 >
                   <table
                     class="table table-hover table-sm table-bordered cursor-hover"
@@ -99,14 +100,49 @@
                       </tr>
                     </tbody>
                   </table>
-                </div>
 
-                <h3
+
+                </div>
+                </ng-container>
+
+
+                <ng-container  *ngIf="isAssigment">
+                  <div
+                  class="table-responsive"
+                  *ngIf="usedPublishersListAllByAssig && usedPublishersListAllByAssig.length > 0"
+                >
+                  <table
+                    class="table table-hover table-sm table-bordered cursor-hover"
+                  >
+                    <thead>
+                      <tr>
+                        <th class="text-center" scope="col">Publicador</th>
+                        <th class="text-center" scope="col">{{ headerText }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        *ngFor="let item of usedPublishersListAllByAssig"
+                        (click)="selected(item)"
+                      >
+                        <td>{{ item.user.fullName }}</td>
+                        <td class="text-center" >{{ item.count }}</td>
+
+                      </tr>
+                    </tbody>
+                  </table>
+
+
+                </div>
+                </ng-container>
+
+
+                <!-- <h3
                   class="text-center mt-5 pt-5"
                   *ngIf="!usedPublishersList || usedPublishersList.length == 0"
                 >
                   No hay datos
-                </h3>
+                </h3> -->
               </fieldset>
             </div>
           </mat-tab>
@@ -204,12 +240,12 @@
                     </tbody>
                   </table>
                 </div>
-                <h3
+                <!-- <h3
                   class="text-center mt-5 pt-5"
                   *ngIf="!publishersAll || publishersAll.length == 0"
                 >
                   No hay datos
-                </h3>
+                </h3> -->
               </fieldset>
             </div>
           </mat-tab>

@@ -1,20 +1,32 @@
 <div class="entre-semana">
   <div class="container-fluid">
     <div class="row my-3 py-3 shadow-titles">
-      <div class="col-md-10"></div>
-      <div class="col-md-2 text-center">
+      <div class="col-md-9">
+        <h5> Bienvenido {{ Superintendente.fullName }} - Congregación {{ Superintendente.congregation.name }}</h5>
+      </div>
+      <div class="col-md-3 text-center">
         <img
           class="me-2"
           src="../../../assets/img/actualizar.png"
-          width="60px"
+          width="30px"
           alt=""
         />
-        <a routerLink="/imprimir">
-          <img src="../../../assets/img/imprimir.png" width="60px" alt=""
+        <a routerLink="/tablero/imprimir">
+          <img src="../../../assets/img/imprimir.png" width="30px" alt=""
         /></a>
       </div>
     </div>
   </div>
+
+    <div class="container mt-5 pt-5" *ngIf="showSpinner">
+      <div class="row mt-5 pt-5">
+        <div class="col-md-5"></div>
+        <div class="col-md-2 text-center mt-5">
+          <mat-spinner ></mat-spinner>
+        </div>
+        <div class="col-md-5"></div>
+      </div>
+    </div>
   <div
     class="container-fluid entre-semana__body pb-4 mb-4 shadow-page"
     *ngFor="let semana of semanas"

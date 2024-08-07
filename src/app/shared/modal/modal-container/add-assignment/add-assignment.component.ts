@@ -14,6 +14,7 @@ export class AddAssignmentComponent implements OnInit {
   @Input() public week!: Program
   @Input() public sectionMeeting!: string
   ngOnInit(): void {
+    
   }
 
 }

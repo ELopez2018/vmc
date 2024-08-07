@@ -10,20 +10,40 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { TokenMock } from './Mocks/token.mock';
+import { Servers, Apis } from '../constants/servers';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InterceptorService implements HttpInterceptor {
+  private server = Servers.URL
+  private api = Apis
   constructor() { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const tokenStr = localStorage.getItem("token")
+    let tokenObj;
+    if(tokenStr){
+      tokenObj = JSON.parse(tokenStr)
+    }
     let headers: HttpHeaders;
-    let token = TokenMock
-    headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
-      Fuente: 'web',
-    });
+    switch (req.url) {
+      case `${this.server}${this.api.AUTH}/login`:
+        console.log("Sin el header Authorization " + req.url);
+        headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+        });
+        break;
+      default:
+        console.log("Cabecera de seguridad Agregada url: " + req.url);
+        headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + tokenObj?.token,
+        });
+    }
+
+
+
+
     const REQ_CLONE = req.clone({
       headers,
     });

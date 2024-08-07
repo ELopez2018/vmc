@@ -1,21 +1,33 @@
-<div class="row m-4">
-  <h4>Agregar parte a la Reunión</h4>
-  <div class="col-md-12">
-    <div class="table-responsive">
-      <table class="table table-hover table-sm table-bordered cursor-hover">
-        <thead>
-          <tr>
-            <th class="text-center" scope="col">N</th>
-            <th class="text-center" scope="col">Titulo</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of week.weeklyProgram">
-            <td>{{ item.assignment.number}}</td>
-            <td>{{ item.assignment.title}}</td>
-          </tr>
-        </tbody>
-      </table>
+<div class="add-assig">
+  <div class="container-fluid">
+    <div class="row m-4">
+      <h4>Agregar parte a la seccion {{sectionMeeting}} de la Reunión</h4>
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-hover table-sm table-bordered cursor-hover">
+            <thead>
+              <tr>
+                <th class="text-center" scope="col">N</th>
+                <th class="text-center" scope="col">Titulo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of week.weeklyProgram">
+                <td *ngIf="item.assignment.sectionMeeting==sectionMeeting" class="text-center" >{{ item.assignment.number}}</td>
+                <td *ngIf="item.assignment.sectionMeeting==sectionMeeting" >{{ item.assignment.title}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 d-flex justify-content-center">
+        <button class="btn btn-primary px-4 me-2"> Guardar</button>
+        <button class="btn btn-danger px-4"> Cancelar</button>
+      </div>
     </div>
   </div>
 </div>
+

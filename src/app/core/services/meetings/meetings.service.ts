@@ -33,8 +33,8 @@ export class MeetingsService {
     const url = `${this.server}/meetings/search-publisher${params}`
     return this.httpClient.get<any[]>(url)
   }
-  getWeeksValids(): Observable<any> {
-    const url = `${this.server}/meetings/current-weeks/2`
+  getWeeksValids(congregationId: Number): Observable<any> {
+    const url = `${this.server}/meetings/current-weeks/${congregationId}`
     return this.httpClient.get<Program[]>(url).pipe(
       map(data => {
         data.forEach(program => {

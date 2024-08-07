@@ -72,6 +72,7 @@ export interface Congregation {
   name: string;
   number: string;
   hour: string;
+  day: number;
   assistantAdviser?: Publisher | undefined | null;
 }
 export interface Meeting {

@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import { ConfigsService } from '../configs/configs.service';
 import { Generic } from '../../interfaces/configs.interface';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Servers } from '../../constants/servers';
 
 @Injectable({
   providedIn: 'root'
@@ -81,5 +82,9 @@ export class DataService {
       this.setCongregation(token.data.congregation)
       localStorage.setItem("congregation", JSON.stringify(token.data.congregation))
     }
+  }
+  logout(){
+    localStorage.clear()
+    window.location.href =Servers.home
   }
 }

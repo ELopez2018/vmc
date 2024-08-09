@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { SemanasMock } from 'src/app/pages/entre-semana/mocks/semanas.mock';
-import { Assignment, Meeting, Program, WeeklyProgram } from '../../interfaces/reuniones.interface';
+import { Program, WeeklyProgram } from '../../interfaces/reuniones.interface';
 import { Utils } from 'src/app/shared/Utils';
 
 

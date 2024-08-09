@@ -8,14 +8,17 @@
 
 @media (min-width: 992px) {
   .entre-semana {
-    .assembly{
-      //height: 60vh;
+    .wrapper {
+      height: 80vh;
+      overflow: auto;
     }
+
     padding: 10px 20px 10px 20px;
     background-color: rgb(241, 239, 239);
-    min-height: 100vh;
-    width: 90vw;
+    min-height: 70vh;
+    width: 100%;
     margin: 0;
+    overflow:hidden;
 
     &__body {
       background-color: white;

@@ -21,409 +21,420 @@
       </div>
     </div>
   </div>
-
-  <div class="container mt-5 pt-5" *ngIf="showSpinner">
-    <div class="row mt-5 pt-5">
-      <div class="col-md-5"></div>
-      <div class="col-md-2 text-center mt-5">
-        <mat-spinner></mat-spinner>
+  <div class="wrapper">
+    <div class="container mt-5 pt-5" *ngIf="showSpinner">
+      <div class="row mt-5 pt-5">
+        <div class="col-md-5"></div>
+        <div class="col-md-2 text-center mt-5">
+          <mat-spinner></mat-spinner>
+        </div>
+        <div class="col-md-5"></div>
       </div>
-      <div class="col-md-5"></div>
     </div>
-  </div>
-  <div
-    class="container-fluid entre-semana__body pb-4 mb-4 shadow-page"
-    *ngFor="let semana of semanas"
-  >
-    <ng-container *ngIf="semana.assembly != null && semana.assembly != ''">
-      <div class="row text-center assembly pt-5 mb-5">
-        <div class="col-md-12 mt-5 p-5">
-          <h2>{{ semana.assembly | uppercase }}</h2>
-          <h4> {{showDayOfMeeting(semana.meeting.week)}} </h4>
+    <div
+      class="container-fluid entre-semana__body pb-4 mb-4 shadow-page"
+      *ngFor="let semana of semanas"
+    >
+      <ng-container *ngIf="semana.assembly != null && semana.assembly != ''">
+        <div class="row text-center assembly pt-5 mb-5">
+          <div class="col-md-12 mt-5 p-5">
+            <h2>{{ semana.assembly | uppercase }}</h2>
+            <h4>{{ showDayOfMeeting(semana.meeting.week) }}</h4>
+          </div>
         </div>
-      </div>
-    </ng-container>
+      </ng-container>
 
-    <ng-container *ngIf="semana.assembly == null || semana.assembly == ''">
-      <div class="row entre-semana__header">
-        <div class="col-md-4 h3">
-          <div class="entre-semana__congregacion pt-2">
-            {{ semana.congregation.name }}
+      <ng-container *ngIf="semana.assembly == null || semana.assembly == ''">
+        <div class="row entre-semana__header">
+          <div class="col-md-4 h3">
+            <div class="entre-semana__congregacion pt-2">
+              {{ semana.congregation.name }}
+            </div>
+          </div>
+          <div class="col-md-8 h2 text-end pe-5">
+            <div class="entre-semana__title">
+              Programa para la reunión de entre semana
+            </div>
           </div>
         </div>
-        <div class="col-md-8 h2 text-end pe-5">
-          <div class="entre-semana__title">
-            Programa para la reunión de entre semana
-          </div>
-        </div>
-      </div>
-      <div class="mt-3 entre-semana__reunion pe-4">
-        <div class="row">
-          <div class="col-md-7 fw-bold">
-            <a href="{{ semana.meeting.url }}" target="_blank">
-              {{ showDayOfMeeting(semana.meeting.week) }}
-            </a>
-            | LECTURA SEMANAL DE LA BIBLIA
+        <div class="mt-3 entre-semana__reunion pe-4">
+          <div class="row">
+            <div class="col-md-7 fw-bold">
+              <a href="{{ semana.meeting.url }}" target="_blank">
+                {{ showDayOfMeeting(semana.meeting.week) }}
+              </a>
+              | LECTURA SEMANAL DE LA BIBLIA
+            </div>
+
+            <div class="col-md-1 text-end text-title-custom">Presidente</div>
+            <div class="col-md-3 hover">
+              <span (click)="changeProgram(semana, 'president')">
+                {{ semana.president ? semana.president.fullName : porAsignar }}
+              </span>
+            </div>
           </div>
 
-          <div class="col-md-1 text-end text-title-custom">Presidente</div>
-          <div class="col-md-3 hover">
-            <span (click)="changeProgram(semana, 'president')">
-              {{ semana.president ? semana.president.fullName : porAsignar }}
-            </span>
+          <div class="row">
+            <div class="col-md-7"></div>
+            <div class="col-md-1 text-end text-title-custom">
+              Consejero Auxiliar
+            </div>
+            <div class="col-md-3 hover">
+              <span (click)="changeProgram(semana, 'assistantAdviser')">
+                {{
+                  semana.assistantAdviser
+                    ? semana.assistantAdviser.fullName
+                    : porAsignar
+                }}
+              </span>
+            </div>
           </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-7"></div>
-          <div class="col-md-1 text-end text-title-custom">
-            Consejero Auxiliar
+          <div class="row">
+            <div class="col-md-7">
+              <span class="ms-3 ps-1"></span>
+              <span
+                class="mx-2 hover ms-3"
+                (click)="changeProgram(semana, 'startTimeOpeningSong')"
+                >{{ adapterTime(semana.startTimeOpeningSong) }}</span
+              >
+              <span
+                class="fw-bold hover"
+                (click)="changeProgram(semana, 'openingSong')"
+              >
+                Canción {{ semana.meeting.openingSong }}
+              </span>
+            </div>
+            <div class="col-md-1 text-end text-title-custom">Oración</div>
+            <div class="col-md-3 hover">
+              <span (click)="changeProgram(semana, 'openingPrayer')">
+                {{
+                  semana.openingPrayer
+                    ? semana.openingPrayer.fullName
+                    : porAsignar
+                }}
+              </span>
+            </div>
           </div>
-          <div class="col-md-3 hover">
-            <span (click)="changeProgram(semana, 'assistantAdviser')">
-              {{
-                semana.assistantAdviser
-                  ? semana.assistantAdviser.fullName
-                  : porAsignar
-              }}
-            </span>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-7">
-            <span class="ms-3 ps-1"></span>
-            <span
-              class="mx-2 hover ms-3"
-              (click)="changeProgram(semana, 'startTimeOpeningSong')"
-              >{{ adapterTime(semana.startTimeOpeningSong) }}</span
-            >
-            <span
-              class="fw-bold hover"
-              (click)="changeProgram(semana, 'openingSong')"
-            >
-              Canción {{ semana.meeting.openingSong }}
-            </span>
-          </div>
-          <div class="col-md-1 text-end text-title-custom">Oración</div>
-          <div class="col-md-3 hover">
-            <span (click)="changeProgram(semana, 'openingPrayer')">
-              {{
-                semana.openingPrayer
-                  ? semana.openingPrayer.fullName
-                  : porAsignar
-              }}
-            </span>
-          </div>
-        </div>
-        <div class="row entre-semana__tesoros ms-3">
-          <!-- <div class="col-md-8"></div>
+          <div class="row entre-semana__tesoros ms-3">
+            <!-- <div class="col-md-8"></div>
           <div class="col-md-4 text-end"></div>
           <div class="col-md-8"></div>
           <div class="col-md-4 text-end"></div>
           <div class="col-md-8"></div>
           <div class="col-md-4 text-end text-title-custom"></div> -->
-          <div class="col-md-12 mb-2">
-            <span
-              class="mx-2 hover"
-              (click)="changeProgram(semana, 'startTimeIntro')"
-              >{{ adapterTime(semana.startTimeIntro) }}</span
-            >
-            <span class="hover" (click)="changeProgram(semana, 'introTime')"
-              >Palabras de introducción ({{
-                semana.meeting.introTime + " " + semana.meeting.timeType
-              }})
-            </span>
+            <div class="col-md-12 mb-2">
+              <span
+                class="mx-2 hover"
+                (click)="changeProgram(semana, 'startTimeIntro')"
+                >{{ adapterTime(semana.startTimeIntro) }}</span
+              >
+              <span class="hover" (click)="changeProgram(semana, 'introTime')"
+                >Palabras de introducción ({{
+                  semana.meeting.introTime + " " + semana.meeting.timeType
+                }})
+              </span>
+            </div>
           </div>
-        </div>
 
-        <fieldset class="mb-2">
-          <legend class="entre-semana__title-tesoros">
-            TESOROS DE LA BIBLIA
-            <mat-icon (click)="addAssign(semana, 'TESOROS DE LA BIBLIA')"
-              >edit</mat-icon
-            >
-          </legend>
-          <div
-            class="row entre-semana__tesoros"
-            *ngFor="let item of semana.weeklyProgram"
-          >
+          <fieldset class="mb-2">
+            <legend class="entre-semana__title-tesoros">
+              TESOROS DE LA BIBLIA
+              <mat-icon (click)="addAssign(semana, 'TESOROS DE LA BIBLIA')"
+                >edit</mat-icon
+              >
+            </legend>
             <div
-              class="col-md-7 mt-1"
-              *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
+              class="row entre-semana__tesoros"
+              *ngFor="let item of semana.weeklyProgram"
             >
-              <div class="row">
-                <div
-                  class="col-md-1 ms-2 hover"
-                  (click)="changeWeeklyProgram(item, 'startTime')"
-                >
-                  {{ adapterTime(item.startTime) }}
-                </div>
-                <div
-                  class="col-md-11 big-title p-0 m-0"
-                  [title]="item.assignment.title"
-                >
-                  <span
-                    class="title-number hover"
-                    (click)="changeWeeklyProgram(item, 'number')"
-                    >{{ item.assignment.number }}.</span
+              <div
+                class="col-md-7 mt-1"
+                *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
+              >
+                <div class="row">
+                  <div
+                    class="col-md-1 ms-2 hover"
+                    (click)="changeWeeklyProgram(item, 'startTime')"
                   >
+                    {{ adapterTime(item.startTime) }}
+                  </div>
+                  <div
+                    class="col-md-11 big-title p-0 m-0"
+                    [title]="item.assignment.title"
+                  >
+                    <span
+                      class="title-number hover"
+                      (click)="changeWeeklyProgram(item, 'number')"
+                      >{{ item.assignment.number }}.</span
+                    >
 
-                  <span
-                    class="hover"
-                    (click)="changeWeeklyProgram(item, 'title')"
-                  >
-                    {{
-                      item.assignment.title +
-                        " (" +
-                        item.assignment.time +
-                        " " +
-                        item.assignment.timeType +
-                        ")"
-                    }}
-                  </span>
+                    <span
+                      class="hover"
+                      (click)="changeWeeklyProgram(item, 'title')"
+                    >
+                      {{
+                        item.assignment.title +
+                          " (" +
+                          item.assignment.time +
+                          " " +
+                          item.assignment.timeType +
+                          ")"
+                      }}
+                    </span>
+                  </div>
                 </div>
+              </div>
+              <div
+                class="col-md-1 mt-1 text-end text-title-custom"
+                *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
+              >
+                <span
+                  class="hover"
+                  *ngIf="item.assignment.showTips"
+                  (click)="changeWeeklyProgram(item, 'tips')"
+                  >{{ item.assignment.tips }}</span
+                >
+              </div>
+              <div
+                class="col-md-3 mt-1"
+                *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
+              >
+                <span
+                  class="hover"
+                  (click)="changeWeeklyProgram(item, 'responsible')"
+                >
+                  {{ item.responsible?.fullName ?? porAsignar }}
+                </span>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="mb-2">
+            <legend class="entre-semana__title-maestros">
+              SEAMOS MEJORES MAESTROS
+              <mat-icon (click)="addAssign(semana, 'SEAMOS MEJORES MAESTROS')"
+                >edit</mat-icon
+              >
+            </legend>
+            <div
+              class="row entre-semana__tesoros"
+              *ngFor="let item of semana.weeklyProgram"
+            >
+              <div
+                class="col-md-7 mt-1"
+                *ngIf="
+                  item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'
+                "
+              >
+                <div class="row">
+                  <div
+                    class="col-md-1 ms-2 hover"
+                    (click)="changeWeeklyProgram(item, 'startTime')"
+                  >
+                    {{ adapterTime(item.startTime) }}
+                  </div>
+                  <div
+                    class="col-md-11 big-title p-0 m-0"
+                    [title]="item.assignment.title"
+                  >
+                    <span
+                      class="title-number hover"
+                      (click)="changeWeeklyProgram(item, 'number')"
+                      >{{ item.assignment.number }}.</span
+                    >
+                    <span
+                      class="hover"
+                      (click)="changeWeeklyProgram(item, 'title')"
+                    >
+                      {{
+                        item.assignment.title +
+                          " (" +
+                          item.assignment.time +
+                          " " +
+                          item.assignment.timeType +
+                          ")"
+                      }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="col-md-1 mt-1 text-end text-title-custom"
+                *ngIf="
+                  item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'
+                "
+              >
+                <span
+                  class="hover"
+                  *ngIf="item.assignment.showTips"
+                  (click)="changeWeeklyProgram(item, 'tips')"
+                  >{{ item.assignment.tips }}</span
+                >
+              </div>
+              <div
+                class="col-md-3 mt-1"
+                *ngIf="
+                  item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'
+                "
+              >
+                <span
+                  class="hover"
+                  (click)="changeWeeklyProgram(item, 'responsible')"
+                >
+                  {{ item.responsible?.fullName ?? porAsignar }}
+                </span>
+                <span
+                  class="hover"
+                  (click)="changeWeeklyProgram(item, 'assistant')"
+                >
+                  {{
+                    item.assistant
+                      ? "/" + item.assistant.fullName
+                      : "/" + porAsignar
+                  }}
+                </span>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend class="entre-semana__title-vida">
+              NUESTRA VIDA CRISTIANA
+              <mat-icon (click)="addAssign(semana, 'NUESTRA VIDA CRISTIANA')"
+                >edit</mat-icon
+              >
+            </legend>
+            <div class="row">
+              <div class="col-md-12 mt-1">
+                <span
+                  class="mx-2 hover"
+                  (click)="changeProgram(semana, 'startTimeIntermediateSong')"
+                  >{{ adapterTime(semana.startTimeIntermediateSong) }}</span
+                >
+                <span
+                  class="fw-bold hover"
+                  (click)="changeProgram(semana, 'intermediateSong')"
+                >
+                  Canción {{ semana.meeting.intermediateSong }}
+                </span>
               </div>
             </div>
             <div
-              class="col-md-1 mt-1 text-end text-title-custom"
-              *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
+              class="row entre-semana__tesoros"
+              *ngFor="let item of semana.weeklyProgram"
             >
-              <span
-                class="hover"
-                *ngIf="item.assignment.showTips"
-                (click)="changeWeeklyProgram(item, 'tips')"
-                >{{ item.assignment.tips }}</span
+              <div
+                class="col-md-7"
+                *ngIf="
+                  item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'
+                "
               >
-            </div>
-            <div
-              class="col-md-3 mt-1"
-              *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
-            >
-              <span
-                class="hover"
-                (click)="changeWeeklyProgram(item, 'responsible')"
-              >
-                {{ item.responsible?.fullName ?? porAsignar }}
-              </span>
-            </div>
-          </div>
-        </fieldset>
-        <fieldset class="mb-2">
-          <legend class="entre-semana__title-maestros">
-            SEAMOS MEJORES MAESTROS
-            <mat-icon (click)="addAssign(semana, 'SEAMOS MEJORES MAESTROS')"
-              >edit</mat-icon
-            >
-          </legend>
-          <div
-            class="row entre-semana__tesoros"
-            *ngFor="let item of semana.weeklyProgram"
-          >
-            <div
-              class="col-md-7 mt-1"
-              *ngIf="
-                item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'
-              "
-            >
-              <div class="row">
-                <div
-                  class="col-md-1 ms-2 hover"
-                  (click)="changeWeeklyProgram(item, 'startTime')"
-                >
-                  {{ adapterTime(item.startTime) }}
-                </div>
-                <div
-                  class="col-md-11 big-title p-0 m-0"
-                  [title]="item.assignment.title"
-                >
-                  <span
-                    class="title-number hover"
-                    (click)="changeWeeklyProgram(item, 'number')"
-                    >{{ item.assignment.number }}.</span
+                <div class="row">
+                  <div
+                    class="col-md-1 ms-2 hover"
+                    (click)="changeWeeklyProgram(item, 'startTime')"
                   >
-                  <span
-                    class="hover"
-                    (click)="changeWeeklyProgram(item, 'title')"
+                    {{ adapterTime(item.startTime) }}
+                  </div>
+                  <div
+                    class="col-md-11 big-title p-0 m-0 hover"
+                    [title]="item.assignment.title"
                   >
-                    {{
-                      item.assignment.title +
-                        " (" +
-                        item.assignment.time +
-                        " " +
-                        item.assignment.timeType +
-                        ")"
-                    }}
-                  </span>
+                    <span
+                      class="title-number hover"
+                      (click)="changeWeeklyProgram(item, 'number')"
+                      >{{ item.assignment.number }}.</span
+                    >
+                    <span
+                      class="hover"
+                      (click)="changeWeeklyProgram(item, 'title')"
+                    >
+                      {{
+                        item.assignment.title +
+                          " (" +
+                          item.assignment.time +
+                          " " +
+                          item.assignment.timeType +
+                          ")"
+                      }}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="col-md-1 mt-1 text-end text-title-custom"
-              *ngIf="
-                item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'
-              "
-            >
-              <span
-                class="hover"
-                *ngIf="item.assignment.showTips"
-                (click)="changeWeeklyProgram(item, 'tips')"
-                >{{ item.assignment.tips }}</span
+              <div
+                class="col-md-1 mt-1 text-end text-title-custom"
+                *ngIf="
+                  item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'
+                "
               >
-            </div>
-            <div
-              class="col-md-3 mt-1"
-              *ngIf="
-                item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'
-              "
-            >
-              <span
-                class="hover"
-                (click)="changeWeeklyProgram(item, 'responsible')"
+                <span
+                  class="hover"
+                  *ngIf="item.assignment.showTips"
+                  (click)="changeWeeklyProgram(item, 'tips')"
+                  >{{ item.assignment.tips }}</span
+                >
+              </div>
+              <div
+                class="col-md-3 mt-1"
+                *ngIf="
+                  item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'
+                "
               >
-                {{ item.responsible?.fullName ?? porAsignar }}
-              </span>
-              <span
-                class="hover"
-                (click)="changeWeeklyProgram(item, 'assistant')"
-              >
-                {{
-                  item.assistant
-                    ? "/" + item.assistant.fullName
-                    : "/" + porAsignar
-                }}
-              </span>
+                <span
+                  class="hover"
+                  (click)="changeWeeklyProgram(item, 'responsible')"
+                >
+                  {{
+                    item.responsible ? item.responsible.fullName : porAsignar
+                  }}
+                </span>
+                <span
+                  class="hover"
+                  (click)="changeWeeklyProgram(item, 'assistant')"
+                >
+                  {{
+                    item.assistant
+                      ? "/" + item.assistant.fullName
+                      : "/" + porAsignar
+                  }}
+                </span>
+              </div>
             </div>
-          </div>
-        </fieldset>
-        <fieldset>
-          <legend class="entre-semana__title-vida">
-            NUESTRA VIDA CRISTIANA
-            <mat-icon (click)="addAssign(semana, 'NUESTRA VIDA CRISTIANA')"
-              >edit</mat-icon
-            >
-          </legend>
-          <div class="row">
+          </fieldset>
+          <div class="row ms-3">
             <div class="col-md-12 mt-1">
               <span
                 class="mx-2 hover"
-                (click)="changeProgram(semana, 'startTimeIntermediateSong')"
-                >{{ adapterTime(semana.startTimeIntermediateSong) }}</span
+                (click)="changeProgram(semana, 'startTimeConclusionWords')"
+                >{{ adapterTime(semana.startTimeConclusionWords) }}</span
+              >
+              Palabras de conclusión
+            </div>
+          </div>
+          <div class="row ms-3">
+            <div class="col-md-7 mt-1">
+              <span
+                class="mx-2 hover"
+                (click)="changeProgram(semana, 'startTimeFinalSong')"
+                >{{ adapterTime(semana.startTimeFinalSong) }}</span
               >
               <span
                 class="fw-bold hover"
-                (click)="changeProgram(semana, 'intermediateSong')"
+                (click)="changeProgram(semana, 'finalSong')"
               >
-                Canción {{ semana.meeting.intermediateSong }}
+                Canción {{ semana.meeting.finalSong }}
               </span>
             </div>
-          </div>
-          <div
-            class="row entre-semana__tesoros"
-            *ngFor="let item of semana.weeklyProgram"
-          >
+            <div class="col-md-1 mt-1 text-end text-title-custom">Oracion:</div>
             <div
-              class="col-md-7"
-              *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
+              class="col-md-3 hover"
+              (click)="changeProgram(semana, 'finalPrayer')"
             >
-              <div class="row">
-                <div
-                  class="col-md-1 ms-2 hover"
-                  (click)="changeWeeklyProgram(item, 'startTime')"
-                >
-                  {{ adapterTime(item.startTime) }}
-                </div>
-                <div
-                  class="col-md-11 big-title p-0 m-0 hover"
-                  [title]="item.assignment.title"
-                >
-                  <span
-                    class="title-number hover"
-                    (click)="changeWeeklyProgram(item, 'number')"
-                    >{{ item.assignment.number }}.</span
-                  >
-                  <span
-                    class="hover"
-                    (click)="changeWeeklyProgram(item, 'title')"
-                  >
-                    {{
-                      item.assignment.title +
-                        " (" +
-                        item.assignment.time +
-                        " " +
-                        item.assignment.timeType +
-                        ")"
-                    }}
-                  </span>
-                </div>
-              </div>
+              {{
+                semana.finalPrayer ? semana.finalPrayer.fullName : porAsignar
+              }}
             </div>
-            <div
-              class="col-md-1 mt-1 text-end text-title-custom"
-              *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
-            >
-              <span
-                class="hover"
-                *ngIf="item.assignment.showTips"
-                (click)="changeWeeklyProgram(item, 'tips')"
-                >{{ item.assignment.tips }}</span
-              >
-            </div>
-            <div
-              class="col-md-3 mt-1"
-              *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
-            >
-              <span
-                class="hover"
-                (click)="changeWeeklyProgram(item, 'responsible')"
-              >
-                {{ item.responsible ? item.responsible.fullName : porAsignar }}
-              </span>
-              <span
-                class="hover"
-                (click)="changeWeeklyProgram(item, 'assistant')"
-              >
-                {{
-                  item.assistant
-                    ? "/" + item.assistant.fullName
-                    : "/" + porAsignar
-                }}
-              </span>
-            </div>
-          </div>
-        </fieldset>
-        <div class="row ms-3">
-          <div class="col-md-12 mt-1">
-            <span
-              class="mx-2 hover"
-              (click)="changeProgram(semana, 'startTimeConclusionWords')"
-              >{{ adapterTime(semana.startTimeConclusionWords) }}</span
-            >
-            Palabras de conclusión
           </div>
         </div>
-        <div class="row ms-3">
-          <div class="col-md-7 mt-1">
-            <span
-              class="mx-2 hover"
-              (click)="changeProgram(semana, 'startTimeFinalSong')"
-              >{{ adapterTime(semana.startTimeFinalSong) }}</span
-            >
-            <span
-              class="fw-bold hover"
-              (click)="changeProgram(semana, 'finalSong')"
-            >
-              Canción {{ semana.meeting.finalSong }}
-            </span>
-          </div>
-          <div class="col-md-1 mt-1 text-end text-title-custom">Oracion:</div>
-          <div
-            class="col-md-3 hover"
-            (click)="changeProgram(semana, 'finalPrayer')"
-          >
-            {{ semana.finalPrayer ? semana.finalPrayer.fullName : porAsignar }}
-          </div>
-        </div>
-      </div>
-    </ng-container>
+      </ng-container>
+    </div>
   </div>
 </div>

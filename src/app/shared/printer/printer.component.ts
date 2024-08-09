@@ -41,12 +41,14 @@ export class PrinterComponent implements OnInit {
           this.printMeetings(data)
           this.modalService.close()
         }, error => {
-          this.modalService.errorHandler(error, "Error")
+          console.log("4",error);
           this.modalService.close()
+          this.modalService.errorHandler("No se han podido obtener las semanas", "Error")
         })
 
       }
     }, error => {
+      console.log("5");
       this.modalService.close()
       this.modalService.errorHandler(error, "Error")
     })

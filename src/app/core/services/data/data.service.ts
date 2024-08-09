@@ -60,7 +60,6 @@ export class DataService {
   }
   public setCongregation(congregation: Congregation) {
     this.congregation = congregation
-    console.log("congregation", congregation);
     this.congregation$.next(congregation)
   }
   public getCongregation$(): Observable<Congregation> {
@@ -72,14 +71,15 @@ export class DataService {
       this.setDesignations(data)
     })
   }
-
   public setConfigFromStorage(){
     const tokenStr = localStorage.getItem("token")
     let tokenObj;
     if(tokenStr){
       tokenObj = JSON.parse(tokenStr)
-      this.setPublisher(this.jwtUtils.decodeToken(tokenObj.token).data);
-      this.setCongregation(this.jwtUtils.decodeToken(tokenObj.token).data.congregation)
+      const token= this.jwtUtils.decodeToken(tokenObj.token);
+      this.setPublisher(token.data);
+      this.setCongregation(token.data.congregation)
+      localStorage.setItem("congregation", JSON.stringify(token.data.congregation))
     }
   }
 }

@@ -69,16 +69,22 @@ export class PrintPdfService {
     return [
       {
         table: {
-          margin: [30, 20, 0, 30],
-          heights: [30],
-          widths: ['auto', '*'],
+          heights: [25],
+          widths: [15, 'auto', '*', 20],
           body: [
             [{
+              text: "", style: "header_a", border: [false, false, false, false]
+            },
+            {
               text: this.congregation, style: "header_a", border: [false, false, false, true]
             },
             {
               text: "Programa para la reunión de entre semana", style: "header_b", border: [false, false, false, true]
-            }]
+            },
+            {
+              text: "", style: "header_a", border: [false, false, false, false]
+            }
+            ]
           ]
         },
       },
@@ -415,10 +421,11 @@ export class PrintPdfService {
     const contenido: any[] = []
     let pageBreak = false;
     let count = 0;
+    let pageCount=0
     weeks.forEach(week => {
       count++
+      pageCount++
       contenido.push(
-        "\n",
         ...this.makeBody(week),
         ...this.makeHeaderTreasures(),
         ...this.makeContentTreasures(week),
@@ -430,7 +437,8 @@ export class PrintPdfService {
         ...this.makeIntermediateSong(week),
         ...this.makeContentLife(week),
         ...this.makeFinalBlock(week),
-        { text: '', pageBreak: count == 2 ? 'before' : '', style: 'subheader' },
+         count == 1 ? "\n":"",
+        { text: '', pageBreak: count == 2  && pageCount < weeks.length? 'before' : '', style: 'subheader' },
 
       )
       if (count == 2) {
@@ -456,14 +464,15 @@ export class PrintPdfService {
     return {
       styles: {
         header_a: {
-          fontSize: 14,
+          fontSize: 15,
           bold: true,
-          margin: [5, 0, 0, 0]
+          margin: [0, 6, 0, 0]
         },
         header_b: {
-          fontSize: 14,
+          fontSize: 17,
           bold: true,
           alignment: 'right',
+          margin: [0, 4, 0, 0]
         },
         sub_title: {
           fontSize: 11,
@@ -517,19 +526,19 @@ export class PrintPdfService {
         },
         fontTreasures: {
           bold: true,
-          fontSize: 8,
+          fontSize: 9,
           color: "#2a6b77",
           margin: [0, 0, 0, 0],
         },
         fontTeachers: {
           bold: true,
-          fontSize: 8,
+          fontSize: 9,
           color: "#9b6d17",
           margin: [0, 0, 0, 0],
         },
         fontLife: {
           bold: true,
-          fontSize: 8,
+          fontSize: 9,
           color: "#942926",
           margin: [0, 3, 0, 0],
         },

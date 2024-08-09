@@ -32,6 +32,7 @@ export class AppComponent {
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
     this.dataService.getConfigs()
+    this.dataService.setConfigFromStorage();
   }
 
   ngOnDestroy(): void {

@@ -68,8 +68,9 @@ export class PrintPdfService {
   private makeHeader(pageBreak: boolean) {
     return [
       {
-        pageBreak: pageBreak ? 'before' : '',
         table: {
+          margin: [30, 20, 0, 30],
+          heights: [30],
           widths: ['auto', '*'],
           body: [
             [{
@@ -417,7 +418,6 @@ export class PrintPdfService {
     weeks.forEach(week => {
       count++
       contenido.push(
-        // ...this.makeHeader(pageBreak),
         "\n",
         ...this.makeBody(week),
         ...this.makeHeaderTreasures(),
@@ -430,35 +430,23 @@ export class PrintPdfService {
         ...this.makeIntermediateSong(week),
         ...this.makeContentLife(week),
         ...this.makeFinalBlock(week),
+        { text: '', pageBreak: count == 2 ? 'before' : '', style: 'subheader' },
 
       )
-
-      pageBreak = true
+      if (count == 2) {
+        count = 0
+      }
     })
 
     return {
+      header: this.makeHeader(pageBreak)[0],
       pageSize: 'LETTER',
       // by default we use portrait, you can change it to landscape if you wish
       pageOrientation: 'portrait',
       // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
-      pageMargins: [20, 20, 20, 20],
+      pageMargins: [20, 30, 20, 20],
 
       content: [
-        // ...this.makeHeader(),
-        // "\n",
-        // ...this.makeBody(),
-        // "\n",
-        // ...this.makeHeaderTreasures(),
-        // ...this.makeContentTreasures(),
-
-        // "\n",
-        // ...this.makeHeaderTeachers(),
-        // ...this.makeContentTeachers(),
-        // "\n",
-        // ...this.makeHeaderLife(),
-        // ...this.makeIntermediateSong(),
-        // ...this.makeContentLife(),
-        // ...this.makeFinalBlock(),
         ...contenido
       ],
       ...this.styles()
@@ -468,12 +456,12 @@ export class PrintPdfService {
     return {
       styles: {
         header_a: {
-          fontSize: 11,
+          fontSize: 14,
           bold: true,
-          margin: [0, 5, 0, 0]
+          margin: [5, 0, 0, 0]
         },
         header_b: {
-          fontSize: 10,
+          fontSize: 14,
           bold: true,
           alignment: 'right',
         },

@@ -14,7 +14,7 @@ import { Congregation } from '../../core/interfaces/reuniones.interface';
 export class PrinterComponent implements OnInit {
   @ViewChild('pdfViewerOnDemand') pdfViewerOnDemand: any;
   @ViewChild('pdfViewerAutoLoad') pdfViewerAutoLoad: any;
-private congregation!: Congregation
+  private congregation!: Congregation
   constructor(private printService: PrintPdfService,
     private meetingsService: MeetingsService,
     private dataService: DataService,
@@ -23,8 +23,14 @@ private congregation!: Congregation
 
   ngOnInit(): void {
     this.dataService.getCongregation$().subscribe(data => {
-      this.congregation=data;
+      this.congregation = data;
     })
+
+    if (this.congregation) {
+      this.getProgram()
+    }
+  }
+  getProgram() {
     this.modalService.loading()
     this.dataService.getMeeting().subscribe(data => {
       if (data && data.length > 0) {
@@ -34,13 +40,18 @@ private congregation!: Congregation
         this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
           this.printMeetings(data)
           this.modalService.close()
+        }, error => {
+          this.modalService.errorHandler(error, "Error")
+          this.modalService.close()
         })
 
       }
+    }, error => {
+      this.modalService.close()
+      this.modalService.errorHandler(error, "Error")
     })
 
   }
-
   printMeetings(weeks: Program[]) {
     this.printService.getBlob(weeks)
       .then(data => {

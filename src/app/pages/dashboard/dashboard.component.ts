@@ -39,7 +39,7 @@ export class DashboardComponent {
   }
 
   shouldRun = true;
-  logout(){
+  logout() {
     this.dataService.logout()
   }
 }

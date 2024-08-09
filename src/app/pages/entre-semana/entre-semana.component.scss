@@ -1,9 +1,12 @@
 .entre-semana {
   padding: 10px 20px 10px 20px;
   background-color: rgb(241, 239, 239);
-  min-height: 90vh;
-  width: 95vw;
+  width: 100%;
   margin: 0 auto;
+  .wrapper {
+    height: 80vh;
+    overflow: auto;
+  }
 }
 
 @media (min-width: 992px) {

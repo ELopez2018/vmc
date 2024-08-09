@@ -76,7 +76,8 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       this.formulario.reset()
       this.dataService.getPublishersFromDB()
     }, error => {
-      this.modalService.errorHandler(error.error, "No se puede guardar.".toUpperCase())
+      this.modalService.errorHandler(error, "No se puede guardar.".toUpperCase())
+      //this.modalService.errorHandler(error.error, "No se puede guardar.".toUpperCase())
     })
 
   }

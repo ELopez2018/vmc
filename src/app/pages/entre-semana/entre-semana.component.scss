@@ -1,17 +1,20 @@
 .entre-semana {
   padding: 10px 20px 10px 20px;
   background-color: rgb(241, 239, 239);
-  min-height: 100vh;
+  min-height: 90vh;
   width: 95vw;
   margin: 0 auto;
 }
 
 @media (min-width: 992px) {
   .entre-semana {
+    .assembly{
+      //height: 60vh;
+    }
     padding: 10px 20px 10px 20px;
     background-color: rgb(241, 239, 239);
     min-height: 100vh;
-    width: 70vw;
+    width: 90vw;
     margin: 0;
 
     &__body {
@@ -82,3 +85,4 @@
 
   }
 }
+

@@ -44,6 +44,7 @@ export interface Program {
   finalPrayer?: Publisher;
   congregation: Congregation;
   weeklyProgram: WeeklyProgram[];
+  assembly: string
 }
 export interface WeeklyProgram {
   id: number;
@@ -65,7 +66,6 @@ export interface Assignment {
   showTips: boolean;
   number: number;
   position: any;
-  startTime: string;
 }
 export interface Congregation {
   id: number;

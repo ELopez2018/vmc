@@ -21,15 +21,18 @@ export class Utils {
   }
 
   public static adapterTime(dateTime: any) {
-    let horas: number;
-    let minutos: number;
+    let horas: any;
+    let minutos: any;
+    let prefijo="";
     if (!dateTime) {
       return '0.00'
     }
-    if ( dateTime.length > 1) {
+    if ( (typeof  dateTime)!= "string") {
+      prefijo="0"
       horas =dateTime[0]
       minutos =dateTime[1]
     } else {
+      prefijo="0"
       const tiempo =  dateTime.split(":").slice(0, 2);
       horas = tiempo[0]
       minutos =tiempo[1]
@@ -38,7 +41,7 @@ export class Utils {
     if (newHora >= 13) {
       newHora -= 12
     }
-    return `${newHora}:${minutos}`
+    return `${newHora > 9 ? newHora : prefijo + newHora }:${minutos > 9 ? minutos : prefijo + parseInt(minutos)  }`
   }
 
   public static showFirstDateOfWeek(fechaSemana: string) {

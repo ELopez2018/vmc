@@ -55,7 +55,8 @@ export class MeetingsService {
     return this.httpClient.post<WeeklyProgram>(url, weeklyProgram)
   }
   saveOrUpdateProgram(program: Program) {
-    const url = `${this.server}/meetings/program`
-    return this.httpClient.post<Program>(url, program)
+    const url = `${this.server}/weeklyProgram`
+    return this.httpClient.put<Program>(url, program)
   }
+
 }

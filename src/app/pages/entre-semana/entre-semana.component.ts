@@ -22,7 +22,7 @@ export class EntreSemanaComponent implements OnInit {
   public congregation: Congregation = CongregationMock
   public assignmentType: string = ""
   public Superintendente!: Publisher
-  public showSpinner= false;
+  public showSpinner = false;
   constructor(
     private meetingsService: MeetingsService,
     private modalService: ModalService,
@@ -37,14 +37,20 @@ export class EntreSemanaComponent implements OnInit {
     this.dataService.getCongregation$().subscribe(data => {
       this.congregation = data
     })
-    this.showSpinner=true;
+
+    this.getPrograms();
+  }
+
+  getPrograms() {
+    this.semanas=[];
+    this.showSpinner = true;
     this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
       this.semanas = data
-      this.showSpinner=false;
-    }, error=>{
-      this.showSpinner=false;
+      this.showSpinner = false;
+    }, error => {
+      console.error(error);
+      this.showSpinner = false;
     })
-    //this.dataService.setCongregation(this.congregation)
   }
 
   showDayOfMeeting(fechaSemana: string) {
@@ -119,7 +125,6 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.startTimeFinalSong = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
             })
           })
           .catch(data => {
@@ -131,7 +136,6 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.openingPrayer = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
             })
           })
           .catch(data => {
@@ -143,7 +147,6 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.finalPrayer = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
             })
           })
           .catch(data => {
@@ -274,7 +277,6 @@ export class EntreSemanaComponent implements OnInit {
       this.selectAssignmentType(item, type)
     }
 
-    console.log(this.assignmentType);
     switch (type) {
       case "responsible":
         this.modalService.assignPublisherWeeklyProgram(item, this.assignmentType)
@@ -303,8 +305,9 @@ export class EntreSemanaComponent implements OnInit {
       case "startTime":
         this.modalService.selectedHour()
           .then(data => {
+            console.log("startTime", data);
             item.startTime = data
-            this.assignmentService.updateAssignment(item.assignment).subscribe(data => {
+            this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
               console.log("saved startTime", data);
             })
           })

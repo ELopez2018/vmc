@@ -46,12 +46,12 @@
 
     <ng-container *ngIf="semana.assembly == null || semana.assembly == ''">
       <div class="row entre-semana__header">
-        <div class="col-md-4">
+        <div class="col-md-4 h3">
           <div class="entre-semana__congregacion pt-2">
             {{ semana.congregation.name }}
           </div>
         </div>
-        <div class="col-md-8 h4 text-end pe-3">
+        <div class="col-md-8 h2 text-end pe-5">
           <div class="entre-semana__title">
             Programa para la reunión de entre semana
           </div>
@@ -66,7 +66,7 @@
             | LECTURA SEMANAL DE LA BIBLIA
           </div>
 
-          <div class="col-md-2 text-end text-title-custom">Presidente</div>
+          <div class="col-md-1 text-end text-title-custom">Presidente</div>
           <div class="col-md-3 hover">
             <span (click)="changeProgram(semana, 'president')">
               {{ semana.president ? semana.president.fullName : porAsignar }}
@@ -76,7 +76,7 @@
 
         <div class="row">
           <div class="col-md-7"></div>
-          <div class="col-md-2 text-end text-title-custom">
+          <div class="col-md-1 text-end text-title-custom">
             Consejero Auxiliar
           </div>
           <div class="col-md-3 hover">
@@ -104,7 +104,7 @@
               Canción {{ semana.meeting.openingSong }}
             </span>
           </div>
-          <div class="col-md-2 text-end text-title-custom">Oración</div>
+          <div class="col-md-1 text-end text-title-custom">Oración</div>
           <div class="col-md-3 hover">
             <span (click)="changeProgram(semana, 'openingPrayer')">
               {{
@@ -185,7 +185,7 @@
               </div>
             </div>
             <div
-              class="col-md-2 mt-1 text-end text-title-custom"
+              class="col-md-1 mt-1 text-end text-title-custom"
               *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'"
             >
               <span
@@ -258,7 +258,7 @@
               </div>
             </div>
             <div
-              class="col-md-2 mt-1 text-end text-title-custom"
+              class="col-md-1 mt-1 text-end text-title-custom"
               *ngIf="
                 item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'
               "
@@ -358,7 +358,7 @@
               </div>
             </div>
             <div
-              class="col-md-2 mt-1 text-end text-title-custom"
+              class="col-md-1 mt-1 text-end text-title-custom"
               *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'"
             >
               <span
@@ -415,7 +415,7 @@
               Canción {{ semana.meeting.finalSong }}
             </span>
           </div>
-          <div class="col-md-2 mt-1 text-end text-title-custom">Oracion:</div>
+          <div class="col-md-1 mt-1 text-end text-title-custom">Oracion:</div>
           <div
             class="col-md-3 hover"
             (click)="changeProgram(semana, 'finalPrayer')"

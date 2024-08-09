@@ -161,6 +161,7 @@ export class PrintPdfService {
     return [
       {
         table: {
+          heights: [5],
           widths: [270, 110, '*'],
           body: [
             [
@@ -214,6 +215,7 @@ export class PrintPdfService {
     return [
       {
         table: {
+          heights: [5],
           widths: [270, 110, '*'],
           body: [
             [
@@ -266,6 +268,7 @@ export class PrintPdfService {
     return [
       {
         table: {
+          heights: [5],
           widths: [270, 110, '*'],
           body: [
             [
@@ -410,15 +413,15 @@ export class PrintPdfService {
   private makeDocumet(weeks: Program[]): any {
     const contenido: any[] = []
     let pageBreak = false;
+    let count = 0;
     weeks.forEach(week => {
+      count++
       contenido.push(
-        ...this.makeHeader(pageBreak),
+        // ...this.makeHeader(pageBreak),
         "\n",
         ...this.makeBody(week),
-        "\n",
         ...this.makeHeaderTreasures(),
         ...this.makeContentTreasures(week),
-
         "\n",
         ...this.makeHeaderTeachers(),
         ...this.makeContentTeachers(week),
@@ -427,7 +430,9 @@ export class PrintPdfService {
         ...this.makeIntermediateSong(week),
         ...this.makeContentLife(week),
         ...this.makeFinalBlock(week),
+
       )
+
       pageBreak = true
     })
 
@@ -436,7 +441,7 @@ export class PrintPdfService {
       // by default we use portrait, you can change it to landscape if you wish
       pageOrientation: 'portrait',
       // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
-      pageMargins: [30, 30, 30, 30],
+      pageMargins: [20, 20, 20, 20],
 
       content: [
         // ...this.makeHeader(),
@@ -468,7 +473,7 @@ export class PrintPdfService {
           margin: [0, 5, 0, 0]
         },
         header_b: {
-          fontSize: 14,
+          fontSize: 10,
           bold: true,
           alignment: 'right',
         },
@@ -496,47 +501,47 @@ export class PrintPdfService {
           bold: true,
           alignment: 'left',
           color: "#b6b4b4",
-          margin: [0, 8, 0, 0]
+          margin: [0, 0, 0, 0]
         },
         titles: {
           bold: true,
-          fontSize: 11,
-          margin: [0, 3, 0, 0],
+          fontSize: 9,
+          margin: [0, 0, 0, 0],
         },
 
         treasures: {
           bold: true,
-          fontSize: 10,
+          fontSize: 8,
           color: "#fff",
-          margin: [0, 3, 0, 0],
+          margin: [0, 0, 0, 0],
         },
         teachers: {
           bold: true,
-          fontSize: 10,
+          fontSize: 8,
           color: "#fff",
-          margin: [0, 3, 0, 0],
+          margin: [0, 0, 0, 0],
         },
         life: {
           bold: true,
-          fontSize: 10,
+          fontSize: 8,
           color: "#fff",
-          margin: [0, 3, 0, 0],
+          margin: [0, 0, 0, 0],
         },
         fontTreasures: {
           bold: true,
-          fontSize: 10,
+          fontSize: 8,
           color: "#2a6b77",
-          margin: [0, 3, 0, 0],
+          margin: [0, 0, 0, 0],
         },
         fontTeachers: {
           bold: true,
-          fontSize: 10,
+          fontSize: 8,
           color: "#9b6d17",
-          margin: [0, 3, 0, 0],
+          margin: [0, 0, 0, 0],
         },
         fontLife: {
           bold: true,
-          fontSize: 10,
+          fontSize: 8,
           color: "#942926",
           margin: [0, 3, 0, 0],
         },

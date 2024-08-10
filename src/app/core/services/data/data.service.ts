@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { Meeting, Program, Publisher, Congregation } from '../../interfaces/reuniones.interface';
+import { Meeting, Program, Publisher, Congregation, Room } from '../../interfaces/reuniones.interface';
 import { UsersService } from '../users/users.service';
 import { ConfigsService } from '../configs/configs.service';
 import { Generic } from '../../interfaces/configs.interface';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Servers } from '../../constants/servers';
+import { RoomsService } from '../rooms/rooms.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +19,15 @@ export class DataService {
   private congregation!: Congregation;
   private publisher$: BehaviorSubject<Publisher> = new BehaviorSubject<Publisher>(<Publisher>{})
   private designations$: BehaviorSubject<Generic[]> = new BehaviorSubject<Generic[]>([])
+  private rooms$: BehaviorSubject<Room[]> = new BehaviorSubject<Room[]>([])
   jwtUtils!: JwtHelperService;
-  constructor(private usersService: UsersService, private configsService: ConfigsService) {
+  constructor(
+    private usersService: UsersService,
+    private configsService: ConfigsService,
+    private roomsService: RoomsService
+  ) {
     this.jwtUtils = new JwtHelperService()
-   }
+  }
 
   public setDesignations(designations: any) {
     this.designations$.next(designations)
@@ -61,6 +67,10 @@ export class DataService {
   }
   public setCongregation(congregation: Congregation) {
     this.congregation = congregation
+    if (this.congregation) {
+      this.roomsService.getAllRoomsByCongregation(this.congregation.id)
+        .subscribe(data => this.rooms$.next(data))
+    }
     this.congregation$.next(congregation)
   }
   public getCongregation$(): Observable<Congregation> {
@@ -69,22 +79,30 @@ export class DataService {
 
   public getConfigs() {
     this.configsService.getAllDesignations().subscribe(data => {
-      this.setDesignations(data)
+      if (data) {
+        this.setDesignations(data)
+      }
     })
   }
-  public setConfigFromStorage(){
+  public setConfigFromStorage() {
     const tokenStr = localStorage.getItem("token")
     let tokenObj;
-    if(tokenStr){
+    if (tokenStr) {
       tokenObj = JSON.parse(tokenStr)
-      const token= this.jwtUtils.decodeToken(tokenObj.token);
+      const token = this.jwtUtils.decodeToken(tokenObj.token);
       this.setPublisher(token.data);
       this.setCongregation(token.data.congregation)
       localStorage.setItem("congregation", JSON.stringify(token.data.congregation))
     }
   }
-  logout(){
+  logout() {
     localStorage.clear()
-    window.location.href =Servers.home
+    window.location.href = Servers.home
+  }
+  public setRooms(rooms: Room[]) {
+    this.rooms$.next(rooms)
+  }
+  public getRooms$(): Observable<Room[]> {
+    return this.rooms$.asObservable()
   }
 }

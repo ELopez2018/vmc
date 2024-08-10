@@ -31,8 +31,8 @@ export class AppComponent {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    this.dataService.getConfigs()
     this.dataService.setConfigFromStorage();
+    this.dataService.getConfigs()
   }
 
   ngOnDestroy(): void {

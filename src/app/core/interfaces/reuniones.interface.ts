@@ -87,3 +87,10 @@ export interface Meeting {
   url: string;
   assignmentType: any;
 }
+
+export interface Room {
+  id: number;
+  room: string;
+  adviser: Publisher;
+  congregation: Congregation;
+}

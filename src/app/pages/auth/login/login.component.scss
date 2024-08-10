@@ -1,13 +1,13 @@
 .login  {
   width: 90vw;
-  height: 40vh;
+  height: 300px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 @media (min-width: 992px) {
   .login  {
     width: 30vw;
-    min-height: 40vh;
+    min-height: 30vh;
   }
  }
  @media (min-width: 1440px) {

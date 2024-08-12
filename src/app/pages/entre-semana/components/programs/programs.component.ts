@@ -1,25 +1,32 @@
-import { Component, OnInit } from '@angular/core';
-import { SemanasMock } from './mocks/semanas.mock';
-import { MeetingsService } from '../../core/services/meetings/meetings.service';
-import { Meeting, Program, Publisher, WeeklyProgram } from 'src/app/core/interfaces/reuniones.interface';
-import { Utils } from 'src/app/shared/Utils';
-import { ModalService } from 'src/app/core/services/modal/modal.service';
-import { DataService } from '../../core/services/data/data.service';
-import { Congregation } from '../../core/interfaces/reuniones.interface';
-import { CongregationMock } from './mocks/congregation.mock';
-import { AssignmentService } from 'src/app/core/services/assignment/assignment.service';
+import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AssignmentType } from 'src/app/core/enums/assignments.enums';
-import { SectionMeeting } from '../../core/enums/meetings.enums';
+import { Congregation, Meeting, Program, Publisher, WeeklyProgram } from 'src/app/core/interfaces/reuniones.interface';
+import { AssignmentService } from 'src/app/core/services/assignment/assignment.service';
+import { DataService } from 'src/app/core/services/data/data.service';
+import { MeetingsService } from 'src/app/core/services/meetings/meetings.service';
+import { ModalService } from 'src/app/core/services/modal/modal.service';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { Utils } from 'src/app/shared/Utils';
+import { CongregationMock } from '../../mocks/congregation.mock';
 
 @Component({
-  selector: 'vmc-entre-semana',
-  templateUrl: './entre-semana.component.html',
-  styleUrls: ['./entre-semana.component.scss']
+  selector: 'vmc-programs',
+  templateUrl: './programs.component.html',
+  styleUrls: ['./programs.component.scss'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule
+  ]
 })
-export class EntreSemanaComponent implements OnInit {
-  private programList: Program[] = [];
-  public semanas: Program[] = [];
-  public semanasSalaAuxiliar: Program[] = [];
+export class ProgramsComponent implements OnInit {
+  @Input() public semanas: Program[] = [];
+  @Input() public RoomA= false;
+  @Input() public room= "A";
   porAsignar = "por asignar";
   public congregation: Congregation = CongregationMock
   public assignmentType: string = ""
@@ -40,25 +47,20 @@ export class EntreSemanaComponent implements OnInit {
       this.congregation = data
     })
 
-    this.getPrograms();
+    // this.getPrograms();
   }
 
-  getPrograms() {
-    this.semanas = [];
-    this.showSpinner = true;
-    this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
-      this.programList = [...data]
-      this.semanas = this.filterWeekByRoom("A");
-      this.semanasSalaAuxiliar = this.filterWeekByRoom("B")
-      // this.select()
-      // console.log(this.semanas);
-      // console.log(this.semanasSalaAuxiliar);
-      this.showSpinner = false;
-    }, error => {
-      console.error(error);
-      this.showSpinner = false;
-    })
-  }
+  // getPrograms() {
+  //   this.semanas=[];
+  //   this.showSpinner = true;
+  //   this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
+  //     this.semanas = data
+  //     this.showSpinner = false;
+  //   }, error => {
+  //     console.error(error);
+  //     this.showSpinner = false;
+  //   })
+  // }
 
   showDayOfMeeting(fechaSemana: string) {
     return Utils.showDayOfMeeting(fechaSemana)
@@ -341,19 +343,6 @@ export class EntreSemanaComponent implements OnInit {
   addAssign(item: Program, sectionMeeting: string) {
     console.log(item, sectionMeeting);
     this.modalService.AddAssignment(item, sectionMeeting)
-  }
-
-  filterWeekByRoom(room: string) {
-    return this.programList.filter(i => {
-      return i.weeklyProgram.filter(b => b.room == room).length > 0
-    }
-    )
-  }
-  select(){
-    this.semanasSalaAuxiliar =  this.semanasSalaAuxiliar.map(i=>{
-     i.weeklyProgram = i.weeklyProgram.filter(a=>a.room == "B")
-     return i
-    })
   }
 }
 //

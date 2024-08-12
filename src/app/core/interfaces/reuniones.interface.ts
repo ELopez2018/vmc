@@ -54,6 +54,7 @@ export interface WeeklyProgram {
   congregation: Congregation;
   program: number;
   startTime: string;
+  room: string;
 }
 export interface Assignment {
   id: number;

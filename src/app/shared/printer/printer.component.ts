@@ -38,7 +38,6 @@ export class PrinterComponent implements OnInit {
           this.getWeeks()
         }
       }, error => {
-        console.log("5");
         this.modalService.close()
         this.modalService.errorHandler(error, "Error")
       })

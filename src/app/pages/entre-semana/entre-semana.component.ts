@@ -30,8 +30,7 @@ export class EntreSemanaComponent implements OnInit {
     private modalService: ModalService,
     private dataService: DataService,
     private assignmentService: AssignmentService
-  ) { }
-  ngOnInit(): void {
+  ) {
     this.dataService.getPublisher().subscribe(data => {
       this.Superintendente = data
     })
@@ -39,6 +38,9 @@ export class EntreSemanaComponent implements OnInit {
     this.dataService.getCongregation$().subscribe(data => {
       this.congregation = data
     })
+  }
+  ngOnInit(): void {
+
 
     this.getPrograms();
   }
@@ -49,11 +51,8 @@ export class EntreSemanaComponent implements OnInit {
     this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
       this.programList = [...data]
       this.semanas = this.filterWeekByRoom("A");
-      this.semanasSalaAuxiliar = this.filterWeekByRoom("B")
-      this.dataService.setMeeting(data)
-      // this.select()
-      // console.log(this.semanas);
-      // console.log(this.semanasSalaAuxiliar);
+      this.semanasSalaAuxiliar = [...this.filterWeekByRoom("B")]
+      this.dataService.setMeeting([...data])
       this.showSpinner = false;
     }, error => {
       console.error(error);
@@ -72,6 +71,7 @@ export class EntreSemanaComponent implements OnInit {
   filter(weeks: Meeting[]) {
     return weeks.filter(week => Utils.showFirstDateOfWeek(week.week))
   }
+
   getDataFromJW() {
     this.meetingsService.getUpdateWeeksFromJW().subscribe(data => {
       console.log(data);
@@ -350,10 +350,10 @@ export class EntreSemanaComponent implements OnInit {
     }
     )
   }
-  select(){
-    this.semanasSalaAuxiliar =  this.semanasSalaAuxiliar.map(i=>{
-     i.weeklyProgram = i.weeklyProgram.filter(a=>a.room == "B")
-     return i
+  select() {
+    this.semanasSalaAuxiliar = this.semanasSalaAuxiliar.map(i => {
+      i.weeklyProgram = i.weeklyProgram.filter(a => a.room == "B")
+      return i
     })
   }
 }

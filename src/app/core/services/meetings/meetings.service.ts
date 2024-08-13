@@ -48,10 +48,6 @@ export class MeetingsService {
         });
         return data; // Devuelve los datos transformados
       }),
-
-      tap(data=>{
-        this.dataService.setMeeting(data)
-      })
     )
   }
   getUpdateWeeksFromJW(): Observable<any> {

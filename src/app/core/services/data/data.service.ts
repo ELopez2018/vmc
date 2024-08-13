@@ -15,7 +15,7 @@ import { ProgramPdf, WeeklyProgramPdF } from '../../interfaces/print-pdf.interfa
 export class DataService {
   private meetings$: BehaviorSubject<Program[]> = new BehaviorSubject<Program[]>([])
   private meetingsPDF$: BehaviorSubject<ProgramPdf[]> = new BehaviorSubject<ProgramPdf[]>([])
-  private meetings: Program[] = []
+  private weekPrograms: Program[] = []
   private publisherList: BehaviorSubject<Publisher[]> = new BehaviorSubject<Publisher[]>([])
   private congregation$: BehaviorSubject<Congregation> = new BehaviorSubject<Congregation>(<Congregation>{})
   private publisherListTemp: Publisher[] = [];
@@ -47,8 +47,8 @@ export class DataService {
   }
 
   public setMeeting(meetings: Program[]) {
-    this.meetings = meetings;
-    this.makePDfVersion()
+    this.weekPrograms = [...meetings];
+    this.makePDfVersion([...meetings])
     this.meetings$.next(meetings)
   }
   public getMeeting(): Observable<Program[]> {
@@ -56,32 +56,60 @@ export class DataService {
   }
 
 
-  makePDfVersion(): ProgramPdf[] {
-    const meetingsPdf: ProgramPdf[] = []
-    let weeklyProgramPdf: WeeklyProgramPdF[] = []
-    let arrayTem: any[] = []
-    this.meetings.forEach((week: any) => {
-      weeklyProgramPdf = []
-      arrayTem = []
-      week.weeklyProgram.forEach((assig: any) => {
-        if (!weeklyProgramPdf.find(i => i.assignment.id == assig.assignment.id) && assig.room == "A") {
-          weeklyProgramPdf.push(assig)
-        } else {
-          arrayTem.push(assig)
-        }
-      })
-      weeklyProgramPdf.forEach(b => {
-        let upd = arrayTem.find(f => f.assignment.id == b.assignment.id)
-        if (upd) {
-          b.assistantB = upd.assistant ?? null
-          b.responsibleB = upd.responsible ?? null
-        }
+  // makePDfVersion(meetings: Program[]): ProgramPdf[] {
+  //   const meetingsPdf: ProgramPdf[] = []
+  //   let weeklyProgramPdf: WeeklyProgramPdF[] = []
+  //   let arrayTem: any[] = []
+  //   meetings.forEach((week: any) => {
+  //     weeklyProgramPdf = []
+  //     arrayTem = []
+  //     week.weeklyProgram.forEach((assig: any) => {
+  //       if (!weeklyProgramPdf.find(i => i.assignment.id == assig.assignment.id) && assig.room == "A") {
+  //         weeklyProgramPdf.push(assig)
+  //       } else {
+  //         arrayTem.push(assig)
+  //       }
+  //     })
+  //     weeklyProgramPdf.forEach(b => {
+  //       let upd = arrayTem.find(f => f.assignment.id == b.assignment.id)
+  //       if (upd) {
+  //         b.assistantB = upd.assistant ?? null
+  //         b.responsibleB = upd.responsible ?? null
+  //       }
 
-      })
-      week.weeklyProgram = weeklyProgramPdf
-      meetingsPdf.push(week);
-    })
-    this.meetingsPDF$.next(meetingsPdf)
+  //     })
+  //     week.weeklyProgram = weeklyProgramPdf
+  //     meetingsPdf.push(week);
+  //   })
+  //   this.meetingsPDF$.next(meetingsPdf)
+  //   return meetingsPdf;
+  // }
+
+  makePDfVersion(meetings: Program[]): ProgramPdf[] {
+    const meetingsPdf: ProgramPdf[] = meetings.map(week => {
+      const weeklyProgramPdf: WeeklyProgramPdF[] = [];
+      const arrayTem: any[] = [];
+
+      week.weeklyProgram.forEach((assig: any) => {
+        if (!weeklyProgramPdf.some(i => i.assignment.id === assig.assignment.id) && assig.room === "A") {
+          weeklyProgramPdf.push({ ...assig });
+        } else {
+          arrayTem.push(assig);
+        }
+      });
+
+      weeklyProgramPdf.forEach(b => {
+        const upd = arrayTem.find(f => f.assignment.id === b.assignment.id);
+        if (upd) {
+          b.assistantB = upd.assistant ?? null;
+          b.responsibleB = upd.responsible ?? null;
+        }
+      });
+
+      return { ...week, weeklyProgram: weeklyProgramPdf };
+    });
+
+    this.meetingsPDF$.next(meetingsPdf);
     return meetingsPdf;
   }
 

@@ -50,6 +50,7 @@ export class EntreSemanaComponent implements OnInit {
       this.programList = [...data]
       this.semanas = this.filterWeekByRoom("A");
       this.semanasSalaAuxiliar = this.filterWeekByRoom("B")
+      this.dataService.setMeeting(data)
       // this.select()
       // console.log(this.semanas);
       // console.log(this.semanasSalaAuxiliar);

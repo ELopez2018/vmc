@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { Servers } from '../../constants/servers';
 import { HttpClient } from '@angular/common/http';
 import { Meeting, Program, WeeklyProgram } from '../../interfaces/reuniones.interface';
 import { OtherAssignment } from '../../enums/meetings.enums';
+import { DataService } from '../data/data.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MeetingsService {
   private server = Servers.URL
-  constructor(private httpClient: HttpClient) { }
+  constructor(
+    private httpClient: HttpClient,
+    private dataService: DataService
+  ) { }
   getAllWeek(): Observable<any> {
     const url = `${this.server}/meetings`
     return this.httpClient.get(url)
@@ -43,6 +47,10 @@ export class MeetingsService {
           }
         });
         return data; // Devuelve los datos transformados
+      }),
+
+      tap(data=>{
+        this.dataService.setMeeting(data)
       })
     )
   }

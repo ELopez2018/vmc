@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
-import { Program, WeeklyProgram } from '../../interfaces/reuniones.interface';
 import { Utils } from 'src/app/shared/Utils';
+import { ProgramPdf, WeeklyProgramPdF } from '../../interfaces/print-pdf.interface';
+
 
 
 @Injectable({
@@ -89,7 +90,7 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeBody(week: Program) {
+  private makeBody(week: ProgramPdf) {
     return [
       {
         table: {
@@ -175,7 +176,7 @@ export class PrintPdfService {
                 text: "TESOROS DE LA BIBLIA", style: "treasures", border: [false, false, false, false], fillColor: '#2a6b77',
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "Sala Auxiliar", style: "tips_c", border: [false, false, false, false]
               },
               {
                 text: "Auditorio principal", style: "tips_c", border: [false, false, false, false]
@@ -186,37 +187,78 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeContentTreasures(week: Program) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgram) => data.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA')
+  private makeContentTreasures(week: ProgramPdf) {
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA')
     const content: any = [];
-    treasures.forEach((asigment: WeeklyProgram) => {
-      content.push(
-        [
-          {
-            text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
-          },
-          {
-            text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTreasures", border: [false, false, false, false]
-          },
-          {
-            text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
-          },
-          {
-            text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
-          }
-        ]
-      )
+    treasures.forEach((asigment: WeeklyProgramPdF) => {
+      if (asigment.assignment.number != 3) {
+        content.push(
+          [
+            {
+              text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
+            },
+            {
+              text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTreasures", border: [false, false, false, false]
+            },
+
+            {
+              text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
+            },
+            {
+              text: asigment.assistantB ? asigment.responsibleB?.fullName + " / " + asigment.assistantB.fullName : asigment.responsibleB?.fullName, style: "tips_l", border: [false, false, false, false]
+            },
+            {
+              text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
+            }
+          ]
+        )
+      }
     })
     return [
       {
         table: {
-          widths: ['auto', 250, 100, '*'],
+          widths: ['auto', 200, 40, 100, '*'],
           body: content
         },
       },
     ]
   }
+  private makeContentTreasuresReader(week: ProgramPdf) {
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA')
+    const content: any = [];
+    treasures.forEach((asigment: WeeklyProgramPdF) => {
+      if (asigment.assignment.number == 3) {
+        content.push(
+          [
+            {
+              text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
+            },
+            {
+              text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTreasures", border: [false, false, false, false]
+            },
 
+            {
+              text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
+            },
+            {
+              text: asigment.assistantB ? asigment.responsibleB?.fullName + " / " + asigment.assistantB.fullName : asigment.responsibleB?.fullName, style: "tips_l", border: [false, false, false, false]
+            },
+            {
+              text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
+            }
+          ]
+        )
+      }
+    })
+    return [
+      {
+        table: {
+          widths: ['auto', 190, 40, 110, '*'],
+          body: content
+        },
+      },
+    ]
+  }
   private makeHeaderTeachers() {
     return [
       {
@@ -229,7 +271,7 @@ export class PrintPdfService {
                 text: "SEAMOS MEJORES MAESTROS", style: "teachers", border: [false, false, false, false], fillColor: '#9b6d17',
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "Sala Auxiliar", style: "tips_c", border: [false, false, false, false]
               },
               {
                 text: "Auditorio principal", style: "tips_c", border: [false, false, false, false]
@@ -240,10 +282,10 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeContentTeachers(week: Program) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgram) => data.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS')
+  private makeContentTeachers(week: ProgramPdf) {
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS')
     const content: any = [];
-    treasures.forEach((asigment: WeeklyProgram) => {
+    treasures.forEach((asigment: WeeklyProgramPdF) => {
       content.push(
         [
           {
@@ -252,8 +294,12 @@ export class PrintPdfService {
           {
             text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTeachers", border: [false, false, false, false]
           },
+
           {
             text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
+          },
+          {
+            text: asigment.assistantB ? asigment.responsibleB?.fullName + " / " + asigment.assistantB.fullName : asigment.responsibleB?.fullName, style: "tips_l", border: [false, false, false, false]
           },
           {
             text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
@@ -264,7 +310,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 250, 100, '*'],
+          widths: ['auto', 160, 75, 110, '*'],
           body: content
         },
       },
@@ -293,10 +339,10 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeContentLife(week: Program) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgram) => data.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
+  private makeContentLife(week: ProgramPdf) {
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
     const content: any = [];
-    treasures.forEach((asigment: WeeklyProgram) => {
+    treasures.forEach((asigment: WeeklyProgramPdF) => {
       content.push(
         [
           {
@@ -324,7 +370,7 @@ export class PrintPdfService {
     ]
   }
 
-  private makeIntermediateSong(week: Program) {
+  private makeIntermediateSong(week: ProgramPdf) {
     return [
       {
         table: {
@@ -349,7 +395,7 @@ export class PrintPdfService {
       }
     ]
   }
-  private makeFinalBlock(week: Program) {
+  private makeFinalBlock(week: ProgramPdf) {
 
     return [
       {
@@ -393,18 +439,18 @@ export class PrintPdfService {
   }
 
 
-  public print(weeks: Program[]) {
+  public print(weeks: ProgramPdf[]) {
     pdfMake.createPdf(this.makeDocumet(weeks)).open()
   }
-  public download(weeks: Program[]) {
+  public download(weeks: ProgramPdf[]) {
     pdfMake.createPdf(this.makeDocumet(weeks)).download('Nota - ' + this.invoice.prefix + this.invoice.id + '.pdf')
   }
 
-  public getStream(weeks: Program[]) {
+  public getStream(weeks: ProgramPdf[]) {
     pdfMake.createPdf(this.makeDocumet(weeks)).getStream()
   }
 
-  public async getBlob(weeks: Program[]): Promise<Blob> {
+  public async getBlob(weeks: ProgramPdf[]): Promise<Blob> {
     this.congregation = weeks[0].congregation.name
     return new Promise<Blob>((resolve, reject) => {
       const pdf = pdfMake.createPdf(this.makeDocumet(weeks));
@@ -416,11 +462,11 @@ export class PrintPdfService {
       });
     });
   }
-  private makeDocumet(weeks: Program[]): any {
+  private makeDocumet(weeks: ProgramPdf[]): any {
     const contenido: any[] = []
     let pageBreak = false;
     let count = 0;
-    let pageCount=0
+    let pageCount = 0
     weeks.forEach(week => {
       count++
       pageCount++
@@ -428,6 +474,7 @@ export class PrintPdfService {
         ...this.makeBody(week),
         ...this.makeHeaderTreasures(),
         ...this.makeContentTreasures(week),
+        ...this.makeContentTreasuresReader(week),
         "\n",
         ...this.makeHeaderTeachers(),
         ...this.makeContentTeachers(week),
@@ -436,8 +483,8 @@ export class PrintPdfService {
         ...this.makeIntermediateSong(week),
         ...this.makeContentLife(week),
         ...this.makeFinalBlock(week),
-         count == 1 ? "\n":"",
-        { text: '', pageBreak: count == 2  && pageCount < weeks.length? 'before' : '', style: 'subheader' },
+        count == 1 ? "\n" : "",
+        { text: '', pageBreak: count == 2 && pageCount < weeks.length ? 'before' : '', style: 'subheader' },
 
       )
       if (count == 2) {
@@ -479,14 +526,14 @@ export class PrintPdfService {
           bold: true,
         },
         tips_r: {
-          fontSize: 7,
+          fontSize: 6,
           //color: "#ea002e",
           bold: true,
           alignment: 'right',
-          margin: [0, 4, 0, 0]
+          margin: [0, 3, 0, 0]
         },
         tips_l: {
-          fontSize: 8,
+          fontSize: 7,
           bold: true,
           color: "#ea002e",
           alignment: 'left',
@@ -497,7 +544,7 @@ export class PrintPdfService {
           bold: true,
           alignment: 'left',
           color: "#b6b4b4",
-          margin: [0, 0, 0, 0]
+          margin: [0, 6, 0, 0]
         },
         titles: {
           bold: true,

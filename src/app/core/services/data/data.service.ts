@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { Meeting, Program, Publisher, Congregation, Room } from '../../interfaces/reuniones.interface';
 import { UsersService } from '../users/users.service';
 import { ConfigsService } from '../configs/configs.service';
@@ -7,12 +7,15 @@ import { Generic } from '../../interfaces/configs.interface';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Servers } from '../../constants/servers';
 import { RoomsService } from '../rooms/rooms.service';
+import { ProgramPdf, WeeklyProgramPdF } from '../../interfaces/print-pdf.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  private meetings: BehaviorSubject<Program[]> = new BehaviorSubject<Program[]>([])
+  private meetings$: BehaviorSubject<Program[]> = new BehaviorSubject<Program[]>([])
+  private meetingsPDF$: BehaviorSubject<ProgramPdf[]> = new BehaviorSubject<ProgramPdf[]>([])
+  private meetings: Program[] = []
   private publisherList: BehaviorSubject<Publisher[]> = new BehaviorSubject<Publisher[]>([])
   private congregation$: BehaviorSubject<Congregation> = new BehaviorSubject<Congregation>(<Congregation>{})
   private publisherListTemp: Publisher[] = [];
@@ -44,10 +47,42 @@ export class DataService {
   }
 
   public setMeeting(meetings: Program[]) {
-    this.meetings.next(meetings)
+    this.meetings = meetings;
+    this.makePDfVersion()
+    this.meetings$.next(meetings)
   }
   public getMeeting(): Observable<Program[]> {
-    return this.meetings.asObservable()
+    return this.meetings$.asObservable()
+  }
+
+
+  makePDfVersion(): ProgramPdf[] {
+    const meetingsPdf: ProgramPdf[] = []
+    let weeklyProgramPdf: WeeklyProgramPdF[] = []
+    let arrayTem: any[] = []
+    this.meetings.forEach((week: any) => {
+      weeklyProgramPdf = []
+      arrayTem = []
+      week.weeklyProgram.forEach((assig: any) => {
+        if (!weeklyProgramPdf.find(i => i.assignment.id == assig.assignment.id) && assig.room == "A") {
+          weeklyProgramPdf.push(assig)
+        } else {
+          arrayTem.push(assig)
+        }
+      })
+      weeklyProgramPdf.forEach(b => {
+        let upd = arrayTem.find(f => f.assignment.id == b.assignment.id)
+        if (upd) {
+          b.assistantB = upd.assistant ?? null
+          b.responsibleB = upd.responsible ?? null
+        }
+
+      })
+      week.weeklyProgram = weeklyProgramPdf
+      meetingsPdf.push(week);
+    })
+    this.meetingsPDF$.next(meetingsPdf)
+    return meetingsPdf;
   }
 
   public setPubliherList(publisherList: Publisher[]) {
@@ -104,5 +139,11 @@ export class DataService {
   }
   public getRooms$(): Observable<Room[]> {
     return this.rooms$.asObservable()
+  }
+  public setMeetingsPDF(meetings: ProgramPdf[]) {
+    this.meetingsPDF$.next(meetings)
+  }
+  public getMeetingsPDF$() {
+    return this.meetingsPDF$.asObservable()
   }
 }

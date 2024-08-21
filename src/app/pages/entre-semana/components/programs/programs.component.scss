@@ -1,35 +1,98 @@
-.entre-semana {
-  padding: 10px 20px 10px 20px;
+.program {
+  padding: 0;
   background-color: rgb(241, 239, 239);
-  width: 98%;
   margin: 0 auto;
+  width: 100%;
+  overflow: hidden;
+
   .wrapper {
     height: 75vh;
     overflow: auto;
   }
+
+  &__body {
+    background-color: white;
+  }
+
+  &__header {
+    padding: 50px 0 0 0;
+    border-top: none;
+    border-bottom-style: double;
+  }
+
+  legend {
+    font-size: 0.8rem;
+    margin-bottom: -2px;
+    color: white;
+    width: 95%;
+    height: 25px;
+    padding-left: 10px;
+    position: relative;
+
+    & mat-icon {
+      position: absolute;
+      right: 5px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .fieldset {
+      padding: 5px !important;
+    }
+
+
+  }
+
+  &__title {}
+
+  &__title-tesoros {
+    background-color: gray;
+  }
+
+  &__title-maestros {
+    background-color: rgb(220, 141, 37);
+  }
+
+  &__title-vida {
+    background-color: rgb(151, 44, 5);
+  }
+
+  .title-number {
+    display: inline-block;
+    width: 20px;
+    text-align: right;
+  }
+
+  .text-title-custom {
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 24px;
+  }
+
+  .big-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 500px;
+  }
+
+  .hover:hover {
+    cursor: pointer;
+    background-color: rgb(184, 189, 189);
+  }
 }
 
 @media (min-width: 992px) {
-  .entre-semana {
+  .program {
+    .width-timeStart {
+      width: 7%;
+    }
+
     .wrapper {
       height: 75vh;
       overflow: auto;
-    }
-
-    padding: 10px 20px 10px 20px;
-    background-color: rgb(241, 239, 239);
-    width: 100%;
-    margin: 0;
-    overflow:hidden;
-
-    &__body {
-      background-color: white;
-    }
-
-    &__header {
-      padding: 50px 0 0 0;
-      border-top: none;
-      border-bottom-style: double;
     }
 
     legend {
@@ -43,55 +106,42 @@
       & mat-icon {
         position: absolute;
         right: 10px;
+
         &:hover {
           cursor: pointer;
         }
       }
     }
-
-    &__title {
-
-    }
-
-    &__title-tesoros {
-      background-color: gray;
-    }
-
-    &__title-maestros {
-      background-color: rgb(220, 141, 37);
-    }
-
-    &__title-vida {
-      background-color: rgb(151, 44, 5);
-    }
-
-    .title-number {
-      display: inline-block;
-      width: 20px;
-      text-align: right;
-    }
-
-    .text-title-custom {
-      font-size: 12px;
-      font-weight: bold;
-      line-height: 24px;
-    }
-
-    .big-title {
-      white-space: nowrap;
-      /* Prevents the text from wrapping */
-      overflow: hidden;
-      /* Hides the overflowing text */
-      text-overflow: ellipsis;
-      /* Displays an ellipsis (...) when the text overflows */
-      width: 500px;
-    }
-
-    .hover:hover {
-      cursor: pointer;
-      background-color: rgb(184, 189, 189);
-    }
-
   }
 }
 
+@media (min-width: 1600px) {
+  .program {
+    .width-timeStart {
+      width: 5%;
+    }
+
+    .wrapper {
+      height: 75vh;
+      overflow: auto;
+    }
+
+    legend {
+      font-size: 1rem;
+      margin-bottom: -2px;
+      color: white;
+      width: 530px;
+      padding-left: 10px;
+      position: relative;
+
+      & mat-icon {
+        position: absolute;
+        right: 10px;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

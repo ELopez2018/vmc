@@ -314,7 +314,7 @@ export class ProgramsComponent implements OnInit {
       case "startTime":
         this.modalService.selectedHour()
           .then(data => {
-            console.log("startTime", data);
+            console.log("startTime 1", data);
             item.startTime = data
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
               console.log("saved startTime", data);
@@ -325,6 +325,7 @@ export class ProgramsComponent implements OnInit {
           })
         break;
       case "title":
+        console.log("tiempo de assig",item);
         this.modalService.setTitleAndTime(item)
           .then(data => {
             item = data
@@ -343,6 +344,12 @@ export class ProgramsComponent implements OnInit {
   addAssign(item: Program, sectionMeeting: string) {
     console.log(item, sectionMeeting);
     this.modalService.AddAssignment(item, sectionMeeting)
+  }
+
+  print(week: Program){
+    console.log(week);
+    this.dataService.setMeeting([week])
+    this.modalService.printer()
   }
 }
 //

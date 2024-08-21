@@ -72,6 +72,7 @@ export class ModalService {
     return this.modalRef.result
   }
   public printer() {
+    console.log("printer");
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.PRINTER;
     return this.modalRef.result

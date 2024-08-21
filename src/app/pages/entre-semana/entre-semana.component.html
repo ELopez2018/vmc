@@ -1,7 +1,7 @@
 <div class="entre-semana">
   <div class="container-fluid">
     <div class="row my-1 py-3 shadow-titles">
-      <div class="col-md-9">
+      <div class="col-md-9 text-center text-md-start">
         <h5>
           Bienvenido {{ Superintendente.fullName }} - Congregación
           {{ Superintendente.congregation.name }}
@@ -14,9 +14,13 @@
           width="30px"
           alt=""
           (click)="getPrograms()"
+          title="Actualiza el programa"
         />
-        <a routerLink="/tablero/imprimir">
+        <a routerLink="/tablero/imprimir"
+        (click)="goToPrint()"
+        >
           <img src="../../../assets/img/imprimir.png" width="30px" alt=""
+          title="Imprime todas las semana"
         /></a>
       </div>
     </div>

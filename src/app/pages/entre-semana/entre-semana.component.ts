@@ -356,5 +356,9 @@ export class EntreSemanaComponent implements OnInit {
       return i
     })
   }
+
+  goToPrint(){
+    this.dataService.setMeeting([...this.programList])
+  }
 }
 //

@@ -55,6 +55,7 @@ export interface WeeklyProgram {
   program: number;
   startTime: string;
   room: string;
+
 }
 export interface Assignment {
   id: number;
@@ -67,6 +68,7 @@ export interface Assignment {
   showTips: boolean;
   number: number;
   position: any;
+  numberWeek: number;
 }
 export interface Congregation {
   id: number;

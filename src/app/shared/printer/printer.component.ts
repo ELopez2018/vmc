@@ -32,20 +32,17 @@ export class PrinterComponent implements OnInit {
       this.dataService.getMeetingsPDF$().subscribe(data => {
         if (data && data.length > 0) {
           this.printMeetings(data)
-          this.modalService.close()
         } else {
           this.modalService.loading()
           this.getWeeks()
         }
       }, error => {
-        this.modalService.close()
         this.modalService.errorHandler(error, "Error")
       })
     )
   }
 
   ngOnInit(): void {
-
   }
 
   getWeeks() {

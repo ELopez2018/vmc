@@ -3,6 +3,7 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Utils } from 'src/app/shared/Utils';
 import { ProgramPdf, WeeklyProgramPdF } from '../../interfaces/print-pdf.interface';
+import { retry } from 'rxjs';
 
 
 
@@ -64,6 +65,10 @@ export class PrintPdfService {
     ]
   }
 
+  private verifiRoomB(array: WeeklyProgramPdF[]): boolean {
+
+    return array.some(item => item.responsibleB != null);
+  }
 
   private makeHeader(pageBreak: boolean) {
     return [
@@ -94,7 +99,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 200, 110, '*'],
+          widths: ['auto', 205, 110, '*'],
           body: [
             [
               {
@@ -118,10 +123,10 @@ export class PrintPdfService {
                 text: "", style: "sub_title", border: [false, false, false, false]
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: this.verifiRoomB(week.weeklyProgram) ? 'Consejero de la sala auxiliar:' : '', style: "tips_r", border: [false, false, false, false]
               },
               {
-                text: "", style: "tips_l", border: [false, false, false, false]
+                text: this.verifiRoomB(week.weeklyProgram) ? week.assistantAdviser?.fullName : '', style: "tips_l", border: [false, false, false, false]
               }
             ],
           ]
@@ -129,7 +134,7 @@ export class PrintPdfService {
       },
       {
         table: {
-          widths: ['auto', 250, 100, '*'],
+          widths: ['auto', 260, 100, '*'],
           body: [
             [
               {
@@ -168,8 +173,8 @@ export class PrintPdfService {
     return [
       {
         table: {
-          heights: [5],
-          widths: [270, 110, '*'],
+          heights: [0],
+          widths: [270, 118, '*'],
           body: [
             [
               {
@@ -217,7 +222,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 200, 40, 100, '*'],
+          widths: ['auto', 208,  30, 115, '*'],
           body: content
         },
       },
@@ -253,7 +258,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 190, 40, 110, '*'],
+          widths: ['auto', 208, 30, 115, '*'],
           body: content
         },
       },
@@ -263,8 +268,8 @@ export class PrintPdfService {
     return [
       {
         table: {
-          heights: [5],
-          widths: [270, 110, '*'],
+          heights: [0],
+          widths: [270, 118, '*'],
           body: [
             [
               {
@@ -310,7 +315,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 160, 75, 110, '*'],
+          widths: ['auto', 183, 57, 115, '*'],
           body: content
         },
       },
@@ -331,7 +336,7 @@ export class PrintPdfService {
                 text: "", style: "tips_r", border: [false, false, false, false]
               },
               {
-                text: "Auditorio principal", style: "tips_c", border: [false, false, false, false]
+                text: "", style: "tips_c", border: [false, false, false, false]
               },
             ],
           ]
@@ -363,7 +368,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 250, 100, '*'],
+          widths: ['auto', 260, 108, '*'],
           body: content
         },
       },
@@ -400,7 +405,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 250, 100, '*'],
+          widths: ['auto', 270, 100, '*'],
           body: [
             [
               {
@@ -544,11 +549,11 @@ export class PrintPdfService {
           bold: true,
           alignment: 'left',
           color: "#b6b4b4",
-          margin: [0, 6, 0, 0]
+          margin: [0, 4, 0, 0]
         },
         titles: {
           bold: true,
-          fontSize: 9,
+          fontSize: 8,
           margin: [0, 0, 0, 0],
         },
 
@@ -572,21 +577,21 @@ export class PrintPdfService {
         },
         fontTreasures: {
           bold: true,
-          fontSize: 9,
+          fontSize: 8.5,
           color: "#2a6b77",
           margin: [0, 0, 0, 0],
         },
         fontTeachers: {
           bold: true,
-          fontSize: 9,
+          fontSize: 8.5,
           color: "#9b6d17",
           margin: [0, 0, 0, 0],
         },
         fontLife: {
           bold: true,
-          fontSize: 9,
+          fontSize: 8.5,
           color: "#942926",
-          margin: [0, 3, 0, 0],
+          margin: [0, 0, 0, 0],
         },
         subtitles2: {
           bold: true,

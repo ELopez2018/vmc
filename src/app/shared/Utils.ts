@@ -41,7 +41,7 @@ export class Utils {
     if (newHora >= 13) {
       newHora -= 12
     }
-    return `${newHora > 9 ? newHora : prefijo + newHora }:${minutos > 9 ? minutos : prefijo + parseInt(minutos)  }`
+    return `${newHora }:${minutos > 9 ? minutos : prefijo + parseInt(minutos)  }`
   }
 
   public static showFirstDateOfWeek(fechaSemana: string) {

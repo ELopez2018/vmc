@@ -6,6 +6,7 @@ import { EntreSemanaComponent } from './entre-semana.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ProgramsComponent } from './components/programs/programs.component';
+import { CalendarFilterComponent } from './components/calendar-filter/calendar-filter.component';
 
 
 
@@ -19,6 +20,7 @@ import { ProgramsComponent } from './components/programs/programs.component';
     FormsModule,
     ReactiveFormsModule,
     ProgramsComponent,
+    CalendarFilterComponent,
     SharedModule
   ]
 })

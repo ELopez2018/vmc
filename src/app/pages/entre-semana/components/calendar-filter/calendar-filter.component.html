@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-11 pb-2">
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Filtro por semana</mat-label>
+      <input matInput [matDatepicker]="picker" (dateChange)="getWeekNumber($event)" >
+      <!-- <mat-hint>DD/MM/YYYY</mat-hint> -->
+      <mat-datepicker-toggle matIconSuffix [for]="picker">
+        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+
+      </mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <button mat-mini-fab color="primary"  aria-label="reset" (click)="reset()">
+      <mat-icon>home</mat-icon>
+    </button>
+  </div>
+  <!-- <div class="col-md-1 pt-2">
+    <span class="example-button-container">
+      <button mat-mini-fab  aria-label="reset" (click)="reset()">
+        <mat-icon>home</mat-icon>
+      </button>
+    </span>
+  </div> -->
+</div>
+

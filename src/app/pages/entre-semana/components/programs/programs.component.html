@@ -68,7 +68,7 @@
             <div class="row" *ngIf="RoomA">
               <div class="col-md-7 text-center text-md-start">
                 <span class="ms-3 ps-1"></span>
-                <span class="mx-2 hover ms-3" (click)="changeProgram(semana, 'startTimeOpeningSong')">{{
+                <span class="mx-2 hover ms-3 d-none d-md-inline " (click)="changeProgram(semana, 'startTimeOpeningSong')">{{
                   adapterTime(semana.startTimeOpeningSong) }}</span>
                 <span class="fw-bold hover" (click)="changeProgram(semana, 'openingSong')">
                   Canción {{ semana.meeting.openingSong }}
@@ -87,7 +87,7 @@
             </div>
             <div class="row program__tesoros ms-3" *ngIf="RoomA">
               <div class="col-md-12 mb-2 text-center text-md-start">
-                <span class="mx-2 hover" (click)="changeProgram(semana, 'startTimeIntro')">{{
+                <span class="mx-2 hover  d-none d-md-inline" (click)="changeProgram(semana, 'startTimeIntro')">{{
                   adapterTime(semana.startTimeIntro) }}</span>
                 <span class="hover" (click)="changeProgram(semana, 'introTime')">Palabras de
                   introducción ({{
@@ -107,7 +107,7 @@
                     item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'  && item.room == room
                   ">
                   <div class="row">
-                    <div class="col-md-1 ms-2 width-timeStart hover" (click)="changeWeeklyProgram(item, 'startTime')">
+                    <div class="col-md-1 ms-2 width-timeStart hover  d-none d-md-inline" (click)="changeWeeklyProgram(item, 'startTime')">
                       {{ adapterTime(item.startTime) }}
                     </div>
                     <div class="col-md-11 big-title p-0 m-0" [title]="item.assignment.title">
@@ -123,7 +123,7 @@
                 </div>
                 <div class="col-md-2 mt-1 text-end text-title-custom"
                   *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'  && item.room == room">
-                  <span class="hover" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{
+                  <span class="hover  d-none d-md-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{
                     item.assignment.tips }}</span>
                 </div>
                 <div class="col-md-3 mt-1" *ngIf="
@@ -147,7 +147,7 @@
                     item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS'  && item.room == room
                   ">
                   <div class="row">
-                    <div class="col-md-1 ms-2 width-timeStart hover" (click)="changeWeeklyProgram(item, 'startTime')">
+                    <div class="col-md-1 ms-2 width-timeStart hover  d-none d-md-inline" (click)="changeWeeklyProgram(item, 'startTime')">
                       {{ adapterTime(item.startTime) }}
                     </div>
                     <div class="col-md-11 big-title p-0 m-0" [title]="item.assignment.title">
@@ -169,7 +169,7 @@
                 <div class="col-md-2 mt-1 text-end text-title-custom" *ngIf="
                     item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS' && item.room == room
                   ">
-                  <span class="hover" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{
+                  <span class="hover  d-none d-md-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{
                     item.assignment.tips }}</span>
                 </div>
                 <div class="col-md-3 mt-1" *ngIf="
@@ -197,7 +197,7 @@
               </legend>
               <div class="row">
                 <div class="col-md-12 mt-1">
-                  <span class="mx-2 hover" (click)="changeProgram(semana, 'startTimeIntermediateSong')">{{
+                  <span class="mx-2 hover  d-none d-md-inline" (click)="changeProgram(semana, 'startTimeIntermediateSong')">{{
                     adapterTime(semana.startTimeIntermediateSong) }}</span>
                   <span class="fw-bold hover" (click)="changeProgram(semana, 'intermediateSong')">
                     Canción {{ semana.meeting.intermediateSong }}
@@ -209,7 +209,7 @@
                     item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'
                   ">
                   <div class="row">
-                    <div class="col-md-1 width-timeStart ms-2 hover" (click)="changeWeeklyProgram(item, 'startTime')">
+                    <div class="col-md-1 width-timeStart ms-2 hover  d-none d-md-inline" (click)="changeWeeklyProgram(item, 'startTime')">
                       {{ adapterTime(item.startTime) }}
                     </div>
                     <div class="col-md-11 big-title p-0 m-0 hover" [title]="item.assignment.title">
@@ -231,7 +231,7 @@
                 <div class="col-md-2 mt-1 text-end text-title-custom" *ngIf="
                     item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'
                   ">
-                  <span class="hover" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{
+                  <span class="hover  d-none d-md-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{
                     item.assignment.tips }}</span>
                 </div>
                 <div class="col-md-3 mt-1" *ngIf="
@@ -255,7 +255,7 @@
 
             <div class="row ms-3" *ngIf="RoomA">
               <div class="col-md-12 mt-1">
-                <span class="mx-2 hover" (click)="changeProgram(semana, 'startTimeConclusionWords')">{{
+                <span class="mx-2 hover  d-none d-md-inline" (click)="changeProgram(semana, 'startTimeConclusionWords')">{{
                   adapterTime(semana.startTimeConclusionWords) }}</span>
                 Palabras de conclusión
               </div>
@@ -263,7 +263,7 @@
 
             <div class="row ms-3" *ngIf="RoomA">
               <div class="col-md-7 mt-1">
-                <span class="mx-2 hover" (click)="changeProgram(semana, 'startTimeFinalSong')">{{
+                <span class="mx-2 hover  d-none d-md-inline" (click)="changeProgram(semana, 'startTimeFinalSong')">{{
                   adapterTime(semana.startTimeFinalSong) }}</span>
                 <span class="fw-bold hover" (click)="changeProgram(semana, 'finalSong')">
                   Canción {{ semana.meeting.finalSong }}

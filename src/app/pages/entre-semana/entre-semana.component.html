@@ -1,13 +1,15 @@
 <div class="entre-semana">
   <div class="container-fluid">
-    <div class="row my-1 py-3 shadow-titles">
-      <div class="col-md-9 text-center text-md-start">
+    <div class="row pt-1 shadow-titles">
+      <div class="col-md-6 text-center pt-3 text-md-start">
         <h5>
-          Bienvenido {{ Superintendente.fullName }} - Congregación
-          {{ Superintendente.congregation.name }}
+          Bienvenido {{ Superintendente.fullName }} -  {{ Superintendente.congregation.name }}
         </h5>
       </div>
-      <div class="col-md-3 text-center">
+      <div class="col-md-4 text-center">
+        <vmc-calendar-filter (onChange)="filterByWeekNumber($event)"></vmc-calendar-filter>
+      </div>
+      <div class="col py-2 text-center">
         <img
           class="hover me-3"
           src="../../../assets/img/actualizar.png"

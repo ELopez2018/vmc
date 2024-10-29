@@ -34,7 +34,6 @@ export class InterceptorService implements HttpInterceptor {
         });
         break;
       default:
-        console.log("Cabecera de seguridad Agregada url: " + req.url);
         headers = new HttpHeaders({
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + tokenObj?.token,

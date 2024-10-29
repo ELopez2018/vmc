@@ -40,8 +40,6 @@ export class EntreSemanaComponent implements OnInit {
     })
   }
   ngOnInit(): void {
-
-
     this.getPrograms();
   }
 
@@ -50,10 +48,14 @@ export class EntreSemanaComponent implements OnInit {
     this.showSpinner = true;
     this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
       this.programList = [...data]
-      this.semanas = this.filterWeekByRoom("A");
-      this.semanasSalaAuxiliar = [...this.filterWeekByRoom("B")]
+      this.semanas = this.filterWeekByRoom("A", this.programList);
+      this.semanasSalaAuxiliar = [...this.filterWeekByRoom("B", this.programList)]
       this.dataService.setMeeting([...data])
       this.showSpinner = false;
+      if (localStorage.getItem("week")) {
+        console.log("in");
+        this.filterByWeekNumber(parseInt(localStorage.getItem("week") ?? ""))
+      }
     }, error => {
       console.error(error);
       this.showSpinner = false;
@@ -344,8 +346,8 @@ export class EntreSemanaComponent implements OnInit {
     this.modalService.AddAssignment(item, sectionMeeting)
   }
 
-  filterWeekByRoom(room: string) {
-    return this.programList.filter(i => {
+  filterWeekByRoom(room: string, weeks: Program[]) {
+    return weeks.filter(i => {
       return i.weeklyProgram.filter(b => b.room == room).length > 0
     }
     )
@@ -357,8 +359,19 @@ export class EntreSemanaComponent implements OnInit {
     })
   }
 
-  goToPrint(){
+  goToPrint() {
     this.dataService.setMeeting([...this.programList])
+  }
+  filterByWeekNumber(event: number) {
+    let weeks: Program[] = [...this.programList]
+    if (event == 0) {
+      weeks = [...this.programList]
+    } else {
+      weeks = weeks.filter(week => week.meeting.weekNumber === event)
+    }
+    this.semanas = this.filterWeekByRoom("A", weeks);
+    this.semanasSalaAuxiliar = [...this.filterWeekByRoom("B", weeks)]
+    this.dataService.setMeeting([...weeks])
   }
 }
 //

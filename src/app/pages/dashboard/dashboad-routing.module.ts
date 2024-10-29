@@ -25,6 +25,9 @@ const routes: Routes = [
         path: 'publicador', component: UsersCreateOrUpdateComponent,
       },
       {
+        path: 'publicador/:id', component: UsersCreateOrUpdateComponent,
+      },
+      {
         path: 'publicadores', component: PublisherListComponent,
       },
       {

@@ -12,18 +12,22 @@ import { InterceptorService } from './core/interceptor/interceptor.service';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { HomeComponent } from './core/home/home.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { TablePrimengComponent } from './pages/publisher-list/table-primeng/table-primeng.component';
+import { TableMaterialComponent } from './pages/publisher-list/table-material/table-material.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PublisherListComponent,
     DashboardComponent,
+    TableMaterialComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    TablePrimengComponent,
     MaterialModule
   ],
   providers: [

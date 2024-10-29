@@ -9,6 +9,7 @@ import { UsersService } from 'src/app/core/services/users/users.service';
 import { ModalService } from '../../../core/services/modal/modal.service';
 import { ModalTitleEnums, ModalTypeEnums } from 'src/app/core/enums/modal.enums';
 import { CongregationsService } from 'src/app/core/services/congregations/congregations.service';
+import { ActivatedRoute, Routes } from '@angular/router';
 
 @Component({
   selector: 'users-create-or-update',
@@ -23,6 +24,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   public formulario!: FormGroup;
   public allCongregations: Congregation[] = [];
   public isAdmin=false;
+  private userId!: any;
   constructor(
     private _adapter: DateAdapter<any>,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
@@ -30,7 +32,8 @@ export class UsersCreateOrUpdateComponent implements OnInit {
     private fb: FormBuilder,
     private usersService: UsersService,
     private modalService: ModalService,
-    private congregationsService: CongregationsService
+    private congregationsService: CongregationsService,
+    @Inject(ActivatedRoute) private routes: ActivatedRoute
   ) {
     this._locale = 'co';
     this._adapter.setLocale(this._locale);
@@ -38,27 +41,60 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.formulario = this.fb.group({
-      fullName: new FormControl(null),
-      image: new FormControl(null),
-      firstName: new FormControl(null),
-      secondName: new FormControl(null),
-      lastName: new FormControl(null),
-      surname: new FormControl(null),
-      birthdate: new FormControl(null),
-      gender: new FormControl("Femenino"),
-      documentNumber: new FormControl(null),
-      documentType: new FormControl("CC"),
-      cellPhone: new FormControl(null),
-      phone: new FormControl(null),
-      email: new FormControl(null),
-      congregation: new FormControl(this.congregationSelected ?? null)
-    })
+    if(this.routes.snapshot.paramMap.get('id')){
+      this.userId = this.routes.snapshot.paramMap.get('id') ;
+      this.dataService.getPubliherList$().subscribe(data=>{
+        const publi= data.filter(i=>i.id==this.userId)[0]
+        console.log(publi);
+        this.makeFormWithData(publi)
+      })
+    } else {
+      this.makeForm()
+    }
+
     this.dataService.getCongregation$().subscribe(data => {
      this.congregationSelected = data
       console.log(this.congregationSelected);
     })
   }
+  makeFormWithData(publisher:Publisher){
+    this.formulario = this.fb.group({
+      id:new FormControl(publisher.id),
+      fullName: new FormControl(publisher.fullName),
+      image: new FormControl(publisher.image),
+      firstName: new FormControl(publisher.firstName),
+      secondName: new FormControl(publisher.secondName),
+      lastName: new FormControl(publisher.lastName),
+      surname: new FormControl(publisher.surname),
+      birthdate: new FormControl(publisher.birthdate),
+      gender: new FormControl(publisher.gender),
+      documentNumber: new FormControl(publisher.documentNumber),
+      documentType: new FormControl(publisher.documentType),
+      cellPhone: new FormControl(publisher.cellPhone),
+      phone: new FormControl(publisher.phone),
+      email: new FormControl(publisher.email),
+      congregation: new FormControl(this.congregationSelected ?? null)
+    })
+  }
+makeForm(){
+  this.formulario = this.fb.group({
+    fullName: new FormControl(null),
+    image: new FormControl(null),
+    firstName: new FormControl(null),
+    secondName: new FormControl(null),
+    lastName: new FormControl(null),
+    surname: new FormControl(null),
+    birthdate: new FormControl(null),
+    gender: new FormControl("Femenino"),
+    documentNumber: new FormControl(null),
+    documentType: new FormControl("CC"),
+    cellPhone: new FormControl(null),
+    phone: new FormControl(null),
+    email: new FormControl(null),
+    congregation: new FormControl(this.congregationSelected ?? null)
+  })
+}
+
 
   getAllCong() {
     this.congregationsService

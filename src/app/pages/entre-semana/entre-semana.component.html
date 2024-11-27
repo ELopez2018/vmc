@@ -1,14 +1,16 @@
 <div class="entre-semana">
   <div class="container-fluid">
-    <div class="row pt-1 shadow-titles">
-      <div class="col-md-6 text-center pt-3 text-md-start">
+    <div class="row pt-1 shadow-titles d-none d-md-flex">
+      <div class="col-md-5 text-center pt-3 text-md-start">
         <h5>
           Bienvenido {{ Superintendente.fullName }} -  {{ Superintendente.congregation.name }}
         </h5>
       </div>
-      <div class="col-md-4 text-center">
+
+      <div class="col-md-5 ">
         <vmc-calendar-filter (onChange)="filterByWeekNumber($event)"></vmc-calendar-filter>
       </div>
+
       <div class="col py-2 text-center">
         <img
           class="hover me-3"
@@ -25,6 +27,7 @@
           title="Imprime todas las semana"
         /></a>
       </div>
+
     </div>
   </div>
 

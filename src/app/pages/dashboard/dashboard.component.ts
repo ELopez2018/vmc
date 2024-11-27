@@ -1,5 +1,6 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component } from '@angular/core';
+import { Publisher } from 'src/app/core/interfaces/reuniones.interface';
 import { DataService } from 'src/app/core/services/data/data.service';
 
 @Component({
@@ -26,12 +27,16 @@ export class DashboardComponent {
   );
 
   private _mobileQueryListener: () => void;
-
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private dataService: DataService) {
+  public Superintendente!: Publisher
+  constructor(
+    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private dataService: DataService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
     this.dataService.getConfigs()
+    this.dataService.getPublisher().subscribe(data => {
+      this.Superintendente = data
+    })
   }
 
   ngOnDestroy(): void {

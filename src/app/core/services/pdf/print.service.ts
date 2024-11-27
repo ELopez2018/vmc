@@ -3,7 +3,7 @@ import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Utils } from 'src/app/shared/Utils';
 import { ProgramPdf, WeeklyProgramPdF } from '../../interfaces/print-pdf.interface';
-import { retry } from 'rxjs';
+import { DataService } from '../data/data.service';
 
 
 
@@ -12,12 +12,27 @@ import { retry } from 'rxjs';
 })
 export class PrintPdfService {
   private congregation = "ALBORADA";
+  private colorFontPublisher = "#ea002e";
+  private sizeHeader =          [16, 'auto', '*', 20]
+  private sizeBody =            [70, 205, 150, '*']
+  private sizeHeaderSections =  [275, 158, '*']
+  private sizeSongs =           [16, 259, 150, '*']
 
+  private sizeContenTreasure =  [16, 208, 30, 161, '*']
+  private sizeContenTeachers =  [16, 178, 60, 161, '*']
+  private sizeContenLife =      [16, 258, 0, 141, '*']
   constructor(
+    private dataService: DataService
   ) {
     (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
+
+    this.dataService.getPublisher().subscribe(data => {
+      console.log({ data });
+      if (data) {
+        this.colorFontPublisher = data.congregation.fontColorPublisher ?? "";
+      }
+    })
   }
-  numOrderService = "0000"
   config = {
     subTitleInvoice: "RECIBO DE GIRO",
     sizeQr: '140',
@@ -64,18 +79,15 @@ export class PrintPdfService {
       }
     ]
   }
-
   private verifiRoomB(array: WeeklyProgramPdF[]): boolean {
-
     return array.some(item => item.responsibleB != null);
   }
-
   private makeHeader(pageBreak: boolean) {
     return [
       {
         table: {
           heights: [25],
-          widths: [15, 'auto', '*', 20],
+          widths: this.sizeHeader,
           body: [
             [{
               text: "", style: "header_a", border: [false, false, false, false]
@@ -95,11 +107,11 @@ export class PrintPdfService {
       },
     ]
   }
-  private makeBody(week: ProgramPdf) {
+  private makeHeaderProgram(week: ProgramPdf) {
     return [
       {
         table: {
-          widths: ['auto', 205, 110, '*'],
+          widths: this.sizeBody,
           body: [
             [
               {
@@ -134,7 +146,7 @@ export class PrintPdfService {
       },
       {
         table: {
-          widths: ['auto', 260, 100, '*'],
+          widths: this.sizeSongs,
           body: [
             [
               {
@@ -174,7 +186,7 @@ export class PrintPdfService {
       {
         table: {
           heights: [0],
-          widths: [270, 118, '*'],
+          widths: this.sizeHeaderSections,
           body: [
             [
               {
@@ -222,7 +234,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 208,  30, 115, '*'],
+          widths: this.sizeContenTreasure,
           body: content
         },
       },
@@ -258,7 +270,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 208, 30, 115, '*'],
+          widths: this.sizeContenTreasure,
           body: content
         },
       },
@@ -269,7 +281,7 @@ export class PrintPdfService {
       {
         table: {
           heights: [0],
-          widths: [270, 118, '*'],
+          widths: this.sizeHeaderSections,
           body: [
             [
               {
@@ -315,7 +327,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 183, 57, 115, '*'],
+          widths: this.sizeContenTeachers,
           body: content
         },
       },
@@ -326,7 +338,7 @@ export class PrintPdfService {
       {
         table: {
           heights: [5],
-          widths: [270, 110, '*'],
+          widths: this.sizeHeaderSections,
           body: [
             [
               {
@@ -357,6 +369,9 @@ export class PrintPdfService {
             text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontLife", border: [false, false, false, false]
           },
           {
+            text: ``, style: "fontLife", border: [false, false, false, false]
+          },
+          {
             text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
           },
           {
@@ -368,18 +383,17 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 260, 108, '*'],
+          widths: this.sizeContenLife,
           body: content
         },
       },
     ]
   }
-
   private makeIntermediateSong(week: ProgramPdf) {
     return [
       {
         table: {
-          widths: ['auto', 250, 100, '*'],
+          widths: this.sizeSongs,
           body: [
             [
               {
@@ -405,7 +419,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: ['auto', 270, 100, '*'],
+          widths: this.sizeSongs,
           body: [
             [
               {
@@ -476,7 +490,7 @@ export class PrintPdfService {
       count++
       pageCount++
       contenido.push(
-        ...this.makeBody(week),
+        ...this.makeHeaderProgram(week),
         ...this.makeHeaderTreasures(),
         ...this.makeContentTreasures(week),
         ...this.makeContentTreasuresReader(week),
@@ -489,7 +503,7 @@ export class PrintPdfService {
         ...this.makeContentLife(week),
         ...this.makeFinalBlock(week),
         count == 1 ? "\n" : "",
-        { text: '', pageBreak: count == 2 && pageCount < weeks.length ? 'before' : '', style: 'subheader' },
+        { text: '', pageBreak: count == 2 && pageCount < weeks.length ? 'before' : '', style: count == 1 ? 'endPage' : '' },
 
       )
       if (count == 2) {
@@ -540,7 +554,7 @@ export class PrintPdfService {
         tips_l: {
           fontSize: 7,
           bold: true,
-          color: "#ea002e",
+          color: this.colorFontPublisher,
           alignment: 'left',
           margin: [0, 2, 0, 0]
         },
@@ -635,6 +649,9 @@ export class PrintPdfService {
         anotherStyle: {
           italics: true,
           alignment: 'right'
+        },
+        endPage: {
+          margin: [10, 10, 10, 10],
         }
       }
     }

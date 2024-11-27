@@ -114,7 +114,7 @@
                       <span class="title-number hover" (click)="changeWeeklyProgram(item, 'number')">{{
                         item.assignment.number }}.</span>
 
-                      <span class="hover" (click)="changeWeeklyProgram(item, 'title')">
+                      <span class="hover program__title-asingment" (click)="changeWeeklyProgram(item, 'title')">
                         {{ item.assignment.title + " (" +item.assignment.time +" " + item.assignment.timeType +")"}}
                       </span>
                     </div>
@@ -126,7 +126,7 @@
                   <span class="hover  d-none d-md-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{
                     item.assignment.tips }}</span>
                 </div>
-                <div class="col-md-3 mt-1" *ngIf="
+                <div class="col-md-3 mb-3 mb-md-0" *ngIf="
                     item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA'  && item.room == room
                   ">
                   <span class="hover" (click)="changeWeeklyProgram(item, 'responsible')">
@@ -153,7 +153,7 @@
                     <div class="col-md-11 big-title p-0 m-0" [title]="item.assignment.title">
                       <span class="title-number hover" (click)="changeWeeklyProgram(item, 'number')">{{
                         item.assignment.number }}.</span>
-                      <span class="hover" (click)="changeWeeklyProgram(item, 'title')">
+                      <span class="hover program__title-asingment" (click)="changeWeeklyProgram(item, 'title')">
                         {{
                         item.assignment.title +
                         " (" +
@@ -172,7 +172,7 @@
                   <span class="hover  d-none d-md-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{
                     item.assignment.tips }}</span>
                 </div>
-                <div class="col-md-3 mt-1" *ngIf="
+                <div class="col-md-3 mb-3 mb-md-0" *ngIf="
                     item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS' && item.room == room
                   ">
                   <span class="hover" (click)="changeWeeklyProgram(item, 'responsible')">
@@ -215,7 +215,7 @@
                     <div class="col-md-11 big-title p-0 m-0 hover" [title]="item.assignment.title">
                       <span class="title-number hover" (click)="changeWeeklyProgram(item, 'number')">{{
                         item.assignment.number }}.</span>
-                      <span class="hover" (click)="changeWeeklyProgram(item, 'title')">
+                      <span class="hover program__title-asingment" (click)="changeWeeklyProgram(item, 'title')">
                         {{
                         item.assignment.title +
                         " (" +
@@ -234,7 +234,7 @@
                   <span class="hover  d-none d-md-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{
                     item.assignment.tips }}</span>
                 </div>
-                <div class="col-md-3 mt-1" *ngIf="
+                <div class="col-md-3 mb-3 mb-md-0" *ngIf="
                     item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'
                   ">
                   <span class="hover" (click)="changeWeeklyProgram(item, 'responsible')">

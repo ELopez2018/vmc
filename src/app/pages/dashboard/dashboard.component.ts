@@ -29,7 +29,10 @@ export class DashboardComponent {
   private _mobileQueryListener: () => void;
   public Superintendente!: Publisher
   constructor(
-    changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private dataService: DataService) {
+    changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher,
+    private dataService: DataService
+  ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);

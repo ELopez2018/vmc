@@ -26,9 +26,10 @@ export interface Publisher {
   cellPhone?: any;
   phone?: any;
   email?: any;
-  congregation: any;
+  congregation: Congregation;
   designations: any[];
 }
+
 /// news
 export interface Program {
   id: number;
@@ -77,6 +78,7 @@ export interface Congregation {
   hour: string;
   day: number;
   assistantAdviser?: Publisher | undefined | null;
+  fontColorPublisher?: string;
 }
 export interface Meeting {
   id: number;

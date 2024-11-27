@@ -45,7 +45,9 @@
 
   }
 
-  &__title {}
+  &__title-asingment {
+    font-style: italic;
+  }
 
   &__title-tesoros {
     background-color: gray;
@@ -78,9 +80,11 @@
     width: 500px;
   }
 
-  .hover:hover {
-    cursor: pointer;
-    background-color: rgb(184, 189, 189);
+  .hover{
+    &:hover {
+      cursor: pointer;
+      background-color: rgb(184, 189, 189);
+    }
   }
 }
 

@@ -14,13 +14,13 @@ export class PrintPdfService {
   private congregation = "ALBORADA";
   private colorFontPublisher = "#ea002e";
   private sizeHeader =          [16, 'auto', '*', 20]
-  private sizeBody =            [70, 205, 150, '*']
-  private sizeHeaderSections =  [275, 158, '*']
-  private sizeSongs =           [16, 259, 150, '*']
+  private sizeBody =            [70, 190, 150, '*']
+  private sizeSongs =           [16, 244, 150, '*']
+  private sizeHeaderSections =  [275, 143, '*']
 
-  private sizeContenTreasure =  [16, 208, 30, 161, '*']
-  private sizeContenTeachers =  [16, 178, 60, 161, '*']
-  private sizeContenLife =      [16, 258, 0, 141, '*']
+  private sizeContenTreasure =  [16, 208, 30, 146, '*']
+  private sizeContenTeachers =  [16, 178, 60, 146, '*']
+  private sizeContenLife =      [16, 258, 0, 126, '*']
   constructor(
     private dataService: DataService
   ) {

@@ -13,14 +13,15 @@ import { DataService } from '../data/data.service';
 export class PrintPdfService {
   private congregation = "ALBORADA";
   private colorFontPublisher = "#ea002e";
-  private sizeHeader =          [16, 'auto', '*', 20]
-  private sizeBody =            [70, 190, 150, '*']
-  private sizeSongs =           [16, 244, 150, '*']
-  private sizeHeaderSections =  [275, 143, '*']
+  private sizeHeader = [16, 'auto', '*', 20]
+  private sizeBody = [70, 190, 150, '*']
+  private sizeSongs = [16, 244, 150, '*']
+  private sizeHeaderSections = [275, 143, '*']
 
-  private sizeContenTreasure =  [16, 208, 30, 146, '*']
-  private sizeContenTeachers =  [16, 178, 60, 146, '*']
-  private sizeContenLife =      [16, 258, 0, 126, '*']
+  private sizeContenTreasure = [16, 208, 30, 146, '*']
+  private sizeContenTeachers = [16, 178, 60, 146, '*']
+  private sizeContenLife = [16, 258, 0, 126, '*']
+  private dayMeet: any = null
   constructor(
     private dataService: DataService
   ) {
@@ -30,6 +31,8 @@ export class PrintPdfService {
       console.log({ data });
       if (data) {
         this.colorFontPublisher = data.congregation.fontColorPublisher ?? "";
+        this.dayMeet = data.congregation.day
+        console.log(this.dayMeet);
       }
     })
   }
@@ -115,7 +118,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: Utils.showDayOfMeeting(week.meeting.week) + " |", style: "sub_title", border: [false, false, false, false]
+                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + " |", style: "sub_title", border: [false, false, false, false]
               },
               {
                 text: "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]

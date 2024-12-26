@@ -25,6 +25,7 @@ export class EntreSemanaComponent implements OnInit {
   public assignmentType: string = ""
   public Superintendente!: Publisher
   public showSpinner = false;
+  private meetingDay = 1;
   constructor(
     private meetingsService: MeetingsService,
     private modalService: ModalService,
@@ -37,6 +38,7 @@ export class EntreSemanaComponent implements OnInit {
 
     this.dataService.getCongregation$().subscribe(data => {
       this.congregation = data
+      this.meetingDay = data.day
     })
   }
   ngOnInit(): void {
@@ -63,7 +65,8 @@ export class EntreSemanaComponent implements OnInit {
   }
 
   showDayOfMeeting(fechaSemana: string) {
-    return Utils.showDayOfMeeting(fechaSemana)
+    console.log(this.meetingDay);
+    return Utils.showDayOfMeeting(fechaSemana, this.meetingDay)
   }
 
   adapterTime(dateTime: any) {

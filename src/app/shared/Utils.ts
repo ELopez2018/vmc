@@ -1,13 +1,13 @@
+import { Meeting } from '../core/interfaces/reuniones.interface';
 export class Utils {
-  public static showDayOfMeeting(fechaSemana: string) {
+  public static showDayOfMeeting(fechaSemana: string, meetingDay: number) {
     const fecha = new Date(fechaSemana);
-    const diaSemana = fecha.getDay() + 1;  // 0 (Domingo) a 6 (Sábado)
+    const diaSemana = fecha.getDay();  // 0 (Domingo) a 6 (Sábado)
     // Calcula el número de d ías que hay que restar para llegar al jueves
-    let diaReunion = 2; // 0 (Domingo) a 6 (Sábado)
-    const diasHastaJueves = (diaReunion - diaSemana + 7) % 7;
+    let diaReunion = meetingDay; // 0 (Domingo) a 6 (Sábado)
 
     // Ajusta la fecha al jueves correspondiente
-    fecha.setDate(fecha.getDate() + diasHastaJueves);
+    fecha.setDate(fecha.getDate() + (meetingDay - 1));
 
     // Guarda la fecha en el formato deseado
     //return fecha.toISOString().split('T')[0]
@@ -23,25 +23,25 @@ export class Utils {
   public static adapterTime(dateTime: any) {
     let horas: any;
     let minutos: any;
-    let prefijo="";
+    let prefijo = "";
     if (!dateTime) {
       return '0.00'
     }
-    if ( (typeof  dateTime)!= "string") {
-      prefijo="0"
-      horas =dateTime[0]
-      minutos =dateTime[1]
+    if ((typeof dateTime) != "string") {
+      prefijo = "0"
+      horas = dateTime[0]
+      minutos = dateTime[1]
     } else {
-      prefijo="0"
-      const tiempo =  dateTime.split(":").slice(0, 2);
+      prefijo = "0"
+      const tiempo = dateTime.split(":").slice(0, 2);
       horas = tiempo[0]
-      minutos =tiempo[1]
+      minutos = tiempo[1]
     }
     let newHora = horas
     if (newHora >= 13) {
       newHora -= 12
     }
-    return `${newHora }:${minutos > 9 ? minutos : prefijo + parseInt(minutos)  }`
+    return `${newHora}:${minutos > 9 ? minutos : prefijo + parseInt(minutos)}`
   }
 
   public static showFirstDateOfWeek(fechaSemana: string) {

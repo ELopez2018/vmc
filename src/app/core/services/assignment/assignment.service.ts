@@ -20,9 +20,18 @@ export class AssignmentService {
     return this.httpClient.put(url, assignment)
   }
   getPublishersByAssignment(assignment: Meeting): Observable<PublisherDto[]> {
-    // const params = `?assignmentNumber=${assignment.number}&numberWeek=${assignment.weekNumber}&sectionMeeting=${assignment.sectionMeeting}`
     const params = ``
     const url = `${this.server}${this.api.ASSIGNMENT}/publisher-by-assignment${params}`
     return this.httpClient.get<PublisherDto[]>(url)
+  }
+
+  getDistinctByTitle(): Observable<Assignment[]> {
+    const url = `${this.server}${this.api.ASSIGNMENT}/titles`
+    return this.httpClient.get<Assignment[]>(url)
+  }
+
+  save(assignment: Assignment): Observable<Assignment> {
+    const url = `${this.server}${this.api.ASSIGNMENT}`
+    return this.httpClient.post<Assignment>(url, assignment)
   }
 }

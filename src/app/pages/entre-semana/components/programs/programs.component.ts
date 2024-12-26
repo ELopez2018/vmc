@@ -25,13 +25,14 @@ import { CongregationMock } from '../../mocks/congregation.mock';
 })
 export class ProgramsComponent implements OnInit {
   @Input() public semanas: Program[] = [];
-  @Input() public RoomA= false;
-  @Input() public room= "A";
+  @Input() public RoomA = false;
+  @Input() public room = "A";
   porAsignar = "por asignar";
   public congregation: Congregation = CongregationMock
   public assignmentType: string = ""
   public Superintendente!: Publisher
   public showSpinner = false;
+  private meetingDay = 1;
   constructor(
     private meetingsService: MeetingsService,
     private modalService: ModalService,
@@ -45,25 +46,12 @@ export class ProgramsComponent implements OnInit {
 
     this.dataService.getCongregation$().subscribe(data => {
       this.congregation = data
+      this.meetingDay = data.day
     })
-
-    // this.getPrograms();
   }
 
-  // getPrograms() {
-  //   this.semanas=[];
-  //   this.showSpinner = true;
-  //   this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
-  //     this.semanas = data
-  //     this.showSpinner = false;
-  //   }, error => {
-  //     console.error(error);
-  //     this.showSpinner = false;
-  //   })
-  // }
-
   showDayOfMeeting(fechaSemana: string) {
-    return Utils.showDayOfMeeting(fechaSemana)
+    return Utils.showDayOfMeeting(fechaSemana, this.meetingDay)
   }
 
   adapterTime(dateTime: any) {
@@ -325,7 +313,7 @@ export class ProgramsComponent implements OnInit {
           })
         break;
       case "title":
-        console.log("tiempo de assig",item);
+        console.log("tiempo de assig", item);
         this.modalService.setTitleAndTime(item)
           .then(data => {
             item = data
@@ -346,7 +334,7 @@ export class ProgramsComponent implements OnInit {
     this.modalService.AddAssignment(item, sectionMeeting)
   }
 
-  print(week: Program){
+  print(week: Program) {
     console.log(week);
     this.dataService.setMeeting([week])
     this.modalService.printer()

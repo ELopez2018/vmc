@@ -48,28 +48,26 @@ export interface Program {
   assembly: string
 }
 export interface WeeklyProgram {
-  id: number;
+  id?: number;
   assignment: Assignment;
-  responsible?: Publisher;
-  assistant?: Publisher;
+  responsible?: Publisher | null;
+  assistant?: Publisher | null;
   congregation: Congregation;
   program: number;
-  startTime: string;
+  startTime?: string;
   room: string;
 
 }
 export interface Assignment {
-  id: number;
+  id?: number;
   time?: number | number;
   timeType: string;
   title: string;
-  pointNumber?: any;
   tips?: string;
   sectionMeeting: string;
   showTips: boolean;
   number: number;
-  position: any;
-  numberWeek: number;
+  meeting: any;
 }
 export interface Congregation {
   id: number;

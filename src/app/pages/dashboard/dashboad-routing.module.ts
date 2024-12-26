@@ -6,6 +6,7 @@ import { PrinterComponent } from 'src/app/shared/printer/printer.component';
 import { PublisherListComponent } from '../publisher-list/publisher-list.component';
 import { PublisherPrivilegesComponent } from '../publisher-privileges/publisher-privileges.component';
 import { DashboardComponent } from './dashboard.component';
+import { ManagerComponent } from '../entre-semana/manager/manager.component';
 
 const routes: Routes = [
   {
@@ -13,6 +14,7 @@ const routes: Routes = [
     component: DashboardComponent,
     children: [
       {
+        //path: '', redirectTo: 'entre-semana', pathMatch:"full"
         path: '', redirectTo: 'entre-semana', pathMatch:"full"
       },
       {
@@ -32,6 +34,9 @@ const routes: Routes = [
       },
       {
         path: 'privilegios', component: PublisherPrivilegesComponent,
+      },
+      {
+        path: 'administrador', component: ManagerComponent,
       },
 
     ]

@@ -1,9 +1,15 @@
 .container-fluid {
-  width: 100%;
-  height:100%;
+  width: 99vw;
+  height:90vh;
 }
 
-
+ng2-pdfjs-viewer {
+  height: 100%;
+  width: 100%;
+}
+vmc-icon-close {
+  cursor: pointer;
+}
 @media (min-width: 992px) {
   .container-fluid {
     width: 90vw;

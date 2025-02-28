@@ -251,7 +251,6 @@ export class EntreSemanaComponent implements OnInit {
         }
     }
 
-    console.log(this.assignmentType);
   }
   selectAssignmentTypeByTitle(title: string) {
     if (title.includes("Lo que hizo")) {

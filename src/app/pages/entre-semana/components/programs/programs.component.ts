@@ -72,6 +72,7 @@ export class ProgramsComponent implements OnInit {
       case "startTimeOpeningSong":
         this.modalService.selectedHour()
           .then(data => {
+            if(!data || data == 'close'){return}
             item.startTimeOpeningSong = data
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
               console.log(data);
@@ -84,6 +85,7 @@ export class ProgramsComponent implements OnInit {
       case "startTimeIntro":
         this.modalService.selectedHour()
           .then(data => {
+            if(!data || data == 'close'){return}
             item.startTimeIntro = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
               console.log(data);
@@ -96,6 +98,7 @@ export class ProgramsComponent implements OnInit {
       case "startTimeIntermediateSong":
         this.modalService.selectedHour()
           .then(data => {
+            if(!data || data == 'close'){return}
             item.startTimeIntermediateSong = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
               console.log(data);
@@ -108,6 +111,7 @@ export class ProgramsComponent implements OnInit {
       case "startTimeConclusionWords":
         this.modalService.selectedHour()
           .then(data => {
+            if(!data || data == 'close'){return}
             item.startTimeConclusionWords = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
               console.log(data);
@@ -120,6 +124,7 @@ export class ProgramsComponent implements OnInit {
       case "startTimeFinalSong":
         this.modalService.selectedHour()
           .then(data => {
+            if(!data || data == 'close'){return}
             item.startTimeFinalSong = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
             })
@@ -131,6 +136,8 @@ export class ProgramsComponent implements OnInit {
       case AssignmentType.OPENING_PRAYER:
         this.modalService.assignPublisherProgram(item, AssignmentType.OPENING_PRAYER)
           .then(data => {
+            if(!data || data == 'close'){return}
+            console.log('data', data);
             item.openingPrayer = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
             })
@@ -142,6 +149,7 @@ export class ProgramsComponent implements OnInit {
       case AssignmentType.FINAL_PRAYER:
         this.modalService.assignPublisherProgram(item, AssignmentType.FINAL_PRAYER)
           .then(data => {
+            if(!data || data == 'close'){return}
             item.finalPrayer = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
             })
@@ -153,6 +161,7 @@ export class ProgramsComponent implements OnInit {
       case AssignmentType.PRESIDENT:
         this.modalService.assignPublisherProgram(item, AssignmentType.PRESIDENT)
           .then(data => {
+            if(!data || data == 'close'){return}
             item.president = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
               console.log(data);
@@ -165,6 +174,7 @@ export class ProgramsComponent implements OnInit {
       case "assistantAdviser":
         this.modalService.assignPublisherProgram(item)
           .then(data => {
+            if(!data || data == 'close'){return}
             item.assistantAdviser = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
               console.log(data);
@@ -177,6 +187,7 @@ export class ProgramsComponent implements OnInit {
       case "openingSong":
         this.modalService.changeSong(item, item.meeting.openingSong)
           .then(data => {
+            if(!data || data == 'close'){return}
             item.meeting.openingSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
               console.log(data);
@@ -189,6 +200,7 @@ export class ProgramsComponent implements OnInit {
       case "intermediateSong":
         this.modalService.changeSong(item, item.meeting.intermediateSong)
           .then(data => {
+            if(!data || data == 'close'){return}
             item.meeting.intermediateSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
               console.log(data);
@@ -201,6 +213,7 @@ export class ProgramsComponent implements OnInit {
       case "finalSong":
         this.modalService.changeSong(item, item.meeting.finalSong)
           .then(data => {
+            if(!data || data == 'close'){return}
             item.meeting.finalSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
               console.log(data);
@@ -278,6 +291,7 @@ export class ProgramsComponent implements OnInit {
       case "responsible":
         this.modalService.assignPublisherWeeklyProgram(item, this.assignmentType)
           .then(data => {
+            if(!data || data == 'close'){return}
             item.responsible = data
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
               console.log("saved responsible", data);
@@ -290,6 +304,7 @@ export class ProgramsComponent implements OnInit {
       case "assistant":
         this.modalService.assignPublisherWeeklyProgram(item, this.assignmentType)
           .then(data => {
+            if(!data || data == 'close'){return}
             item.assistant = data
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
               console.log("saved assistant", data);
@@ -302,6 +317,7 @@ export class ProgramsComponent implements OnInit {
       case "startTime":
         this.modalService.selectedHour()
           .then(data => {
+            if(!data || data == 'close'){return}
             console.log("startTime 1", data);
             item.startTime = data
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
@@ -316,6 +332,7 @@ export class ProgramsComponent implements OnInit {
         console.log("tiempo de assig", item);
         this.modalService.setTitleAndTime(item)
           .then(data => {
+            if(!data || data == 'close'){return}
             item = data
             this.assignmentService.updateAssignment(item.assignment).subscribe(data => {
               console.log("saved setTitleAndTime", data);

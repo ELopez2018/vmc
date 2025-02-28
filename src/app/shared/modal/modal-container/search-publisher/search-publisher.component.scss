@@ -1,5 +1,5 @@
 .container {
-  width: 50vw;
+  width: 98vw;
   height: 65vh;
   overflow-y: auto;
 }
@@ -9,7 +9,7 @@
 }
 
 .table-container {
-  height: 40vh;
+  height: 70%;
   overflow: auto;
 }
 
@@ -17,4 +17,21 @@ mat-spinner {
   position: absolute;
   top: 40%;
   left: 45%;
+}
+
+.participa {
+  color: green;
+}
+
+.noparticipa {
+  color: rgb(238, 3, 3) !important;
+}
+
+
+@media (min-width: 992px) {
+  .container {
+    width: 50vw;
+    height: 65vh;
+    overflow-y: auto;
+  }
 }

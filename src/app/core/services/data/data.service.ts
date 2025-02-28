@@ -153,9 +153,12 @@ export class DataService {
     if (tokenStr) {
       tokenObj = JSON.parse(tokenStr)
       const token = this.jwtUtils.decodeToken(tokenObj.token);
-      this.setPublisher(token.data);
-      this.setCongregation(token.data.congregation)
-      localStorage.setItem("congregation", JSON.stringify(token.data.congregation))
+      if(token){
+        this.setPublisher(token.data);
+        this.setCongregation(token.data.congregation)
+        localStorage.setItem("congregation", JSON.stringify(token.data.congregation))
+      }
+
     }
   }
   logout() {

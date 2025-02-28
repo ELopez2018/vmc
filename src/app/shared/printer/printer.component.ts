@@ -75,5 +75,7 @@ export class PrinterComponent implements OnInit {
     this.printService.download(dataIpm)
   }
 
-
+  onCLose(){
+    
+  }
 }

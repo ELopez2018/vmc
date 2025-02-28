@@ -15,6 +15,7 @@ import { ErrorModalComponent } from './modal/modal-container/error-modal/error-m
 import { InfoModalComponent } from './modal/modal-container/info-modal/info-modal.component';
 import { LoaderComponent } from './modal/modal-container/loader/loader.component';
 import { AddAssignmentComponent } from './modal/modal-container/add-assignment/add-assignment.component';
+import { IconCloseComponent } from "./modal/modal-container/search-publisher/icon-close/icon-close.component";
 
 const MODULES = [
   MaterialModule,
@@ -41,9 +42,9 @@ const COMPONENTS = [
   declarations: [...COMPONENTS],
   imports: [
     CommonModule,
-    ...MODULES
-    ,
-  ],
+    ...MODULES,
+    IconCloseComponent
+],
   exports: [
     ...COMPONENTS,
     ...MODULES,

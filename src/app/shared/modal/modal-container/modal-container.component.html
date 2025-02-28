@@ -13,7 +13,9 @@
     <select-hour (onSelected)="onClicked($event)"></select-hour>
   </div>
   <div *ngSwitchCase="typeOfModals.PRINTER">
-    <app-printer></app-printer>
+    <app-printer
+    (onClosed)="close()"
+    ></app-printer>
   </div>
   <div *ngSwitchCase="typeOfModals.TITLE_AND_TIME">
     <title-and-time

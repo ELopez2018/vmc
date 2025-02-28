@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { PrintPdfService } from '../../core/services/pdf/print.service';
 import { MeetingsService } from '../../core/services/meetings/meetings.service';
 import { Meeting, Program } from 'src/app/core/interfaces/reuniones.interface';
@@ -16,6 +16,7 @@ import { Subscription } from 'rxjs';
 export class PrinterComponent implements OnInit {
   @ViewChild('pdfViewerOnDemand') pdfViewerOnDemand: any;
   @ViewChild('pdfViewerAutoLoad') pdfViewerAutoLoad: any;
+  @Output() onClosed = new EventEmitter()
   private congregation!: Congregation
   private subs: Subscription = new Subscription();
   constructor(private printService: PrintPdfService,
@@ -76,6 +77,6 @@ export class PrinterComponent implements OnInit {
   }
 
   onCLose(){
-    
+    this.onClosed.emit(true)
   }
 }

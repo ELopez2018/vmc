@@ -78,6 +78,10 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
   }
   selected(item: any) {
+    if(item.hasOwnProperty("count")) {
+      this.onClicked.emit(item.user)
+      return;
+    }
     this.onClicked.emit(item)
   }
 

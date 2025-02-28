@@ -56,4 +56,11 @@
     (onClosed)="close()"
     ></vmc-add-assignment>
   </div>
+  <div *ngSwitchCase="typeOfModals.SELECT_PUBLISHER">
+    <vmc-select-publisher
+    (onClicked)="onClicked($event)"
+    (onClosed)="close()"
+    >
+    </vmc-select-publisher>
+  </div>
 </div>

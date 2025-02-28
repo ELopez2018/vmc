@@ -67,7 +67,6 @@ const Modules = [
   MatAutocompleteModule,
   MatBadgeModule,
   MatBottomSheetModule,
-  MatButtonModule,
   MatButtonToggleModule,
   MatCardModule,
   MatCheckboxModule,

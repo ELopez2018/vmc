@@ -16,6 +16,7 @@ import { InfoModalComponent } from './modal/modal-container/info-modal/info-moda
 import { LoaderComponent } from './modal/modal-container/loader/loader.component';
 import { AddAssignmentComponent } from './modal/modal-container/add-assignment/add-assignment.component';
 import { IconCloseComponent } from "./modal/modal-container/search-publisher/icon-close/icon-close.component";
+import { SelectPublisherComponent } from "./modal/modal-container/select-publisher/select-publisher.component";
 
 const MODULES = [
   MaterialModule,
@@ -43,7 +44,8 @@ const COMPONENTS = [
   imports: [
     CommonModule,
     ...MODULES,
-    IconCloseComponent
+    IconCloseComponent,
+    SelectPublisherComponent
 ],
   exports: [
     ...COMPONENTS,

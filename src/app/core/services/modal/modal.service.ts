@@ -106,6 +106,11 @@ export class ModalService {
     this.modalRef.componentInstance.sectionMeeting = sectionMeeting;
     return this.modalRef.result
   }
+  public selectPublisher() {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.modalType = ModalTypeEnums.SELECT_PUBLISHER;
+    return this.modalRef.result
+  }
 
   public close() {
     if (this.modalRef) {

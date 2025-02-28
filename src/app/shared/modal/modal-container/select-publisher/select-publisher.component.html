@@ -1,0 +1,88 @@
+<div class="select_publisher">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10">
+        <h2> PUBLICADORES </h2>
+      </div>
+      <div class="col-md-2 d-flex justify-content-end pe-3">
+        <vmc-icon-close></vmc-icon-close>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <mat-tab-group animationDuration="0ms">
+          <mat-tab label="Hermanos">
+            <div class="">
+              <fieldset class="fieldset-basic table-container">
+                <legend></legend>
+
+                <mat-spinner class=" m-auto" *ngIf="showSpinner"></mat-spinner>
+
+                <div class="table-responsive" *ngIf="male && male.length > 0">
+                  <table class="table table-hover table-sm table-bordered cursor-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">Publicador</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of male" (click)="selected(item)">
+                        <td>{{ item.fullName }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </fieldset>
+            </div>
+          </mat-tab>
+          <mat-tab label="Hermanas">
+            <div class="">
+              <fieldset class="fieldset-basic table-container">
+                <legend></legend>
+                <mat-spinner *ngIf="showSpinner"></mat-spinner>
+                <div class="table-responsive" *ngIf="female && female.length > 0">
+                  <table class="table table-hover table-sm table-bordered cursor-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">Publicador</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of female" (click)="selected(item)">
+                        <td>{{ item.fullName }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </fieldset>
+            </div>
+          </mat-tab>
+          <mat-tab label="Todos">
+            <div class="">
+              <fieldset class="fieldset-basic table-container">
+                <legend></legend>
+                <mat-spinner *ngIf="showSpinner"></mat-spinner>
+
+                <div class="table-responsive" *ngIf="publishersAll && publishersAll.length > 0">
+                  <table class="table table-hover table-sm table-bordered cursor-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">Publicador</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of publishersAll" (click)="selected(item)">
+                        <td>{{ item.fullName }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </fieldset>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+  </div>
+</div>

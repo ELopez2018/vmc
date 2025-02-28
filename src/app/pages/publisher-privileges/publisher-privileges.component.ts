@@ -10,6 +10,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { CommonModule } from '@angular/common';
 import { Generic } from 'src/app/core/interfaces/configs.interface';
+import { ModalService } from '../../core/services/modal/modal.service';
 
 @Component({
   selector: 'publisher-privileges',
@@ -28,11 +29,12 @@ export class PublisherPrivilegesComponent extends BaseComponent implements OnIni
   @ViewChild('fruitInput') fruitInput!: ElementRef<HTMLInputElement>;
 
   public publisher!: Publisher;
-  constructor(private dataService: DataService) {
+  constructor(private dataService: DataService, private modalService:ModalService) {
     super()
     this.addSubscription(
       this.dataService.getPublisher().subscribe(data => {
         this.publisher = data
+        console.log({data});
       })
     )
     this.addSubscription(
@@ -86,5 +88,13 @@ export class PublisherPrivilegesComponent extends BaseComponent implements OnIni
       return matchedDesignation;
     });
     console.log(designations);
+  }
+
+  openModal() {
+    this.modalService.selectPublisher()
+    .then(data=>{
+      this.publisher = data;
+      this.designations = [...this.publisher.designations.map(i => i.description)]
+    })
   }
 }

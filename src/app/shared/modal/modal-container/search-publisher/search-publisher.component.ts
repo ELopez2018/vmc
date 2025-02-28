@@ -23,7 +23,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   public frequentPublishers!: PublisherDto[];
   @Output() onClicked: EventEmitter<Publisher> = new EventEmitter()
   @Output() onClose: EventEmitter<boolean> = new EventEmitter()
-  showSpinner = true;
+  public showSpinner = true;
   public congregation!: Congregation;
   public usedPublishersList: any[] = [];
   public female:any[] = [];

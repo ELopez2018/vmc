@@ -4,23 +4,29 @@
   <!-- <fieldset class="fieldset-base"> -->
   <div class="ms-4">
     <div class="row mt-2">
-      <div class="col-md-2">Nombre</div>
-      <div class="col-md-10">{{ publisher.fullName }}</div>
+      <div class="col-md-2 d-flex align-items-center">Nombre</div>
+      <div class="col-md-7 d-flex align-items-center">{{ publisher.fullName }}</div>
+      <div class="col-md-3">
+        <button mat-fab extended color="Publicadores" (click)="openModal()">
+          <mat-icon>people_outline</mat-icon>
+          Publicadores
+        </button>
+      </div>
     </div>
     <div class="row mt-2">
-      <div class="col-md-2">Telefono</div>
-      <div class="col-md-10">{{ publisher.cellPhone }}</div>
+      <div class="col-md-2 py-2">Telefono</div>
+      <div class="col-md-10 py-2">{{ publisher.cellPhone }}</div>
     </div>
     <div class="row mt-2">
-      <div class="col-md-2">Email</div>
-      <div class="col-md-10">{{ publisher.email }}</div>
+      <div class="col-md-2 py-2">Email</div>
+      <div class="col-md-10 py-2">{{ publisher.email }}</div>
     </div>
 
     <div class="row mt-2">
       <div class="col-md-12">
         <form>
           <mat-form-field class="example-chip-list" appearance="fill">
-            <mat-label>Nombramientos</mat-label>
+            <mat-label>Privilegios</mat-label>
             <mat-chip-grid #chipGrid aria-label="Nombramientos">
               <mat-chip-row *ngFor="let designation of designations" (removed)="remove(designation)">
                 {{designation}}

@@ -27,7 +27,13 @@ export interface Publisher {
   phone?: any;
   email?: any;
   congregation: Congregation;
-  designations: any[];
+  designations: Designation[];
+}
+
+
+export interface Designation {
+  id: number;
+  description: string;
 }
 
 /// news

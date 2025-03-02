@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DataService } from '../../core/services/data/data.service';
 import { BaseComponent } from 'src/app/core/Class/base-component';
-import { Publisher } from 'src/app/core/interfaces/reuniones.interface';
+import { Designation, Publisher } from 'src/app/core/interfaces/reuniones.interface';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -11,6 +11,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { CommonModule } from '@angular/common';
 import { Generic } from 'src/app/core/interfaces/configs.interface';
 import { ModalService } from '../../core/services/modal/modal.service';
+import { UsersService } from 'src/app/core/services/users/users.service';
 
 @Component({
   selector: 'publisher-privileges',
@@ -20,21 +21,25 @@ import { ModalService } from '../../core/services/modal/modal.service';
   imports: [SharedModule, FormsModule, ReactiveFormsModule, CommonModule]
 })
 export class PublisherPrivilegesComponent extends BaseComponent implements OnInit {
-  separatorKeysCodes: number[] = [ENTER, COMMA];
-  fruitCtrl = new FormControl('');
-  filteredFruits!: Observable<string[]>;
-  designations: string[] = ['Publicador'];
-  allDesignations: string[] = [];
-  designationsList: Generic[] = [];
   @ViewChild('fruitInput') fruitInput!: ElementRef<HTMLInputElement>;
-
+  public separatorKeysCodes: number[] = [ENTER, COMMA];
+  public fruitCtrl = new FormControl('');
+  public filteredFruits!: Observable<string[]>;
+  public designations: string[] = ['Publicador'];
+  public allDesignations: string[] = [];
+  public designationsList: Generic[] = [];
   public publisher!: Publisher;
-  constructor(private dataService: DataService, private modalService:ModalService) {
+  public disabledSave = false;
+  constructor(
+    private dataService: DataService,
+    private modalService: ModalService,
+    private usersService: UsersService
+  ) {
     super()
     this.addSubscription(
       this.dataService.getPublisher().subscribe(data => {
         this.publisher = data
-        console.log({data});
+        console.log({ data });
       })
     )
     this.addSubscription(
@@ -82,19 +87,31 @@ export class PublisherPrivilegesComponent extends BaseComponent implements OnIni
     return this.allDesignations.filter(fruit => fruit.toLowerCase().includes(filterValue));
   }
   save() {
-    console.log(this.designations);
-    const designations = this.designations.map(data => {
+    this.disabledSave = true;
+    const designations: Designation[] = <Designation[]>this.designations.map(data => {
       const matchedDesignation = this.designationsList.find(i => i.description === data);
       return matchedDesignation;
     });
-    console.log(designations);
+    const publisher = { ...this.publisher }
+    publisher.designations = designations
+
+    this.usersService.save(publisher).subscribe(data => {
+      this.disabledSave = false;
+    }, error => {
+      this.disabledSave = false;
+    })
+
   }
 
   openModal() {
     this.modalService.selectPublisher()
-    .then(data=>{
-      this.publisher = data;
-      this.designations = [...this.publisher.designations.map(i => i.description)]
-    })
+      .then(data => {
+        this.publisher = data;
+        this.designations = [...this.publisher.designations.map(i => i.description)]
+      })
+  }
+
+  get disabled() {
+    return this.disabledSave;
   }
 }

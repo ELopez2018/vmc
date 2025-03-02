@@ -1,0 +1,10 @@
+.info-modal {
+  max-width: 98vw;
+}
+
+
+@media (min-width: 992px) {
+  .info-modal {
+    max-width: 35vw;
+  }
+}

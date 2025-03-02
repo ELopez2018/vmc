@@ -10,6 +10,8 @@ import { ModalService } from 'src/app/core/services/modal/modal.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { Utils } from 'src/app/shared/Utils';
 import { CongregationMock } from '../../mocks/congregation.mock';
+import { ModalTitleEnums } from 'src/app/core/enums/modal.enums';
+import { ModalTypeEnums } from '../../../../core/enums/modal.enums';
 
 @Component({
   selector: 'vmc-programs',
@@ -247,10 +249,9 @@ export class ProgramsComponent implements OnInit {
           this.assignmentType += "Assistant"
         }
     }
-
-    console.log(this.assignmentType);
   }
   selectAssignmentTypeByTitle(title: string) {
+    console.log({title});
     if (title.includes("Lo que hizo")) {
       return AssignmentType.WHAT_HE_DID
     }
@@ -275,6 +276,9 @@ export class ProgramsComponent implements OnInit {
     if (title.includes("Necesidades de la congregación")) {
       return AssignmentType.LOCAL_NEEDS
     }
+    if (title.includes("Discurso")) {
+      return AssignmentType.SPEECH
+    }
     return "";
   }
   changeWeeklyProgram(item: WeeklyProgram, type: string) {
@@ -285,6 +289,7 @@ export class ProgramsComponent implements OnInit {
       this.assignmentType = AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS
     } else {
       this.selectAssignmentType(item, type)
+
     }
 
     switch (type) {
@@ -302,10 +307,16 @@ export class ProgramsComponent implements OnInit {
           })
         break;
       case "assistant":
+        if (this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY_READER) {
+          this.modalService.info("Recordatorio","Los hermanos deben ser lectores aprobados por el cuerpo de  Ancianos ( sfl 1:2.8). Si ya fué aprobado vaya al modulo PRIVILEGIOS.", ModalTitleEnums.INFORMACION, ModalTypeEnums.INFO)
+        }
         this.modalService.assignPublisherWeeklyProgram(item, this.assignmentType)
-          .then(data => {
+          .then((data: any) => {
             if(!data || data == 'close'){return}
-            item.assistant = data
+            item.assistant = <Publisher>data
+            if(item.assistant.designations.find(i=>i.description)) {
+
+            }
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
               console.log("saved assistant", data);
             })

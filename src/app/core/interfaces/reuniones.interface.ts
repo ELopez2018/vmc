@@ -34,6 +34,7 @@ export interface Publisher {
 export interface Designation {
   id: number;
   description: string;
+  dateAssigned: string;
 }
 
 /// news

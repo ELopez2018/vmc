@@ -18,5 +18,6 @@ export enum AssignmentType {
   CONGREGATION_BIBLE_STUDY = 'congregationBibleStudy',
   CONGREGATION_BIBLE_STUDY_READER = 'congregationBibleStudyReader',
   LOCAL_NEEDS = 'localNeeds',
-  OTHER_PART_LIVING_AS_CHRISTIANS = 'otheAssignmentsLAC'
+  OTHER_PART_LIVING_AS_CHRISTIANS = 'otheAssignmentsLAC',
+  SPEECH = 'speech'
 }

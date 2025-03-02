@@ -89,7 +89,7 @@ export class ModalService {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.mensaje = message;
     this.modalRef.componentInstance.subTitle = subtitle;
-    this.modalRef.componentInstance.title = title;
+    this.modalRef.componentInstance.titulo = title;
     this.modalRef.componentInstance.modalType = type;
     return this.modalRef.result
   }

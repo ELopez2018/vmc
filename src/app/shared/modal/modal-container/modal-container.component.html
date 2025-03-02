@@ -1,5 +1,12 @@
 <div [ngSwitch]="modalType">
-  <div *ngSwitchDefault></div>
+  <div *ngSwitchDefault>
+    <info-modal
+    [message]="mensaje"
+    [title]="titulo"
+    [subtitle]="subTitle"
+    (onClicked)="close()"
+    ></info-modal>
+  </div>
   <div *ngSwitchCase="typeOfModals.ASSIGN_PUB">
     <search-publisher
       (onClicked)="onClicked($event)"

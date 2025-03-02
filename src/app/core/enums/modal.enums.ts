@@ -40,5 +40,6 @@ export enum ModalTypeEnums {
   SUCCESS = "success",
   LOADER = "loader",
   ADDASSIG = "addAssignmentComponent",
-  SELECT_PUBLISHER = "selectPublisher"
+  SELECT_PUBLISHER = "selectPublisher",
+  INFO = "info"
 }

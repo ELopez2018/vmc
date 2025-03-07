@@ -10,17 +10,19 @@ import { DataService } from '../data/data.service';
 @Injectable({
   providedIn: 'root'
 })
-export class PrintPdfService {
+export class PrintPdfOnePageService {
   private congregation = "ALBORADA";
   private colorFontPublisher = "#ea002e";
-  private sizeHeader = [16, 'auto', '*', 20]
-  private sizeBody = [70, 190, 150, '*']
-  private sizeSongs = [16, 244, 150, '*']
-  private sizeHeaderSections = [275, 143, '*']
+  private sizeHeader = [20, 'auto', '*', 20]
+  private sizeBody = [70, 185, 80, 10, '*']
+  private sizeSongs = [20, 235, 80, 10, '*']
+  private sizeHeaderSections = [350, 10, '*']
 
-  private sizeContenTreasure = [16, 208, 30, 146, '*']
-  private sizeContenTeachers = [16, 178, 60, 146, '*']
-  private sizeContenLife = [16, 258, 0, 126, '*']
+  private sizeContenTreasure = [20, 300, 5, 20, '*']
+  private sizeContenTreasureReader = [20, 225, 90, 10, '*']
+  private sizeContenTeachers = [20, 235, 85, 5, '*']
+  private sizeContenLife = [20, 300, 5, 20, '*']
+  private sizeContenLifeEB = [20, 235, 85, 5, '*']
   private dayMeet: any = null
   constructor(
     private dataService: DataService
@@ -125,23 +127,13 @@ export class PrintPdfService {
                 text: "Presidente:", style: "tips_r", border: [false, false, false, false]
               },
               {
-                text: week.president?.fullName, style: "tips_l", border: [false, false, false, false]
+                text: "", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: week.president?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
               }
             ],
-            [
-              {
-                text: "", style: "sub_title", border: [false, false, false, false]
-              },
-              {
-                text: "", style: "sub_title", border: [false, false, false, false]
-              },
-              {
-                text: this.verifiRoomB(week.weeklyProgram) ? 'Consejero de la sala auxiliar:' : '', style: "tips_r", border: [false, false, false, false]
-              },
-              {
-                text: this.verifiRoomB(week.weeklyProgram) ? week.assistantAdviser?.fullName : '', style: "tips_l", border: [false, false, false, false]
-              }
-            ],
+
           ]
         },
       },
@@ -160,7 +152,10 @@ export class PrintPdfService {
                 text: "Oración:", style: "tips_r", border: [false, false, false, false]
               },
               {
-                text: week.openingPrayer?.fullName, style: "tips_l", border: [false, false, false, false]
+                text: "", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: week.openingPrayer?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
               }
             ],
             [
@@ -169,6 +164,9 @@ export class PrintPdfService {
               },
               {
                 text: `• Palabras de introducción ( ${week.meeting.introTime} ${week.meeting.timeType})`, style: "titles", border: [false, false, false, false]
+              },
+              {
+                text: "", style: "tips_r", border: [false, false, false, false]
               },
               {
                 text: "", style: "tips_r", border: [false, false, false, false]
@@ -194,7 +192,7 @@ export class PrintPdfService {
                 text: "TESOROS DE LA BIBLIA", style: "treasures", border: [false, false, false, false], fillColor: '#2a6b77',
               },
               {
-                text: "Sala Auxiliar", style: "tips_c", border: [false, false, false, false]
+                text: "", style: "tips_r", border: [false, false, false, false]
               },
               {
                 text: "Auditorio principal", style: "tips_c", border: [false, false, false, false]
@@ -223,10 +221,10 @@ export class PrintPdfService {
               text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
             },
             {
-              text: asigment.assistantB ? asigment.responsibleB?.fullName + " / " + asigment.assistantB.fullName : asigment.responsibleB?.fullName, style: "tips_l", border: [false, false, false, false]
+              text: "", style: "tips_l", border: [false, false, false, false]
             },
             {
-              text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
+              text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
             }
           ]
         )
@@ -254,15 +252,14 @@ export class PrintPdfService {
             {
               text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTreasures", border: [false, false, false, false]
             },
-
             {
               text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
             },
             {
-              text: asigment.assistantB ? asigment.responsibleB?.fullName + " / " + asigment.assistantB.fullName : asigment.responsibleB?.fullName, style: "tips_l", border: [false, false, false, false]
+              text: asigment.assistantB ? asigment.responsibleB?.fullName.trim() + " / " + asigment.assistantB.fullName.trim() : asigment.responsibleB?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
             },
             {
-              text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
+              text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
             }
           ]
         )
@@ -271,7 +268,7 @@ export class PrintPdfService {
     return [
       {
         table: {
-          widths: this.sizeContenTreasure,
+          widths: this.sizeContenTreasureReader,
           body: content
         },
       },
@@ -289,7 +286,7 @@ export class PrintPdfService {
                 text: "SEAMOS MEJORES MAESTROS", style: "teachers", border: [false, false, false, false], fillColor: '#9b6d17',
               },
               {
-                text: "Sala Auxiliar", style: "tips_c", border: [false, false, false, false]
+                text: "", style: "tips_c", border: [false, false, false, false]
               },
               {
                 text: "Auditorio principal", style: "tips_c", border: [false, false, false, false]
@@ -317,10 +314,10 @@ export class PrintPdfService {
             text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
           },
           {
-            text: asigment.assistantB ? asigment.responsibleB?.fullName + " / " + asigment.assistantB.fullName : asigment.responsibleB?.fullName, style: "tips_l", border: [false, false, false, false]
+            text: asigment.assistantB ? asigment.responsibleB?.fullName.trim() + " / " + asigment.assistantB.fullName.trim() : asigment.responsibleB?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
           },
           {
-            text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
+            text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
           }
         ]
       )
@@ -361,30 +358,70 @@ export class PrintPdfService {
     const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
-      content.push(
-        [
-          {
-            text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
-          },
-          {
-            text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontLife", border: [false, false, false, false]
-          },
-          {
-            text: ``, style: "fontLife", border: [false, false, false, false]
-          },
-          {
-            text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
-          },
-          {
-            text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName, style: "tips_l", border: [false, false, false, false]
-          }
-        ]
-      )
+      // if (asigment.assignment.title !== "Estudio bíblico de la congregación") {
+        if (true) {
+        content.push(
+          [
+            {
+              text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
+            },
+            {
+              text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontLife", border: [false, false, false, false]
+            },
+            {
+              text: "", style: "tips_r", border: [false, false, false, false]
+            },
+            {
+              text: ``, style: "fontLife", border: [false, false, false, false]
+            },
+            {
+              text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
+            }
+          ]
+        )
+      }
     })
     return [
       {
         table: {
           widths: this.sizeContenLife,
+          body: content
+        },
+      },
+    ]
+
+
+  }
+  private makeContentLifeEstudyB(week: ProgramPdf) {
+    const treasures = [...week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA')]
+    let content: any[]=[];
+    treasures.forEach((asigment: WeeklyProgramPdF) => {
+      if (asigment.assignment.title.includes("Estudio bíblico de la congregación")) {
+        content.push(
+          [
+            {
+              text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
+            },
+            {
+              text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontLife", border: [false, false, false, false]
+            },
+            {
+              text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
+            },
+            {
+              text: ``, style: "fontLife", border: [false, false, false, false]
+            },
+            {
+              text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
+            }
+          ]
+        )
+      }
+    })
+    return [
+      {
+        table: {
+          widths: this.sizeContenLifeEB,
           body: content
         },
       },
@@ -433,6 +470,9 @@ export class PrintPdfService {
                 text: "", style: "tips_r", border: [false, false, false, false]
               },
               {
+                text: "", style: "tips_r", border: [false, false, false, false]
+              },
+              {
                 text: "", style: "tips_l", border: [false, false, false, false]
               }
             ],
@@ -447,7 +487,10 @@ export class PrintPdfService {
                 text: "Oración", style: "tips_r", border: [false, false, false, false]
               },
               {
-                text: week.finalPrayer?.fullName, style: "tips_l", border: [false, false, false, false]
+                text: "", style: "tips_r", border: [false, false, false, false]
+              },
+              {
+                text: week.finalPrayer?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
               }
             ],
           ]
@@ -487,6 +530,7 @@ export class PrintPdfService {
     let pageBreak = false;
     let count = 0;
     let pageCount = 0
+    if (!weeks || weeks.length < 1) return;
     weeks.forEach(week => {
       count++
       pageCount++
@@ -495,13 +539,12 @@ export class PrintPdfService {
         ...this.makeHeaderTreasures(),
         ...this.makeContentTreasures(week),
         ...this.makeContentTreasuresReader(week),
-        "\n",
         ...this.makeHeaderTeachers(),
         ...this.makeContentTeachers(week),
-        "\n",
         ...this.makeHeaderLife(),
         ...this.makeIntermediateSong(week),
         ...this.makeContentLife(week),
+        //...this.makeContentLifeEstudyB(week),
         ...this.makeFinalBlock(week),
         count == 1 ? "\n" : "",
         { text: '', pageBreak: count == 2 && pageCount < weeks.length ? 'before' : '', style: count == 1 ? 'endPage' : '' },
@@ -546,21 +589,20 @@ export class PrintPdfService {
           bold: true,
         },
         tips_r: {
-          fontSize: 6,
-          //color: "#ea002e",
+          fontSize: 7,
           bold: true,
           alignment: 'right',
           margin: [0, 3, 0, 0]
         },
         tips_l: {
-          fontSize: 7,
+          fontSize: 9,
           bold: true,
           color: this.colorFontPublisher,
           alignment: 'left',
           margin: [0, 2, 0, 0]
         },
         tips_c: {
-          fontSize: 7,
+          fontSize: 8,
           bold: true,
           alignment: 'left',
           color: "#b6b4b4",
@@ -568,43 +610,43 @@ export class PrintPdfService {
         },
         titles: {
           bold: true,
-          fontSize: 8,
+          fontSize: 9,
           margin: [0, 0, 0, 0],
         },
 
         treasures: {
           bold: true,
-          fontSize: 8,
+          fontSize: 10,
           color: "#fff",
           margin: [0, 0, 0, 0],
         },
         teachers: {
           bold: true,
-          fontSize: 8,
+          fontSize: 10,
           color: "#fff",
           margin: [0, 0, 0, 0],
         },
         life: {
           bold: true,
-          fontSize: 8,
+          fontSize: 10,
           color: "#fff",
           margin: [0, 0, 0, 0],
         },
         fontTreasures: {
           bold: true,
-          fontSize: 8.5,
+          fontSize: 9,
           color: "#2a6b77",
           margin: [0, 0, 0, 0],
         },
         fontTeachers: {
           bold: true,
-          fontSize: 8.5,
+          fontSize: 9,
           color: "#9b6d17",
           margin: [0, 0, 0, 0],
         },
         fontLife: {
           bold: true,
-          fontSize: 8.5,
+          fontSize: 9,
           color: "#942926",
           margin: [0, 0, 0, 0],
         },

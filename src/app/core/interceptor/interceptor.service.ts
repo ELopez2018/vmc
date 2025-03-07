@@ -28,7 +28,6 @@ export class InterceptorService implements HttpInterceptor {
     let headers: HttpHeaders;
     switch (req.url) {
       case `${this.server}${this.api.AUTH}/login`:
-        console.log("Sin el header Authorization " + req.url);
         headers = new HttpHeaders({
           'Content-Type': 'application/json',
         });

@@ -65,7 +65,6 @@ export class ProgramsComponent implements OnInit {
   }
   getDataFromJW() {
     this.meetingsService.getUpdateWeeksFromJW().subscribe(data => {
-      console.log(data);
     })
   }
 
@@ -77,11 +76,10 @@ export class ProgramsComponent implements OnInit {
             if(!data || data == 'close'){return}
             item.startTimeOpeningSong = data
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data);
           })
         break;
       case "startTimeIntro":

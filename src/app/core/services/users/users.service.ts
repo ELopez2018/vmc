@@ -39,7 +39,6 @@ export class UsersService {
     return this.httpClient.get<any>(url)
       .pipe(tap(data => {
         this.loaderService.setLoaderSearchPublisher(false);
-        // console.log(data)
       }))
   }
 }

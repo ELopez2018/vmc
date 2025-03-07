@@ -56,7 +56,6 @@ export class PublisherListComponent implements AfterViewInit, OnInit {
   }
 
   edit(publisherSelected: Publisher){
-    console.log("navigate");
     this.router.navigateByUrl(`/tablero/publicador/${publisherSelected.id}`)
   }
 }

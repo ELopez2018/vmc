@@ -55,7 +55,6 @@ export class EntreSemanaComponent implements OnInit {
       this.dataService.setMeeting([...data])
       this.showSpinner = false;
       if (localStorage.getItem("week")) {
-        console.log("in");
         this.filterByWeekNumber(parseInt(localStorage.getItem("week") ?? ""))
       }
     }, error => {
@@ -65,7 +64,6 @@ export class EntreSemanaComponent implements OnInit {
   }
 
   showDayOfMeeting(fechaSemana: string) {
-    console.log(this.meetingDay);
     return Utils.showDayOfMeeting(fechaSemana, this.meetingDay)
   }
 
@@ -79,7 +77,6 @@ export class EntreSemanaComponent implements OnInit {
 
   getDataFromJW() {
     this.meetingsService.getUpdateWeeksFromJW().subscribe(data => {
-      console.log(data);
     })
   }
 
@@ -350,7 +347,7 @@ export class EntreSemanaComponent implements OnInit {
 
   filterWeekByRoom(room: string, weeks: Program[]) {
     return weeks.filter(i => {
-      return i.weeklyProgram.filter(b => b.room == room).length > 0
+      return i.weeklyProgram.filter(b => b.room == room)?.length > 0
     }
     )
   }

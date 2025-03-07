@@ -7,6 +7,7 @@ import { ModalService } from '../../core/services/modal/modal.service';
 import { Congregation } from '../../core/interfaces/reuniones.interface';
 import { ProgramPdf } from 'src/app/core/interfaces/print-pdf.interface';
 import { Subscription } from 'rxjs';
+import { PrintPdfOnePageService } from 'src/app/core/services/pdf/print-pdf-one-page.service';
 
 @Component({
   selector: 'app-printer',
@@ -19,10 +20,12 @@ export class PrinterComponent implements OnInit {
   @Output() onClosed = new EventEmitter()
   private congregation!: Congregation
   private subs: Subscription = new Subscription();
-  constructor(private printService: PrintPdfService,
+  constructor(
+    private printService: PrintPdfService,
     private meetingsService: MeetingsService,
     private dataService: DataService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private printPdfOnePageService: PrintPdfOnePageService
   ) {
     this.subs.add(
       this.dataService.getCongregation$().subscribe(data => {
@@ -59,14 +62,39 @@ export class PrinterComponent implements OnInit {
   }
 
   printMeetings(weeks: ProgramPdf[]) {
-    this.printService.getBlob(weeks)
-      .then(data => {
-        this.pdfViewerAutoLoad.pdfSrc = data
-        this.pdfViewerAutoLoad.refresh()
-      })
-      .catch(error => {
-        console.error(error);
-      })
+    console.log(weeks);
+
+
+    if (this.hasAssistantBOrResponsibleB(weeks)) {
+      console.log("printService");
+      this.printService.getBlob(weeks)
+        .then(data => {
+          this.pdfViewerAutoLoad.pdfSrc = data
+          this.pdfViewerAutoLoad.refresh()
+        })
+        .catch(error => {
+          console.error(error);
+        })
+    } else {
+      console.log("printPdfOnePageService");
+      this.printPdfOnePageService.getBlob(weeks)
+        .then(data => {
+          this.pdfViewerAutoLoad.pdfSrc = data
+          this.pdfViewerAutoLoad.refresh()
+        })
+        .catch(error => {
+          console.error(error);
+        })
+    }
+
+
+
+  }
+
+  hasAssistantBOrResponsibleB(data: ProgramPdf[]): boolean {
+    return data.some(root =>
+      root.weeklyProgram.some(program => program.assistantB !== undefined || program.responsibleB !== undefined)
+    );
   }
 
   download() {
@@ -76,7 +104,9 @@ export class PrinterComponent implements OnInit {
     this.printService.download(dataIpm)
   }
 
-  onCLose(){
+  onCLose() {
     this.onClosed.emit(true)
   }
 }
+
+

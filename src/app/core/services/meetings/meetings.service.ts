@@ -46,7 +46,7 @@ export class MeetingsService {
             program.weeklyProgram.sort((a, b) => a.assignment.number - b.assignment.number);
           }
         });
-        return data; // Devuelve los datos transformados
+        return data ?? []; // Devuelve los datos transformados
       }),
     )
   }

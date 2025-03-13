@@ -110,7 +110,7 @@
                     <div class="col-md-1 ms-2 width-timeStart hover  d-none d-md-inline" (click)="changeWeeklyProgram(item, 'startTime')">
                       {{ adapterTime(item.startTime) }}
                     </div>
-                    <div class="col-md-11 big-title p-0 m-0" [title]="item.assignment.title">
+                    <div class="col-md-11 big-title p-0 m-0" [title]="item.assignment.title +' ('+  item.assignment.time + item.assignment.timeType +')' ">
                       <span class="title-number hover" (click)="changeWeeklyProgram(item, 'number')">{{
                         item.assignment.number }}.</span>
 
@@ -150,7 +150,7 @@
                     <div class="col-md-1 ms-2 width-timeStart hover  d-none d-md-inline" (click)="changeWeeklyProgram(item, 'startTime')">
                       {{ adapterTime(item.startTime) }}
                     </div>
-                    <div class="col-md-11 big-title p-0 m-0" [title]="item.assignment.title">
+                    <div class="col-md-11 big-title p-0 m-0" [title]="item.assignment.title +' ('+  item.assignment.time + item.assignment.timeType +')' ">
                       <span class="title-number hover" (click)="changeWeeklyProgram(item, 'number')">{{
                         item.assignment.number }}.</span>
                       <span class="hover program__title-asingment" (click)="changeWeeklyProgram(item, 'title')">
@@ -212,7 +212,7 @@
                     <div class="col-md-1 width-timeStart ms-2 hover  d-none d-md-inline" (click)="changeWeeklyProgram(item, 'startTime')">
                       {{ adapterTime(item.startTime) }}
                     </div>
-                    <div class="col-md-11 big-title p-0 m-0 hover" [title]="item.assignment.title">
+                    <div class="col-md-11 big-title p-0 m-0 hover" [title]="item.assignment.title +' ('+  item.assignment.time + item.assignment.timeType +')' ">
                       <span class="title-number hover" (click)="changeWeeklyProgram(item, 'number')">{{
                         item.assignment.number }}.</span>
                       <span class="hover program__title-asingment" (click)="changeWeeklyProgram(item, 'title')">

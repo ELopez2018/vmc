@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Utils } from 'src/app/shared/Utils';
 import { ProgramPdf, WeeklyProgramPdF } from '../../interfaces/print-pdf.interface';
 import { DataService } from '../data/data.service';
+import * as pdfMake from "pdfmake/build/pdfmake";
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
-
+(<any>pdfMake).vfs = pdfFonts.vfs;
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,7 @@ export class PrintPdfService {
   constructor(
     private dataService: DataService
   ) {
-    (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
+
 
     this.dataService.getPublisher().subscribe(data => {
       if (data) {

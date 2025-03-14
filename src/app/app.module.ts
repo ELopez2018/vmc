@@ -14,6 +14,7 @@ import { HomeComponent } from './core/home/home.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { TablePrimengComponent } from './pages/publisher-list/table-primeng/table-primeng.component';
 import { TableMaterialComponent } from './pages/publisher-list/table-material/table-material.component';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { TableMaterialComponent } from './pages/publisher-list/table-material/ta
     MaterialModule
   ],
   providers: [
+    JwtHelperService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: InterceptorService,
@@ -40,3 +42,4 @@ import { TableMaterialComponent } from './pages/publisher-list/table-material/ta
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+//providers: [JwtHelperService],  // <-- Add this line

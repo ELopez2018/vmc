@@ -7,6 +7,7 @@ import { PublisherListComponent } from '../publisher-list/publisher-list.compone
 import { PublisherPrivilegesComponent } from '../publisher-privileges/publisher-privileges.component';
 import { DashboardComponent } from './dashboard.component';
 import { ManagerComponent } from '../entre-semana/manager/manager.component';
+import { LoginGuard } from 'src/app/core/guards/login.guard';
 
 const routes: Routes = [
   {
@@ -14,32 +15,38 @@ const routes: Routes = [
     component: DashboardComponent,
     children: [
       {
-        //path: '', redirectTo: 'entre-semana', pathMatch:"full"
-        path: '', redirectTo: 'entre-semana', pathMatch:"full"
+        path: '', redirectTo: 'entre-semana', pathMatch: "full"
       },
       {
         path: 'entre-semana', loadChildren: () => import('../entre-semana/entre-semana.module').then(m => m.EntreSemanaModule),
+        canActivate: [LoginGuard]
       },
       {
         path: 'imprimir', component: PrinterComponent,
+        canActivate: [LoginGuard]
       },
       {
         path: 'publicador', component: UsersCreateOrUpdateComponent,
+        canActivate: [LoginGuard]
       },
       {
         path: 'publicador/:id', component: UsersCreateOrUpdateComponent,
+        canActivate: [LoginGuard]
       },
       {
         path: 'publicadores', component: PublisherListComponent,
+        canActivate: [LoginGuard]
       },
       {
         path: 'privilegios', component: PublisherPrivilegesComponent,
+        canActivate: [LoginGuard]
       },
       {
         path: 'administrador', component: ManagerComponent,
+        canActivate: [LoginGuard]
       },
 
-    ]
+    ],
   },
 
 
@@ -47,6 +54,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports:[RouterModule]
+  exports: [RouterModule]
 })
 export class DashboardRoutingModule { }

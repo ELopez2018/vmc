@@ -27,7 +27,7 @@ export class PrintPdfOnePageService {
   constructor(
     private dataService: DataService
   ) {
-    (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
+    (<any>pdfMake).vfs = pdfFonts.vfs;
 
     this.dataService.getPublisher().subscribe(data => {
       if (data) {

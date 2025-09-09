@@ -245,6 +245,7 @@ export class ProgramsComponent implements OnInit {
           this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY_READER
         } else if (type == "assistant" && this.assignmentType != AssignmentType.CONGREGATION_BIBLE_STUDY) {
           this.assignmentType += "Assistant"
+          console.log(this.assignmentType);
         }
     }
   }
@@ -283,11 +284,11 @@ export class ProgramsComponent implements OnInit {
     if (
       item.assignment.sectionMeeting.includes("NUESTRA VIDA CRISTIANA")
       && !item.assignment.title.includes("Estudio bíblico de la congregación")
-      && !item.assignment.title.includes("Necesidades de la congregación")) {
+      && !item.assignment.title.includes("Necesidades de la congregación"))
+      {
       this.assignmentType = AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS
     } else {
       this.selectAssignmentType(item, type)
-
     }
 
     switch (type) {
@@ -297,30 +298,30 @@ export class ProgramsComponent implements OnInit {
             if(!data || data == 'close'){return}
             item.responsible = data
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
-              console.log("saved responsible", data);
+              console.info("saved responsible", data);
             })
           })
           .catch(data => {
-            console.log(data);
+            console.error(data);
           })
         break;
       case "assistant":
-        if (this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY_READER) {
-          this.modalService.info("Recordatorio","Los hermanos deben ser lectores aprobados por el cuerpo de  Ancianos ( sfl 1:2.8). Si ya fué aprobado vaya al modulo PRIVILEGIOS.", ModalTitleEnums.INFORMACION, ModalTypeEnums.INFO)
-        }
         this.modalService.assignPublisherWeeklyProgram(item, this.assignmentType)
           .then((data: any) => {
             if(!data || data == 'close'){return}
             item.assistant = <Publisher>data
-            if(item.assistant.designations.find(i=>i.description)) {
+            if(item.assistant.designations?.find(i=>i.description)) {}
 
-            }
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe(data => {
-              console.log("saved assistant", data);
+              console.info("saved assistant", data);
             })
+
+            if (this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY_READER) {
+              this.modalService.info("Recordatorio","Los hermanos deben ser lectores aprobados por el cuerpo de  Ancianos (sfl 1:2.8). Si ya fué aprobado vaya al modulo PRIVILEGIOS.", ModalTitleEnums.INFORMACION, ModalTypeEnums.INFO)
+            }
           })
           .catch(data => {
-            console.log(data);
+            console.info(data);
           })
         break;
       case "startTime":

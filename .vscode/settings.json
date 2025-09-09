@@ -6,7 +6,9 @@
       "style": "scss"
     },
     "angular-component": {
-      "ngOnInit": true
+      "ngOnInit": true,
+      "skipDisplayBlock": true,
+      "skipChangeDetectionOnPush": true
     }
   }
 }

@@ -15,14 +15,19 @@ export class MeetingsService {
     private httpClient: HttpClient,
     private dataService: DataService
   ) { }
-  getAllWeek(): Observable<any> {
+  getAllPrograms(): Observable<any> {
+    const url = `${this.server}/meetings/all-program`
+    return this.httpClient.get(url)
+  }
+
+  getAllMeetings(): Observable<any> {
     const url = `${this.server}/meetings`
     return this.httpClient.get(url)
   }
 
-  getCurrentWeek(): Observable<any> {
-    const url = `${this.server}/meetings/current`
-    return this.httpClient.get<Program[]>(url)
+  getCurrentToLast(): Observable<Meeting[]> {
+    const url = `${this.server}/meetings/current-Last`
+    return this.httpClient.get<Meeting[]>(url)
   }
   getByNumberWeek(week: number): Observable<Meeting> {
     const url = `${this.server}/meetings/by-number-week?numberWeek=${week}`

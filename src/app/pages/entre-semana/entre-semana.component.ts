@@ -20,7 +20,7 @@ export class EntreSemanaComponent implements OnInit {
   private programList: Program[] = [];
   public semanas: Program[] = [];
   public semanasSalaAuxiliar: Program[] = [];
-  porAsignar = "por asignar";
+  public porAsignar = "por asignar";
   public congregation: Congregation = CongregationMock
   public assignmentType: string = ""
   public Superintendente!: Publisher

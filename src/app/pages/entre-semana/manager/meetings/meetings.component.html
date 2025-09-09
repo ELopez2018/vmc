@@ -1,0 +1,26 @@
+<div class="container-fluid my-3 p-5">
+  <table class="table table-sm table-responsive table-hover table-striped table-bordered">
+    <thead>
+      <tr>
+        <th scope="col" class="text-center">Id</th>
+        <th scope="col" class="text-center">Semana</th>
+        <th scope="col" class="text-center">Día</th>
+        <th scope="col" class="text-center">JW</th>
+        <th scope="col" class="text-center"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of programList">
+        <th scope="row" class="text-center">{{ item.id }}</th>
+        <td class="text-center">{{item.weekNumber}}</td>
+        <td class="text-center">{{ parseDate(item.week) }}</td>
+        <td class="text-center"><a href="{{ item.url}}">Ir a JW</a></td>
+        <td  class="text-center">
+          <em class="pi pi-user-edit m-2 text-info hover icon"></em>
+          <em class="pi pi-times text-danger hover icon"></em>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+

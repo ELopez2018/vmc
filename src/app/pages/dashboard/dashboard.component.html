@@ -7,8 +7,18 @@
     <button mat-icon-button (click)="snav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
-    <span class="d-md-none pt-1">{{Superintendente.fullName}} | {{Superintendente.congregation.name }}</span>
-    <span class="d-md-none pt-1"></span>
+    <div class="w-100 d-flex justify-content-between align-items-center">
+      <span class="d-md-none pt-1">{{Superintendente.fullName}} | {{Superintendente.congregation.name }}</span>
+      <span class="pt-1">{{Superintendente.fullName}} | {{Superintendente.congregation.name }}</span>
+      <a routerLink="/tablero/imprimir"
+      (click)="goToPrint()"
+      >
+        <img src="../../../assets/img/imprimir.png" width="30px" alt=""
+        title="Imprime todas las semana"
+      /></a>
+    </div>
+
+
   </mat-toolbar>
 
   <mat-sidenav-container
@@ -28,6 +38,7 @@
         <a mat-list-item routerLink="publicadores">Publicadores</a>
         <a mat-list-item routerLink="publicador">Publicador</a>
         <a mat-list-item routerLink="privilegios">Privilegios</a>
+        <a mat-list-item routerLink="administrador">Administrador</a>
         <a mat-list-item (click)="logout()">Salir</a>
       </mat-nav-list>
     </mat-sidenav>

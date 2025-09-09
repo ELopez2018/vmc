@@ -1,0 +1,26 @@
+<div class="">
+  <table class="table table-sm table-responsive table-hover table-striped table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Semana</th>
+        <th scope="col">Día</th>
+        <th scope="col">JW</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of programList">
+        <th scope="row">{{ item.id }}</th>
+        <td>{{item.weekNumber}}</td>
+        <td>{{ {} }}</td>
+        <td><a href="{{ item.url}}">Ir a JW</a></td>
+        <td>
+          <p-button icon="pi pi-user-edit" (onClick)="selectedEdit(item)" styleClass="p-button-rounded p-button-help p-button-text"></p-button>
+          <p-button icon="pi pi-times" styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

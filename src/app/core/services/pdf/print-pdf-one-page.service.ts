@@ -359,7 +359,7 @@ export class PrintPdfOnePageService {
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       // if (asigment.assignment.title !== "Estudio bíblico de la congregación") {
-        if (true) {
+      if (true) {
         content.push(
           [
             {
@@ -394,7 +394,7 @@ export class PrintPdfOnePageService {
   }
   private makeContentLifeEstudyB(week: ProgramPdf) {
     const treasures = [...week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA')]
-    let content: any[]=[];
+    let content: any[] = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       if (asigment.assignment.title.includes("Estudio bíblico de la congregación")) {
         content.push(
@@ -525,31 +525,73 @@ export class PrintPdfOnePageService {
       });
     });
   }
-  private makeDocumet(weeks: ProgramPdf[]): any {
+  private makeDocumet(weeks: any[]): any {
     const contenido: any[] = []
     let pageBreak = false;
     let count = 0;
     let pageCount = 0
     if (!weeks || weeks.length < 1) return;
+
     weeks.forEach(week => {
+      console.log(week.assembly);
       count++
       pageCount++
-      contenido.push(
-        ...this.makeHeaderProgram(week),
-        ...this.makeHeaderTreasures(),
-        ...this.makeContentTreasures(week),
-        ...this.makeContentTreasuresReader(week),
-        ...this.makeHeaderTeachers(),
-        ...this.makeContentTeachers(week),
-        ...this.makeHeaderLife(),
-        ...this.makeIntermediateSong(week),
-        ...this.makeContentLife(week),
-        //...this.makeContentLifeEstudyB(week),
-        ...this.makeFinalBlock(week),
-        count == 1 ? "\n" : "",
-        { text: '', pageBreak: count == 2 && pageCount < weeks.length ? 'before' : '', style: count == 1 ? 'endPage' : '' },
+      if (week.assembly == null) {
+        contenido.push(
+          ...this.makeHeaderProgram(week),
+          ...this.makeHeaderTreasures(),
+          ...this.makeContentTreasures(week),
+          ...this.makeContentTreasuresReader(week),
+          ...this.makeHeaderTeachers(),
+          ...this.makeContentTeachers(week),
+          ...this.makeHeaderLife(),
+          ...this.makeIntermediateSong(week),
+          ...this.makeContentLife(week),
+          //...this.makeContentLifeEstudyB(week),
+          ...this.makeFinalBlock(week),
+          count == 1 ? "\n" : "",
+          { text: '', pageBreak: count == 2 && pageCount < weeks.length ? 'before' : '', style: count == 1 ? 'endPage' : '' },
 
-      )
+        )
+      } else {
+        contenido.push(
+          [
+            {
+              table: {
+                widths: this.sizeBody,
+                body: [
+                  [
+                    {
+                      text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + " |", style: "sub_title", border: [false, false, false, false]
+                    },
+                    {
+                      text: "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]
+                    }
+                  ],
+
+                ]
+              },
+            },
+            {
+              table: {
+                widths: ['*'],
+                body: [
+                  [
+                    {
+                      text: week.assembly, style: "assembly", border: [true, true, true, true]
+                    },
+                  ],
+                ]
+              },
+            },
+            count == 1 ? "\n" : "",
+            { text: '', pageBreak: count == 2 && pageCount < weeks.length ? 'before' : '', style: count == 1 ? 'endPage' : '' },
+
+          ]
+        )
+
+      }
+
       if (count == 2) {
         count = 0
       }
@@ -692,6 +734,12 @@ export class PrintPdfOnePageService {
         anotherStyle: {
           italics: true,
           alignment: 'right'
+        },
+        assembly: {
+          fontSize: 30,
+          italics: true,
+          alignment: 'center',
+          margin: [10, 50, 10, 50],
         },
         endPage: {
           margin: [10, 10, 10, 10],

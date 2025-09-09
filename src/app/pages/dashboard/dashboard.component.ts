@@ -1,7 +1,9 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { Publisher } from 'src/app/core/interfaces/reuniones.interface';
+import { Congregation, Program, Publisher } from 'src/app/core/interfaces/reuniones.interface';
 import { DataService } from 'src/app/core/services/data/data.service';
+import { MeetingsService } from 'src/app/core/services/meetings/meetings.service';
+import { CongregationMock } from '../entre-semana/mocks/congregation.mock';
 
 @Component({
   selector: 'vmc-dashboard',
@@ -28,10 +30,13 @@ export class DashboardComponent {
 
   private _mobileQueryListener: () => void;
   public Superintendente!: Publisher
+  private programList: Program[] = [];
+    public congregation: Congregation = CongregationMock
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
-    private dataService: DataService
+    private dataService: DataService,
+    private meetingsService: MeetingsService,
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
@@ -43,11 +48,22 @@ export class DashboardComponent {
   }
 
   ngOnDestroy(): void {
+    this.dataService.getCongregation$().subscribe(data => {
+      this.congregation = data
+    })
     this.mobileQuery.removeListener(this._mobileQueryListener);
+    this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
+      this.programList = [...data]
+    }, error => {
+      console.error(error);
+    })
   }
 
   shouldRun = true;
   logout() {
     this.dataService.logout()
+  }
+  goToPrint() {
+    this.dataService.setMeeting([...this.programList])
   }
 }

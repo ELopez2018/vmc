@@ -78,7 +78,9 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
   }
   selected(item: any) {
+    console.log("selected", item);
     if(item.hasOwnProperty("count")) {
+       console.log("entro");
       this.onClicked.emit(item.user)
       return;
     }
@@ -212,7 +214,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   }
 
   checkIfYouParticipate1(){
-    console.log("checkIfYouParticipate1", this.usedPublishersListAllByAssig);
     if(!this.usedPublishersListAllByAssig || this.usedPublishersListAllByAssig.length < 0) {return}
     const publisherIds = new Set(this.usedPublishersListAllByAssig.map(pub => pub.user.id));
     this.male.forEach(pub => {
@@ -224,7 +225,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   }
 
   checkIfYouParticipate2(){
-    console.log("checkIfYouParticipate2", this.usedPublishersList);
     if(!this.usedPublishersList || this.usedPublishersList.length < 0) {return}
     const publisherIds = new Set(this.usedPublishersList .map(pub => pub.id));
     this.male.forEach(pub => {

@@ -75,10 +75,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "vmc:build:production"
+              "buildTarget": "vmc:build:production"
             },
             "development": {
-              "browserTarget": "vmc:build:development"
+              "buildTarget": "vmc:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -86,7 +86,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "vmc:build"
+            "buildTarget": "vmc:build"
           }
         },
         "test": {

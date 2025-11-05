@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MaterialModule } from './shared/material.module';
@@ -17,31 +17,25 @@ import { TableMaterialComponent } from './pages/publisher-list/table-material/ta
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { AssignmentComponent } from './pages/assignment/assignment.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    PublisherListComponent,
-    DashboardComponent,
-    TableMaterialComponent,
-    AssignmentComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    TablePrimengComponent,
-    MaterialModule
-  ],
-  providers: [
-    JwtHelperService,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: InterceptorService,
-      multi: true
-    },
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        PublisherListComponent,
+        DashboardComponent,
+        TableMaterialComponent,
+        AssignmentComponent,
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        TablePrimengComponent,
+        MaterialModule], providers: [
+        JwtHelperService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: InterceptorService,
+            multi: true
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class AppModule { }
 //providers: [JwtHelperService],  // <-- Add this line

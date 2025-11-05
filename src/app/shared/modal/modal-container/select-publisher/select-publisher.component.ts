@@ -8,11 +8,10 @@ import { Subscription } from 'rxjs';
 import { DataService } from '../../../../core/services/data/data.service';
 
 @Component({
-  selector: 'vmc-select-publisher',
-  standalone: true,
-  imports: [IconCloseComponent, MaterialModule, CommonModule],
-  templateUrl: './select-publisher.component.html',
-  styleUrls: ['./select-publisher.component.scss'],
+    selector: 'vmc-select-publisher',
+    imports: [IconCloseComponent, MaterialModule, CommonModule],
+    templateUrl: './select-publisher.component.html',
+    styleUrls: ['./select-publisher.component.scss']
 })
 export class SelectPublisherComponent implements OnInit, OnDestroy {
 

@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
-  selector: 'info-modal',
-  templateUrl: './info-modal.component.html',
-  styleUrls: ['./info-modal.component.scss']
+    selector: 'info-modal',
+    templateUrl: './info-modal.component.html',
+    styleUrls: ['./info-modal.component.scss'],
+    standalone: false
 })
 export class InfoModalComponent implements OnInit {
   @Input() public title: any

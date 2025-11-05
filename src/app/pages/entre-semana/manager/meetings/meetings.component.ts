@@ -4,11 +4,10 @@ import { ButtonModule } from 'primeng/button';
 import { Utils } from 'src/app/shared/Utils';
 
 @Component({
-  selector: 'vmc-meetings',
-  standalone: true,
-  imports: [CommonModule, ButtonModule],
-  templateUrl: './meetings.component.html',
-  styleUrls: ['./meetings.component.scss'],
+    selector: 'vmc-meetings',
+    imports: [CommonModule, ButtonModule],
+    templateUrl: './meetings.component.html',
+    styleUrls: ['./meetings.component.scss']
 })
 export class MeetingsComponent implements OnInit {
   @Input() programList: any[] = [];

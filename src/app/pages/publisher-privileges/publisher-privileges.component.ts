@@ -14,11 +14,10 @@ import { ModalService } from '../../core/services/modal/modal.service';
 import { UsersService } from 'src/app/core/services/users/users.service';
 
 @Component({
-  selector: 'publisher-privileges',
-  templateUrl: './publisher-privileges.component.html',
-  styleUrls: ['./publisher-privileges.component.scss'],
-  standalone: true,
-  imports: [SharedModule, FormsModule, ReactiveFormsModule, CommonModule]
+    selector: 'publisher-privileges',
+    templateUrl: './publisher-privileges.component.html',
+    styleUrls: ['./publisher-privileges.component.scss'],
+    imports: [SharedModule, FormsModule, ReactiveFormsModule, CommonModule]
 })
 export class PublisherPrivilegesComponent extends BaseComponent implements OnInit {
   @ViewChild('fruitInput') fruitInput!: ElementRef<HTMLInputElement>;

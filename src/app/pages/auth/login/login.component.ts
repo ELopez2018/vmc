@@ -6,11 +6,10 @@ import { CommonModule } from '@angular/common';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 @Component({
-  selector: 'vmc-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
-  standalone: true,
-  imports:[CommonModule, ReactiveFormsModule, MatProgressSpinnerModule, MatInputModule]
+    selector: 'vmc-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, MatProgressSpinnerModule, MatInputModule]
 })
 export class LoginComponent {
   public credential!: FormGroup

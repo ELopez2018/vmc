@@ -4,11 +4,10 @@ import { Publisher } from 'src/app/core/interfaces/reuniones.interface';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
-  selector: 'vmc-table-primeng',
-  templateUrl: './table-primeng.component.html',
-  styleUrls: ['./table-primeng.component.scss'],
-  standalone: true,
-  imports:[TableModule, ButtonModule]
+    selector: 'vmc-table-primeng',
+    templateUrl: './table-primeng.component.html',
+    styleUrls: ['./table-primeng.component.scss'],
+    imports: [TableModule, ButtonModule]
 })
 export class TablePrimengComponent implements OnInit {
   @Input() publisherList:Publisher[]=[];

@@ -12,9 +12,10 @@ import { Subscription } from 'rxjs';
 import { PublisherMeetingResposne, PublisherResposne } from 'src/app/core/interfaces/publisher-response';
 
 @Component({
-  selector: 'search-publisher',
-  templateUrl: './search-publisher.component.html',
-  styleUrls: ['./search-publisher.component.scss']
+    selector: 'search-publisher',
+    templateUrl: './search-publisher.component.html',
+    styleUrls: ['./search-publisher.component.scss'],
+    standalone: false
 })
 export class SearchPublisherComponent implements OnInit, OnDestroy {
   public publishersAll!: Publisher[];

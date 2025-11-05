@@ -14,16 +14,15 @@ import { ModalTitleEnums } from 'src/app/core/enums/modal.enums';
 import { ModalTypeEnums } from '../../../../core/enums/modal.enums';
 
 @Component({
-  selector: 'vmc-programs',
-  templateUrl: './programs.component.html',
-  styleUrls: ['./programs.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SharedModule
-  ]
+    selector: 'vmc-programs',
+    templateUrl: './programs.component.html',
+    styleUrls: ['./programs.component.scss'],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SharedModule
+    ]
 })
 export class ProgramsComponent implements OnInit {
   @Input() public semanas: Program[] = [];

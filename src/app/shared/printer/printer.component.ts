@@ -10,9 +10,10 @@ import { Subscription } from 'rxjs';
 import { PrintPdfOnePageService } from 'src/app/core/services/pdf/print-pdf-one-page.service';
 
 @Component({
-  selector: 'app-printer',
-  templateUrl: './printer.component.html',
-  styleUrls: ['./printer.component.scss']
+    selector: 'app-printer',
+    templateUrl: './printer.component.html',
+    styleUrls: ['./printer.component.scss'],
+    standalone: false
 })
 export class PrinterComponent implements OnInit {
   @ViewChild('pdfViewerOnDemand') pdfViewerOnDemand: any;

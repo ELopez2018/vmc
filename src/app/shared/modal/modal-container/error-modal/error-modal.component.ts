@@ -4,11 +4,10 @@ import { MaterialModule } from 'src/app/shared/material.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 @Component({
-  selector: 'error-modal',
-  templateUrl: './error-modal.component.html',
-  styleUrls: ['./error-modal.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MaterialModule]
+    selector: 'error-modal',
+    templateUrl: './error-modal.component.html',
+    styleUrls: ['./error-modal.component.scss'],
+    imports: [CommonModule, MaterialModule]
 })
 export class ErrorModalComponent implements OnInit {
   @Input() public type: any

@@ -11,11 +11,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MeetingsComponent } from './meetings/meetings.component';
 import { ProgramsComponent } from './programs/programs.component';
 @Component({
-  selector: 'vmc-manager',
-  standalone: true,
-  imports: [CommonModule, MatTabsModule, MeetingsComponent, ProgramsComponent],
-  templateUrl: './manager.component.html',
-  styleUrls: ['./manager.component.scss'],
+    selector: 'vmc-manager',
+    imports: [CommonModule, MatTabsModule, MeetingsComponent, ProgramsComponent],
+    templateUrl: './manager.component.html',
+    styleUrls: ['./manager.component.scss']
 })
 export class ManagerComponent implements OnInit {
   private programList: Program[] = [];

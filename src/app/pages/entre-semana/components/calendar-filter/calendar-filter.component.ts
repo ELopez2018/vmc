@@ -5,11 +5,10 @@ import { CalendarFilterModule } from './calendar-filter/calendar-filter.module';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 
 @Component({
-  selector: 'vmc-calendar-filter',
-  templateUrl: './calendar-filter.component.html',
-  styleUrls: ['./calendar-filter.component.scss'],
-  standalone:true,
-  imports:[CalendarFilterModule]
+    selector: 'vmc-calendar-filter',
+    templateUrl: './calendar-filter.component.html',
+    styleUrls: ['./calendar-filter.component.scss'],
+    imports: [CalendarFilterModule]
 })
 export class CalendarFilterComponent implements OnInit {
   @Output() onChange= new EventEmitter<number>()

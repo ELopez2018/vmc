@@ -10,11 +10,10 @@ import { WeeklyProgramService } from 'src/app/core/services/weeklyProgram/Weekly
 
 
 @Component({
-  selector: 'vmc-add-assignment',
-  templateUrl: './add-assignment.component.html',
-  styleUrls: ['./add-assignment.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+    selector: 'vmc-add-assignment',
+    templateUrl: './add-assignment.component.html',
+    styleUrls: ['./add-assignment.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule]
 })
 export class AddAssignmentComponent implements OnInit {
   @Input() public week!: Program

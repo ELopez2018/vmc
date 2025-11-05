@@ -7,9 +7,10 @@ import { LoaderService } from 'src/app/core/services/loader/loader.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'vmc-publisher-list',
-  templateUrl: './publisher-list.component.html',
-  styleUrls: ['./publisher-list.component.scss']
+    selector: 'vmc-publisher-list',
+    templateUrl: './publisher-list.component.html',
+    styleUrls: ['./publisher-list.component.scss'],
+    standalone: false
 })
 export class PublisherListComponent implements AfterViewInit, OnInit {
   showSpinner = true;

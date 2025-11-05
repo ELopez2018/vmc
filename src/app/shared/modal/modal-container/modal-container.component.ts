@@ -4,9 +4,10 @@ import { ModalTypeEnums } from 'src/app/core/enums/modal.enums';
 import { Assignment, Program, Publisher, WeeklyProgram } from 'src/app/core/interfaces/reuniones.interface';
 
 @Component({
-  selector: 'app-modal',
-  templateUrl: './modal-container.component.html',
-  styleUrls: ['./modal-container.component.scss']
+    selector: 'app-modal',
+    templateUrl: './modal-container.component.html',
+    styleUrls: ['./modal-container.component.scss'],
+    standalone: false
 })
 export class ModalContainerComponent implements OnInit {
   valueExchange($event: any) {

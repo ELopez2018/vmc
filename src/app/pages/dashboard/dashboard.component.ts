@@ -6,9 +6,10 @@ import { MeetingsService } from 'src/app/core/services/meetings/meetings.service
 import { CongregationMock } from '../entre-semana/mocks/congregation.mock';
 
 @Component({
-  selector: 'vmc-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+    selector: 'vmc-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss'],
+    standalone: false
 })
 export class DashboardComponent {
   title = 'vmc';

@@ -12,9 +12,10 @@ import { AssignmentType } from 'src/app/core/enums/assignments.enums';
 import { SectionMeeting } from '../../core/enums/meetings.enums';
 
 @Component({
-  selector: 'vmc-entre-semana',
-  templateUrl: './entre-semana.component.html',
-  styleUrls: ['./entre-semana.component.scss']
+    selector: 'vmc-entre-semana',
+    templateUrl: './entre-semana.component.html',
+    styleUrls: ['./entre-semana.component.scss'],
+    standalone: false
 })
 export class EntreSemanaComponent implements OnInit {
   private programList: Program[] = [];

@@ -2,9 +2,10 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { DataService } from './core/services/data/data.service';
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent {
 

@@ -12,11 +12,10 @@ import { CongregationsService } from 'src/app/core/services/congregations/congre
 import { ActivatedRoute, Routes } from '@angular/router';
 
 @Component({
-  selector: 'users-create-or-update',
-  templateUrl: './users-create-or-update.component.html',
-  styleUrls: ['./users-create-or-update.component.scss'],
-  standalone: true,
-  imports: [SharedModule, FormsModule, ReactiveFormsModule, CommonModule]
+    selector: 'users-create-or-update',
+    templateUrl: './users-create-or-update.component.html',
+    styleUrls: ['./users-create-or-update.component.scss'],
+    imports: [SharedModule, FormsModule, ReactiveFormsModule, CommonModule]
 })
 export class UsersCreateOrUpdateComponent implements OnInit {
   selected = 'option2';

@@ -1,5 +1,5 @@
 export const Servers = {
- // URL: 'https://api.vmc.chichinacds.com.co',
+  //URL: 'https://api.vmc.chichinacds.com.co',
   URL: 'http://localhost:7700',
   //URL: 'http://aex.com.co:7777',
   home: "/"

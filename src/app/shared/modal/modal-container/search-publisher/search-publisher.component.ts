@@ -26,8 +26,8 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   public showSpinner = true;
   public congregation!: Congregation;
   public usedPublishersList: any[] = [];
-  public female:any[] = [];
-  public male:any[] = [];
+  public female: any[] = [];
+  public male: any[] = [];
   public headerText = "Asignacion"
   public usedPublishersListAll: any[] = [];
   public usedPublishersListAllByAssig: ResponsibleCountDTO[] = [];
@@ -46,7 +46,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getPublihersByAssignment()
-
   }
 
   subscrp() {
@@ -57,12 +56,12 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     )
     this.subs.add(
       this.dataService.getPubliherList$().subscribe(data => {
-        this.female =[];
-        this.male =[];
+        this.female = [];
+        this.male = [];
         if (data) {
           this.publishersAll = data
-          this.female = this.publishersAll.filter(data=> data.gender === "Femenino")
-          this.male = this.publishersAll.filter(data=> data.gender === "Masculino")
+          this.female = this.publishersAll.filter(data => data.gender === "Femenino")
+          this.male = this.publishersAll.filter(data => data.gender === "Masculino")
           this.checkIfYouParticipate1()
           this.checkIfYouParticipate2()
 
@@ -78,9 +77,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
   }
   selected(item: any) {
-    console.log("selected", item);
-    if(item.hasOwnProperty("count")) {
-       console.log("entro");
+    if (item.hasOwnProperty("count")) {
       this.onClicked.emit(item.user)
       return;
     }
@@ -88,8 +85,8 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   }
 
   getPublihersByAssignment() {
-    this.usedPublishersListAll= [];
-    this.usedPublishersListAllByAssig= [];
+    this.usedPublishersListAll = [];
+    this.usedPublishersListAllByAssig = [];
     this.usersService.getPublihersByAssignment(this.assignmentType, this.congregation.id)
       .subscribe(data => {
         this.usedPublishersListAll = data;
@@ -98,123 +95,123 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
           case AssignmentType.PRESIDENT:
             this.headerText = "Presidencia"
             this.usedPublishersList = this.usedPublishersListAll.filter(i => i.presidentCount > 0);
-            this.usedPublishersList = this.sortByCountPresident(this.usedPublishersList,true);
+            this.usedPublishersList = this.sortByCountPresident(this.usedPublishersList, true);
             this.checkIfYouParticipate2()
             break;
           case AssignmentType.OPENING_PRAYER:
             this.headerText = "Oración Inicial"
             this.usedPublishersList = this.usedPublishersListAll.filter(i => i.openingPrayerCount > 0);
-            this.usedPublishersList = this.sortByCountOpeningPrayer(this.usedPublishersList,true);
+            this.usedPublishersList = this.sortByCountOpeningPrayer(this.usedPublishersList, true);
             this.checkIfYouParticipate2()
             break;
           case AssignmentType.FINAL_PRAYER:
             this.headerText = "Oración Final"
             this.usedPublishersList = [...this.usedPublishersListAll.filter(i => i.finalPrayerCount > 0)];
-            this.usedPublishersList = [...this.sortByCountFinalPrayer(this.usedPublishersList,true)];
+            this.usedPublishersList = [...this.sortByCountFinalPrayer(this.usedPublishersList, true)];
             this.checkIfYouParticipate2()
             break;
           case AssignmentType.ASSIGNMENT_1:
             this.headerText = "Discurso Tesoros de la Bíblia"
             this.usedPublishersListAllByAssig = [...data];
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.ASSIGNMENT_2:
             this.headerText = "Perlas Escondidas"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.ASSIGNMENT_3:
             this.headerText = "Lectura de la Bíblia"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.STARTING_A_CONVERSATION:
             this.headerText = "Empiece Conversaciones (Estudiante)"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.EXPLAINING_YOUR_BELIEFS:
             this.headerText = "Explique sus creencias"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.FOLLOWING_UP:
             this.headerText = "Haga revisitas (Estudiante)"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.IMITATE:
             this.headerText = "Imite a..."
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.WHAT_HE_DID:
             this.headerText = "Lo que hizo..."
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.MAKING_DISCIPLES:
             this.headerText = "Haga discípulos (Estudiante)"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.LOCAL_NEEDS:
             this.headerText = "Necesidades de la congregación"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.CONGREGATION_BIBLE_STUDY:
             this.headerText = "Estudio bíblico de la congregación (Conductor)"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.STARTING_A_CONVERSATION_ASSISTANT:
             this.headerText = "Empiece Conversaciones (Ayudante)"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.EXPLAINING_YOUR_BELIEFS_ASSISTANT:
             this.headerText = "Explique sus creencias (Ayudante)"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.FOLLOWING_UP_ASSISTANT:
             this.headerText = "Haga revisitas (Ayudante)"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.MAKING_DISCIPLES_ASSISTANT:
             this.headerText = "Haga discípulos (Ayudante)"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
           case AssignmentType.CONGREGATION_BIBLE_STUDY_READER:
             this.headerText = "Estudio bíblico de la congregación (Lector)"
             this.usedPublishersListAllByAssig = data;
-            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig,true)];
+            this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
             this.checkIfYouParticipate1()
             break;
         }
       })
   }
 
-  checkIfYouParticipate1(){
-    if(!this.usedPublishersListAllByAssig || this.usedPublishersListAllByAssig.length < 0) {return}
+  checkIfYouParticipate1() {
+    if (!this.usedPublishersListAllByAssig || this.usedPublishersListAllByAssig.length < 0) { return }
     const publisherIds = new Set(this.usedPublishersListAllByAssig.map(pub => pub.user.id));
     this.male.forEach(pub => {
       pub.participate = publisherIds.has(pub.id);
@@ -224,9 +221,9 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     });
   }
 
-  checkIfYouParticipate2(){
-    if(!this.usedPublishersList || this.usedPublishersList.length < 0) {return}
-    const publisherIds = new Set(this.usedPublishersList .map(pub => pub.id));
+  checkIfYouParticipate2() {
+    if (!this.usedPublishersList || this.usedPublishersList.length < 0) { return }
+    const publisherIds = new Set(this.usedPublishersList.map(pub => pub.id));
     this.male.forEach(pub => {
       pub.participate = publisherIds.has(pub.id);
     });
@@ -269,7 +266,19 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     });
   }
 
-  closeModal(){
+  closeModal() {
     this.onClose.emit(true)
+  }
+  parseDate(timestamp: number = 0): string {
+    const date = new Date(timestamp);
+
+    // Sumar 4 días
+    date.setDate(date.getDate() + this.congregation.day - 1);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses van de 0 a 11
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
   }
 }

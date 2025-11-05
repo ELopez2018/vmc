@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12 d-flex justify-content-end p-2 pe-4">
-       <vmc-icon-close (click)="closeModal()"></vmc-icon-close>
+        <vmc-icon-close (click)="closeModal()"></vmc-icon-close>
       </div>
     </div>
     <div class="row">
@@ -56,6 +56,7 @@
                 </div>
               </div>
             </fieldset>
+
             <div class="">
               <fieldset class="fieldset-basic table-container">
                 <legend></legend>
@@ -75,7 +76,7 @@
                       class="table table-hover table-sm table-bordered cursor-hover"
                     >
                       <thead>
-                        <tr  class="table-primary text-white">
+                        <tr class="table-primary text-white">
                           <th class="text-center" scope="col">Publicador</th>
                           <th class="text-center" scope="col">
                             {{ headerText }}
@@ -131,11 +132,14 @@
                     <table
                       class="table table-hover table-sm table-bordered cursor-hover"
                     >
-                      <thead >
+                      <thead>
                         <tr class="table-primary text-white">
                           <th class="text-center" scope="col">Publicador</th>
                           <th class="text-center" scope="col">
                             {{ headerText }}
+                          </th>
+                          <th class="text-center" scope="col">
+                            Ultima Fecha
                           </th>
                         </tr>
                       </thead>
@@ -146,6 +150,7 @@
                         >
                           <td>{{ item.user.fullName }}</td>
                           <td class="text-center">{{ item.count }}</td>
+                          <td class="text-center">{{ parseDate(item.lastDate) }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -208,10 +213,7 @@
 
                 <mat-spinner *ngIf="showSpinner"></mat-spinner>
 
-                <div
-                  class="table-responsive"
-                  *ngIf="male && male.length > 0"
-                >
+                <div class="table-responsive" *ngIf="male && male.length > 0">
                   <table
                     class="table table-hover table-sm table-bordered cursor-hover"
                   >
@@ -222,12 +224,14 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr
-                        *ngFor="let item of male"
-                        (click)="selected(item)"
-                      >
+                      <tr *ngFor="let item of male" (click)="selected(item)">
                         <td>{{ item.fullName }}</td>
-                        <td class="text-center participa" [ngClass]="{ 'noparticipa': !item.participate}">{{ item.participate ? "PARTICIPA" : "NO PARTICIPA"  }}</td>
+                        <td
+                          class="text-center participa"
+                          [ngClass]="{ noparticipa: !item.participate }"
+                        >
+                          {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -303,12 +307,14 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr
-                        *ngFor="let item of female"
-                        (click)="selected(item)"
-                      >
+                      <tr *ngFor="let item of female" (click)="selected(item)">
                         <td>{{ item.fullName }}</td>
-                        <td class="text-center participa" [ngClass]="{ 'noparticipa': !item.participate}">{{ item.participate ? "PARTICIPA" : "NO PARTICIPA"  }}</td>
+                        <td
+                          class="text-center participa"
+                          [ngClass]="{ noparticipa: !item.participate }"
+                        >
+                          {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
+                        </td>
                       </tr>
                     </tbody>
                   </table>

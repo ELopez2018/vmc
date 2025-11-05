@@ -14,7 +14,10 @@ export class AssignmentService {
   private server = Servers.URL
   private api = Apis
   constructor(private httpClient: HttpClient) { }
-
+  getAllAssignment(){
+     const url = `${this.server}${this.api.ASSIGNMENT}`
+     return this.httpClient.get<Assignment[]>(url)
+  }
   updateAssignment(assignment: Assignment): Observable<any> {
     const url = `${this.server}${this.api.ASSIGNMENT}`
     return this.httpClient.put(url, assignment)
@@ -34,4 +37,6 @@ export class AssignmentService {
     const url = `${this.server}${this.api.ASSIGNMENT}`
     return this.httpClient.post<Assignment>(url, assignment)
   }
+
+
 }

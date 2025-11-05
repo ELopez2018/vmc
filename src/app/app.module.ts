@@ -15,6 +15,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { TablePrimengComponent } from './pages/publisher-list/table-primeng/table-primeng.component';
 import { TableMaterialComponent } from './pages/publisher-list/table-material/table-material.component';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { AssignmentComponent } from './pages/assignment/assignment.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
     PublisherListComponent,
     DashboardComponent,
     TableMaterialComponent,
+    AssignmentComponent,
   ],
   imports: [
     BrowserModule,

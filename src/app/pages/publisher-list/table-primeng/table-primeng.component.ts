@@ -13,11 +13,16 @@ import { ButtonModule } from 'primeng/button';
 export class TablePrimengComponent implements OnInit {
   @Input() publisherList:Publisher[]=[];
   @Output() onSelected= new EventEmitter<Publisher>()
+  @Output() onDelete= new EventEmitter<Publisher>()
   selectedSize: any = '';
   ngOnInit(): void {
   }
 
   selectedEdit(item: any){
     this.onSelected.emit(item)
+  }
+
+   delete(item: any){
+    this.onDelete.emit(item)
   }
 }

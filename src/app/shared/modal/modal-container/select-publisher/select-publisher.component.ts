@@ -54,7 +54,6 @@ export class SelectPublisherComponent implements OnInit, OnDestroy {
   }
 
   selected(publisher: Publisher) {
-    console.log({publisher});
     this.onClicked.emit(publisher)
     this.close()
   }

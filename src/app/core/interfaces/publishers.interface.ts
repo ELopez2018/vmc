@@ -8,4 +8,5 @@ export interface PublisherDto {
 export interface ResponsibleCountDTO {
   count: number;
   user: Publisher;
+  lastDate?: number;
 }

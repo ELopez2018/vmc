@@ -53,6 +53,7 @@ export interface Program {
   congregation: Congregation;
   weeklyProgram: WeeklyProgram[];
   assembly: string
+  
 }
 export interface WeeklyProgram {
   id?: number;
@@ -96,6 +97,7 @@ export interface Meeting {
   finalSong: string;
   url: string;
   assignmentType: any;
+  weeklyBibleReading: string;
 }
 
 export interface Room {

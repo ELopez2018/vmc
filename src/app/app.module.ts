@@ -16,19 +16,20 @@ import { TablePrimengComponent } from './pages/publisher-list/table-primeng/tabl
 import { TableMaterialComponent } from './pages/publisher-list/table-material/table-material.component';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { AssignmentComponent } from './pages/assignment/assignment.component';
+import { ButtonModule } from "primeng/button";
+import { TableModule } from "primeng/table";
 
 @NgModule({ declarations: [
         AppComponent,
         PublisherListComponent,
         DashboardComponent,
         TableMaterialComponent,
-        AssignmentComponent,
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        TablePrimengComponent,
-        MaterialModule], providers: [
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    TablePrimengComponent,
+    MaterialModule, ButtonModule, TableModule], providers: [
         JwtHelperService,
         {
             provide: HTTP_INTERCEPTORS,

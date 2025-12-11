@@ -139,6 +139,9 @@
                             {{ headerText }}
                           </th>
                           <th class="text-center" scope="col">
+                            Todas
+                          </th>
+                          <th class="text-center" scope="col">
                             Ultima Fecha
                           </th>
                         </tr>
@@ -150,6 +153,7 @@
                         >
                           <td>{{ item.user.fullName }}</td>
                           <td class="text-center">{{ item.count }}</td>
+                          <td class="text-center">{{ item.all }}</td>
                           <td class="text-center">{{ parseDate(item.lastDate) }}</td>
                         </tr>
                       </tbody>

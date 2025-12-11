@@ -27,7 +27,7 @@ export class PrintPdfOnePageService {
   constructor(
     private dataService: DataService
   ) {
-    (<any>pdfMake).vfs = pdfFonts.vfs;
+    // (<any>pdfMake).vfs = pdfFonts.vfs;
 
     this.dataService.getPublisher().subscribe(data => {
       if (data) {
@@ -121,7 +121,7 @@ export class PrintPdfOnePageService {
                 text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + " |", style: "sub_title", border: [false, false, false, false]
               },
               {
-                text: "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]
+                text: week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading  : "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]
               },
               {
                 text: "Presidente:", style: "tips_r", border: [false, false, false, false]

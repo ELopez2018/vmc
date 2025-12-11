@@ -5,7 +5,7 @@ import { DataService } from '../data/data.service';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
-(<any>pdfMake).vfs = pdfFonts.vfs;
+// (<any>pdfMake).vfs = pdfFonts.vfs;
 
 @Injectable({
   providedIn: 'root'
@@ -119,7 +119,7 @@ export class PrintPdfService {
                 text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + " |", style: "sub_title", border: [false, false, false, false]
               },
               {
-                text: "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]
+                text: week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading  : "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]
               },
               {
                 text: "Presidente:", style: "tips_r", border: [false, false, false, false]

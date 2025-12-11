@@ -5,14 +5,12 @@ import { DataService } from 'src/app/core/services/data/data.service';
 import { CongregationMock } from '../mocks/congregation.mock';
 import { MeetingsService } from 'src/app/core/services/meetings/meetings.service';
 import { Utils } from '../../../shared/Utils';
-import { TabMenuModule } from 'primeng/tabmenu';
-import { ButtonModule } from 'primeng/button';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MeetingsComponent } from './meetings/meetings.component';
 import { ProgramsComponent } from './programs/programs.component';
+import { AssignmentComponent } from "../../assignment/assignment.component";
 @Component({
     selector: 'vmc-manager',
-    imports: [CommonModule, MatTabsModule, MeetingsComponent, ProgramsComponent],
+    imports: [CommonModule, MatTabsModule,  ProgramsComponent, AssignmentComponent],
     templateUrl: './manager.component.html',
     styleUrls: ['./manager.component.scss']
 })

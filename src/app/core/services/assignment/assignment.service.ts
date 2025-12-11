@@ -6,6 +6,7 @@ import { Assignment, Meeting } from '../../interfaces/reuniones.interface';
 import { PublisherDto } from '../../interfaces/publishers.interface';
 import { Modal } from '../../interfaces/modal.interface';
 import { OtherAssignment } from '../../enums/meetings.enums';
+import { ResponsePaginated } from '../../interfaces/general.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class AssignmentService {
   constructor(private httpClient: HttpClient) { }
   getAllAssignment(){
      const url = `${this.server}${this.api.ASSIGNMENT}`
-     return this.httpClient.get<Assignment[]>(url)
+     return this.httpClient.get<ResponsePaginated>(url)
   }
   updateAssignment(assignment: Assignment): Observable<any> {
     const url = `${this.server}${this.api.ASSIGNMENT}`

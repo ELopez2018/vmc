@@ -5,7 +5,7 @@ import { DataService } from '../data/data.service';
 import * as pdfMake from "pdfmake/build/pdfmake";
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
-// (<any>pdfMake).vfs = pdfFonts.vfs;
+// pdfMake.vfs ya está inicializado por vfs_fonts.js incluido en angular.json
 
 @Injectable({
   providedIn: 'root'

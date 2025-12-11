@@ -1,105 +1,78 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { Meeting, Program, Publisher, Congregation, Room } from '../../interfaces/reuniones.interface';
-import { UsersService } from '../users/users.service';
-import { ConfigsService } from '../configs/configs.service';
-import { Generic } from '../../interfaces/configs.interface';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { Servers } from '../../constants/servers';
-import { RoomsService } from '../rooms/rooms.service';
-import { ProgramPdf, WeeklyProgramPdF } from '../../interfaces/print-pdf.interface';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable, of, Subject } from "rxjs";
+import { Meeting, Program, Publisher, Congregation, Room } from "../../interfaces/reuniones.interface";
+import { UsersService } from "../users/users.service";
+import { ConfigsService } from "../configs/configs.service";
+import { Generic } from "../../interfaces/configs.interface";
+import { JwtHelperService } from "@auth0/angular-jwt";
+import { Servers } from "../../constants/servers";
+import { RoomsService } from "../rooms/rooms.service";
+import { ProgramPdf, WeeklyProgramPdF } from "../../interfaces/print-pdf.interface";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class DataService {
-  private meetings$: BehaviorSubject<Program[]> = new BehaviorSubject<Program[]>([])
-  private meetingsPDF$: BehaviorSubject<ProgramPdf[]> = new BehaviorSubject<ProgramPdf[]>([])
-  private weekPrograms: Program[] = []
-  private publisherList: BehaviorSubject<Publisher[]> = new BehaviorSubject<Publisher[]>([])
-  private congregation$: BehaviorSubject<Congregation> = new BehaviorSubject<Congregation>(<Congregation>{})
+  private meetings$: BehaviorSubject<Program[]> = new BehaviorSubject<Program[]>([]);
+  private meetingsPDF$: BehaviorSubject<ProgramPdf[]> = new BehaviorSubject<ProgramPdf[]>([]);
+  private weekPrograms: Program[] = [];
+  private publisherList: BehaviorSubject<Publisher[]> = new BehaviorSubject<Publisher[]>([]);
+  private congregation$: BehaviorSubject<Congregation> = new BehaviorSubject<Congregation>(<Congregation>{});
   private publisherListTemp: Publisher[] = [];
   private congregation!: Congregation;
-  private publisher$: BehaviorSubject<Publisher> = new BehaviorSubject<Publisher>(<Publisher>{})
-  private designations$: BehaviorSubject<Generic[]> = new BehaviorSubject<Generic[]>([])
-  private rooms$: BehaviorSubject<Room[]> = new BehaviorSubject<Room[]>([])
+  private publisher$: BehaviorSubject<Publisher> = new BehaviorSubject<Publisher>(<Publisher>{});
+  private designations$: BehaviorSubject<Generic[]> = new BehaviorSubject<Generic[]>([]);
+  private rooms$: BehaviorSubject<Room[]> = new BehaviorSubject<Room[]>([]);
   jwtUtils!: JwtHelperService;
-  constructor(
-    private usersService: UsersService,
-    private configsService: ConfigsService,
-    private roomsService: RoomsService
-  ) {
-    this.jwtUtils = new JwtHelperService()
+  private isAdmin$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  constructor(private usersService: UsersService, private configsService: ConfigsService, private roomsService: RoomsService) {
+    this.jwtUtils = new JwtHelperService();
+  }
+
+  public setIsAdmin(isAdmin: boolean) {
+    this.isAdmin$.next(isAdmin);
+  }
+  public getIsAdmin(): Observable<boolean> {
+    return this.isAdmin$.asObservable();
   }
 
   public setDesignations(designations: any) {
-    this.designations$.next(designations)
+    this.designations$.next(designations);
   }
   public getDesignations(): Observable<Generic[]> {
-    return this.designations$.asObservable()
+    return this.designations$.asObservable();
   }
 
   public setPublisher(publisher: Publisher) {
-    this.publisher$.next(publisher)
+    this.publisher$.next(publisher);
   }
   public getPublisher(): Observable<Publisher> {
-    return this.publisher$.asObservable()
+    return this.publisher$.asObservable();
   }
 
   public setMeeting(meetings: Program[]) {
     this.weekPrograms = [...meetings];
-    this.makePDfVersion([...meetings])
-    this.meetings$.next(meetings)
+    this.makePDfVersion([...meetings]);
+    this.meetings$.next(meetings);
   }
   public getMeeting(): Observable<Program[]> {
-    return this.meetings$.asObservable()
+    return this.meetings$.asObservable();
   }
-
-
-  // makePDfVersion(meetings: Program[]): ProgramPdf[] {
-  //   const meetingsPdf: ProgramPdf[] = []
-  //   let weeklyProgramPdf: WeeklyProgramPdF[] = []
-  //   let arrayTem: any[] = []
-  //   meetings.forEach((week: any) => {
-  //     weeklyProgramPdf = []
-  //     arrayTem = []
-  //     week.weeklyProgram.forEach((assig: any) => {
-  //       if (!weeklyProgramPdf.find(i => i.assignment.id == assig.assignment.id) && assig.room == "A") {
-  //         weeklyProgramPdf.push(assig)
-  //       } else {
-  //         arrayTem.push(assig)
-  //       }
-  //     })
-  //     weeklyProgramPdf.forEach(b => {
-  //       let upd = arrayTem.find(f => f.assignment.id == b.assignment.id)
-  //       if (upd) {
-  //         b.assistantB = upd.assistant ?? null
-  //         b.responsibleB = upd.responsible ?? null
-  //       }
-
-  //     })
-  //     week.weeklyProgram = weeklyProgramPdf
-  //     meetingsPdf.push(week);
-  //   })
-  //   this.meetingsPDF$.next(meetingsPdf)
-  //   return meetingsPdf;
-  // }
-
   makePDfVersion(meetings: Program[]): ProgramPdf[] {
-    const meetingsPdf: ProgramPdf[] = meetings.map(week => {
+    const meetingsPdf: ProgramPdf[] = meetings.map((week) => {
       const weeklyProgramPdf: WeeklyProgramPdF[] = [];
       const arrayTem: any[] = [];
 
       week.weeklyProgram.forEach((assig: any) => {
-        if (!weeklyProgramPdf.some(i => i.assignment.id === assig.assignment.id) && assig.room === "A") {
+        if (!weeklyProgramPdf.some((i) => i.assignment.id === assig.assignment.id) && assig.room === "A") {
           weeklyProgramPdf.push({ ...assig });
         } else {
           arrayTem.push(assig);
         }
       });
 
-      weeklyProgramPdf.forEach(b => {
-        const upd = arrayTem.find(f => f.assignment.id === b.assignment.id);
+      weeklyProgramPdf.forEach((b) => {
+        const upd = arrayTem.find((f) => f.assignment.id === b.assignment.id);
         if (upd) {
           b.assistantB = upd.assistant ?? null;
           b.responsibleB = upd.responsible ?? null;
@@ -114,67 +87,65 @@ export class DataService {
   }
 
   public setPubliherList(publisherList: Publisher[]) {
-    this.publisherListTemp = [...publisherList]
-    this.publisherList.next(publisherList)
+    this.publisherListTemp = [...publisherList];
+    this.publisherList.next(publisherList);
   }
   public getPubliherList$(): Observable<Publisher[]> {
     if (!this.publisherListTemp || this.publisherListTemp?.length < 1) {
-      this.getPublishersFromDB()
+      this.getPublishersFromDB();
     }
-    return this.publisherList.asObservable()
+    return this.publisherList.asObservable();
   }
   public getPublishersFromDB() {
-    this.usersService.getUsersByCongregation(this.congregation.id).subscribe(data => {
-      this.setPubliherList(data)
-    })
+    this.usersService.getUsersByCongregation(this.congregation.id).subscribe((data) => {
+      this.setPubliherList(data);
+    });
   }
   public setCongregation(congregation: Congregation) {
-    this.congregation = congregation
+    this.congregation = congregation;
     if (this.congregation) {
-      this.roomsService.getAllRoomsByCongregation(this.congregation.id)
-        .subscribe(data => this.rooms$.next(data))
+      this.roomsService.getAllRoomsByCongregation(this.congregation.id).subscribe((data) => this.rooms$.next(data));
     }
-    this.congregation$.next(congregation)
+    this.congregation$.next(congregation);
   }
   public getCongregation$(): Observable<Congregation> {
-    return this.congregation$.asObservable()
+    return this.congregation$.asObservable();
   }
 
   public getConfigs() {
-    this.configsService.getAllDesignations().subscribe(data => {
+    this.configsService.getAllDesignations().subscribe((data) => {
       if (data) {
-        this.setDesignations(data)
+        this.setDesignations(data);
       }
-    })
+    });
   }
   public setConfigFromStorage() {
-    const tokenStr = localStorage.getItem("token")
+    const tokenStr = localStorage.getItem("token");
     let tokenObj;
     if (tokenStr) {
-      tokenObj = JSON.parse(tokenStr)
+      tokenObj = JSON.parse(tokenStr);
       const token = this.jwtUtils.decodeToken(tokenObj.token);
-      if(token){
+      if (token) {
         this.setPublisher(token.data);
-        this.setCongregation(token.data.congregation)
-        localStorage.setItem("congregation", JSON.stringify(token.data.congregation))
+        this.setCongregation(token.data.congregation);
+        localStorage.setItem("congregation", JSON.stringify(token.data.congregation));
       }
-
     }
   }
   logout() {
-    localStorage.clear()
-    window.location.href = Servers.home
+    localStorage.clear();
+    window.location.href = Servers.home;
   }
   public setRooms(rooms: Room[]) {
-    this.rooms$.next(rooms)
+    this.rooms$.next(rooms);
   }
   public getRooms$(): Observable<Room[]> {
-    return this.rooms$.asObservable()
+    return this.rooms$.asObservable();
   }
   public setMeetingsPDF(meetings: ProgramPdf[]) {
-    this.meetingsPDF$.next(meetings)
+    this.meetingsPDF$.next(meetings);
   }
   public getMeetingsPDF$() {
-    return this.meetingsPDF$.asObservable()
+    return this.meetingsPDF$.asObservable();
   }
 }

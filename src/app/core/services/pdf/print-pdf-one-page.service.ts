@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+// pdfMake y vfs_fonts se incluyen como scripts en angular.json
+declare let pdfMake: any;
 import { Utils } from 'src/app/shared/Utils';
 import { ProgramPdf, WeeklyProgramPdF } from '../../interfaces/print-pdf.interface';
 import { DataService } from '../data/data.service';
@@ -27,7 +27,7 @@ export class PrintPdfOnePageService {
   constructor(
     private dataService: DataService
   ) {
-    // (<any>pdfMake).vfs = pdfFonts.vfs;
+  // pdfMake.vfs ya está inicializado por vfs_fonts.js incluido en angular.json
 
     this.dataService.getPublisher().subscribe(data => {
       if (data) {
@@ -533,7 +533,7 @@ export class PrintPdfOnePageService {
     if (!weeks || weeks.length < 1) return;
 
     weeks.forEach(week => {
-      console.log(week.assembly);
+      // console.log(week.assembly);
       count++
       pageCount++
       if (week.assembly == null) {

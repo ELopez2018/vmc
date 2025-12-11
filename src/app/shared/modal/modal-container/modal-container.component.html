@@ -21,6 +21,7 @@
   </div>
   <div *ngSwitchCase="typeOfModals.PRINTER">
     <app-printer
+    [isModal]="true"
     (onClosed)="close()"
     ></app-printer>
   </div>

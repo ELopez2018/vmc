@@ -1,25 +1,26 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { PrintPdfService } from '../../core/services/pdf/print.service';
-import { MeetingsService } from '../../core/services/meetings/meetings.service';
-import { Meeting, Program } from 'src/app/core/interfaces/reuniones.interface';
-import { DataService } from '../../core/services/data/data.service';
-import { ModalService } from '../../core/services/modal/modal.service';
-import { Congregation } from '../../core/interfaces/reuniones.interface';
-import { ProgramPdf } from 'src/app/core/interfaces/print-pdf.interface';
-import { Subscription } from 'rxjs';
-import { PrintPdfOnePageService } from 'src/app/core/services/pdf/print-pdf-one-page.service';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { PrintPdfService } from "../../core/services/pdf/print.service";
+import { MeetingsService } from "../../core/services/meetings/meetings.service";
+import { Meeting, Program } from "src/app/core/interfaces/reuniones.interface";
+import { DataService } from "../../core/services/data/data.service";
+import { ModalService } from "../../core/services/modal/modal.service";
+import { Congregation } from "../../core/interfaces/reuniones.interface";
+import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
+import { Subscription } from "rxjs";
+import { PrintPdfOnePageService } from "src/app/core/services/pdf/print-pdf-one-page.service";
 
 @Component({
-    selector: 'app-printer',
-    templateUrl: './printer.component.html',
-    styleUrls: ['./printer.component.scss'],
-    standalone: false
+  selector: "app-printer",
+  templateUrl: "./printer.component.html",
+  styleUrls: ["./printer.component.scss"],
+  standalone: false,
 })
 export class PrinterComponent implements OnInit {
-  @ViewChild('pdfViewerOnDemand') pdfViewerOnDemand: any;
-  @ViewChild('pdfViewerAutoLoad') pdfViewerAutoLoad: any;
-  @Output() onClosed = new EventEmitter()
-  private congregation!: Congregation
+  @ViewChild("pdfViewerOnDemand") pdfViewerOnDemand: any;
+  @ViewChild("pdfViewerAutoLoad") pdfViewerAutoLoad: any;
+  @Output() onClosed = new EventEmitter();
+  @Input() public isModal: boolean = false;
+  private congregation!: Congregation;
   private subs: Subscription = new Subscription();
   constructor(
     private printService: PrintPdfService,
@@ -29,85 +30,83 @@ export class PrinterComponent implements OnInit {
     private printPdfOnePageService: PrintPdfOnePageService
   ) {
     this.subs.add(
-      this.dataService.getCongregation$().subscribe(data => {
+      this.dataService.getCongregation$().subscribe((data) => {
         this.congregation = data;
       })
-    )
+    );
     this.subs.add(
-      this.dataService.getMeetingsPDF$().subscribe(data => {
-        if (data && data.length > 0) {
-          this.printMeetings(data)
-        } else {
-          this.modalService.loading()
-          this.getWeeks()
+      this.dataService.getMeetingsPDF$().subscribe(
+        (data) => {
+          if (data && data.length > 0) {
+            this.printMeetings(data);
+          } else {
+            this.getWeeks();
+          }
+        },
+        (error) => {
+          this.modalService.errorHandler(error, "Error");
         }
-      }, error => {
-        this.modalService.errorHandler(error, "Error")
-      })
-    )
+      )
+    );
   }
 
   ngOnInit(): void {
+    this.modalService.loading();
   }
+  
 
   getWeeks() {
     if (this.congregation) {
-      this.meetingsService.getWeeksValids(this.congregation.id).subscribe(data => {
-        this.dataService.setMeeting(data)
-        this.modalService.close()
-      }, error => {
-        this.modalService.close()
-        this.modalService.errorHandler("No se han podido obtener las semanas", "Error")
-      })
+      this.meetingsService.getWeeksValids(this.congregation.id).subscribe(
+        (data) => {
+          this.modalService.close();
+          this.dataService.setMeeting(data);
+        },
+        (error) => {
+          this.modalService.close();
+          this.modalService.errorHandler("No se han podido obtener las semanas", "Error");
+        }
+      );
     }
   }
 
   printMeetings(weeks: ProgramPdf[]) {
-    console.log(weeks);
-
-
+    // console.log(weeks);
     if (this.hasAssistantBOrResponsibleB(weeks)) {
-      console.log("printService");
-      this.printService.getBlob(weeks)
-        .then(data => {
-          this.pdfViewerAutoLoad.pdfSrc = data
-          this.pdfViewerAutoLoad.refresh()
+      // console.log("printService");
+      this.printService
+        .getBlob(weeks)
+        .then((data) => {
+          this.pdfViewerAutoLoad.pdfSrc = data;
+          this.pdfViewerAutoLoad.refresh();
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
-        })
+        });
     } else {
-      console.log("printPdfOnePageService");
-      this.printPdfOnePageService.getBlob(weeks)
-        .then(data => {
-          this.pdfViewerAutoLoad.pdfSrc = data
-          this.pdfViewerAutoLoad.refresh()
+      // console.log("printPdfOnePageService");
+      this.printPdfOnePageService
+        .getBlob(weeks)
+        .then((data) => {
+          this.pdfViewerAutoLoad.pdfSrc = data;
+          this.pdfViewerAutoLoad.refresh();
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
-        })
+        });
     }
-
-
-
   }
 
   hasAssistantBOrResponsibleB(data: ProgramPdf[]): boolean {
-    return data.some(root =>
-      root.weeklyProgram.some(program => program.assistantB !== undefined || program.responsibleB !== undefined)
-    );
+    return data.some((root) => root.weeklyProgram.some((program) => program.assistantB !== undefined || program.responsibleB !== undefined));
   }
 
   download() {
-    const dataIpm: any = {
-
-    }
-    this.printService.download(dataIpm)
+    const dataIpm: any = {};
+    this.printService.download(dataIpm);
   }
 
   onCLose() {
-    this.onClosed.emit(true)
+    this.onClosed.emit(true);
   }
 }
-
-

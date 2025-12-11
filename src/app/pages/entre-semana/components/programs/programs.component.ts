@@ -29,9 +29,10 @@ export class ProgramsComponent implements OnInit {
   @Input() public RoomA = false;
   @Input() public room = "A";
   porAsignar = "por asignar";
+  isAdmin = false
   public congregation: Congregation = CongregationMock
   public assignmentType: string = ""
-  public Superintendente!: Publisher
+  public superintendente!: Publisher
   public showSpinner = false;
   private meetingDay = 1;
   constructor(
@@ -42,8 +43,10 @@ export class ProgramsComponent implements OnInit {
   ) { }
   ngOnInit(): void {
     this.dataService.getPublisher().subscribe(data => {
-      this.Superintendente = data
+      this.superintendente = data
     })
+
+    this.isAdmin = this.superintendente.email === "estarlin.elv@gmail.com"
 
     this.dataService.getCongregation$().subscribe(data => {
       this.congregation = data
@@ -356,12 +359,10 @@ export class ProgramsComponent implements OnInit {
     }
   }
   addAssign(item: Program, sectionMeeting: string) {
-    console.log(item, sectionMeeting);
     this.modalService.AddAssignment(item, sectionMeeting)
   }
 
   print(week: Program) {
-    console.log(week);
     this.dataService.setMeeting([week])
     this.modalService.printer()
   }

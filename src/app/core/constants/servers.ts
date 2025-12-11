@@ -1,6 +1,6 @@
 export const Servers = {
-  //URL: 'https://api.vmc.chichinacds.com.co',
-  URL: 'http://localhost:7700',
+  URL: 'https://api.vmc.chichinacds.com.co',
+ // URL: 'http://localhost:7700',
   home: "/"
 }
 export const Apis = {

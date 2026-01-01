@@ -191,7 +191,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: "TESOROS DE LA BIBLIA", style: "treasures", border: [false, false, false, false], fillColor: '#2a6b77',
+                text: "TESOROS DE LA BIBLIA", style: "treasures", border: [false, false, false, false], fillColor: '#5F6366',
               },
               {
                 text: "Sala Auxiliar", style: "tips_c", border: [false, false, false, false]
@@ -286,7 +286,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: "SEAMOS MEJORES MAESTROS", style: "teachers", border: [false, false, false, false], fillColor: '#9b6d17',
+                text: "SEAMOS MEJORES MAESTROS", style: "teachers", border: [false, false, false, false], fillColor: '#C69200',
               },
               {
                 text: "Sala Auxiliar", style: "tips_c", border: [false, false, false, false]
@@ -343,7 +343,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: "NUESTRA VIDA CRISTIANA", style: "life", border: [false, false, false, false], fillColor: '#942926',
+                text: "NUESTRA VIDA CRISTIANA", style: "life", border: [false, false, false, false], fillColor: '#7A0026',
               },
               {
                 text: "", style: "tips_r", border: [false, false, false, false]
@@ -593,19 +593,19 @@ export class PrintPdfService {
         fontTreasures: {
           bold: true,
           fontSize: 8.5,
-          color: "#2a6b77",
+          color: "#5F6366",
           margin: [0, 0, 0, 0],
         },
         fontTeachers: {
           bold: true,
           fontSize: 8.5,
-          color: "#9b6d17",
+          color: "#C69200",
           margin: [0, 0, 0, 0],
         },
         fontLife: {
           bold: true,
           fontSize: 8.5,
-          color: "#942926",
+          color: "#7A0026",
           margin: [0, 0, 0, 0],
         },
         subtitles2: {

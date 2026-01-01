@@ -29,6 +29,7 @@ export class PrinterComponent implements OnInit {
     private modalService: ModalService,
     private printPdfOnePageService: PrintPdfOnePageService
   ) {
+    this.modalService.loading();
     this.subs.add(
       this.dataService.getCongregation$().subscribe((data) => {
         this.congregation = data;
@@ -38,8 +39,10 @@ export class PrinterComponent implements OnInit {
       this.dataService.getMeetingsPDF$().subscribe(
         (data) => {
           if (data && data.length > 0) {
+            this.modalService.close();
             this.printMeetings(data);
           } else {
+            console.log("No hay data");
             this.getWeeks();
           }
         },
@@ -51,9 +54,8 @@ export class PrinterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.modalService.loading();
+    
   }
-  
 
   getWeeks() {
     if (this.congregation) {
@@ -71,7 +73,7 @@ export class PrinterComponent implements OnInit {
   }
 
   printMeetings(weeks: ProgramPdf[]) {
-    // console.log(weeks);
+    this.modalService.close();
     if (this.hasAssistantBOrResponsibleB(weeks)) {
       // console.log("printService");
       this.printService

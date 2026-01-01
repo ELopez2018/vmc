@@ -15,7 +15,7 @@ export class LoginComponent {
   public credential!: FormGroup;
   public showSpinner = false;
   public error = false;
-  constructor(private router: Router, private authService: AuthService, private fb: FormBuilder) {
+  constructor( private authService: AuthService, private fb: FormBuilder) {
     this.credential = this.fb.group({
       username: new FormControl("", Validators.required),
       password: new FormControl("", Validators.required),
@@ -25,7 +25,6 @@ export class LoginComponent {
     this.showSpinner = true;
     this.authService.login(this.credential.getRawValue()).subscribe({
       next: (data) => {
-        this.router.navigateByUrl("/tablero");
         this.showSpinner = false;
         this.error = false;
       },

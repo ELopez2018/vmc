@@ -1,24 +1,4 @@
 <div class="entre-semana">
-  <!-- <div class="container-fluid">
-    <div class="row pt-1 shadow-titles d-none d-md-flex">
-      <div class="col-md-5 ">
-        <vmc-calendar-filter (onChange)="filterByWeekNumber($event)"></vmc-calendar-filter>
-      </div>
-
-      <div class="col pt-2 text-center">
-        <img
-          class="hover me-3"
-          src="../../../assets/img/actualizar.png"
-          width="30px"
-          alt=""
-          (click)="getPrograms()"
-          title="Actualiza el programa"
-        />
-
-      </div>
-    </div>
-  </div> -->
-
   <mat-tab-group animationDuration="0ms">
     <mat-tab label="Principal">
       <div class="container mt-5 pt-5" *ngIf="showSpinner">
@@ -33,11 +13,7 @@
       <vmc-programs [semanas]="semanas" [RoomA]="true" [room]="'A'"></vmc-programs>
     </mat-tab>
     <mat-tab label="Auxiliar">
-      <vmc-programs
-        [semanas]="semanasSalaAuxiliar"
-        [RoomA]="false"
-        [room]="'B'"
-      ></vmc-programs>
+      <vmc-programs [semanas]="semanasSalaAuxiliar" [RoomA]="false" [room]="'B'"></vmc-programs>
       <div class="container mt-5 pt-5" *ngIf="showSpinner">
         <div class="row mt-5 pt-5">
           <div class="col-md-5"></div>

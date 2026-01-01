@@ -8,6 +8,9 @@ import { JwtHelperService } from "@auth0/angular-jwt";
 import { Servers } from "../../constants/servers";
 import { RoomsService } from "../rooms/rooms.service";
 import { ProgramPdf, WeeklyProgramPdF } from "../../interfaces/print-pdf.interface";
+import { CongregationsService } from "../congregations/congregations.service";
+import { AuthService } from "../auth/auth.service";
+import { CookieService } from "ngx-cookie-service";
 
 @Injectable({
   providedIn: "root",
@@ -25,7 +28,7 @@ export class DataService {
   private rooms$: BehaviorSubject<Room[]> = new BehaviorSubject<Room[]>([]);
   jwtUtils!: JwtHelperService;
   private isAdmin$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  constructor(private usersService: UsersService, private configsService: ConfigsService, private roomsService: RoomsService) {
+  constructor(private cookieService: CookieService, private usersService: UsersService, private configsService: ConfigsService, private roomsService: RoomsService) {
     this.jwtUtils = new JwtHelperService();
   }
 
@@ -44,6 +47,7 @@ export class DataService {
   }
 
   public setPublisher(publisher: Publisher) {
+    console.log({ publisher });
     this.publisher$.next(publisher);
   }
   public getPublisher(): Observable<Publisher> {
@@ -102,6 +106,7 @@ export class DataService {
     });
   }
   public setCongregation(congregation: Congregation) {
+    console.log(congregation);
     this.congregation = congregation;
     if (this.congregation) {
       this.roomsService.getAllRoomsByCongregation(this.congregation.id).subscribe((data) => this.rooms$.next(data));
@@ -118,19 +123,8 @@ export class DataService {
         this.setDesignations(data);
       }
     });
-  }
-  public setConfigFromStorage() {
-    const tokenStr = localStorage.getItem("token");
-    let tokenObj;
-    if (tokenStr) {
-      tokenObj = JSON.parse(tokenStr);
-      const token = this.jwtUtils.decodeToken(tokenObj.token);
-      if (token) {
-        this.setPublisher(token.data);
-        this.setCongregation(token.data.congregation);
-        localStorage.setItem("congregation", JSON.stringify(token.data.congregation));
-      }
-    }
+   this.setPublisher(this.cookieService.get('publisher') ? JSON.parse(this.cookieService.get('publisher')) : <Publisher>{});
+   this.setCongregation(this.cookieService.get('congregation') ? JSON.parse(this.cookieService.get('congregation')) : <Congregation>{});
   }
   logout() {
     localStorage.clear();

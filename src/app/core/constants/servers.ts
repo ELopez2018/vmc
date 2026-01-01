@@ -1,5 +1,7 @@
+import { environment } from "src/environments/environment"
+
 export const Servers = {
-  URL: 'https://api.vmc.chichinacds.com.co',
+  URL: environment.server,
  // URL: 'http://localhost:7700',
   home: "/"
 }

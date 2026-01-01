@@ -42,23 +42,25 @@
       padding: 5px !important;
     }
 
+   
 
   }
 
   &__title-asingment {
-    font-style: italic;
+    font-style:normal;
   }
 
   &__title-tesoros {
-    background-color: gray;
+    background-color: #5F6366
+;
   }
 
   &__title-maestros {
-    background-color: rgb(220, 141, 37);
+    background-color: #C69200;
   }
 
   &__title-vida {
-    background-color: rgb(151, 44, 5);
+    background-color: #7A0026;
   }
 
   .title-number {
@@ -68,7 +70,7 @@
   }
 
   .text-title-custom {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: bold;
     line-height: 24px;
   }
@@ -77,15 +79,19 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 500px;
+    width: 44vw;
   }
 
   .hover{
     &:hover {
       cursor: pointer;
-      background-color: rgb(184, 189, 189);
+      // background-color: rgb(219, 221, 221);
     }
   }
+
+   .text-publisher {
+    font-size: 14px;
+    }
 }
 
 @media (min-width: 992px) {
@@ -109,9 +115,12 @@
       font-size: 1rem;
       margin-bottom: -2px;
       color: white;
-      width: 530px;
+      width: 50vw;
+      height: 35px;
       padding-left: 10px;
       position: relative;
+      line-height: 35px;
+      font-weight: bolder;
 
       & mat-icon {
         position: absolute;
@@ -140,7 +149,7 @@
       font-size: 1rem;
       margin-bottom: -2px;
       color: white;
-      width: 530px;
+      width: 45vw;
       padding-left: 10px;
       position: relative;
 

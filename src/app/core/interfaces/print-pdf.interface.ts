@@ -4,8 +4,8 @@ export interface ProgramPdf extends Program {
   weeklyProgram: WeeklyProgramPdF[]
 }
 export interface WeeklyProgramPdF extends WeeklyProgram {
-  responsible: any;
-  assistant: any;
+  responsible: Publisher;
+  assistant: Publisher;
   responsibleB: Publisher | null | undefined;
   assistantB: Publisher | null | undefined;
 }

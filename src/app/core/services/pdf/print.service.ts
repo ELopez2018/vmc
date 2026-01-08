@@ -10,6 +10,8 @@ declare const pdfMake: any;
 export class PrintPdfService {
   private congregation = "ALBORADA";
   private colorFontPublisher = "#ea002e";
+
+
   private sizeHeader = [10, "auto", "*", 20];
   private sizeBody = [70, 190, 150, "*"];
   private sizeSongs = [16, 244, 150, "*"];
@@ -30,50 +32,7 @@ export class PrintPdfService {
       }
     });
   }
-  config = {
-    subTitleInvoice: "RECIBO DE GIRO",
-    sizeQr: "140",
-    textQR: "https://aex.com.co/",
-    terms: "",
-  };
-  invoice: any = {
-    prefix: "DSTA",
-    id: "68467",
-    client: "Estarlin enrique lopez",
-    doumentNumber: "13206008",
-    address: "Colombia",
-    cellphone: "3204454846",
-    email: "estarlin.elv@gmail.com",
-    valueFrom: 50000,
-    currencyFrom: "COP",
-    date: "02/02/2024 10:21am",
-    beneficiaries: [
-      {
-        fullname: "Adriana Lopez",
-        addres: "Venezuela",
-        email: "adri@gmail.com",
-        cellphone: "3204454846",
-        doumentNumber: "17347687",
-        bankName: "Banesco",
-        accountType: "Corriennte",
-        accountNumber: "01340327953271040096",
-        valueTo: 438.6,
-        currencyTo: "VES",
-      },
-      {
-        fullname: "Adriana Lopez",
-        addres: "Venezuela",
-        email: "adri@gmail.com",
-        cellphone: "3204454846",
-        doumentNumber: "17347687",
-        bankName: "Banesco",
-        accountType: "Corriennte",
-        accountNumber: "01340327953271040096",
-        valueTo: 438.6,
-        currencyTo: "VES",
-      },
-    ],
-  };
+ 
   private verifiRoomB(array: WeeklyProgramPdF[]): boolean {
     return array.some((item) => item.responsibleB != null);
   }
@@ -603,10 +562,10 @@ export class PrintPdfService {
   }
 
   public print(weeks: ProgramPdf[]) {
-    pdfMake.createPdf(this.makeDocumet(weeks)).open();
+    pdfMake.createPdf(this.makeDocumet(weeks)).open("Reunion Entre senama VMC.pdf");
   }
   public download(weeks: ProgramPdf[]) {
-    pdfMake.createPdf(this.makeDocumet(weeks)).download("Nota - " + this.invoice.prefix + this.invoice.id + ".pdf");
+    pdfMake.createPdf(this.makeDocumet(weeks)).download("Reunion Entre senama VMC.pdf");
   }
 
   public getStream(weeks: ProgramPdf[]) {
@@ -684,7 +643,6 @@ export class PrintPdfService {
         },
         tips_r: {
           fontSize: 6,
-          //color: "#ea002e",
           bold: true,
           alignment: "right",
           margin: [0, 3, 0, 0],

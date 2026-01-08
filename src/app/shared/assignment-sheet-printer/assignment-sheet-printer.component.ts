@@ -1,0 +1,102 @@
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { PrintPdfService } from "../../core/services/pdf/print.service";
+import { MeetingsService } from "../../core/services/meetings/meetings.service";
+import { Meeting, Program } from "src/app/core/interfaces/reuniones.interface";
+import { DataService } from "../../core/services/data/data.service";
+import { ModalService } from "../../core/services/modal/modal.service";
+import { Congregation } from "../../core/interfaces/reuniones.interface";
+import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
+import { Subscription } from "rxjs";
+import { PrintPdfOnePageService } from "src/app/core/services/pdf/print-pdf-one-page.service";
+import { IconCloseComponent } from "../modal/modal-container/search-publisher/icon-close/icon-close.component";
+import { PdfJsViewerModule } from "ng2-pdfjs-viewer";
+import { PrintS89FromProgramService } from "src/app/core/services/pdf/print-s89-four-per-page.service";
+
+@Component({
+  selector: "app-assignment-sheet-printer",
+  templateUrl: "./assignment-sheet-printer.component.html",
+  styleUrls: ["./assignment-sheet-printer.component.scss"],
+  standalone: true,
+  imports: [IconCloseComponent, PdfJsViewerModule],
+})
+export class AssignmentSheetPrinterComponent implements OnInit {
+  @ViewChild("pdfViewerOnDemand") pdfViewerOnDemand: any;
+  @ViewChild("pdfViewerAutoLoad") pdfViewerAutoLoad: any;
+  @Output() onClosed = new EventEmitter();
+  @Input() public isModal: boolean = false;
+  private congregation!: Congregation;
+  private subs: Subscription = new Subscription();
+  constructor(
+    private printService: PrintPdfService,
+    private meetingsService: MeetingsService,
+    private dataService: DataService,
+    private modalService: ModalService,
+    private printS89FromProgramService: PrintS89FromProgramService
+  ) {
+    this.modalService.loading();
+    this.subs.add(
+      this.dataService.getCongregation$().subscribe((data) => {
+        this.congregation = data;
+      })
+    );
+    this.subs.add(
+      this.dataService.getMeetingsPDF$().subscribe(
+        (data) => {
+          if (data && data.length > 0) {
+            this.modalService.close();
+            this.printMeetings(data);
+          } else {
+            console.log("No hay data");
+            this.getWeeks();
+          }
+        },
+        (error) => {
+          this.modalService.errorHandler(error, "Error");
+        }
+      )
+    );
+  }
+
+  ngOnInit(): void {}
+
+  getWeeks() {
+    if (this.congregation) {
+      this.meetingsService.getWeeksValids(this.congregation.id).subscribe(
+        (data) => {
+          this.modalService.close();
+          this.dataService.setMeeting(data);
+        },
+        (error) => {
+          this.modalService.close();
+          this.modalService.errorHandler("No se han podido obtener las semanas", "Error");
+        }
+      );
+    }
+  }
+
+  printMeetings(weeks: ProgramPdf[]) {
+    this.modalService.close();
+    this.printS89FromProgramService
+      .getBlob(weeks)
+      .then((data) => {
+        this.pdfViewerAutoLoad.pdfSrc = data;
+        this.pdfViewerAutoLoad.refresh();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  hasAssistantBOrResponsibleB(data: ProgramPdf[]): boolean {
+    return data.some((root) => root.weeklyProgram.some((program) => program.assistantB !== undefined || program.responsibleB !== undefined));
+  }
+
+  download() {
+    const dataIpm: any = {};
+    this.printService.download(dataIpm);
+  }
+
+  onCLose() {
+    this.onClosed.emit(true);
+  }
+}

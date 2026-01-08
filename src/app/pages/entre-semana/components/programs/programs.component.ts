@@ -173,8 +173,8 @@ export class ProgramsComponent implements OnInit {
             console.log(data);
           })
         break;
-      case "assistantAdviser":
-        this.modalService.assignPublisherProgram(item)
+      case AssignmentType.ASSISTANT_ADVISER:
+        this.modalService.assignPublisherProgram(item, AssignmentType.ASSISTANT_ADVISER)
           .then(data => {
             if(!data || data == 'close'){return}
             item.assistantAdviser = data;

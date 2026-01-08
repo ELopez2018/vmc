@@ -9,10 +9,7 @@
       <div class="col-md-12">
         <mat-tab-group animationDuration="0ms">
           <mat-tab label="Frecuentes">
-            <fieldset
-              class="fieldset-basic"
-              *ngIf="assignment && assignment.assignment"
-            >
+            <fieldset class="fieldset-basic" *ngIf="assignment && assignment.assignment">
               <legend></legend>
 
               <div class="row">
@@ -38,21 +35,13 @@
                   <div>Tips:</div>
                 </div>
                 <div class="col-md-6 h6">
-                  <input
-                    class="form-control col-md-8 mb-3"
-                    [(ngModel)]="assignment.assignment.tips"
-                    type="text"
-                    id="tips"
-                    name="tips"
-                  />
+                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text" id="tips" name="tips" />
                 </div>
                 <div class="col-md-2">
                   <div>Mostrar:</div>
                 </div>
                 <div class="col-md-2">
-                  <mat-slide-toggle
-                    [(ngModel)]="assignment.assignment.showTips"
-                  ></mat-slide-toggle>
+                  <mat-slide-toggle [(ngModel)]="assignment.assignment.showTips"></mat-slide-toggle>
                 </div>
               </div>
             </fieldset>
@@ -64,17 +53,8 @@
                 <mat-spinner *ngIf="showSpinner"></mat-spinner>
 
                 <ng-container *ngIf="!isAssigment">
-                  <div
-                    class="table-responsive"
-                    *ngIf="
-                      usedPublishersList &&
-                      usedPublishersList.length > 0 &&
-                      !isAssigment
-                    "
-                  >
-                    <table
-                      class="table table-hover table-sm table-bordered cursor-hover"
-                    >
+                  <div class="table-responsive" *ngIf="usedPublishersList && usedPublishersList.length > 0 && !isAssigment">
+                    <table class="table table-hover table-sm table-bordered cursor-hover">
                       <thead>
                         <tr class="table-primary text-white">
                           <th class="text-center" scope="col">Publicador</th>
@@ -84,35 +64,15 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr
-                          *ngFor="let item of usedPublishersList"
-                          (click)="selected(item)"
-                        >
+                        <tr *ngFor="let item of usedPublishersList" (click)="selected(item)">
                           <td>{{ item.fullName }}</td>
-                          <td
-                            class="text-center"
-                            *ngIf="
-                              assignmentType === assignmentTypeEnums.PRESIDENT
-                            "
-                          >
+                          <td class="text-center" *ngIf="assignmentType === assignmentTypeEnums.PRESIDENT">
                             {{ item.presidentCount }}
                           </td>
-                          <td
-                            class="text-center"
-                            *ngIf="
-                              assignmentType ===
-                              assignmentTypeEnums.OPENING_PRAYER
-                            "
-                          >
+                          <td class="text-center" *ngIf="assignmentType === assignmentTypeEnums.OPENING_PRAYER">
                             {{ item.openingPrayerCount }}
                           </td>
-                          <td
-                            class="text-center"
-                            *ngIf="
-                              assignmentType ===
-                              assignmentTypeEnums.FINAL_PRAYER
-                            "
-                          >
+                          <td class="text-center" *ngIf="assignmentType === assignmentTypeEnums.FINAL_PRAYER">
                             {{ item.finalPrayerCount }}
                           </td>
                         </tr>
@@ -122,35 +82,20 @@
                 </ng-container>
 
                 <ng-container *ngIf="isAssigment">
-                  <div
-                    class="table-responsive"
-                    *ngIf="
-                      usedPublishersListAllByAssig &&
-                      usedPublishersListAllByAssig.length > 0
-                    "
-                  >
-                    <table
-                      class="table table-hover table-sm table-bordered cursor-hover"
-                    >
+                  <div class="table-responsive" *ngIf="usedPublishersListAllByAssig && usedPublishersListAllByAssig.length > 0">
+                    <table class="table table-hover table-sm table-bordered cursor-hover">
                       <thead>
                         <tr class="table-primary text-white">
                           <th class="text-center" scope="col">Publicador</th>
                           <th class="text-center" scope="col">
                             {{ headerText }}
                           </th>
-                          <th class="text-center" scope="col">
-                            Todas
-                          </th>
-                          <th class="text-center" scope="col">
-                            Ultima Fecha
-                          </th>
+                          <th class="text-center" scope="col">Todas</th>
+                          <th class="text-center" scope="col">Ultima Fecha</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr
-                          *ngFor="let item of usedPublishersListAllByAssig"
-                          (click)="selected(item)"
-                        >
+                        <tr *ngFor="let item of usedPublishersListAllByAssig" (click)="selected(item)">
                           <td>{{ item.user.fullName }}</td>
                           <td class="text-center">{{ item.count }}</td>
                           <td class="text-center">{{ item.all }}</td>
@@ -164,10 +109,7 @@
             </div>
           </mat-tab>
           <mat-tab label="Hermanos">
-            <fieldset
-              class="fieldset-basic"
-              *ngIf="assignment && assignment.assignment"
-            >
+            <fieldset class="fieldset-basic" *ngIf="assignment && assignment.assignment">
               <legend></legend>
 
               <div class="row">
@@ -193,21 +135,13 @@
                   <div>Tips:</div>
                 </div>
                 <div class="col-md-6 h6">
-                  <input
-                    class="form-control col-md-8 mb-3"
-                    [(ngModel)]="assignment.assignment.tips"
-                    type="text"
-                    id="tips"
-                    name="tips"
-                  />
+                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text" id="tips" name="tips" />
                 </div>
                 <div class="col-md-2">
                   <div>Mostrar:</div>
                 </div>
                 <div class="col-md-2">
-                  <mat-slide-toggle
-                    [(ngModel)]="assignment.assignment.showTips"
-                  ></mat-slide-toggle>
+                  <mat-slide-toggle [(ngModel)]="assignment.assignment.showTips"></mat-slide-toggle>
                 </div>
               </div>
             </fieldset>
@@ -218,9 +152,7 @@
                 <mat-spinner *ngIf="showSpinner"></mat-spinner>
 
                 <div class="table-responsive" *ngIf="male && male.length > 0">
-                  <table
-                    class="table table-hover table-sm table-bordered cursor-hover"
-                  >
+                  <table class="table table-hover table-sm table-bordered cursor-hover">
                     <thead>
                       <tr>
                         <th scope="col">Publicador</th>
@@ -230,10 +162,7 @@
                     <tbody>
                       <tr *ngFor="let item of male" (click)="selected(item)">
                         <td>{{ item.fullName }}</td>
-                        <td
-                          class="text-center participa"
-                          [ngClass]="{ noparticipa: !item.participate }"
-                        >
+                        <td class="text-center participa" [ngClass]="{ noparticipa: !item.participate }">
                           {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
                         </td>
                       </tr>
@@ -244,10 +173,7 @@
             </div>
           </mat-tab>
           <mat-tab label="Hermanas">
-            <fieldset
-              class="fieldset-basic"
-              *ngIf="assignment && assignment.assignment"
-            >
+            <fieldset class="fieldset-basic" *ngIf="assignment && assignment.assignment">
               <legend></legend>
 
               <div class="row">
@@ -273,21 +199,13 @@
                   <div>Tips:</div>
                 </div>
                 <div class="col-md-6 h6">
-                  <input
-                    class="form-control col-md-8 mb-3"
-                    [(ngModel)]="assignment.assignment.tips"
-                    type="text"
-                    id="tips"
-                    name="tips"
-                  />
+                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text" id="tips" name="tips" />
                 </div>
                 <div class="col-md-2">
                   <div>Mostrar:</div>
                 </div>
                 <div class="col-md-2">
-                  <mat-slide-toggle
-                    [(ngModel)]="assignment.assignment.showTips"
-                  ></mat-slide-toggle>
+                  <mat-slide-toggle [(ngModel)]="assignment.assignment.showTips"></mat-slide-toggle>
                 </div>
               </div>
             </fieldset>
@@ -297,13 +215,8 @@
 
                 <mat-spinner *ngIf="showSpinner"></mat-spinner>
 
-                <div
-                  class="table-responsive"
-                  *ngIf="female && female.length > 0"
-                >
-                  <table
-                    class="table table-hover table-sm table-bordered cursor-hover"
-                  >
+                <div class="table-responsive" *ngIf="female && female.length > 0">
+                  <table class="table table-hover table-sm table-bordered cursor-hover">
                     <thead>
                       <tr>
                         <th scope="col">Publicador</th>
@@ -313,10 +226,7 @@
                     <tbody>
                       <tr *ngFor="let item of female" (click)="selected(item)">
                         <td>{{ item.fullName }}</td>
-                        <td
-                          class="text-center participa"
-                          [ngClass]="{ noparticipa: !item.participate }"
-                        >
+                        <td class="text-center participa" [ngClass]="{ noparticipa: !item.participate }">
                           {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
                         </td>
                       </tr>
@@ -327,10 +237,7 @@
             </div>
           </mat-tab>
           <mat-tab label="Todos">
-            <fieldset
-              class="fieldset-basic"
-              *ngIf="assignment && assignment.assignment"
-            >
+            <fieldset class="fieldset-basic" *ngIf="assignment && assignment.assignment">
               <legend></legend>
 
               <div class="row">
@@ -356,21 +263,13 @@
                   <div>Tips:</div>
                 </div>
                 <div class="col-md-6 h6">
-                  <input
-                    class="form-control col-md-8 mb-3"
-                    [(ngModel)]="assignment.assignment.tips"
-                    type="text"
-                    id="tips"
-                    name="tips"
-                  />
+                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text" id="tips" name="tips" />
                 </div>
                 <div class="col-md-2">
                   <div>Mostrar:</div>
                 </div>
                 <div class="col-md-2">
-                  <mat-slide-toggle
-                    [(ngModel)]="assignment.assignment.showTips"
-                  ></mat-slide-toggle>
+                  <mat-slide-toggle [(ngModel)]="assignment.assignment.showTips"></mat-slide-toggle>
                 </div>
               </div>
             </fieldset>
@@ -380,23 +279,15 @@
 
                 <mat-spinner *ngIf="showSpinner"></mat-spinner>
 
-                <div
-                  class="table-responsive"
-                  *ngIf="publishersAll && publishersAll.length > 0"
-                >
-                  <table
-                    class="table table-hover table-sm table-bordered cursor-hover"
-                  >
+                <div class="table-responsive" *ngIf="publishersAll && publishersAll.length > 0">
+                  <table class="table table-hover table-sm table-bordered cursor-hover">
                     <thead>
                       <tr>
                         <th scope="col">Publicador</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr
-                        *ngFor="let item of publishersAll"
-                        (click)="selected(item)"
-                      >
+                      <tr *ngFor="let item of publishersAll" (click)="selected(item)">
                         <td>{{ item.fullName }}</td>
                       </tr>
                     </tbody>

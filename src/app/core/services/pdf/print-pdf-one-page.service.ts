@@ -1,46 +1,42 @@
-import { Injectable } from '@angular/core';
-import { Utils } from 'src/app/shared/Utils';
-import { ProgramPdf, WeeklyProgramPdF } from '../../interfaces/print-pdf.interface';
-import { DataService } from '../data/data.service';
+import { Injectable } from "@angular/core";
+import { Utils } from "src/app/shared/Utils";
+import { ProgramPdf, WeeklyProgramPdF } from "../../interfaces/print-pdf.interface";
+import { DataService } from "../data/data.service";
 
 declare const pdfMake: any;
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class PrintPdfOnePageService {
   private congregation = "ALBORADA";
   private colorFontPublisher = "#ea002e";
-  private sizeHeader = [20, 'auto', '*', 20]
-  private sizeBody = [70, 185, 80, 10, '*']
-  private sizeSongs = [20, 235, 80, 10, '*']
-  private sizeHeaderSections = [350, 10, '*']
+  private sizeHeader = [0, "auto", "*", 20];
+  private sizeBody = [70, 185, 80, 10, "*"];
+  private sizeSongs = [20, 235, 80, 10, "*"];
+  private sizeHeaderSections = [350, 10, "*"];
 
-  private sizeContenTreasure = [20, 300, 5, 20, '*']
-  private sizeContenTreasureReader = [20, 225, 90, 10, '*']
-  private sizeContenTeachers = [20, 235, 80, 5, '*']
-  private sizeContenLife = [20, 300, 5, 20, '*']
-  private sizeContenLifeEB = [20, 235, 85, 5, '*']
-  private dayMeet: any = null
-  constructor(
-    private dataService: DataService
-  ) {
-  // pdfMake.vfs ya está inicializado por vfs_fonts.js incluido en angular.json
-
-    this.dataService.getPublisher().subscribe(data => {
+  private sizeContenTreasure = [20, 300, 5, 20, "*"];
+  private sizeContenTreasureReader = [20, 225, 90, 10, "*"];
+  private sizeContenTeachers = [20, 235, 80, 5, "*"];
+  private sizeContenLife = [20, 300, 5, 20, "*"];
+  private sizeContenLifeEB = [20, 235, 85, 5, "*"];
+  private dayMeet: any = null;
+  constructor(private dataService: DataService) {
+    this.dataService.getPublisher().subscribe((data) => {
       if (data) {
         this.colorFontPublisher = data.congregation.fontColorPublisher ?? "";
-        this.dayMeet = data.congregation.day
+        this.dayMeet = data.congregation.day;
       }
-    })
+    });
+    // console.log(pdfMake);
   }
   config = {
     subTitleInvoice: "RECIBO DE GIRO",
-    sizeQr: '140',
+    sizeQr: "140",
     textQR: "https://aex.com.co/",
-    terms: ""
-  }
+    terms: "",
+  };
   invoice: any = {
     prefix: "DSTA",
     id: "68467",
@@ -50,7 +46,7 @@ export class PrintPdfOnePageService {
     cellphone: "3204454846",
     email: "estarlin.elv@gmail.com",
     valueFrom: 50000,
-    currencyFrom: 'COP',
+    currencyFrom: "COP",
     date: "02/02/2024 10:21am",
     beneficiaries: [
       {
@@ -62,9 +58,8 @@ export class PrintPdfOnePageService {
         bankName: "Banesco",
         accountType: "Corriennte",
         accountNumber: "01340327953271040096",
-        valueTo: 438.60,
-        currencyTo: "VES"
-
+        valueTo: 438.6,
+        currencyTo: "VES",
       },
       {
         fullname: "Adriana Lopez",
@@ -75,39 +70,45 @@ export class PrintPdfOnePageService {
         bankName: "Banesco",
         accountType: "Corriennte",
         accountNumber: "01340327953271040096",
-        valueTo: 438.60,
-        currencyTo: "VES"
+        valueTo: 438.6,
+        currencyTo: "VES",
+      },
+    ],
+  };
 
-      }
-    ]
-  }
-  private verifiRoomB(array: WeeklyProgramPdF[]): boolean {
-    return array.some(item => item.responsibleB != null);
-  }
   private makeHeader(pageBreak: boolean) {
     return [
       {
         table: {
-          heights: [25],
+          heights: [0],
           widths: this.sizeHeader,
           body: [
-            [{
-              text: "", style: "header_a", border: [false, false, false, false]
-            },
-            {
-              text: this.congregation, style: "header_a", border: [false, false, false, true]
-            },
-            {
-              text: "Programa para la reunión de entre semana", style: "header_b", border: [false, false, false, true]
-            },
-            {
-              text: "", style: "header_a", border: [false, false, false, false]
-            }
-            ]
-          ]
+            [
+              {
+                text: "",
+                style: "header_a",
+                border: [false, false, false, false],
+              },
+              {
+                text: this.congregation,
+                style: "header_a",
+                border: [false, false, false, true],
+              },
+              {
+                text: "Programa para la reunión de entre semana",
+                style: "header_b",
+                border: [false, false, false, true],
+              },
+              {
+                text: "",
+                style: "header_a",
+                border: [false, false, false, false],
+              },
+            ],
+          ],
         },
       },
-    ]
+    ];
   }
   private makeHeaderProgram(week: ProgramPdf) {
     return [
@@ -117,23 +118,32 @@ export class PrintPdfOnePageService {
           body: [
             [
               {
-                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + " |", style: "sub_title", border: [false, false, false, false]
+                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + " |",
+                style: "sub_title",
+                border: [false, false, false, false],
               },
               {
-                text: week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading  : "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]
+                text: week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA",
+                style: "sub_title",
+                border: [false, false, false, false],
               },
               {
-                text: "Presidente:", style: "tips_r", border: [false, false, false, false]
+                text: "Presidente:",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: week.president?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
-              }
+                text: week.president?.fullName.trim(),
+                style: "tips_l",
+                border: [false, false, false, false],
+              },
             ],
-
-          ]
+          ],
         },
       },
       {
@@ -142,42 +152,62 @@ export class PrintPdfOnePageService {
           body: [
             [
               {
-                text: Utils.adapterTime(week.startTimeOpeningSong), style: "titles", border: [false, false, false, false]
+                text: Utils.adapterTime(week.startTimeOpeningSong),
+                style: "titles",
+                border: [false, false, false, false],
               },
               {
-                text: "• Canción " + week.meeting.openingSong, style: "titles", border: [false, false, false, false]
+                text: "• Canción " + week.meeting.openingSong,
+                style: "titles",
+                border: [false, false, false, false],
               },
               {
-                text: "Oración:", style: "tips_r", border: [false, false, false, false]
+                text: "Oración:",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: week.openingPrayer?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
-              }
+                text: week.openingPrayer?.fullName.trim(),
+                style: "tips_l",
+                border: [false, false, false, false],
+              },
             ],
             [
               {
-                text: Utils.adapterTime(week.startTimeIntro), style: "titles", border: [false, false, false, false]
+                text: Utils.adapterTime(week.startTimeIntro),
+                style: "titles",
+                border: [false, false, false, false],
               },
               {
-                text: `• Palabras de introducción ( ${week.meeting.introTime} ${week.meeting.timeType})`, style: "titles", border: [false, false, false, false]
+                text: `• Palabras de introducción ( ${week.meeting.introTime} ${week.meeting.timeType})`,
+                style: "titles",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_l", border: [false, false, false, false]
-              }
+                text: "",
+                style: "tips_l",
+                border: [false, false, false, false],
+              },
             ],
-          ]
+          ],
         },
       },
-    ]
+    ];
   }
   private makeHeaderTreasures() {
     return [
@@ -188,90 +218,114 @@ export class PrintPdfOnePageService {
           body: [
             [
               {
-                text: "TESOROS DE LA BIBLIA", style: "treasures", border: [false, false, false, false], fillColor: '#5F6366',
+                text: "TESOROS DE LA BIBLIA",
+                style: "treasures",
+                border: [false, false, false, false],
+                fillColor: "#5F6366",
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: "Auditorio principal", style: "tips_c", border: [false, false, false, false]
+                text: "Auditorio principal",
+                style: "tips_c",
+                border: [false, false, false, false],
               },
             ],
-          ]
+          ],
         },
       },
-    ]
+    ];
   }
   private makeContentTreasures(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA')
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "TESOROS DE LA BIBLIA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       if (asigment.assignment.number != 3) {
-        content.push(
-          [
-            {
-              text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
-            },
-            {
-              text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTreasures", border: [false, false, false, false]
-            },
+        content.push([
+          {
+            text: Utils.adapterTime(asigment.startTime),
+            style: "titles",
+            border: [false, false, false, false],
+          },
+          {
+            text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`,
+            style: "fontTreasures",
+            border: [false, false, false, false],
+          },
 
-            {
-              text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
-            },
-            {
-              text: "", style: "tips_l", border: [false, false, false, false]
-            },
-            {
-              text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
-            }
-          ]
-        )
+          {
+            text: asigment.assignment.showTips ? asigment.assignment.tips : null,
+            style: "tips_r",
+            border: [false, false, false, false],
+          },
+          {
+            text: "",
+            style: "tips_l",
+            border: [false, false, false, false],
+          },
+          {
+            text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(),
+            style: "tips_l",
+            border: [false, false, false, false],
+          },
+        ]);
       }
-    })
+    });
     return [
       {
         table: {
+          heights: [0],
           widths: this.sizeContenTreasure,
-          body: content
+          body: content,
         },
       },
-    ]
+    ];
   }
   private makeContentTreasuresReader(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA')
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "TESOROS DE LA BIBLIA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       if (asigment.assignment.number == 3) {
-        content.push(
-          [
-            {
-              text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
-            },
-            {
-              text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTreasures", border: [false, false, false, false]
-            },
-            {
-              text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
-            },
-            {
-              text: asigment.assistantB ? asigment.responsibleB?.fullName.trim() + " / " + asigment.assistantB.fullName.trim() : asigment.responsibleB?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
-            },
-            {
-              text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
-            }
-          ]
-        )
+        content.push([
+          {
+            text: Utils.adapterTime(asigment.startTime),
+            style: "titles",
+            border: [false, false, false, false],
+          },
+          {
+            text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`,
+            style: "fontTreasures",
+            border: [false, false, false, false],
+          },
+          {
+            text: asigment.assignment.showTips ? asigment.assignment.tips : null,
+            style: "tips_r",
+            border: [false, false, false, false],
+          },
+          {
+            text: asigment.assistantB ? asigment.responsibleB?.fullName.trim() + " / " + asigment.assistantB.fullName.trim() : asigment.responsibleB?.fullName.trim(),
+            style: "tips_l",
+            border: [false, false, false, false],
+          },
+          {
+            text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(),
+            style: "tips_l",
+            border: [false, false, false, false],
+          },
+        ]);
       }
-    })
+    });
     return [
       {
         table: {
           widths: this.sizeContenTreasureReader,
-          body: content
+          body: content,
         },
       },
-    ]
+    ];
   }
   private makeHeaderTeachers() {
     return [
@@ -282,53 +336,68 @@ export class PrintPdfOnePageService {
           body: [
             [
               {
-                text: "SEAMOS MEJORES MAESTROS", style: "teachers", border: [false, false, false, false], fillColor: '#C69200',
+                text: "SEAMOS MEJORES MAESTROS",
+                style: "teachers",
+                border: [false, false, false, false],
+                fillColor: "#C69200",
               },
               {
-                text: "", style: "tips_c", border: [false, false, false, false]
+                text: "",
+                style: "tips_c",
+                border: [false, false, false, false],
               },
               {
-                text: "Auditorio principal", style: "tips_c", border: [false, false, false, false]
+                text: "Auditorio principal",
+                style: "tips_c",
+                border: [false, false, false, false],
               },
             ],
-          ]
+          ],
         },
       },
-    ]
+    ];
   }
   private makeContentTeachers(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS')
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "SEAMOS MEJORES MAESTROS");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
-      content.push(
-        [
-          {
-            text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
-          },
-          {
-            text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontTeachers", border: [false, false, false, false]
-          },
+      content.push([
+        {
+          text: Utils.adapterTime(asigment.startTime),
+          style: "titles",
+          border: [false, false, false, false],
+        },
+        {
+          text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`,
+          style: "fontTeachers",
+          border: [false, false, false, false],
+        },
 
-          {
-            text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
-          },
-          {
-            text: asigment.assistantB ? asigment.responsibleB?.fullName.trim() + " / " + asigment.assistantB.fullName.trim() : asigment.responsibleB?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
-          },
-          {
-            text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
-          }
-        ]
-      )
-    })
+        {
+          text: asigment.assignment.showTips ? asigment.assignment.tips : null,
+          style: "tips_r",
+          border: [false, false, false, false],
+        },
+        {
+          text: asigment.assistantB ? asigment.responsibleB?.fullName.trim() + " / " + asigment.assistantB.fullName.trim() : asigment.responsibleB?.fullName.trim(),
+          style: "tips_l",
+          border: [false, false, false, false],
+        },
+        {
+          text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(),
+          style: "tips_l",
+          border: [false, false, false, false],
+        },
+      ]);
+    });
     return [
       {
         table: {
           widths: this.sizeContenTeachers,
-          body: content
+          body: content,
         },
       },
-    ]
+    ];
   }
   private makeHeaderLife() {
     return [
@@ -339,92 +408,113 @@ export class PrintPdfOnePageService {
           body: [
             [
               {
-                text: "NUESTRA VIDA CRISTIANA", style: "life", border: [false, false, false, false], fillColor: '#7A0026',
+                text: "NUESTRA VIDA CRISTIANA",
+                style: "life",
+                border: [false, false, false, false],
+                fillColor: "#7A0026",
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_c", border: [false, false, false, false]
+                text: "",
+                style: "tips_c",
+                border: [false, false, false, false],
               },
             ],
-          ]
+          ],
         },
       },
-    ]
+    ];
   }
   private makeContentLife(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA')
+    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       // if (asigment.assignment.title !== "Estudio bíblico de la congregación") {
       if (true) {
-        content.push(
-          [
-            {
-              text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
-            },
-            {
-              text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontLife", border: [false, false, false, false]
-            },
-            {
-              text: "", style: "tips_r", border: [false, false, false, false]
-            },
-            {
-              text: ``, style: "fontLife", border: [false, false, false, false]
-            },
-            {
-              text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
-            }
-          ]
-        )
+        content.push([
+          {
+            text: Utils.adapterTime(asigment.startTime),
+            style: "titles",
+            border: [false, false, false, false],
+          },
+          {
+            text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`,
+            style: "fontLife",
+            border: [false, false, false, false],
+          },
+          {
+            text: "",
+            style: "tips_r",
+            border: [false, false, false, false],
+          },
+          {
+            text: ``,
+            style: "fontLife",
+            border: [false, false, false, false],
+          },
+          {
+            text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(),
+            style: "tips_l",
+            border: [false, false, false, false],
+          },
+        ]);
       }
-    })
+    });
     return [
       {
         table: {
           widths: this.sizeContenLife,
-          body: content
+          body: content,
         },
       },
-    ]
-
-
+    ];
   }
   private makeContentLifeEstudyB(week: ProgramPdf) {
-    const treasures = [...week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA')]
+    const treasures = [...week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA")];
     let content: any[] = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       if (asigment.assignment.title.includes("Estudio bíblico de la congregación")) {
-        content.push(
-          [
-            {
-              text: Utils.adapterTime(asigment.startTime), style: "titles", border: [false, false, false, false]
-            },
-            {
-              text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`, style: "fontLife", border: [false, false, false, false]
-            },
-            {
-              text: asigment.assignment.showTips ? asigment.assignment.tips : null, style: "tips_r", border: [false, false, false, false]
-            },
-            {
-              text: ``, style: "fontLife", border: [false, false, false, false]
-            },
-            {
-              text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
-            }
-          ]
-        )
+        content.push([
+          {
+            text: Utils.adapterTime(asigment.startTime),
+            style: "titles",
+            border: [false, false, false, false],
+          },
+          {
+            text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`,
+            style: "fontLife",
+            border: [false, false, false, false],
+          },
+          {
+            text: asigment.assignment.showTips ? asigment.assignment.tips : null,
+            style: "tips_r",
+            border: [false, false, false, false],
+          },
+          {
+            text: ``,
+            style: "fontLife",
+            border: [false, false, false, false],
+          },
+          {
+            text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(),
+            style: "tips_l",
+            border: [false, false, false, false],
+          },
+        ]);
       }
-    })
+    });
     return [
       {
         table: {
           widths: this.sizeContenLifeEB,
-          body: content
+          body: content,
         },
       },
-    ]
+    ];
   }
   private makeIntermediateSong(week: ProgramPdf) {
     return [
@@ -434,25 +524,32 @@ export class PrintPdfOnePageService {
           body: [
             [
               {
-                text: Utils.adapterTime(week.startTimeIntermediateSong), style: "titles", border: [false, false, false, false]
+                text: Utils.adapterTime(week.startTimeIntermediateSong),
+                style: "titles",
+                border: [false, false, false, false],
               },
               {
-                text: "• Canción " + week.meeting.intermediateSong, style: "titles", border: [false, false, false, false]
+                text: "• Canción " + week.meeting.intermediateSong,
+                style: "titles",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_l", border: [false, false, false, false]
-              }
+                text: "",
+                style: "tips_l",
+                border: [false, false, false, false],
+              },
             ],
-          ]
+          ],
         },
-      }
-    ]
+      },
+    ];
   }
   private makeFinalBlock(week: ProgramPdf) {
-
     return [
       {
         table: {
@@ -460,60 +557,78 @@ export class PrintPdfOnePageService {
           body: [
             [
               {
-                text: Utils.adapterTime(week.startTimeConclusionWords), style: "titles", border: [false, false, false, false]
+                text: Utils.adapterTime(week.startTimeConclusionWords),
+                style: "titles",
+                border: [false, false, false, false],
               },
               {
-                text: "• Palabras de conclusión (3 min.)", style: "titles", border: [false, false, false, false]
+                text: "• Palabras de conclusión (3 min.)",
+                style: "titles",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_l", border: [false, false, false, false]
-              }
+                text: "",
+                style: "tips_l",
+                border: [false, false, false, false],
+              },
             ],
             [
               {
-                text: Utils.adapterTime(week.startTimeFinalSong), style: "titles", border: [false, false, false, false]
+                text: Utils.adapterTime(week.startTimeFinalSong),
+                style: "titles",
+                border: [false, false, false, false],
               },
               {
-                text: "• Canción " + week.meeting.finalSong, style: "titles", border: [false, false, false, false]
+                text: "• Canción " + week.meeting.finalSong,
+                style: "titles",
+                border: [false, false, false, false],
               },
               {
-                text: "Oración", style: "tips_r", border: [false, false, false, false]
+                text: "Oración",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: "", style: "tips_r", border: [false, false, false, false]
+                text: "",
+                style: "tips_r",
+                border: [false, false, false, false],
               },
               {
-                text: week.finalPrayer?.fullName.trim(), style: "tips_l", border: [false, false, false, false]
-              }
+                text: week.finalPrayer?.fullName.trim(),
+                style: "tips_l",
+                border: [false, false, false, false],
+              },
             ],
-          ]
+          ],
         },
         //pageBreak: 'after'
       },
-
-    ]
+    ];
   }
-
 
   public print(weeks: ProgramPdf[]) {
-    pdfMake.createPdf(this.makeDocumet(weeks)).open()
+    pdfMake.createPdf(this.makeDocumet(weeks)).open();
   }
   public download(weeks: ProgramPdf[]) {
-    pdfMake.createPdf(this.makeDocumet(weeks)).download('Nota - ' + this.invoice.prefix + this.invoice.id + '.pdf')
+    pdfMake.createPdf(this.makeDocumet(weeks)).download("Nota - " + this.invoice.prefix + this.invoice.id + ".pdf");
   }
 
   public getStream(weeks: ProgramPdf[]) {
-    pdfMake.createPdf(this.makeDocumet(weeks)).getStream()
+    pdfMake.createPdf(this.makeDocumet(weeks)).getStream();
   }
 
   public async getBlob(weeks: ProgramPdf[]): Promise<Blob> {
-    this.congregation = weeks[0].congregation.name
+    this.congregation = weeks[0].congregation.name;
     return new Promise<Blob>((resolve, reject) => {
       const pdf = pdfMake.createPdf(this.makeDocumet(weeks));
       pdf.getBlob((data: Blob) => {
@@ -525,16 +640,16 @@ export class PrintPdfOnePageService {
     });
   }
   private makeDocumet(weeks: any[]): any {
-    const contenido: any[] = []
+    const contenido: any[] = [];
     let pageBreak = false;
     let count = 0;
-    let pageCount = 0
+    let pageCount = 0;
     if (!weeks || weeks.length < 1) return;
 
-    weeks.forEach(week => {
+    weeks.forEach((week) => {
       // console.log(week.assembly);
-      count++
-      pageCount++
+      count++;
+      pageCount++;
       if (week.assembly == null) {
         contenido.push(
           ...this.makeHeaderProgram(week),
@@ -546,69 +661,65 @@ export class PrintPdfOnePageService {
           ...this.makeHeaderLife(),
           ...this.makeIntermediateSong(week),
           ...this.makeContentLife(week),
-          //...this.makeContentLifeEstudyB(week),
           ...this.makeFinalBlock(week),
-          count == 1 ? "\n" : "",
-          { text: '', pageBreak: count == 2 && pageCount < weeks.length ? 'before' : '', style: count == 1 ? 'endPage' : '' },
-
-        )
+          { text: null, pageBreak: count == 2 && pageCount < weeks.length ? "before" : null, style: count == 1 ? "endPage" : null }
+        );
       } else {
-        contenido.push(
-          [
-            {
-              table: {
-                widths: this.sizeBody,
-                body: [
-                  [
-                    {
-                      text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + " |", style: "sub_title", border: [false, false, false, false]
-                    },
-                    {
-                      text: "LECTURA SEMANAL DE LA BIBLIA", style: "sub_title", border: [false, false, false, false]
-                    }
-                  ],
-
-                ]
-              },
+        contenido.push([
+          {
+            table: {
+              widths: this.sizeBody,
+              body: [
+                [
+                  {
+                    text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + " |",
+                    style: "sub_title",
+                    border: [false, false, false, false],
+                  },
+                  {
+                    text: "LECTURA SEMANAL DE LA BIBLIA",
+                    style: "sub_title",
+                    border: [false, false, false, false],
+                  },
+                ],
+              ],
             },
-            {
-              table: {
-                widths: ['*'],
-                body: [
-                  [
-                    {
-                      text: week.assembly, style: "assembly", border: [true, true, true, true]
-                    },
-                  ],
-                ]
-              },
+          },
+          {
+            table: {
+              widths: ["*"],
+              body: [
+                [
+                  {
+                    text: week.assembly,
+                    style: "assembly",
+                    border: [true, true, true, true],
+                  },
+                ],
+              ],
             },
-            count == 1 ? "\n" : "",
-            { text: '', pageBreak: count == 2 && pageCount < weeks.length ? 'before' : '', style: count == 1 ? 'endPage' : '' },
-
-          ]
-        )
-
+          },
+          count == 1 ? "\n" : "",
+          { text: "", pageBreak: count == 2 && pageCount < weeks.length ? "before" : "", style: count == 1 ? "endPage" : "" },
+        ]);
       }
 
       if (count == 2) {
-        count = 0
+        count = 0;
       }
-    })
+    });
 
     return {
-      header: this.makeHeader(pageBreak)[0],
-      pageSize: 'LETTER',
+      header: this.makeHeader(pageBreak),
+      pageSize: "LETTER",
       // by default we use portrait, you can change it to landscape if you wish
-      pageOrientation: 'portrait',
+      pageOrientation: "portrait",
       // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
-      pageMargins: [20, 30, 20, 20],
+      pageMargins: [20, 30, 20, 0],
 
-      content: [
-        ...contenido
-      ],
-      ...this.styles()
-    }
+      content: [...contenido],
+      ...this.styles(),
+    };
   }
   private styles() {
     return {
@@ -616,38 +727,38 @@ export class PrintPdfOnePageService {
         header_a: {
           fontSize: 15,
           bold: true,
-          margin: [0, 6, 0, 0]
+          margin: [0, 6, 0, 0],
         },
         header_b: {
           fontSize: 17,
           bold: true,
-          alignment: 'right',
-          margin: [0, 4, 0, 0]
+          alignment: "right",
+          margin: [0, 4, 0, 0],
         },
         sub_title: {
           fontSize: 11,
-          alignment: 'left',
+          alignment: "left",
           bold: true,
         },
         tips_r: {
           fontSize: 7,
           bold: true,
-          alignment: 'right',
-          margin: [0, 3, 0, 0]
+          alignment: "right",
+          margin: [0, 3, 0, 0],
         },
         tips_l: {
           fontSize: 9,
           bold: true,
           color: this.colorFontPublisher,
-          alignment: 'left',
-          margin: [0, 2, 0, 0]
+          alignment: "left",
+          margin: [0, 2, 0, 0],
         },
         tips_c: {
           fontSize: 8,
           bold: true,
-          alignment: 'left',
+          alignment: "left",
           color: "#b6b4b4",
-          margin: [0, 4, 0, 0]
+          margin: [0, 4, 0, 0],
         },
         titles: {
           bold: true,
@@ -694,58 +805,56 @@ export class PrintPdfOnePageService {
         subtitles2: {
           bold: true,
           fontSize: 16,
-          alignment: 'center',
+          alignment: "center",
         },
         tabletitles: {
           fontSize: 10,
-          alignment: 'center',
-          fillColor: '#ddebf7',
+          alignment: "center",
+          fillColor: "#ddebf7",
         },
         tableItemLeft: {
           fontSize: 9,
-          alignment: 'left',
+          alignment: "left",
         },
         tableItemCenter: {
           fontSize: 9,
-          alignment: 'center',
+          alignment: "center",
         },
         tableItemRight: {
           fontSize: 9,
-          alignment: 'right',
+          alignment: "right",
         },
         bold: {
           bold: true,
         },
         enfasis: {
-          alignment: 'justify',
+          alignment: "justify",
           bold: true,
           fontSize: 13,
         },
 
         normal: {
-          alignment: 'justify',
+          alignment: "justify",
           fontSize: 11,
         },
         small: {
-          alignment: 'justify',
+          alignment: "justify",
           fontSize: 10,
         },
         anotherStyle: {
           italics: true,
-          alignment: 'right'
+          alignment: "right",
         },
         assembly: {
           fontSize: 30,
           italics: true,
-          alignment: 'center',
+          alignment: "center",
           margin: [10, 50, 10, 50],
         },
         endPage: {
-          margin: [10, 10, 10, 10],
-        }
-      }
-    }
+          margin: [0, 0, 0, 0],
+        },
+      },
+    };
   }
-
 }
-

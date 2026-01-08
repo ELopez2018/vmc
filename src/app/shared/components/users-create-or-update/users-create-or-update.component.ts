@@ -44,7 +44,6 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       this.userId = this.routes.snapshot.paramMap.get('id') ;
       this.dataService.getPubliherList$().subscribe(data=>{
         const publi= data.filter(i=>i.id==this.userId)[0]
-        console.log(publi);
         this.makeFormWithData(publi)
       })
     } else {
@@ -106,6 +105,8 @@ makeForm(){
     const nameParts = [values.firstName, values.secondName, values.surname, values.lastName].filter(Boolean);
     values.fullName = nameParts.join(' ').trim();
     values.congregation = this.congregationSelected
+    console.log(values);
+    return
     this.usersService.save(values).subscribe(data => {
       this.modalService.info("Se han guardados los datos", "El usuario fue almacenado", ModalTitleEnums.GREAT, ModalTypeEnums.SUCCESS)
       this.formulario.reset()

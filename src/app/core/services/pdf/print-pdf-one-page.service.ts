@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-// pdfMake y vfs_fonts se incluyen como scripts en angular.json
-declare let pdfMake: any;
 import { Utils } from 'src/app/shared/Utils';
 import { ProgramPdf, WeeklyProgramPdF } from '../../interfaces/print-pdf.interface';
 import { DataService } from '../data/data.service';
 
+declare const pdfMake: any;
 
 
 @Injectable({

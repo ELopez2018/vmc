@@ -1,0 +1,51 @@
+<div class="congregations-table-container">
+  <div class="table-header">
+    <h2 class="table-title">Congregaciones</h2>
+    <button mat-fab color="primary" class="add-btn icon-stack" (click)="onAdd()" title="Agregar Congregación">
+      <mat-icon class="icon-base">holiday_village</mat-icon>
+      <mat-icon class="icon-plus">add_circle</mat-icon>
+    </button>
+  </div>
+  <table mat-table [dataSource]="dataSource" class="congregations-table mat-elevation-z2">
+    <!-- Nombre -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <td mat-cell *matCellDef="let c">{{ c.name }}</td>
+    </ng-container>
+    <!-- Número -->
+    <ng-container matColumnDef="number">
+      <th mat-header-cell *matHeaderCellDef>Número</th>
+      <td mat-cell *matCellDef="let c">{{ c.number }}</td>
+    </ng-container>
+    <!-- Día -->
+    <ng-container matColumnDef="day">
+      <th mat-header-cell *matHeaderCellDef>Día</th>
+      <td mat-cell *matCellDef="let c">{{ parseDay(c.day) }}</td>
+    </ng-container>
+    <!-- Hora -->
+    <ng-container matColumnDef="hour">
+      <th mat-header-cell *matHeaderCellDef>Hora</th>
+      <td mat-cell *matCellDef="let c">{{ c.hour }}</td>
+    </ng-container>
+    <!-- Color Fuente -->
+    <ng-container matColumnDef="fontColorPublisher">
+      <th mat-header-cell *matHeaderCellDef>Color Fuente</th>
+      <td mat-cell *matCellDef="let c">
+        <span [style.color]="c.fontColorPublisher">{{ c.fontColorPublisher }}</span>
+      </td>
+    </ng-container>
+    <!-- Acciones -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let c">
+        <mat-icon class="action-icon" style="color: #2563eb; cursor: pointer" (click)="onEdit(c)" title="Editar">edit</mat-icon>
+        <mat-icon class="action-icon ml-2" style="color: #ef4444; cursor: pointer; margin-left: 14px;" (click)="onDelete(c)" title="Eliminar">delete</mat-icon>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  @if ( dataSource.data.length === 0 ) {
+  <div class="empty-message">No hay congregaciones registradas.</div>
+  }
+</div>

@@ -103,6 +103,11 @@ body {
   width: 100%;
 }
 
+
+@media (min-width: 760px) {
+
+}
+
 @media (min-width: 992px) {
   .fieldset {
     border: 2px solid gainsboro;
@@ -161,5 +166,6 @@ body {
   text-decoration: underline;
   font-weight: bold;
   color: red;
+
 
 }

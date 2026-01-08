@@ -7,7 +7,7 @@
       <span class="d-md-none pt-1">{{ Superintendente.fullName }} </span>
       <span class="d-none d-md-inline pt-1">{{ Superintendente.fullName }} | {{ Superintendente.congregation.name }}</span>
       <div class="w-50 w-md-25 d-flex justify-content-end">
-        <a routerLink="/tablero/entre-semana" class="me-5" >
+        <a routerLink="/tablero/entre-semana" class="me-5">
           <svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -86,7 +86,7 @@
     </mat-sidenav-content>
   </mat-sidenav-container> -->
 
-  <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+  <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 0 : 0">
     <mat-sidenav #snav class="sidenav" [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
       <!-- Header -->
       <div class="sidenav-header">
@@ -96,12 +96,12 @@
 
       <mat-nav-list>
         <!-- PRINCIPAL -->
-        <a mat-list-item routerLink="entre-semana" routerLinkActive="active">
+        <a mat-list-item routerLink="entre-semana" routerLinkActive="active" class="menu-link-align">
           <mat-icon>event</mat-icon>
           <span>Programa</span>
         </a>
 
-        <a mat-list-item routerLink="imprimir" routerLinkActive="active">
+        <a mat-list-item routerLink="imprimir" routerLinkActive="active" class="menu-link-align">
           <mat-icon>print</mat-icon>
           <span>Imprimir</span>
         </a>
@@ -111,23 +111,27 @@
         <!-- PUBLICADORES -->
         <span class="section-title">Publicadores</span>
 
-        <a mat-list-item routerLink="publicador" routerLinkActive="active">
+        <a mat-list-item routerLink="publicador" routerLinkActive="active" class="menu-link-align">
           <mat-icon>person_add</mat-icon>
           <span>Registro</span>
         </a>
 
-        <a mat-list-item routerLink="publicadores" routerLinkActive="active">
+        <a mat-list-item routerLink="publicadores" routerLinkActive="active" class="menu-link-align">
           <mat-icon>groups</mat-icon>
           <span>Lista</span>
         </a>
 
         @if (isAdmin) {
-        <a mat-list-item routerLink="privilegios" routerLinkActive="active">
+        <a mat-list-item routerLink="congregaciones" routerLinkActive="active" class="menu-link-align">
+          <mat-icon>holiday_village</mat-icon>
+          <span>Congregaciones</span>
+        </a>
+        <a mat-list-item routerLink="privilegios" routerLinkActive="active" class="menu-link-align">
           <mat-icon>vpn_key</mat-icon>
           <span>Privilegios</span>
         </a>
 
-        <a mat-list-item routerLink="administrador" routerLinkActive="active">
+        <a mat-list-item routerLink="administrador" routerLinkActive="active" class="menu-link-align">
           <mat-icon>admin_panel_settings</mat-icon>
           <span>Administrador</span>
         </a>
@@ -136,7 +140,7 @@
         <div class="divider"></div>
 
         <!-- LOGOUT -->
-        <a mat-list-item class="logout" (click)="logout()">
+        <a mat-list-item class="logout menu-link-align" (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Salir</span>
         </a>

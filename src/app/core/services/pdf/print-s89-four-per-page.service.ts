@@ -1,10 +1,12 @@
 import { Injectable } from "@angular/core";
 import { ProgramPdf, WeeklyProgramPdF } from "../../interfaces/print-pdf.interface";
 import { Publisher } from "../../interfaces/reuniones.interface";
+import { Utils } from "src/app/shared/Utils";
+import { DataService } from "../data/data.service";
 
 declare const pdfMake: any;
 
-type RoomType = "A" | "B" | "C";
+type RoomType = string;
 
 interface S89InternalForm {
   name: string;
@@ -21,8 +23,16 @@ export class PrintS89FromProgramService {
   // Tamaños afinados para que queden 4 “cards” por hoja (LETTER) como el ejemplo
   private readonly PAGE_MARGINS: [number, number, number, number] = [18, 18, 18, 18];
   private readonly CELL_H = 276; // (792 - 36) / 2
-  private readonly CARD_W = 190;
-  private readonly CARD_H = 460;
+  private readonly CARD_W = 260;
+  private readonly CARD_PADDING_X = 10;
+  private dayMeet: any = null;
+  constructor(private dataService: DataService) {
+    this.dataService.getPublisher().subscribe((data) => {
+      if (data) {
+        this.dayMeet = data.congregation.day;
+      }
+    });
+  }
 
   /* ===============================
    * PUBLIC API
@@ -57,26 +67,29 @@ export class PrintS89FromProgramService {
     const out: S89InternalForm[] = [];
 
     programs?.forEach((program) => {
-      const date = this.formatDate(program.meeting?.week);
-
+      const date = this.formatDate(Utils.showDayOfMeeting(program.meeting?.week, this.dayMeet));
       (program.weeklyProgram || []).forEach((wp: WeeklyProgramPdF) => {
-        if (!this.isS89Candidate(wp)) return;
-
-        const room = this.normalizeRoom(wp.room);
-
-        // Para aux: si tu backend usa responsibleB/assistantB, aquí se prioriza cuando no es A
-        const responsible =
-          room === "A" ? wp.responsible : (wp.responsibleB ?? wp.responsible);
-        const assistant =
-          room === "A" ? wp.assistant : (wp.assistantB ?? wp.assistant);
-
-        out.push({
-          name: this.fullName(responsible),
-          assistant: this.fullName(assistant),
-          date,
-          intervention: String(wp.assignment?.number ?? ""),
-          room,
-        });
+        if (!this.isS89Candidate(wp)) {
+          return;
+        }
+        if (wp.responsible) {
+          out.push({
+            name: this.fullName(wp.responsible),
+            assistant: this.fullName(wp.assistant),
+            date,
+            intervention: String(wp.assignment?.number ?? ""),
+            room: "A",
+          });
+        }
+        if (wp.responsibleB) {
+          out.push({
+            name: this.fullName(wp.responsibleB),
+            assistant: this.fullName(wp.assistantB),
+            date,
+            intervention: String(wp.assignment?.number ?? ""),
+            room: "B",
+          });
+        }
       });
     });
 
@@ -84,10 +97,7 @@ export class PrintS89FromProgramService {
   }
 
   private isS89Candidate(wp: WeeklyProgramPdF): boolean {
-    return (
-      wp?.assignment?.sectionMeeting === "SEAMOS MEJORES MAESTROS" ||
-      wp?.assignment?.sectionMeeting === "TESOROS DE LA BIBLIA"
-    );
+    return wp?.assignment?.sectionMeeting === "SEAMOS MEJORES MAESTROS" || wp?.assignment?.sectionMeeting === "TESOROS DE LA BIBLIA";
   }
 
   private fullName(p?: Publisher | null): string {
@@ -95,7 +105,9 @@ export class PrintS89FromProgramService {
   }
 
   private normalizeRoom(room: any): RoomType {
-    const r = String(room ?? "").trim().toUpperCase();
+    const r = String(room ?? "")
+      .trim()
+      .toUpperCase();
     if (r === "A") return "A";
     if (r === "B") return "B";
     return "C";
@@ -122,10 +134,29 @@ export class PrintS89FromProgramService {
    * =============================== */
 
   private buildDocument(forms: S89InternalForm[]) {
+    const valid = (forms || []).filter((f) => !!f && !!f.name?.trim());
+
+    // ✅ si no hay nada, NO generes PDF (evita página en blanco)
+    if (valid.length === 0) {
+      return {
+        pageSize: "LETTER",
+        pageMargins: this.PAGE_MARGINS,
+        content: [{ text: "No hay asignaciones para imprimir.", fontSize: 10 }],
+      };
+    }
+
     const pages: any[] = [];
-    for (let i = 0; i < forms.length; i += 4) {
-      pages.push(this.buildFourPerPage(forms.slice(i, i + 4)));
-      if (i + 4 < forms.length) pages.push({ text: "", pageBreak: "after" });
+
+    for (let i = 0; i < valid.length; i += 4) {
+      const chunk = valid.slice(i, i + 4);
+      if (chunk.length === 0) continue;
+
+      pages.push(this.buildFourPerPage(chunk));
+
+      // ✅ pageBreak SOLO si existe una página siguiente con contenido
+      if (i + 4 < valid.length) {
+        pages.push({ text: "", pageBreak: "after" });
+      }
     }
 
     return {
@@ -159,7 +190,7 @@ export class PrintS89FromProgramService {
   }
 
   private gridCell(form: S89InternalForm | null) {
-    if (!form) return "";
+    if (!form || !form.name) return "";
 
     // Card centrada dentro del cuadrante
     return {
@@ -219,13 +250,14 @@ export class PrintS89FromProgramService {
 
   private buildS89Content(data: S89InternalForm) {
     // Todo el contenido está “amarrado” por filas con alturas consistentes
+    const padd = 10; // ajuste fino para que cuadre mejor
     return [
       { text: "ASIGNACIÓN PARA LA REUNIÓN\nVIDA Y MINISTERIO CRISTIANOS", style: "title", margin: [0, 0, 0, 8] },
 
-      this.dottedFieldRow("Nombre:", data.name),
-      this.dottedFieldRow("Ayudante:", data.assistant),
-      this.dottedFieldRow("Fecha:", data.date),
-      this.dottedFieldRow("Intervención núm.:", data.intervention),
+      this.dottedFieldRow("Nombre:", data.name, 12 + padd),
+      this.dottedFieldRow("Ayudante:", data.assistant, 17 + padd),
+      this.dottedFieldRow("Fecha:", data.date, 4 + padd),
+      this.dottedFieldRow("Intervención núm.:", data.intervention, 52 + padd),
 
       { text: "Se presentará en:", style: "label", margin: [0, 10, 0, 6] },
 
@@ -234,8 +266,7 @@ export class PrintS89FromProgramService {
       this.checkboxRow("Sala auxiliar núm. 2", data.room === "C"),
 
       {
-        text:
-          "Nota al estudiante: En la Guía de actividades encontrará la información que necesita para su intervención. Repase también las indicaciones que se describen en las Instrucciones para la reunión Vida y Ministerio Cristianos (S-38).",
+        text: "Nota al estudiante: En la Guía de actividades encontrará la información que necesita para su intervención. Repase también las indicaciones que se describen en las Instrucciones para la reunión Vida y Ministerio Cristianos (S-38).",
         style: "note",
         margin: [0, 12, 0, 0],
       },
@@ -248,27 +279,34 @@ export class PrintS89FromProgramService {
    * FIELD ROWS (línea punteada)
    * =============================== */
 
-  private dottedFieldRow(label: string, value: string) {
+  private dottedFieldRow(label: string, value: string, size?: number) {
+    // ancho útil de la tarjeta (CARD_W - padding interno izq/der)
+    const innerWidth = this.CARD_W - this.CARD_PADDING_X * 2 - (size || 0);
+
+    // reservamos el ancho REAL del label midiendo por layout: usamos una celda "auto"
+    // pero para que la línea no se salga, dibujamos con un ancho máximo razonable:
+    // (innerWidth - 5) porque el canvas está en la celda 2
+    const maxLine = innerWidth - 20;
+
     return {
       table: {
-        widths: [75, "*"],
+        widths: ["auto", "*"], // ✅ la celda 2 arranca justo al final del label
         body: [
           [
-            { text: label, style: "label", margin: [0, 2, 0, 0] },
+            { text: label, style: "labelField", noWrap: true },
             {
-              // valor + línea punteada debajo (como formulario real)
               stack: [
-                { text: (value ?? "").trim(), style: "value", margin: [0, 2, 0, 0] },
+                { text: (value ?? "").trim(), style: "valueField", margin: [0, 0, 0, 2] },
                 {
                   canvas: [
                     {
                       type: "line",
                       x1: 0,
-                      y1: 2,
-                      x2: 90,
-                      y2: 2,
+                      y1: 0,
+                      x2: maxLine, // ✅ nunca se sale del borde
+                      y2: 0,
                       lineWidth: 1,
-                      dash: { length: 1, space: 1 },
+                      dash: { length: 2, space: 2 },
                       lineColor: "#000",
                     },
                   ],
@@ -279,7 +317,7 @@ export class PrintS89FromProgramService {
         ],
       },
       layout: "noBorders",
-      margin: [0, 2, 0, 2],
+      margin: [0, 3, 0, 6],
     };
   }
 
@@ -290,8 +328,8 @@ export class PrintS89FromProgramService {
   private checkboxRow(label: string, checked: boolean) {
     return {
       columns: [
-      { width: 10, stack: [this.checkboxCanvas(checked)] },  // ancho fijo del cuadro
-      { width: "*", text: label, style: "checkboxLabel", margin: [2, 0, 0, 0] } // antes 6
+        { width: 10, stack: [this.checkboxCanvas(checked)] }, // ancho fijo del cuadro
+        { width: "*", text: label, style: "checkboxLabel", margin: [2, 0, 0, 0] }, // antes 6
       ],
       columnGap: 2,
       margin: [10, 1, 0, 1],
@@ -319,28 +357,14 @@ export class PrintS89FromProgramService {
 
   private styles() {
     return {
-      title: {
-        fontSize: 9,
-        bold: true,
-        alignment: "center",
-      },
-      label: {
-        fontSize: 9,
-        bold: true,
-      },
-      value: {
-        fontSize: 8,
-      },
-      checkboxLabel: {
-        fontSize: 8,
-      },
-      note: {
-        fontSize: 7,
-        alignment: "justify",
-      },
-      footer: {
-        fontSize: 7,
-      },
+      value: { fontSize: 8 },
+      title: { fontSize: 14, bold: true, alignment: "center" },
+      label: { fontSize: 9, bold: true },
+      checkboxLabel: { fontSize: 9 },
+      note: { fontSize: 10, alignment: "justify" },
+      footer: { fontSize: 8 },
+      labelField: { fontSize: 9, bold: true },
+      valueField: { fontSize: 9 },
     };
   }
 }

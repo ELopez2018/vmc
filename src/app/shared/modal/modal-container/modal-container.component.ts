@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalTypeEnums } from 'src/app/core/enums/modal.enums';
-import { Assignment, Program, Publisher, WeeklyProgram } from 'src/app/core/interfaces/reuniones.interface';
+import {  Program, Publisher, WeeklyProgram } from 'src/app/core/interfaces/reuniones.interface';
 
 @Component({
     selector: 'app-modal',
@@ -30,6 +30,7 @@ export class ModalContainerComponent implements OnInit {
   @Input() subTitle!: string;
   @Input() assignmentType!: string;
   @Input() sectionMeeting!: string;
+  @Input() isModal: boolean = true;
 
   public typeOfModals = ModalTypeEnums
 

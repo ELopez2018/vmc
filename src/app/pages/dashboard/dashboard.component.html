@@ -121,7 +121,7 @@
           <span>Lista</span>
         </a>
 
-        <a mat-list-item routerLink="hojas-asignacion" routerLinkActive="active" class="menu-link-align">
+        <a mat-list-item routerLink="hojas-asignacion" (click)="goToPrint()" routerLinkActive="active" class="menu-link-align">
           <mat-icon>assignment_turned_in</mat-icon>
           <span>Hoja de Asignación</span>
         </a>

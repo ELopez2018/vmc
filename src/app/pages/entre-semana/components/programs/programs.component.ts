@@ -366,5 +366,9 @@ export class ProgramsComponent implements OnInit {
     this.dataService.setMeeting([week])
     this.modalService.printer()
   }
+   printAssig(week: Program) {
+    this.dataService.setMeeting([week])
+    this.modalService.printerAssig()
+  }
 }
 //

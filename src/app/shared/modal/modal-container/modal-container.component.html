@@ -1,74 +1,38 @@
 <div [ngSwitch]="modalType">
   <div *ngSwitchDefault>
-    <info-modal
-    [message]="mensaje"
-    [title]="titulo"
-    [subtitle]="subTitle"
-    (onClicked)="close()"
-    ></info-modal>
+    <info-modal [message]="mensaje" [title]="titulo" [subtitle]="subTitle" (onClicked)="close()"></info-modal>
   </div>
   <div *ngSwitchCase="typeOfModals.ASSIGN_PUB">
-    <search-publisher
-      (onClicked)="onClicked($event)"
-      *ngIf="assignment"
-      [assignment]="assignment"
-      [assignmentType]="assignmentType"
-      (onClose)="close()"
-    ></search-publisher>
+    <search-publisher (onClicked)="onClicked($event)" *ngIf="assignment" [assignment]="assignment" [assignmentType]="assignmentType" (onClose)="close()"></search-publisher>
   </div>
   <div *ngSwitchCase="typeOfModals.SELECT_HOUR">
     <select-hour (onSelected)="onClicked($event)"></select-hour>
   </div>
   <div *ngSwitchCase="typeOfModals.PRINTER">
-    <app-printer
-    [isModal]="true"
-    (onClosed)="close()"
-    ></app-printer>
+    <app-printer [isModal]="true" (onClosed)="close()"></app-printer>
   </div>
   <div *ngSwitchCase="typeOfModals.TITLE_AND_TIME">
-    <title-and-time
-      (onClicked)="onClicked($event)"
-      [assignment]="assignment"
-    ></title-and-time>
+    <title-and-time (onClicked)="onClicked($event)" [assignment]="assignment"></title-and-time>
   </div>
   <div *ngSwitchCase="typeOfModals.CHANGE_SONGS">
-    <change-song
-      [song]="song"
-      (onClicked)="onClicked($event)"
-      [program]="program"
-    ></change-song>
+    <change-song [song]="song" (onClicked)="onClicked($event)" [program]="program"></change-song>
   </div>
   <div *ngSwitchCase="typeOfModals.ERROR">
-    <error-modal
-      [type]="errorType"
-      [message]="errorMessage"
-      (onClicked)="onClicked($event)"
-      [title]="title"
-    ></error-modal>
+    <error-modal [type]="errorType" [message]="errorMessage" (onClicked)="onClicked($event)" [title]="title"></error-modal>
   </div>
   <div *ngSwitchCase="typeOfModals.SUCCESS">
-    <info-modal
-      [type]="title"
-      [message]="mensaje"
-      (onClicked)="onClicked($event)"
-      [title]="subTitle"
-    ></info-modal>
+    <info-modal [type]="title" [message]="mensaje" (onClicked)="onClicked($event)" [title]="subTitle"></info-modal>
   </div>
   <div *ngSwitchCase="typeOfModals.LOADER">
     <loader></loader>
   </div>
   <div *ngSwitchCase="typeOfModals.ADDASSIG">
-    <vmc-add-assignment
-    [week]="program"
-    [sectionMeeting]="sectionMeeting"
-    (onClosed)="close()"
-    ></vmc-add-assignment>
+    <vmc-add-assignment [week]="program" [sectionMeeting]="sectionMeeting" (onClosed)="close()"></vmc-add-assignment>
   </div>
   <div *ngSwitchCase="typeOfModals.SELECT_PUBLISHER">
-    <vmc-select-publisher
-    (onClicked)="onClicked($event)"
-    (onClosed)="close()"
-    >
-    </vmc-select-publisher>
+    <vmc-select-publisher (onClicked)="onClicked($event)" (onClosed)="close()"> </vmc-select-publisher>
+  </div>
+  <div *ngSwitchCase="typeOfModals.PRINTER_ASSIG">
+    <app-assignment-sheet-printer (onClosed)="close()" [isModal]="isModal"> </app-assignment-sheet-printer>
   </div>
 </div>

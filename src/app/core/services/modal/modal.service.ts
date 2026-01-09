@@ -77,6 +77,14 @@ export class ModalService {
     this.modalRef.componentInstance.isModal= true;
     return this.modalRef.result
   }
+
+    public printerAssig() {
+    this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
+    this.modalRef.componentInstance.modalType = ModalTypeEnums.PRINTER_ASSIG;
+    this.modalRef.componentInstance.isModal= true;
+    return this.modalRef.result
+  }
+
   public errorHandler(error: any, title: string) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ERROR;

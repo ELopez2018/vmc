@@ -32,6 +32,7 @@ export enum ModalTitleEnums {
 export enum ModalTypeEnums {
   ASSIGN_PUB = "assignPublisher",
   PRINTER = "printer",
+  PRINTER_ASSIG = "printerAsig",
   RESPONSIBLE = "responsible",
   SELECT_HOUR = "selectHour",
   TITLE_AND_TIME = "titleAndTime",

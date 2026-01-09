@@ -17,6 +17,7 @@ import { LoaderComponent } from './modal/modal-container/loader/loader.component
 import { AddAssignmentComponent } from './modal/modal-container/add-assignment/add-assignment.component';
 import { IconCloseComponent } from "./modal/modal-container/search-publisher/icon-close/icon-close.component";
 import { SelectPublisherComponent } from "./modal/modal-container/select-publisher/select-publisher.component";
+import { AssignmentSheetPrinterComponent } from "./assignment-sheet-printer/assignment-sheet-printer.component";
 
 const MODULES = [
   MaterialModule,
@@ -45,7 +46,8 @@ const COMPONENTS = [
     CommonModule,
     ...MODULES,
     IconCloseComponent,
-    SelectPublisherComponent
+    SelectPublisherComponent,
+    AssignmentSheetPrinterComponent
 ],
   exports: [
     ...COMPONENTS,

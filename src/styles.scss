@@ -169,3 +169,146 @@ body {
 }
 
 
+// Notifications component styles
+/* ====== VMC Toast (MatSnackBar custom) ====== */
+
+/* Quita el fondo default del snack y deja nuestro “toast” */
+.vmc-snackbar.mat-mdc-snack-bar-container {
+  --vmc-radius: 16px;
+  --vmc-bg: rgba(20, 20, 24, 0.72);
+  --vmc-border: rgba(255, 255, 255, 0.14);
+  --vmc-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+
+  /* Colores por severidad (con fallback) */
+  --vmc-accent: #6ea8fe; /* info */
+  --vmc-text: rgba(255, 255, 255, 0.92);
+  --vmc-muted: rgba(255, 255, 255, 0.72);
+
+  .mdc-snackbar__surface {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .mdc-snackbar__label {
+    padding: 0 !important;
+  }
+}
+
+/* Severidades */
+.vmc-snackbar--success { --vmc-accent: #2ecc71; }
+.vmc-snackbar--info    { --vmc-accent: #6ea8fe; }
+.vmc-snackbar--warning { --vmc-accent: #f1c40f; }
+.vmc-snackbar--error   { --vmc-accent: #ff5d5d; }
+
+/* El toast en sí */
+.vmc-snackbar vmc-notification-snackbar,
+.vmc-snackbar .toast {
+  display: block;
+}
+
+.vmc-snackbar .toast {
+  position: relative;
+  width: min(420px, calc(100vw - 24px));
+  border-radius: var(--vmc-radius);
+  border: 1px solid var(--vmc-border);
+  background: var(--vmc-bg);
+  box-shadow: var(--vmc-shadow);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+
+  padding: 14px 14px 12px 14px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+
+  animation: vmcToastIn 160ms ease-out;
+}
+
+@keyframes vmcToastIn {
+  from { transform: translateY(-8px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.vmc-snackbar .left {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.vmc-snackbar .icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--vmc-accent) 22%, transparent);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--vmc-accent) 30%, transparent);
+}
+
+.vmc-snackbar .icon mat-icon {
+  color: var(--vmc-accent);
+}
+
+.vmc-snackbar .content {
+  min-width: 0;
+}
+
+.vmc-snackbar .title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.1rem;
+  color: var(--vmc-text);
+  margin-bottom: 2px;
+}
+
+.vmc-snackbar .message {
+  font-size: 0.88rem;
+  line-height: 1.15rem;
+  color: var(--vmc-muted);
+  word-break: break-word;
+}
+
+.vmc-snackbar .action {
+  margin-top: 6px;
+  padding-left: 0;
+  color: var(--vmc-accent);
+}
+
+.vmc-snackbar .close {
+  margin-top: -4px;
+  opacity: 0.85;
+}
+
+.vmc-snackbar .close mat-icon {
+  color: var(--vmc-text);
+}
+
+/* Barra de progreso */
+.vmc-snackbar .progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: color-mix(in srgb, var(--vmc-accent) 22%, transparent);
+}
+
+.vmc-snackbar .progress::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--vmc-accent);
+  transform-origin: left center;
+  animation: vmcToastProgress var(--vmc-toast-duration-ms, 3500ms) linear forwards;
+}
+
+@keyframes vmcToastProgress {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+/* ====== End VMC Toast ====== */

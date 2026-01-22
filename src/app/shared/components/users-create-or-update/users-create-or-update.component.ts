@@ -71,7 +71,8 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       cellPhone: new FormControl(publisher.cellPhone),
       phone: new FormControl(publisher.phone),
       email: new FormControl(publisher.email),
-      congregation: new FormControl(this.congregationSelected ?? null)
+      congregation: new FormControl(this.congregationSelected ?? null),
+      congregationId: new FormControl(this.congregationSelected.id ?? null)
     })
   }
 makeForm(){
@@ -89,7 +90,8 @@ makeForm(){
     cellPhone: new FormControl(null),
     phone: new FormControl(null),
     email: new FormControl(null),
-    congregation: new FormControl(this.congregationSelected ?? null)
+    congregation: new FormControl(this.congregationSelected ?? null),
+    congregationId: new FormControl(this.congregationSelected.id ?? null)
   })
 }
 
@@ -105,8 +107,6 @@ makeForm(){
     const nameParts = [values.firstName, values.secondName, values.surname, values.lastName].filter(Boolean);
     values.fullName = nameParts.join(' ').trim();
     values.congregation = this.congregationSelected
-    console.log(values);
-    return
     this.usersService.save(values).subscribe(data => {
       this.modalService.info("Se han guardados los datos", "El usuario fue almacenado", ModalTitleEnums.GREAT, ModalTypeEnums.SUCCESS)
       this.formulario.reset()

@@ -63,29 +63,6 @@
     </div>
   </mat-toolbar>
 
-  <!-- <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-    <mat-sidenav #snav [opened]="false" [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="100">
-      <mat-nav-list>
-        <a mat-list-item routerLink="entre-semana" routerLinkActive="active"> Programa</a>
-        <a mat-list-item routerLink="imprimir" routerLinkActive="active">Imprimir</a>
-        <hr />
-        <span>Publicadores</span>
-        <a mat-list-item routerLink="publicador" routerLinkActive="active">Registro</a>
-        <a mat-list-item routerLink="publicadores" routerLinkActive="active">Lista</a>
-        @if(isAdmin){
-        <a mat-list-item routerLink="privilegios" routerLinkActive="active">Privilegios</a>
-        <a mat-list-item routerLink="administrador" routerLinkActive="active" >Administrador</a>
-        }
-        <hr />
-        <a mat-list-item (click)="logout()">Salir</a>
-      </mat-nav-list>
-    </mat-sidenav>
-
-    <mat-sidenav-content>
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
-  </mat-sidenav-container> -->
-
   <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 0 : 0">
     <mat-sidenav #snav class="sidenav" [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
       <!-- Header -->
@@ -124,6 +101,10 @@
         <a mat-list-item routerLink="hojas-asignacion" (click)="goToPrint()" routerLinkActive="active" class="menu-link-align">
           <mat-icon>assignment_turned_in</mat-icon>
           <span>Hoja de Asignación</span>
+        </a>
+        <a mat-list-item routerLink="notificaciones" routerLinkActive="active" class="menu-link-align">
+          <mat-icon>notifications</mat-icon>
+          <span>Notificaciones</span>
         </a>
 
         @if (isAdmin) {

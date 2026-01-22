@@ -28,6 +28,7 @@ export interface Publisher {
   email?: any;
   congregation: Congregation;
   designations: Designation[];
+  congregationId?: number;
 }
 
 
@@ -64,6 +65,7 @@ export interface WeeklyProgram {
   program: number;
   startTime?: string;
   room: string;
+  notificationSentAt?: string | null;
 
 }
 export interface Assignment {
@@ -105,4 +107,32 @@ export interface Room {
   room: string;
   adviser: Publisher;
   congregation: Congregation;
+}
+export interface SendNotidicationReques {
+  userId: number;
+  programId: number;
+  templateNumber: number;
+  assignmentType: string;
+}
+
+export interface DataTable {
+  user: Publisher;
+  programId: number;
+  templateNumber: number;
+  assignmentType: string;
+}
+
+
+export type NotifyType = 'success' | 'info' | 'warning' | 'error';
+
+export interface NotifyOptions {
+  message: string;
+  title?: string;
+  type?: NotifyType;
+
+  /** default: 3500 */
+  durationMs?: number;
+
+  /** Texto del CTA opcional (ej: "Ver") */
+  actionText?: string;
 }

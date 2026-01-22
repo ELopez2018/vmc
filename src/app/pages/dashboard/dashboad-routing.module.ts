@@ -10,6 +10,7 @@ import { ManagerComponent } from "../entre-semana/manager/manager.component";
 import { LoginGuard } from "src/app/core/guards/login.guard";
 import { CongregationsListComponent } from "../congregations/congregations-list/congregations-list.component";
 import { AssignmentSheetPrinterComponent } from "src/app/shared/assignment-sheet-printer/assignment-sheet-printer.component";
+import { NotificationsComponent } from "../notifications/notifications.component";
 
 const routes: Routes = [
   {
@@ -64,6 +65,11 @@ const routes: Routes = [
       {
         path: "hojas-asignacion",
         component: AssignmentSheetPrinterComponent,
+        canActivate: [LoginGuard],
+      },
+            {
+        path: "notificaciones",
+        loadComponent: () => import("../notifications/notifications.component").then(m => m.NotificationsComponent),
         canActivate: [LoginGuard],
       },
 

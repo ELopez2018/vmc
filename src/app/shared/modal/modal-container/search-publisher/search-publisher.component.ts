@@ -106,103 +106,103 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
         case AssignmentType.ASSIGNMENT_1:
           this.headerText = "Discurso Tesoros de la Bíblia";
           this.usedPublishersListAllByAssig = [...data];
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.ASSIGNMENT_2:
           this.headerText = "Perlas Escondidas";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.ASSIGNMENT_3:
           this.headerText = "Lectura de la Bíblia";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.STARTING_A_CONVERSATION:
           this.headerText = "Empiece Conversaciones (Estudiante)";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.EXPLAINING_YOUR_BELIEFS:
           this.headerText = "Explique sus creencias";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.FOLLOWING_UP:
           this.headerText = "Haga revisitas (Estudiante)";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.IMITATE:
           this.headerText = "Imite a...";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.WHAT_HE_DID:
           this.headerText = "Lo que hizo...";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.MAKING_DISCIPLES:
           this.headerText = "Haga discípulos (Estudiante)";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.LOCAL_NEEDS:
           this.headerText = "Necesidades de la congregación";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.CONGREGATION_BIBLE_STUDY:
           this.headerText = "Estudio bíblico de la congregación (Conductor)";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.STARTING_A_CONVERSATION_ASSISTANT:
           this.headerText = "Empiece Conversaciones (Ayudante)";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.EXPLAINING_YOUR_BELIEFS_ASSISTANT:
           this.headerText = "Explique sus creencias (Ayudante)";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.FOLLOWING_UP_ASSISTANT:
           this.headerText = "Haga revisitas (Ayudante)";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.MAKING_DISCIPLES_ASSISTANT:
           this.headerText = "Haga discípulos (Ayudante)";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.CONGREGATION_BIBLE_STUDY_READER:
           this.headerText = "Estudio bíblico de la congregación (Lector)";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
         case AssignmentType.ASSISTANT_ADVISER:
           this.headerText = "Consejero de la sala auxiliar";
           this.usedPublishersListAllByAssig = data;
-          this.usedPublishersListAllByAssig = [...this.sortByCount(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
           this.checkIfYouParticipate1();
           break;
       }
@@ -245,9 +245,9 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     });
   }
 
-  private sortByCount(data: PublisherResposne[], ascending: boolean = true): PublisherResposne[] {
+  private sortByLastDate(data: any[], ascending: boolean = true): PublisherResposne[] {
     return data.sort((a, b) => {
-      return ascending ? a.count - b.count : b.count - a.count;
+      return ascending ? a.lastDate - b.lastDate : b.lastDate - a.lastDate;
     });
   }
 

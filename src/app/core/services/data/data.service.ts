@@ -47,7 +47,6 @@ export class DataService {
   }
 
   public setPublisher(publisher: Publisher) {
-    console.log({ publisher });
     this.publisher$.next(publisher);
   }
   public getPublisher(): Observable<Publisher> {
@@ -106,7 +105,6 @@ export class DataService {
     });
   }
   public setCongregation(congregation: Congregation) {
-    console.log(congregation);
     this.congregation = congregation;
     if (this.congregation) {
       this.roomsService.getAllRoomsByCongregation(this.congregation.id).subscribe((data) => this.rooms$.next(data));

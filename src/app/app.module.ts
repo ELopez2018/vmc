@@ -19,11 +19,26 @@ import { AssignmentComponent } from "./pages/assignment/assignment.component";
 import { ButtonModule } from "primeng/button";
 import { TableModule } from "primeng/table";
 import { CookieService } from "ngx-cookie-service";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [AppComponent, PublisherListComponent, DashboardComponent, TableMaterialComponent],
   bootstrap: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule, TablePrimengComponent, MaterialModule, ButtonModule, TableModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    TablePrimengComponent,
+    MaterialModule,
+    ButtonModule,
+    TableModule,
+    BrowserAnimationsModule,
+    MatSnackBarModule,
+    MatIconModule,
+    MatButtonModule,
+  ],
   providers: [
     JwtHelperService,
     {
@@ -32,7 +47,7 @@ import { CookieService } from "ngx-cookie-service";
       multi: true,
     },
     provideHttpClient(withInterceptorsFromDi()),
-    CookieService
+    CookieService,
   ],
 })
 export class AppModule {}

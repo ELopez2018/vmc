@@ -13,18 +13,18 @@
 
         <ng-container *ngIf="semana.assembly == null || semana.assembly == ''">
           <div class="row program__header text-center text-md-start">
-            <div class="col-md-3 h3 d-none d-md-inline">
+            <div class="col-md-3 h3 d-none d-xl-inline">
               <div class="program__congregacion ps-3 pt-md-2">
                 {{ semana.congregation.name }}
               </div>
             </div>
-            <div class="col-md-7 d-none d-md-inline h2 text-center text-md-end   pe-md-5">
+            <div class="col-md-7 d-none d-xl-inline h2 text-center text-md-end pe-md-5">
               <div class="program__title pt-2">Programa para la reunión de entre semana</div>
             </div>
             <div class="col-md-2 d-flex justify-content-end pe-5 py-2">
               <div>
                 <a class="me-2" (click)="printAssig(semana)"> <mat-icon class="icon-lg hover">assignment_turned_in</mat-icon></a>
-                <a (click)="printAssig(semana)"> <mat-icon class="icon-lg hover">printer_outline</mat-icon></a>
+                <a (click)="print(semana)"> <mat-icon class="icon-lg hover">printer_outline</mat-icon></a>
               </div>
             </div>
           </div>
@@ -34,9 +34,12 @@
                 <a href="{{ semana.meeting.url }}" target="_blank">
                   {{ showDayOfMeeting(semana.meeting.week) }}
                 </a>
-                @if(semana.meeting.weeklyBibleReading){ |
-                {{ semana.meeting.weeklyBibleReading }}
-                } @else { | LECTURA SEMANAL DE LA BIBLIA }
+                @if (semana.meeting.weeklyBibleReading) {
+                  |
+                  {{ semana.meeting.weeklyBibleReading }}
+                } @else {
+                  | LECTURA SEMANAL DE LA BIBLIA
+                }
               </div>
 
               <div class="col-md-2 text-md-end text-title-custom" *ngIf="RoomA">Presidente:</div>
@@ -60,7 +63,7 @@
             <div class="row px-3" *ngIf="RoomA">
               <div class="col-md-7 ps-md-3 text-md-start">
                 <span class="ms-md-1"></span>
-                <span class="hover d-none d-md-inline" (click)="changeProgram(semana, 'startTimeOpeningSong')">{{ adapterTime(semana.startTimeOpeningSong) }}</span>
+                <span class="hover d-none d-xl-inline" (click)="changeProgram(semana, 'startTimeOpeningSong')">{{ adapterTime(semana.startTimeOpeningSong) }}</span>
                 <span class="ms-md-2 fw-bold hover" (click)="changeProgram(semana, 'openingSong')"> Canción {{ semana.meeting.openingSong }} </span>
               </div>
               <div class="col-md-2 text-md-end text-title-custom">Oración:</div>
@@ -73,7 +76,7 @@
             <div class="row px-3 program__tesoros" *ngIf="RoomA">
               <div class="col-md-12 ps-md-3 text-md-start">
                 <span class="ms-md-1"></span>
-                <span class="hover d-none d-md-inline" (click)="changeProgram(semana, 'startTimeIntro')">{{ adapterTime(semana.startTimeIntro) }}</span>
+                <span class="hover d-none d-xl-inline" (click)="changeProgram(semana, 'startTimeIntro')">{{ adapterTime(semana.startTimeIntro) }}</span>
                 <span class="hover ms-md-3" (click)="changeProgram(semana, 'introTime')"
                   >Palabras de introducción ({{ semana.meeting.introTime + " " + semana.meeting.timeType }})
                 </span>
@@ -82,14 +85,15 @@
 
             <fieldset class="mb-0">
               <legend class="program__title-tesoros">
-                TESOROS DE LA BIBLIA @if (isAdmin) {
-                <mat-icon (click)="addAssign(semana, 'TESOROS DE LA BIBLIA')">edit</mat-icon>
+                TESOROS DE LA BIBLIA
+                @if (isAdmin) {
+                  <mat-icon (click)="addAssign(semana, 'TESOROS DE LA BIBLIA')">edit</mat-icon>
                 }
               </legend>
               <div class="row px-3 program__tesoros" *ngFor="let item of semana.weeklyProgram">
                 <div class="col-md-8 mt-1" *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA' && item.room == room">
                   <div class="row">
-                    <div class="col-md-1 ms-2 width-timeStart hover d-none d-md-inline" (click)="changeWeeklyProgram(item, 'startTime')">
+                    <div class="col-md-1 ms-2 width-timeStart hover d-none d-xl-inline" (click)="changeWeeklyProgram(item, 'startTime')">
                       {{ adapterTime(item.startTime) }}
                     </div>
                     <div class="col-md-11 big-title p-0 m-0" [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
@@ -101,8 +105,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-1 mt-1 text-end text-title-custom" *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA' && item.room == room">
-                  <span class="hover d-none d-md-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{ item.assignment.tips }}</span>
+                <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom" *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA' && item.room == room">
+                  <span class="hover d-none  d-xl-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{ item.assignment.tips }}</span>
                 </div>
                 <div class="col-md-3 mb-3 mb-md-0" *ngIf="item.assignment.sectionMeeting == 'TESOROS DE LA BIBLIA' && item.room == room">
                   <span class="hover text-publisher" (click)="changeWeeklyProgram(item, 'responsible')">
@@ -114,14 +118,15 @@
 
             <fieldset class="mb-0">
               <legend class="program__title-maestros">
-                SEAMOS MEJORES MAESTROS @if (isAdmin) {
-                <mat-icon (click)="addAssign(semana, 'SEAMOS MEJORES MAESTROS')">edit</mat-icon>
+                SEAMOS MEJORES MAESTROS
+                @if (isAdmin) {
+                  <mat-icon (click)="addAssign(semana, 'SEAMOS MEJORES MAESTROS')">edit</mat-icon>
                 }
               </legend>
               <div class="row px-3 program__tesoros" *ngFor="let item of semana.weeklyProgram">
                 <div class="col-md-8 mt-1" *ngIf="item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS' && item.room == room">
                   <div class="row">
-                    <div class="col-md-1 ms-2 width-timeStart hover d-none d-md-inline" (click)="changeWeeklyProgram(item, 'startTime')">
+                    <div class="col-md-1 ms-2 width-timeStart hover d-none d-xl-inline" (click)="changeWeeklyProgram(item, 'startTime')">
                       {{ adapterTime(item.startTime) }}
                     </div>
 
@@ -134,8 +139,8 @@
                   </div>
                 </div>
 
-                <div class="col-md-1 mt-1 text-end text-title-custom" *ngIf="item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS' && item.room == room">
-                  <span class="hover d-none d-md-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{ item.assignment.tips }}</span>
+                <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom" *ngIf="item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS' && item.room == room">
+                  <span class="hover d-none d-xl-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{ item.assignment.tips }}</span>
                 </div>
                 <div class="col-md-3 mb-3 mb-md-0" *ngIf="item.assignment.sectionMeeting == 'SEAMOS MEJORES MAESTROS' && item.room == room">
                   <span class="hover text-publisher" (click)="changeWeeklyProgram(item, 'responsible')">
@@ -150,13 +155,14 @@
 
             <fieldset *ngIf="RoomA">
               <legend class="program__title-vida">
-                NUESTRA VIDA CRISTIANA @if (isAdmin) {
-                <mat-icon (click)="addAssign(semana, 'NUESTRA VIDA CRISTIANA')">edit</mat-icon>
+                NUESTRA VIDA CRISTIANA
+                @if (isAdmin) {
+                  <mat-icon (click)="addAssign(semana, 'NUESTRA VIDA CRISTIANA')">edit</mat-icon>
                 }
               </legend>
               <div class="row px-3">
                 <div class="col-md-12 mt-1">
-                  <span class="mx-2 hover d-none d-md-inline" (click)="changeProgram(semana, 'startTimeIntermediateSong')">{{
+                  <span class="mx-2 hover d-none d-xl-inline" (click)="changeProgram(semana, 'startTimeIntermediateSong')">{{
                     adapterTime(semana.startTimeIntermediateSong)
                   }}</span>
                   <span class="fw-bold hover" (click)="changeProgram(semana, 'intermediateSong')"> Canción {{ semana.meeting.intermediateSong }} </span>
@@ -165,7 +171,7 @@
               <div class="row px-3 program__tesoros" *ngFor="let item of semana.weeklyProgram">
                 <div class="col-md-8" *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'">
                   <div class="row">
-                    <div class="col-md-1 width-timeStart ms-2 hover d-none d-md-inline" (click)="changeWeeklyProgram(item, 'startTime')">
+                    <div class="col-md-1 width-timeStart ms-2 hover d-none d-xl-inline" (click)="changeWeeklyProgram(item, 'startTime')">
                       {{ adapterTime(item.startTime) }}
                     </div>
                     <div class="col-md-11 big-title p-0 m-0 hover" [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
@@ -176,8 +182,8 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-1 mt-1 text-end text-title-custom" *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'">
-                  <span class="hover d-none d-md-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{ item.assignment.tips }}</span>
+                <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom" *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'">
+                  <span class="hover d-none d-xl-inline" *ngIf="item.assignment.showTips" (click)="changeWeeklyProgram(item, 'tips')">{{ item.assignment.tips }}</span>
                 </div>
                 <div class="col-md-3 mb-3 mb-md-0" *ngIf="item.assignment.sectionMeeting == 'NUESTRA VIDA CRISTIANA'">
                   <span class="hover text-publisher" (click)="changeWeeklyProgram(item, 'responsible')">
@@ -193,7 +199,7 @@
             <div class="row px-3" *ngIf="RoomA">
               <div class="col-md-7 mt-1">
                 <span class="ms-md-1"></span>
-                <span class="mx-2 hover d-none d-md-inline" (click)="changeProgram(semana, 'startTimeConclusionWords')">{{ adapterTime(semana.startTimeConclusionWords) }}</span>
+                <span class="mx-2 hover d-none d-xl-inline" (click)="changeProgram(semana, 'startTimeConclusionWords')">{{ adapterTime(semana.startTimeConclusionWords) }}</span>
                 Palabras de conclusión
               </div>
               <div class="col-md-2 mt-1 text-end text-title-custom"></div>
@@ -205,7 +211,7 @@
             <div class="row px-3" *ngIf="RoomA">
               <div class="col-md-7 mt-1">
                 <span class="ms-md-1"></span>
-                <span class="hover d-none mx-2 d-md-inline" (click)="changeProgram(semana, 'startTimeFinalSong')">{{ adapterTime(semana.startTimeFinalSong) }}</span>
+                <span class="hover d-none mx-2 d-xl-inline" (click)="changeProgram(semana, 'startTimeFinalSong')">{{ adapterTime(semana.startTimeFinalSong) }}</span>
                 <span class="fw-bold hover" (click)="changeProgram(semana, 'finalSong')"> Canción {{ semana.meeting.finalSong }} </span>
               </div>
               <div class="col-md-2 mt-1 text-md-end text-title-custom">Oracion:</div>

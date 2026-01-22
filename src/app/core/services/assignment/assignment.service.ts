@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Apis, Servers } from '../../constants/servers';
 import { Observable } from 'rxjs';
-import { Assignment, Meeting } from '../../interfaces/reuniones.interface';
+import { Assignment, Meeting, SendNotidicationReques } from '../../interfaces/reuniones.interface';
 import { PublisherDto } from '../../interfaces/publishers.interface';
 import { Modal } from '../../interfaces/modal.interface';
 import { OtherAssignment } from '../../enums/meetings.enums';
@@ -38,6 +38,9 @@ export class AssignmentService {
     const url = `${this.server}${this.api.ASSIGNMENT}`
     return this.httpClient.post<Assignment>(url, assignment)
   }
-
+  sendNotifications(body: SendNotidicationReques): Observable<any> {
+    const url = `${this.server}${this.api.ASSIGNMENT}/send-notification`
+    return this.httpClient.post<any>(url, body)
+  }
 
 }

@@ -17,9 +17,12 @@
               <fieldset class="fieldset-basic table-container">
                 <legend></legend>
 
-                <mat-spinner class=" m-auto" *ngIf="showSpinner"></mat-spinner>
+                @if (showSpinner) {
+                <mat-spinner class=" m-auto"></mat-spinner>
+                }
 
-                <div class="table-responsive" *ngIf="male && male.length > 0">
+                @if (male && male.length > 0) {
+                <div class="table-responsive">
                   <table class="table table-hover table-sm table-bordered cursor-hover">
                     <thead>
                       <tr>
@@ -27,12 +30,15 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let item of male" (click)="selected(item)">
+                      @for (item of male; track item.id) {
+                      <tr (click)="selected(item)">
                         <td>{{ item.fullName }}</td>
                       </tr>
+                      }
                     </tbody>
                   </table>
                 </div>
+                }
               </fieldset>
             </div>
           </mat-tab>
@@ -40,8 +46,11 @@
             <div class="">
               <fieldset class="fieldset-basic table-container">
                 <legend></legend>
-                <mat-spinner *ngIf="showSpinner"></mat-spinner>
-                <div class="table-responsive" *ngIf="female && female.length > 0">
+                @if (showSpinner) {
+                <mat-spinner></mat-spinner>
+                }
+                @if (female && female.length > 0) {
+                <div class="table-responsive">
                   <table class="table table-hover table-sm table-bordered cursor-hover">
                     <thead>
                       <tr>
@@ -49,12 +58,15 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let item of female" (click)="selected(item)">
+                      @for (item of female; track item.id) {
+                      <tr (click)="selected(item)">
                         <td>{{ item.fullName }}</td>
                       </tr>
+                      }
                     </tbody>
                   </table>
                 </div>
+                }
               </fieldset>
             </div>
           </mat-tab>
@@ -62,9 +74,12 @@
             <div class="">
               <fieldset class="fieldset-basic table-container">
                 <legend></legend>
-                <mat-spinner *ngIf="showSpinner"></mat-spinner>
+                @if (showSpinner) {
+                <mat-spinner></mat-spinner>
+                }
 
-                <div class="table-responsive" *ngIf="publishersAll && publishersAll.length > 0">
+                @if (publishersAll && publishersAll.length > 0) {
+                <div class="table-responsive">
                   <table class="table table-hover table-sm table-bordered cursor-hover">
                     <thead>
                       <tr>
@@ -72,12 +87,15 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let item of publishersAll" (click)="selected(item)">
+                      @for (item of publishersAll; track item.id) {
+                      <tr (click)="selected(item)">
                         <td>{{ item.fullName }}</td>
                       </tr>
+                      }
                     </tbody>
                   </table>
                 </div>
+                }
               </fieldset>
             </div>
           </mat-tab>

@@ -2,31 +2,37 @@
   <div class="row mb-3">
     <h5>Congregacion</h5>
     <div class="col-md-12">
-      <mat-form-field class="example-full-width"  *ngIf="!isAdmin">
+      @if (!isAdmin) {
+      <mat-form-field class="example-full-width">
         <mat-label>Congregación</mat-label>
         <input matInput [value]="congregationSelected.name" disabled required>
       </mat-form-field>
+      }
 
-      <mat-form-field appearance="fill" *ngIf="isAdmin">
+      @if (isAdmin) {
+      <mat-form-field appearance="fill">
         <mat-label>Congregación</mat-label>
         <mat-select [disabled]="false" (selectionChange)="onChange()" [(value)]="congregationSelected" required>
-          <mat-option [value]="item" *ngFor="let item of allCongregations" >{{item.name}}</mat-option>
+          @for (item of allCongregations; track item.id) {
+          <mat-option [value]="item">{{item.name}}</mat-option>
+          }
           <!-- <mat-option value="option2" disabled>Option 2 (disabled)</mat-option> -->
         </mat-select>
       </mat-form-field>
+      }
 
     </div>
   </div>
   <div class="row">
     <h5>Registro de Publicador</h5>
     <div class="col-md-6">
-      <form class="example-form" [formGroup]="formulario" >
+      <form class="example-form" [formGroup]="formulario">
         <table class="example-full-width" cellspacing="0">
           <tr>
             <td>
               <mat-form-field appearance="fill">
                 <mat-label>Tipo de Documento</mat-label>
-                <mat-select   formControlName="documentType">
+                <mat-select formControlName="documentType">
                   <mat-option value="CC">Cédula Ciudadanía</mat-option>
                   <mat-option value="CE">Cédula Extranjería</mat-option>
                   <mat-option value="TI">Tarjeta I</mat-option>
@@ -47,13 +53,13 @@
             <td>
               <mat-form-field class="example-full-width">
                 <mat-label>Primer Nombre</mat-label>
-                <input matInput formControlName="firstName"  />
+                <input matInput formControlName="firstName" />
               </mat-form-field>
             </td>
             <td>
               <mat-form-field class="example-full-width">
                 <mat-label>Segundo Nombre</mat-label>
-                <input matInput  formControlName="secondName" />
+                <input matInput formControlName="secondName" />
               </mat-form-field>
             </td>
           </tr>
@@ -61,7 +67,7 @@
             <td>
               <mat-form-field class="example-full-width">
                 <mat-label>Primer Apellido</mat-label>
-                <input matInput   formControlName="surname"/>
+                <input matInput formControlName="surname" />
               </mat-form-field>
             </td>
             <td>
@@ -75,7 +81,7 @@
             <td>
               <mat-form-field class="example-full-width">
                 <mat-label>Telefono</mat-label>
-                <input matInput  formControlName="cellPhone"/>
+                <input matInput formControlName="cellPhone" />
               </mat-form-field>
             </td>
             <td>
@@ -101,17 +107,14 @@
                 <mat-label>Fecha de Nacimiento</mat-label>
                 <input matInput [matDatepicker]="picker" formControlName="birthdate" />
                 <mat-hint>DD/MM/YYYY</mat-hint>
-                <mat-datepicker-toggle
-                  matIconSuffix
-                  [for]="picker"
-                ></mat-datepicker-toggle>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker touchUi #picker></mat-datepicker>
               </mat-form-field>
             </td>
           </tr>
         </table>
       </form>
-      <button mat-raised-button color="primary"  (click)="save()">Guardar</button>
+      <button mat-raised-button color="primary" (click)="save()">Guardar</button>
     </div>
   </div>
 </div>

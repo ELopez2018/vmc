@@ -37,7 +37,7 @@ export interface AssignmentRow {
 }
 
 export interface Combobox {
-  value: string;
+  value: any;
   label: string;
 }
 @Component({

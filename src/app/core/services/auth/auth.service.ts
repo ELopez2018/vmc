@@ -28,7 +28,6 @@ export class AuthService {
     return this.httpClient.post<any>(url, credential).pipe(
       tap((data) => {
         localStorage.setItem("token", JSON.stringify(data));
-        console.log("login");
         this.token = this.jwtUtils.decodeToken(data.token) ?? "";
         this.getByCongregationId(this.token.congregationId).subscribe();
       })
@@ -39,7 +38,6 @@ export class AuthService {
     const url = `${this.server}${this.api.AUTH}/congregation/by-id?congregationId=${id}`;
     return this.httpClient.get<Congregation>(url).pipe(
       tap((data) => {
-        console.log("getByCongregationId");
         this.congregacion = data;
         this.dataService.setCongregation(data);
          this.cookieService.set('congregation', JSON.stringify(data));
@@ -54,7 +52,6 @@ export class AuthService {
     const url = `${this.server}${this.api.AUTH}/user/by-id?userId=${userId}`;
     return this.httpClient.get<any>(url).pipe(
       tap((data) => {
-        console.log("getByUserId");
         const publisher: Publisher = {
           ...data,
           congregation: this.congregacion,

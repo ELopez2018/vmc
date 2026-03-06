@@ -9,12 +9,13 @@
       <div class="col-md-12">
         <mat-tab-group animationDuration="0ms">
           <mat-tab label="Frecuentes">
-            <fieldset class="fieldset-basic" *ngIf="assignment && assignment.assignment">
+            @if (assignment && assignment.assignment) {
+            <fieldset class="fieldset-basic">
               <legend></legend>
 
               <div class="row">
                 <div class="col-md-2">
-                  <span>Asignación:</span>
+                  <span>Asignaciónes:</span>
                 </div>
                 <div class="col-md-6 h6">
                   <span>{{ assignment.assignment.title }}</span>
@@ -35,7 +36,8 @@
                   <div>Tips:</div>
                 </div>
                 <div class="col-md-6 h6">
-                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text" id="tips" name="tips" />
+                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text"
+                    id="tips" name="tips" />
                 </div>
                 <div class="col-md-2">
                   <div>Mostrar:</div>
@@ -45,71 +47,80 @@
                 </div>
               </div>
             </fieldset>
+            }
 
             <div class="">
               <fieldset class="fieldset-basic table-container">
                 <legend></legend>
 
-                <mat-spinner *ngIf="showSpinner"></mat-spinner>
+                @if (showSpinner) {
+                <mat-spinner></mat-spinner>
+                }
 
-                <ng-container *ngIf="!isAssigment">
-                  <div class="table-responsive" *ngIf="usedPublishersList && usedPublishersList.length > 0 && !isAssigment">
-                    <table class="table table-hover table-sm table-bordered cursor-hover">
-                      <thead>
-                        <tr class="table-primary text-white">
-                          <th class="text-center" scope="col">Publicador</th>
-                          <th class="text-center" scope="col">
-                            {{ headerText }}
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let item of usedPublishersList" (click)="selected(item)">
-                          <td>{{ item.fullName }}</td>
-                          <td class="text-center" *ngIf="assignmentType === assignmentTypeEnums.PRESIDENT">
-                            {{ item.presidentCount }}
-                          </td>
-                          <td class="text-center" *ngIf="assignmentType === assignmentTypeEnums.OPENING_PRAYER">
-                            {{ item.openingPrayerCount }}
-                          </td>
-                          <td class="text-center" *ngIf="assignmentType === assignmentTypeEnums.FINAL_PRAYER">
-                            {{ item.finalPrayerCount }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </ng-container>
+                @if (!isAssigment) {
+                @if (usedPublishersDataSource.data.length > 0) {
+                <div class="table-responsive">
+                  <table mat-table [dataSource]="usedPublishersDataSource" matSort class="mat-elevation-z8">
+                    <!-- Publicador Column -->
+                    <ng-container matColumnDef="fullName">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
+                      <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
+                    </ng-container>
+                    <!-- Dynamic Count Column -->
+                    <ng-container matColumnDef="count">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ headerText }}</th>
+                      <td mat-cell *matCellDef="let item">
+                        @if (assignmentType === assignmentTypeEnums.PRESIDENT) {
+                        {{ item.presidentCount }}
+                        }
+                        @if (assignmentType === assignmentTypeEnums.OPENING_PRAYER) {
+                        {{ item.openingPrayerCount }}
+                        }
+                        @if (assignmentType === assignmentTypeEnums.FINAL_PRAYER) {
+                        {{ item.finalPrayerCount }}
+                        }
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count'];" (click)="selected(row)"></tr>
+                  </table>
+                </div>
+                }
+                }
 
-                <ng-container *ngIf="isAssigment">
-                  <div class="table-responsive" *ngIf="usedPublishersListAllByAssig && usedPublishersListAllByAssig.length > 0">
-                    <table class="table table-hover table-sm table-bordered cursor-hover">
-                      <thead>
-                        <tr class="table-primary text-white">
-                          <th class="text-center" scope="col">Publicador</th>
-                          <th class="text-center" scope="col">
-                            {{ headerText }}
-                          </th>
-                          <th class="text-center" scope="col">Todas</th>
-                          <th class="text-center" scope="col">Ultima Fecha</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let item of usedPublishersListAllByAssig" (click)="selected(item)">
-                          <td>{{ item.user.fullName }}</td>
-                          <td class="text-center">{{ item.count }}</td>
-                          <td class="text-center">{{ item.all }}</td>
-                          <td class="text-center">{{ parseDate(item.lastDate) }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </ng-container>
+                @if (isAssigment) {
+                @if (usedPublishersAllByAssigDataSource.data.length > 0) {
+                <div class="table-responsive">
+                  <table mat-table [dataSource]="usedPublishersAllByAssigDataSource" matSort class="mat-elevation-z8">
+                    <ng-container matColumnDef="fullName">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
+                      <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="count">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ headerText }}</th>
+                      <td mat-cell *matCellDef="let item">{{ item.count }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="all">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Todas</th>
+                      <td mat-cell *matCellDef="let item">{{ item.all }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="lastDate">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Ultima Fecha</th>
+                      <td mat-cell *matCellDef="let item">{{ parseDate(item.lastDate) }}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count', 'all', 'lastDate']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count', 'all', 'lastDate'];"
+                      (click)="selected(row)"></tr>
+                  </table>
+                </div>
+                }
+                }
               </fieldset>
             </div>
           </mat-tab>
           <mat-tab label="Hermanos">
-            <fieldset class="fieldset-basic" *ngIf="assignment && assignment.assignment">
+            @if (assignment && assignment.assignment) {
+            <fieldset class="fieldset-basic">
               <legend></legend>
 
               <div class="row">
@@ -135,7 +146,8 @@
                   <div>Tips:</div>
                 </div>
                 <div class="col-md-6 h6">
-                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text" id="tips" name="tips" />
+                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text"
+                    id="tips" name="tips" />
                 </div>
                 <div class="col-md-2">
                   <div>Mostrar:</div>
@@ -145,35 +157,40 @@
                 </div>
               </div>
             </fieldset>
+            }
             <div class="">
               <fieldset class="fieldset-basic table-container">
                 <legend></legend>
 
-                <mat-spinner *ngIf="showSpinner"></mat-spinner>
+                @if (showSpinner) {
+                <mat-spinner></mat-spinner>
+                }
 
-                <div class="table-responsive" *ngIf="male && male.length > 0">
-                  <table class="table table-hover table-sm table-bordered cursor-hover">
-                    <thead>
-                      <tr>
-                        <th scope="col">Publicador</th>
-                        <th class="text-center" scope="col">Estado</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let item of male" (click)="selected(item)">
-                        <td>{{ item.fullName }}</td>
-                        <td class="text-center participa" [ngClass]="{ noparticipa: !item.participate }">
-                          {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
-                        </td>
-                      </tr>
-                    </tbody>
+                @if (maleDataSource.data.length > 0) {
+                <div class="table-responsive">
+                  <table mat-table [dataSource]="maleDataSource" matSort class="mat-elevation-z8">
+                    <ng-container matColumnDef="fullName">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
+                      <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="estado">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+                      <td mat-cell *matCellDef="let item" class="text-center participa"
+                        [ngClass]="{ noparticipa: !item.participate }">
+                        {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'estado']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'estado'];" (click)="selected(row)"></tr>
                   </table>
                 </div>
+                }
               </fieldset>
             </div>
           </mat-tab>
           <mat-tab label="Hermanas">
-            <fieldset class="fieldset-basic" *ngIf="assignment && assignment.assignment">
+            @if (assignment && assignment.assignment) {
+            <fieldset class="fieldset-basic">
               <legend></legend>
 
               <div class="row">
@@ -199,7 +216,8 @@
                   <div>Tips:</div>
                 </div>
                 <div class="col-md-6 h6">
-                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text" id="tips" name="tips" />
+                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text"
+                    id="tips" name="tips" />
                 </div>
                 <div class="col-md-2">
                   <div>Mostrar:</div>
@@ -209,35 +227,40 @@
                 </div>
               </div>
             </fieldset>
+            }
             <div class="">
               <fieldset class="fieldset-basic table-container">
                 <legend></legend>
 
-                <mat-spinner *ngIf="showSpinner"></mat-spinner>
+                @if (showSpinner) {
+                <mat-spinner></mat-spinner>
+                }
 
-                <div class="table-responsive" *ngIf="female && female.length > 0">
-                  <table class="table table-hover table-sm table-bordered cursor-hover">
-                    <thead>
-                      <tr>
-                        <th scope="col">Publicador</th>
-                        <th class="text-center" scope="col">Estado</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let item of female" (click)="selected(item)">
-                        <td>{{ item.fullName }}</td>
-                        <td class="text-center participa" [ngClass]="{ noparticipa: !item.participate }">
-                          {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
-                        </td>
-                      </tr>
-                    </tbody>
+                @if (femaleDataSource.data.length > 0) {
+                <div class="table-responsive">
+                  <table mat-table [dataSource]="femaleDataSource" matSort class="mat-elevation-z8">
+                    <ng-container matColumnDef="fullName">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
+                      <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="estado">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+                      <td mat-cell *matCellDef="let item" class="text-center participa"
+                        [ngClass]="{ noparticipa: !item.participate }">
+                        {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'estado']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'estado'];" (click)="selected(row)"></tr>
                   </table>
                 </div>
+                }
               </fieldset>
             </div>
           </mat-tab>
           <mat-tab label="Todos">
-            <fieldset class="fieldset-basic" *ngIf="assignment && assignment.assignment">
+            @if (assignment && assignment.assignment) {
+            <fieldset class="fieldset-basic">
               <legend></legend>
 
               <div class="row">
@@ -263,7 +286,8 @@
                   <div>Tips:</div>
                 </div>
                 <div class="col-md-6 h6">
-                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text" id="tips" name="tips" />
+                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text"
+                    id="tips" name="tips" />
                 </div>
                 <div class="col-md-2">
                   <div>Mostrar:</div>
@@ -273,32 +297,27 @@
                 </div>
               </div>
             </fieldset>
+            }
             <div class="">
               <fieldset class="fieldset-basic table-container">
                 <legend></legend>
 
-                <mat-spinner *ngIf="showSpinner"></mat-spinner>
+                @if (showSpinner) {
+                <mat-spinner></mat-spinner>
+                }
 
-                <div class="table-responsive" *ngIf="publishersAll && publishersAll.length > 0">
-                  <table class="table table-hover table-sm table-bordered cursor-hover">
-                    <thead>
-                      <tr>
-                        <th scope="col">Publicador</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let item of publishersAll" (click)="selected(item)">
-                        <td>{{ item.fullName }}</td>
-                      </tr>
-                    </tbody>
+                @if (publishersAllDataSource.data.length > 0) {
+                <div class="table-responsive">
+                  <table mat-table [dataSource]="publishersAllDataSource" matSort class="mat-elevation-z8">
+                    <ng-container matColumnDef="fullName">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
+                      <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="['fullName']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName'];" (click)="selected(row)"></tr>
                   </table>
                 </div>
-                <!-- <h3
-                  class="text-center mt-5 pt-5"
-                  *ngIf="!publishersAll || publishersAll.length == 0"
-                >
-                  No hay datos
-                </h3> -->
+                }
               </fieldset>
             </div>
           </mat-tab>

@@ -1,38 +1,41 @@
-<div [ngSwitch]="modalType">
-  <div *ngSwitchDefault>
-    <info-modal [message]="mensaje" [title]="titulo" [subtitle]="subTitle" (onClicked)="close()"></info-modal>
-  </div>
-  <div *ngSwitchCase="typeOfModals.ASSIGN_PUB">
-    <search-publisher (onClicked)="onClicked($event)" *ngIf="assignment" [assignment]="assignment" [assignmentType]="assignmentType" (onClose)="close()"></search-publisher>
-  </div>
-  <div *ngSwitchCase="typeOfModals.SELECT_HOUR">
-    <select-hour (onSelected)="onClicked($event)"></select-hour>
-  </div>
-  <div *ngSwitchCase="typeOfModals.PRINTER">
-    <app-printer [isModal]="true" (onClosed)="close()"></app-printer>
-  </div>
-  <div *ngSwitchCase="typeOfModals.TITLE_AND_TIME">
-    <title-and-time (onClicked)="onClicked($event)" [assignment]="assignment"></title-and-time>
-  </div>
-  <div *ngSwitchCase="typeOfModals.CHANGE_SONGS">
-    <change-song [song]="song" (onClicked)="onClicked($event)" [program]="program"></change-song>
-  </div>
-  <div *ngSwitchCase="typeOfModals.ERROR">
-    <error-modal [type]="errorType" [message]="errorMessage" (onClicked)="onClicked($event)" [title]="title"></error-modal>
-  </div>
-  <div *ngSwitchCase="typeOfModals.SUCCESS">
-    <info-modal [type]="title" [message]="mensaje" (onClicked)="onClicked($event)" [title]="subTitle"></info-modal>
-  </div>
-  <div *ngSwitchCase="typeOfModals.LOADER">
-    <loader></loader>
-  </div>
-  <div *ngSwitchCase="typeOfModals.ADDASSIG">
-    <vmc-add-assignment [week]="program" [sectionMeeting]="sectionMeeting" (onClosed)="close()"></vmc-add-assignment>
-  </div>
-  <div *ngSwitchCase="typeOfModals.SELECT_PUBLISHER">
-    <vmc-select-publisher (onClicked)="onClicked($event)" (onClosed)="close()"> </vmc-select-publisher>
-  </div>
-  <div *ngSwitchCase="typeOfModals.PRINTER_ASSIG">
-    <app-assignment-sheet-printer (onClosed)="close()" [isModal]="isModal"> </app-assignment-sheet-printer>
-  </div>
-</div>
+@switch (modalType) {
+@case (typeOfModals.ASSIGN_PUB) {
+@if (assignment) {
+<search-publisher (onClicked)="onClicked($event)" [assignment]="assignment" [assignmentType]="assignmentType"
+  (onClose)="close()"></search-publisher>
+}
+}
+@case (typeOfModals.SELECT_HOUR) {
+<select-hour (onSelected)="onClicked($event)"></select-hour>
+}
+@case (typeOfModals.PRINTER) {
+<app-printer [isModal]="true" (onClosed)="close()"></app-printer>
+}
+@case (typeOfModals.TITLE_AND_TIME) {
+<title-and-time (onClicked)="onClicked($event)" [assignment]="assignment"></title-and-time>
+}
+@case (typeOfModals.CHANGE_SONGS) {
+<change-song [song]="song" (onClicked)="onClicked($event)" [program]="program"></change-song>
+}
+@case (typeOfModals.ERROR) {
+<error-modal [type]="errorType" [message]="errorMessage" (onClicked)="onClicked($event)" [title]="title"></error-modal>
+}
+@case (typeOfModals.SUCCESS) {
+<info-modal [type]="title" [message]="mensaje" (onClicked)="onClicked($event)" [title]="subTitle"></info-modal>
+}
+@case (typeOfModals.LOADER) {
+<loader></loader>
+}
+@case (typeOfModals.ADDASSIG) {
+<vmc-add-assignment [week]="program" [sectionMeeting]="sectionMeeting" (onClosed)="close()"></vmc-add-assignment>
+}
+@case (typeOfModals.SELECT_PUBLISHER) {
+<vmc-select-publisher (onClicked)="onClicked($event)" (onClosed)="close()"> </vmc-select-publisher>
+}
+@case (typeOfModals.PRINTER_ASSIG) {
+<app-assignment-sheet-printer (onClosed)="close()" [isModal]="isModal"> </app-assignment-sheet-printer>
+}
+@default {
+<info-modal [message]="mensaje" [title]="titulo" [subtitle]="subTitle" (onClicked)="close()"></info-modal>
+}
+}

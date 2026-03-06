@@ -44,10 +44,10 @@ export class ModalService {
     return this.modalRef.result
   }
 
-  public assignPublisherProgram(program?: Program, assignmentType?: string) {
+  public assignPublisherProgram(program: Program, assignmentType?: string) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
-    this.modalRef.componentInstance.assignment = <WeeklyProgram>{};
+    this.modalRef.componentInstance.assignment = program.weeklyProgram[0];
     this.modalRef.componentInstance.assignmentType = assignmentType;
     return this.modalRef.result
   }

@@ -16,7 +16,6 @@ export class AssignmentComponent {
   @Input() assignment: Assignment[]=[]
   constructor(private assignmentService: AssignmentService) {
     this.assignmentService.getAllAssignment().subscribe(data => {
-      console.log(data);
       this.assignment = <Assignment[]>data.content
     });
   }

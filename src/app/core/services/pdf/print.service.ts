@@ -120,7 +120,6 @@ export class PrintPdfService {
           },
         ],
       ];
-      console.log({ conAux });
     } else {
       conAux = [
         [

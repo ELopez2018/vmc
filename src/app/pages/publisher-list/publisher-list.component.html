@@ -7,15 +7,14 @@
 
   <div class="row py-2">
     <div class="col-md-12 text-center">
-      <mat-spinner *ngIf="showSpinner"></mat-spinner>
+      @if (showSpinner) {
+      <mat-spinner></mat-spinner>
+      }
       <div class="">
 
         <vmc-table-primeng [publisherList]="publisherList" (onSelected)="edit($event)"></vmc-table-primeng>
-        <mat-paginator
-          [pageSizeOptions]="[20, 30, 40]"
-          showFirstLastButtons
-          aria-label="Elija la pagina de Publicadores"
-        >
+        <mat-paginator [pageSizeOptions]="[20, 30, 40]" showFirstLastButtons
+          aria-label="Elija la pagina de Publicadores">
         </mat-paginator>
       </div>
     </div>

@@ -5,28 +5,24 @@
       <div class="row mx-4 no-gutter">
         <div class="col-md-2">
           <div class="form-floating mb-3">
-            <input type="number" formControlName="number" class="form-control" id="numero" >
+            <input type="number" formControlName="number" class="form-control" id="numero">
             <label for="floatingInput">Numero</label>
           </div>
         </div>
         <div class="col-md-8">
           <div class="form-floating mb-3">
-            <input
-            type="text"
-            class="form-control"
-            id="title"
-            list="datalistOptions"
-            formControlName="title"
-            >
+            <input type="text" class="form-control" id="title" list="datalistOptions" formControlName="title">
             <label for="floatingInput">Título</label>
-            <datalist id="datalistOptions" >
-              <option  value="{{assignment.title}}" *ngFor="let assignment of assignmentList "></option>
+            <datalist id="datalistOptions">
+              @for (assignment of assignmentList; track assignment.id) {
+              <option value="{{assignment.title}}"></option>
+              }
             </datalist>
           </div>
         </div>
         <div class="col-md-2">
           <div class="form-floating mb-3">
-            <input type="number" formControlName="time" class="form-control" id="time" >
+            <input type="number" formControlName="time" class="form-control" id="time">
             <label for="floatingInput">Tiempo</label>
           </div>
         </div>
@@ -35,26 +31,27 @@
       <div class="row mx-4 no-gutter" [formGroup]="formG">
         <div class="col-md-2">
           <div class="form-floating mb-3">
-            <input type="time" formControlName="start" class="form-control" id="start" >
+            <input type="time" formControlName="start" class="form-control" id="start">
             <label for="floatingInput">Inicio</label>
           </div>
         </div>
         <div class="col-md-8">
           <div class="form-floating mb-3">
-            <input type="text" formControlName="tips" class="form-control" id="tips" placeholder="Conductor/Lector" >
+            <input type="text" formControlName="tips" class="form-control" id="tips" placeholder="Conductor/Lector">
             <label for="floatingInput">Tips</label>
           </div>
         </div>
         <div class="col-md-2 d-flex py-3 justify-content-evenly">
           <div class="form-check form-switch me-2">
-            <input class="form-check-input" formControlName="showTips" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
+            <input class="form-check-input" formControlName="showTips" type="checkbox" role="switch"
+              id="flexSwitchCheckChecked" checked>
             <label class="form-check-label" for="flexSwitchCheckChecked">Mostrar Tips</label>
           </div>
-          <button class="btn  btn-primary mb-3" (click)="add()" ><i class="pi pi-save"></i></button>
+          <button class="btn  btn-primary mb-3" (click)="add()"><i class="pi pi-save"></i></button>
         </div>
       </div>
     </form>
-     <div class="row mx-4">
+    <div class="row mx-4">
       <div class="col-md-12">
         <div class="table-responsive">
           <table class="table table-hover table-sm table-bordered cursor-hover">
@@ -68,16 +65,20 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of week.weeklyProgram">
-                <td *ngIf="item.assignment.sectionMeeting==sectionMeeting" class="text-center" >{{ item.assignment.number}}</td>
-                <td *ngIf="item.assignment.sectionMeeting==sectionMeeting" class="text-center" >{{ adapterTime(item.startTime) }}</td>
-                <td *ngIf="item.assignment.sectionMeeting==sectionMeeting" >{{ item.assignment.title }}</td>
-                <td *ngIf="item.assignment.sectionMeeting==sectionMeeting" class="text-center" >{{ item.assignment.time }}</td>
-                <td class=" text-center" *ngIf="item.assignment.sectionMeeting==sectionMeeting">
+              @for (item of week.weeklyProgram; track item.id) {
+              @if (item.assignment.sectionMeeting==sectionMeeting) {
+              <tr>
+                <td class="text-center">{{ item.assignment.number}}</td>
+                <td class="text-center">{{ adapterTime(item.startTime) }}</td>
+                <td>{{ item.assignment.title }}</td>
+                <td class="text-center">{{ item.assignment.time }}</td>
+                <td class=" text-center">
                   <button class="btn btn-sm btn-primary me-2"><i class="pi pi-save"></i></button>
                   <button class="btn btn-sm btn-danger"><i class="pi pi-trash"></i></button>
                 </td>
               </tr>
+              }
+              }
             </tbody>
           </table>
         </div>
@@ -92,4 +93,3 @@
     </div>
   </div>
 </div>
-

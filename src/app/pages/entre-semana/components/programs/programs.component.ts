@@ -54,7 +54,7 @@ export class ProgramsComponent implements OnInit {
     })
   }
 
-  showDayOfMeeting(fechaSemana: string) {
+  showDayOfMeeting(fechaSemana: any) {
     return Utils.showDayOfMeeting(fechaSemana, this.meetingDay)
   }
 
@@ -71,6 +71,7 @@ export class ProgramsComponent implements OnInit {
   }
 
   changeProgram(item: Program, type: string) {
+    console.log({item});
     switch (type) {
       case "startTimeOpeningSong":
         this.modalService.selectedHour()
@@ -90,11 +91,11 @@ export class ProgramsComponent implements OnInit {
             if(!data || data == 'close'){return}
             item.startTimeIntro = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "startTimeIntermediateSong":
@@ -103,11 +104,11 @@ export class ProgramsComponent implements OnInit {
             if(!data || data == 'close'){return}
             item.startTimeIntermediateSong = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "startTimeConclusionWords":
@@ -116,11 +117,11 @@ export class ProgramsComponent implements OnInit {
             if(!data || data == 'close'){return}
             item.startTimeConclusionWords = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "startTimeFinalSong":
@@ -132,7 +133,7 @@ export class ProgramsComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case AssignmentType.OPENING_PRAYER:
@@ -145,7 +146,7 @@ export class ProgramsComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case AssignmentType.FINAL_PRAYER:
@@ -157,7 +158,7 @@ export class ProgramsComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case AssignmentType.PRESIDENT:
@@ -166,11 +167,11 @@ export class ProgramsComponent implements OnInit {
             if(!data || data == 'close'){return}
             item.president = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case AssignmentType.ASSISTANT_ADVISER:
@@ -179,11 +180,11 @@ export class ProgramsComponent implements OnInit {
             if(!data || data == 'close'){return}
             item.assistantAdviser = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "openingSong":
@@ -192,11 +193,11 @@ export class ProgramsComponent implements OnInit {
             if(!data || data == 'close'){return}
             item.meeting.openingSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "intermediateSong":
@@ -205,11 +206,11 @@ export class ProgramsComponent implements OnInit {
             if(!data || data == 'close'){return}
             item.meeting.intermediateSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "finalSong":
@@ -218,11 +219,11 @@ export class ProgramsComponent implements OnInit {
             if(!data || data == 'close'){return}
             item.meeting.finalSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       default:
@@ -337,7 +338,7 @@ export class ProgramsComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "title":
@@ -351,7 +352,7 @@ export class ProgramsComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       default:

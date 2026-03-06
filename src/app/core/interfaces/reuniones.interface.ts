@@ -77,8 +77,10 @@ export interface Assignment {
   sectionMeeting: string;
   showTips: boolean;
   number: number;
-  meeting: any;
+  meeting: Meeting;
 }
+
+
 export interface Congregation {
   id: number;
   name: string;
@@ -90,7 +92,7 @@ export interface Congregation {
 }
 export interface Meeting {
   id: number;
-  week: string;
+  week: number;
   weekNumber: number;
   openingSong: string;
   introTime: number;

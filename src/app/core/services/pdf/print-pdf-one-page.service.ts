@@ -29,7 +29,6 @@ export class PrintPdfOnePageService {
         this.dayMeet = data.congregation.day;
       }
     });
-    // console.log(pdfMake);
   }
   config = {
     subTitleInvoice: "RECIBO DE GIRO",
@@ -647,7 +646,6 @@ export class PrintPdfOnePageService {
     if (!weeks || weeks.length < 1) return;
 
     weeks.forEach((week) => {
-      // console.log(week.assembly);
       count++;
       pageCount++;
       if (week.assembly == null) {

@@ -88,11 +88,11 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.startTimeOpeningSong = data
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "startTimeIntro":
@@ -100,11 +100,11 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.startTimeIntro = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "startTimeIntermediateSong":
@@ -112,11 +112,11 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.startTimeIntermediateSong = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "startTimeConclusionWords":
@@ -124,11 +124,11 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.startTimeConclusionWords = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "startTimeFinalSong":
@@ -139,7 +139,7 @@ export class EntreSemanaComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case AssignmentType.OPENING_PRAYER:
@@ -150,7 +150,7 @@ export class EntreSemanaComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case AssignmentType.FINAL_PRAYER:
@@ -161,7 +161,7 @@ export class EntreSemanaComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case AssignmentType.PRESIDENT:
@@ -169,11 +169,11 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.president = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "assistantAdviser":
@@ -181,11 +181,11 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.assistantAdviser = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "openingSong":
@@ -193,11 +193,11 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.meeting.openingSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "intermediateSong":
@@ -205,11 +205,11 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.meeting.intermediateSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "finalSong":
@@ -217,11 +217,11 @@ export class EntreSemanaComponent implements OnInit {
           .then(data => {
             item.meeting.finalSong = data;
             this.meetingsService.updateMeeting(item.meeting).subscribe(data => {
-              console.log(data);
+              console.info(data)
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       default:
@@ -297,7 +297,7 @@ export class EntreSemanaComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "assistant":
@@ -309,7 +309,7 @@ export class EntreSemanaComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "startTime":
@@ -322,7 +322,7 @@ export class EntreSemanaComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       case "title":
@@ -334,7 +334,7 @@ export class EntreSemanaComponent implements OnInit {
             })
           })
           .catch(data => {
-            console.log(data);
+            console.info(data)
           })
         break;
       default:

@@ -1,18 +1,36 @@
-.login  {
+.login {
   width: 90vw;
   height: 300px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
+@media (min-width: 640px) {
+  .login {
+    width: 50vw;
+    min-height: 30vh;
+    max-width: 400px;
+  }
+}
+
+@media (min-width: 768px) {
+  .login {
+    width: 50vw;
+    min-height: 30vh;
+    max-width: 400px;
+  }
+}
+
 @media (min-width: 992px) {
-  .login  {
-    width: 30vw;
+  .login {
+    width: 50vw;
     min-height: 30vh;
+    max-width: 400px;
   }
- }
- @media (min-width: 1440px) {
-  .login  {
-    width: 30vw;
+}
+@media (min-width: 1440px) {
+  .login {
+    width: 50vw;
     min-height: 30vh;
+    max-width: 400px;
   }
- }
+}

@@ -14,6 +14,7 @@ export class TablePrimengComponent implements OnInit {
   @Output() onSelected= new EventEmitter<Publisher>()
   @Output() onDelete= new EventEmitter<Publisher>()
   selectedSize: any = '';
+  
   ngOnInit(): void {
   }
 

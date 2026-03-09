@@ -1,68 +1,110 @@
-<div class="container-fluid p-3">
-  <mat-list-item>Publicador</mat-list-item>
-  <mat-divider></mat-divider>
-  <!-- <fieldset class="fieldset-base"> -->
-  <div class="ms-4">
-    <div class="row mt-2">
-      <div class="col-md-2 d-flex align-items-center">Nombre</div>
-      <div class="col-md-7 d-flex align-items-center">{{ publisher.fullName }}</div>
-      <div class="col-md-3">
-        <button mat-fab extended color="Publicadores" (click)="openModal()">
-          <mat-icon>people_outline</mat-icon>
-          Publicadores
-        </button>
+<div class="page-container">
+
+  <!-- PERFIL PUBLICADOR -->
+  <mat-card class="section-card">
+
+    <div class="header-row">
+
+      <div class="publisher-info">
+
+        <div class="avatar">
+          <mat-icon>person</mat-icon>
+        </div>
+
+        <div class="publisher-data">
+          <div class="publisher-name">{{ publisher.fullName }}</div>
+          <div class="publisher-contact">
+            <span>{{ publisher.cellPhone }}</span>
+            <span class="separator">•</span>
+            <span>{{ publisher.email }}</span>
+          </div>
+        </div>
+
       </div>
-    </div>
-    <div class="row mt-2">
-      <div class="col-md-2 py-2">Telefono</div>
-      <div class="col-md-10 py-2">{{ publisher.cellPhone }}</div>
-    </div>
-    <div class="row mt-2">
-      <div class="col-md-2 py-2">Email</div>
-      <div class="col-md-10 py-2">{{ publisher.email }}</div>
+
+      <button mat-raised-button color="primary" (click)="openModal()">
+        <mat-icon>groups</mat-icon>
+        Publicadores
+      </button>
+
     </div>
 
-    <div class="row mt-2">
-      <div class="col-md-12">
-        <form>
-          <mat-form-field class="example-chip-list" appearance="fill">
-            <mat-label>Privilegios</mat-label>
-            <mat-chip-grid #chipGrid aria-label="Nombramientos">
-              @for (designation of designations; track designation) {
-              <mat-chip-row (removed)="remove(designation)">
-                {{designation}}
-                <button matChipRemove [attr.aria-label]="'remove ' + designation">
-                  <mat-icon>cancel</mat-icon>
-                </button>
-              </mat-chip-row>
-              }
-            </mat-chip-grid>
-            <input placeholder="Agregar.." #fruitInput [formControl]="fruitCtrl" [matChipInputFor]="chipGrid"
-              [matAutocomplete]="auto" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-              (matChipInputTokenEnd)="add($event)" />
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-              @for (fruit of filteredFruits | async; track fruit) {
-              <mat-option [value]="fruit">
-                {{fruit}}
-              </mat-option>
-              }
-            </mat-autocomplete>
-          </mat-form-field>
-        </form>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12 text-end">
-        <button mat-raised-button color="primary" [disabled]="disabled" (click)="save()">Guardar</button>
-      </div>
-    </div>
-  </div>
+  </mat-card>
 
-  <!-- </fieldset> -->
 
-  <mat-list-item class="mt-3">Historico de Asignaciones</mat-list-item>
-  <mat-divider></mat-divider>
-  <div class="row">
-    <div class="col-md-12"></div>
-  </div>
+  <!-- PRIVILEGIOS -->
+  <mat-card class="section-card">
+
+    <div class="section-title">
+      <mat-icon>workspace_premium</mat-icon>
+      <span>Privilegios</span>
+    </div>
+
+    <form>
+
+      <mat-form-field appearance="outline" class="full-width">
+
+        <mat-label>Nombramientos</mat-label>
+
+        <mat-chip-grid #chipGrid aria-label="Nombramientos">
+
+          @for (designation of designations; track designation) {
+          <mat-chip-row (removed)="remove(designation)">
+
+            {{designation}}
+
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+
+          </mat-chip-row>
+          }
+
+        </mat-chip-grid>
+
+        <input
+          placeholder="Agregar privilegio..."
+          #fruitInput
+          [formControl]="fruitCtrl"
+          [matChipInputFor]="chipGrid"
+          [matAutocomplete]="auto"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="add($event)" />
+
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          @for (fruit of filteredFruits | async; track fruit) {
+          <mat-option [value]="fruit">
+            {{fruit}}
+          </mat-option>
+          }
+        </mat-autocomplete>
+
+      </mat-form-field>
+
+    </form>
+
+    <div class="actions">
+      <button mat-raised-button color="primary" [disabled]="disabled" (click)="save()">
+        <mat-icon>save</mat-icon>
+        Guardar
+      </button>
+    </div>
+
+  </mat-card>
+
+
+  <!-- HISTORICO -->
+  <mat-card class="section-card">
+
+    <div class="section-title">
+      <mat-icon>history</mat-icon>
+      <span>Histórico de Asignaciones</span>
+    </div>
+
+    <div class="history-placeholder">
+      Sin registros por ahora
+    </div>
+
+  </mat-card>
+
 </div>

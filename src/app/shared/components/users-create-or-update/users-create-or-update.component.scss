@@ -7,3 +7,48 @@
 .example-full-width {
   width: 100%;
 }
+
+.page-container{
+  padding:40px;
+  background:#f5f7fb;
+  min-height:100vh;
+}
+
+/* tarjetas */
+.section-card{
+  margin-bottom:30px;
+  padding:30px;
+  border-radius:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* titulo */
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:20px;
+  color:#1a237e;
+}
+
+/* grid responsive */
+.form-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+
+/* boton */
+.actions{
+  margin-top:30px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+button{
+  padding:10px 25px;
+  font-size:15px;
+  border-radius:8px;
+}

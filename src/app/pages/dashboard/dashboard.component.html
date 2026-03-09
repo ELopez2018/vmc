@@ -1,26 +1,29 @@
 @if (shouldRun) {
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
+
   <mat-toolbar color="primary" class="example-toolbar">
     <button mat-icon-button (click)="snav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
+
     <div class="w-100 d-flex justify-content-between align-items-center">
-      <span class="d-md-none pt-1">{{ Superintendente.fullName }} </span>
-      <span class="d-none d-md-inline pt-1">{{ Superintendente.fullName }} | {{ Superintendente.congregation.name
-        }}</span>
+      <span class="d-md-none pt-1">{{ Superintendente.fullName }}</span>
+
+      <span class="d-none d-md-inline pt-1">
+        {{ Superintendente.fullName }} | {{ Superintendente.congregation.name }}
+      </span>
+
       <div class="w-50 w-md-25 d-flex justify-content-end">
+
         <a routerLink="/tablero/entre-semana" class="me-5">
           <svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
             stroke="#ffffff">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
-              <path
-                d="M8 6L21 6.00078M8 12L21 12.0008M8 18L21 18.0007M3 6.5H4V5.5H3V6.5ZM3 12.5H4V11.5H3V12.5ZM3 18.5H4V17.5H3V18.5Z"
-                stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </g>
+            <path
+              d="M8 6L21 6.00078M8 12L21 12.0008M8 18L21 18.0007M3 6.5H4V5.5H3V6.5ZM3 12.5H4V11.5H3V12.5ZM3 18.5H4V17.5H3V18.5Z"
+              stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
         </a>
+
         <a routerLink="/tablero/imprimir" (click)="goToPrint()" class="me-5">
           <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
             width="32px" height="32px" viewBox="0 0 64.00 64.00" enable-background="new 0 0 64 64" xml:space="preserve"
@@ -48,85 +51,94 @@
             </g>
           </svg>
         </a>
+
       </div>
     </div>
   </mat-toolbar>
 
-  <mat-sidenav-container class="sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 0 : 0">
-    <mat-sidenav #snav class="sidenav" [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'"
-      [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
-      <!-- Header -->
+  <mat-sidenav-container class="sidenav-container">
+
+    <mat-sidenav #snav class="sidenav" mode="side" [fixedInViewport]="true" fixedTopGap="56"
+      (backdropClick)="snav.close()"  [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'">
+
       <div class="sidenav-header">
         <mat-icon color="primary">menu_book</mat-icon>
         <span class="title">Panel</span>
       </div>
 
       <mat-nav-list>
-        <!-- PRINCIPAL -->
-        <a mat-list-item routerLink="entre-semana" routerLinkActive="active" class="menu-link-align">
+
+        <a mat-list-item routerLink="entre-semana" (click)="closeMenu()">
           <mat-icon>event</mat-icon>
           <span>Programa</span>
         </a>
 
-        <a mat-list-item routerLink="imprimir" routerLinkActive="active" class="menu-link-align">
+        <a mat-list-item routerLink="imprimir" (click)="closeMenu()">
           <mat-icon>print</mat-icon>
           <span>Imprimir</span>
         </a>
 
         <div class="divider"></div>
 
-        <!-- PUBLICADORES -->
         <span class="section-title">Publicadores</span>
 
-        <a mat-list-item routerLink="publicador" routerLinkActive="active" class="menu-link-align">
+        <a mat-list-item routerLink="publicador" (click)="closeMenu()">
           <mat-icon>person_add</mat-icon>
           <span>Registro</span>
         </a>
 
-        <a mat-list-item routerLink="publicadores" routerLinkActive="active" class="menu-link-align">
+        <a mat-list-item routerLink="publicadores" (click)="closeMenu()">
           <mat-icon>groups</mat-icon>
           <span>Lista</span>
         </a>
+        @if (isAdmin) {
+        <a mat-list-item routerLink="privilegios" (click)="closeMenu()">
+          <mat-icon>vpn_key</mat-icon>
+          <span>Privilegios</span>
+        </a>
+        }
+        <span class="section-title">Asignaciones</span>
 
-        <a mat-list-item routerLink="hojas-asignacion" (click)="goToPrint()" routerLinkActive="active"
-          class="menu-link-align">
+        <a mat-list-item routerLink="hojas-asignacion" (click)="goToPrint(); closeMenu()">
           <mat-icon>assignment_turned_in</mat-icon>
           <span>Hoja de Asignación</span>
         </a>
-        <a mat-list-item routerLink="notificaciones" routerLinkActive="active" class="menu-link-align">
+
+        <a mat-list-item routerLink="notificaciones" (click)="closeMenu()">
           <mat-icon>notifications</mat-icon>
           <span>Notificaciones</span>
         </a>
 
         @if (isAdmin) {
-        <a mat-list-item routerLink="congregaciones" routerLinkActive="active" class="menu-link-align">
+        <span class="section-title">Configuraciones</span>
+        <a mat-list-item routerLink="congregaciones" (click)="closeMenu()">
           <mat-icon>holiday_village</mat-icon>
           <span>Congregaciones</span>
         </a>
-        <a mat-list-item routerLink="privilegios" routerLinkActive="active" class="menu-link-align">
-          <mat-icon>vpn_key</mat-icon>
-          <span>Privilegios</span>
-        </a>
 
-        <a mat-list-item routerLink="administrador" routerLinkActive="active" class="menu-link-align">
+        <a mat-list-item routerLink="administrador" (click)="closeMenu()">
           <mat-icon>admin_panel_settings</mat-icon>
           <span>Administrador</span>
         </a>
+
         }
 
         <div class="divider"></div>
 
-        <!-- LOGOUT -->
-        <a mat-list-item class="logout menu-link-align" (click)="logout()">
+        <a mat-list-item class="logout" (click)="logout(); closeMenu()">
           <mat-icon>logout</mat-icon>
           <span>Salir</span>
         </a>
+
       </mat-nav-list>
+
     </mat-sidenav>
 
     <mat-sidenav-content class="content">
       <router-outlet></router-outlet>
     </mat-sidenav-content>
+
   </mat-sidenav-container>
+
 </div>
 }

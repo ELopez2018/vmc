@@ -6,17 +6,20 @@
   </div>
 
   <div class="row py-2">
-    <div class="col-md-12 text-center">
+    <div class="col-md-12 mb-3 text-center d-flex justify-content-center align-items-center flex-column ">
       @if (showSpinner) {
-      <mat-spinner></mat-spinner>
-      }
+      <div class="pt-5 mt-5">
+        <mat-spinner></mat-spinner>
+      </div>
+      } @else {
       <div class="">
-
-        <vmc-table-primeng [publisherList]="publisherList" (onSelected)="edit($event)"></vmc-table-primeng>
+        <vmc-table-primeng [publisherList]="publisherList" (onSelected)="edit($event)"
+          (onDelete)="delete($event)"></vmc-table-primeng>
         <mat-paginator [pageSizeOptions]="[20, 30, 40]" showFirstLastButtons
           aria-label="Elija la pagina de Publicadores">
         </mat-paginator>
       </div>
+      }
     </div>
   </div>
 </div>

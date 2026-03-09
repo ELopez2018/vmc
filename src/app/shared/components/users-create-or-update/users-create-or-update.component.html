@@ -1,120 +1,124 @@
-<div class="container-fluid p-5">
-  <div class="row mb-3">
-    <h5>Congregacion</h5>
-    <div class="col-md-12">
-      @if (!isAdmin) {
-      <mat-form-field class="example-full-width">
+<div class="page-container">
+
+  <!-- CARD CONGREGACIÓN -->
+  <mat-card class="section-card">
+    <div class="section-title">
+      <mat-icon>groups</mat-icon>
+      <span>Congregación</span>
+    </div>
+
+    <div class="form-grid">
+
+      @if (!isAdmin && congregationSelected) {
+      <mat-form-field appearance="outline">
         <mat-label>Congregación</mat-label>
         <input matInput [value]="congregationSelected.name" disabled required>
       </mat-form-field>
       }
 
-      @if (isAdmin) {
-      <mat-form-field appearance="fill">
+      @if (isAdmin && congregationSelected) {
+      <mat-form-field appearance="outline">
         <mat-label>Congregación</mat-label>
-        <mat-select [disabled]="false" (selectionChange)="onChange()" [(value)]="congregationSelected" required>
+        <mat-select (selectionChange)="onChange()" [(value)]="congregationSelected" required>
+
           @for (item of allCongregations; track item.id) {
-          <mat-option [value]="item">{{item.name}}</mat-option>
+          <mat-option [value]="item">
+            {{item.name}}
+          </mat-option>
           }
-          <!-- <mat-option value="option2" disabled>Option 2 (disabled)</mat-option> -->
+
         </mat-select>
       </mat-form-field>
       }
 
     </div>
-  </div>
-  <div class="row">
-    <h5>Registro de Publicador</h5>
-    <div class="col-md-6">
-      <form class="example-form" [formGroup]="formulario">
-        <table class="example-full-width" cellspacing="0">
-          <tr>
-            <td>
-              <mat-form-field appearance="fill">
-                <mat-label>Tipo de Documento</mat-label>
-                <mat-select formControlName="documentType">
-                  <mat-option value="CC">Cédula Ciudadanía</mat-option>
-                  <mat-option value="CE">Cédula Extranjería</mat-option>
-                  <mat-option value="TI">Tarjeta I</mat-option>
-                  <mat-option value="PP">Pasaporte</mat-option>
-                  <mat-option value="PPT">Permiso Temporal</mat-option>
-                  <mat-option value="DNI">DNI</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field class="example-full-width">
-                <mat-label>Numero documento</mat-label>
-                <input matInput formControlName="documentNumber" />
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="example-full-width">
-                <mat-label>Primer Nombre</mat-label>
-                <input matInput formControlName="firstName" />
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field class="example-full-width">
-                <mat-label>Segundo Nombre</mat-label>
-                <input matInput formControlName="secondName" />
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="example-full-width">
-                <mat-label>Primer Apellido</mat-label>
-                <input matInput formControlName="surname" />
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field class="example-full-width">
-                <mat-label>Segundo Apellido</mat-label>
-                <input matInput formControlName="lastName" />
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field class="example-full-width">
-                <mat-label>Telefono</mat-label>
-                <input matInput formControlName="cellPhone" />
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field class="example-full-width">
-                <mat-label>Correo electrónico</mat-label>
-                <input matInput formControlName="email" />
-              </mat-form-field>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <mat-form-field appearance="fill">
-                <mat-label>Género</mat-label>
-                <mat-select formControlName="gender">
-                  <mat-option>None</mat-option>
-                  <mat-option value="Masculino">Masculino</mat-option>
-                  <mat-option value="Femenino">Femenino</mat-option>
-                </mat-select>
-              </mat-form-field>
-            </td>
-            <td>
-              <mat-form-field class="example-full-width" appearance="fill">
-                <mat-label>Fecha de Nacimiento</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="birthdate" />
-                <mat-hint>DD/MM/YYYY</mat-hint>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker touchUi #picker></mat-datepicker>
-              </mat-form-field>
-            </td>
-          </tr>
-        </table>
-      </form>
-      <button mat-raised-button color="primary" (click)="save()">Guardar</button>
+  </mat-card>
+
+
+  <!-- CARD REGISTRO -->
+  <mat-card class="section-card">
+
+    <div class="section-title">
+      <mat-icon>person_add</mat-icon>
+      <span>Registro de Publicador</span>
     </div>
-  </div>
+
+    @if(formulario) {
+
+    <form [formGroup]="formulario" class="form-grid">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo de Documento</mat-label>
+        <mat-select formControlName="documentType">
+          <mat-option value="CC">Cédula Ciudadanía</mat-option>
+          <mat-option value="CE">Cédula Extranjería</mat-option>
+          <mat-option value="TI">Tarjeta I</mat-option>
+          <mat-option value="PP">Pasaporte</mat-option>
+          <mat-option value="PPT">Permiso Temporal</mat-option>
+          <mat-option value="DNI">DNI</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Número documento</mat-label>
+        <input matInput formControlName="documentNumber"/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Primer Nombre</mat-label>
+        <input matInput formControlName="firstName"/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Segundo Nombre</mat-label>
+        <input matInput formControlName="secondName"/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Primer Apellido</mat-label>
+        <input matInput formControlName="surname"/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Segundo Apellido</mat-label>
+        <input matInput formControlName="lastName"/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Teléfono</mat-label>
+        <input matInput formControlName="cellPhone"/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Correo electrónico</mat-label>
+        <input matInput formControlName="email"/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Género</mat-label>
+        <mat-select formControlName="gender">
+          <mat-option value="Masculino">Masculino</mat-option>
+          <mat-option value="Femenino">Femenino</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de nacimiento</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="birthdate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker touchUi #picker></mat-datepicker>
+      </mat-form-field>
+
+    </form>
+    }
+
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="save()">
+        <mat-icon>save</mat-icon>
+        Guardar
+      </button>
+    </div>
+
+  </mat-card>
+
 </div>

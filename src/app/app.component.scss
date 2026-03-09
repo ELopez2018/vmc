@@ -1,1 +1,17 @@
+.spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 9999;
+}
+
+// ::ng-deep .mat-mdc-progress-spinner circle {
+//   animation-duration: 0.1s !important;
+// }

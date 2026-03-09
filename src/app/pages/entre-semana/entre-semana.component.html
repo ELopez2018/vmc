@@ -1,32 +1,10 @@
 <div class="entre-semana">
   <mat-tab-group animationDuration="0ms">
     <mat-tab label="Principal">
-      @if (showSpinner) {
-      <div class="container mt-md-5 pt-md-5">
-        <div class="row mt-5 pt-5">
-          <div class="col-4 col-md-5"></div>
-          <div class="col-2 col-md-2 text-center mt-5 mt-md-5">
-            <mat-spinner></mat-spinner>
-          </div>
-          <div class="col-4 col-md-5"></div>
-        </div>
-      </div>
-      }
-      <vmc-programs [semanas]="semanas" [RoomA]="true" [room]="'A'"></vmc-programs>
+       <vmc-programs [semanas]="semanas" [RoomA]="true" [room]="'A'"></vmc-programs>
     </mat-tab>
     <mat-tab label="Auxiliar">
       <vmc-programs [semanas]="semanasSalaAuxiliar" [RoomA]="false" [room]="'B'"></vmc-programs>
-      @if (showSpinner) {
-      <div class="container mt-5 pt-5">
-        <div class="row mt-5 pt-5">
-          <div class="col-4 col-md-5"></div>
-          <div class="col-2 col-md-2 text-center mt-5">
-            <mat-spinner></mat-spinner>
-          </div>
-          <div class="col-4 col-md-5"></div>
-        </div>
-      </div>
-      }
     </mat-tab>
   </mat-tab-group>
 </div>

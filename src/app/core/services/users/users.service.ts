@@ -11,7 +11,10 @@ import { LoaderService } from "../loader/loader.service";
 export class UsersService {
   private server = Servers.URL;
   private api = Apis;
-  constructor(private httpClient: HttpClient, private loaderService: LoaderService) {}
+  constructor(
+    private httpClient: HttpClient,
+    private loaderService: LoaderService,
+  ) {}
 
   getAllUsers(): Observable<any> {
     const url = `${this.server}${this.api.USERS}`;
@@ -24,7 +27,7 @@ export class UsersService {
     return this.httpClient.get(url).pipe(
       tap((data) => {
         this.loaderService.setLoaderSearchPublisher(false);
-      })
+      }),
     );
   }
 
@@ -33,20 +36,45 @@ export class UsersService {
     return this.httpClient.post<Publisher>(url, publisher).pipe(tap((data) => console.log(data)));
   }
 
+delete(publisher: Publisher): Observable<any> {
+  const url = `${this.server}${this.api.USERS}`;
+
+  return this.httpClient.delete<Publisher>(url, {
+    body: this.convertUserToSaveRequest(publisher)
+  }).pipe(
+    tap(data => console.log(data))
+  );
+}
+
   getPublihersByAssignment(assignment: string, congregationId: number, fechaCadena: any): Observable<any> {
     this.loaderService.setLoaderSearchPublisher(true);
     const url = `${this.server}${this.api.USERS}/by-congregation/by-assignment?assignment=${assignment}&congregationId=${congregationId}&dateAssignment=${fechaCadena}`;
     return this.httpClient.get<any>(url).pipe(
       tap((data) => {
         this.loaderService.setLoaderSearchPublisher(false);
-      })
+      }),
     );
   }
 
-   getById(userId: Number): Observable<any> {
+  getById(userId: Number): Observable<any> {
     this.loaderService.setLoaderSearchPublisher(true);
     const url = `${this.server}${this.api.USERS}/by-id?userId=${userId}`;
     return this.httpClient.get<any>(url);
   }
+
+  convertUserToSaveRequest(user: any): any {
+  return {
+    id: user.id,
+    fullName: user.fullName,
+    email: user.email,
+    documentNumber: user.documentNumber,
+    documentType: user.documentType,
+    cellPhone: user.cellPhone,
+    phone: user.phone,
+    gender: user.gender,
+    birthdate: user.birthdate,
+    congregationId: user.myCongregationId
+  };
+}
 }
 //users/by-congregation/by-assignment?assignment=president&congregationId=2

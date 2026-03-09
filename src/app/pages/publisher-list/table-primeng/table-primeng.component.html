@@ -1,34 +1,49 @@
-<div class="flex justify-content-center mb-3">
-  <!-- <p-selectButton [options]="'Small'" [(ngModel)]="selectedSize" [multiple]="false" optionLabel="name" optionValue="class"></p-selectButton> -->
-</div>
-<p-table [value]="publisherList"  [tableStyle]="{ 'min-width': '50rem' }" [scrollable]="true" scrollHeight="650px" [styleClass]="'p-datatable-sm'">
-  <ng-template pTemplate="header">
-      <tr>
-          <th>id</th>
-          <th>Nombres y apellidos</th>
-          <th>Documento</th>
-          <th>Correo electrónico</th>
-          <th>Telefono</th>
-          <th></th>
-      </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-item>
-      <tr>
-          <td>{{ item.id }}</td>
-          <td>{{ item.fullName}}</td>
-          <td>{{ item.documentNumber }}</td>
-          <td>{{ item.email }}</td>
-          <td>{{ item.phone }}</td>
-          <td>
-            <!-- <p-button icon="pi pi-check" styleClass="p-button-rounded p-button-text"></p-button>
-            <p-button icon="pi pi-bookmark" styleClass="p-button-rounded p-button-secondary p-button-text"></p-button>
-            <p-button icon="pi pi-search" styleClass="p-button-rounded p-button-success p-button-text"></p-button>
-            <p-button icon="pi pi-user" styleClass="p-button-rounded p-button-info p-button-text"></p-button>
-            <p-button icon="pi pi-bell" styleClass="p-button-rounded p-button-warning p-button-text"></p-button> -->
-            <p-button icon="pi pi-user-edit" (onClick)="selectedEdit(item)" styleClass="p-button-rounded p-button-help p-button-text"></p-button>
-            <p-button icon="pi pi-times" (onClick)="delete(item)" styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
+<p-table [value]="publisherList" styleClass="jw-table" [scrollable]="true" scrollHeight="650px">
 
-          </td>
-      </tr>
+  <ng-template pTemplate="header">
+    <tr class="color">
+      <th>Publicador</th>
+      <th>Documento</th>
+      <th>Correo</th>
+      <th>Teléfono</th>
+      <th></th>
+    </tr>
   </ng-template>
+
+  <ng-template pTemplate="body" let-item>
+    <tr>
+
+      <td class="publisher-cell">
+        <div class="publisher-info">
+
+          <div class="avatar">
+            {{ item.fullName[0] }}
+          </div>
+
+          <div class="publisher-text">
+            <div class="name">{{ item.fullName }}</div>
+            <div class="id">ID: {{ item.id }}</div>
+          </div>
+
+        </div>
+      </td>
+
+      <td>{{ item.documentNumber }}</td>
+      <td>{{ item.email }}</td>
+      <td>{{ item.phone }}</td>
+
+      <td class="actions">
+
+        <p-button icon="pi pi-user-edit" (onClick)="selectedEdit(item)"
+          styleClass="p-button-rounded p-button-text action-edit">
+        </p-button>
+
+        <p-button icon="pi pi-trash" (onClick)="delete(item)" styleClass="p-button-rounded p-button-text action-delete">
+        </p-button>
+
+      </td>
+
+    </tr>
+  </ng-template>
+
 </p-table>

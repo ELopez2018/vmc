@@ -1,6 +1,7 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 import { DataService } from './core/services/data/data.service';
+import { LoaderService } from './core/services/loader/loader.service';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -9,6 +10,8 @@ import { DataService } from './core/services/data/data.service';
 })
 export class AppComponent {
 
+  showMatspinner = false;
+  loaderService = inject(LoaderService)
   title = 'vmc';
   showFiller = true;
 
@@ -33,6 +36,10 @@ export class AppComponent {
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
     this.dataService.getConfigs()
+    this.loaderService.getShowMatspinner$().subscribe((show) => {
+      console.log(show);
+      this.showMatspinner = show;
+    });
   }
 
   ngOnDestroy(): void {

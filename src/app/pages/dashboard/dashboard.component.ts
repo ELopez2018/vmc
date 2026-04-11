@@ -1,11 +1,14 @@
 import { MediaMatcher } from "@angular/cdk/layout";
-import { ChangeDetectorRef, Component, inject, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, DestroyRef, OnDestroy, OnInit, ViewChild, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { Congregation, Program, Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { DataService } from "src/app/core/services/data/data.service";
 import { MeetingsService } from "src/app/core/services/meetings/meetings.service";
 import { CongregationMock } from "../entre-semana/mocks/congregation.mock";
 import { MatSidenav } from "@angular/material/sidenav";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
+import { combineLatest, of } from "rxjs";
+import { catchError, switchMap, tap } from "rxjs/operators";
 
 @Component({
   selector: "vmc-dashboard",
@@ -13,74 +16,77 @@ import { LoaderService } from "src/app/core/services/loader/loader.service";
   styleUrls: ["./dashboard.component.scss"],
   standalone: false,
 })
-export class DashboardComponent {
-  title = "vmc";
-  showFiller = true;
-  @ViewChild("snav") snav!: MatSidenav;
-  mobileQuery: MediaQueryList;
+export class DashboardComponent implements OnInit, OnDestroy {
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly mediaMatcher = inject(MediaMatcher);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly loaderService = inject(LoaderService);
+  private readonly adminEmail = "estarlin.elv@gmail.com";
+  private readonly mobileQueryListener = () => this.changeDetectorRef.detectChanges();
 
-  fillerNav = Array.from({ length: 50 }, (_, i) => `Nav Item ${i + 1}`);
+  @ViewChild("snav") snav?: MatSidenav;
 
-  fillerContent = Array.from(
-    { length: 50 },
-    () =>
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-       labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-       laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-       voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-       cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
-  );
+  readonly mobileQuery = this.mediaMatcher.matchMedia("(max-width: 1366px)");
+  readonly shouldRun = true;
 
-  private _mobileQueryListener: () => void;
   public Superintendente!: Publisher;
   private programList: Program[] = [];
   public congregation: Congregation = CongregationMock;
-  isAdmin: any;
-  loaderService = inject(LoaderService);
+  public isAdmin = false;
+
   constructor(
-    changeDetectorRef: ChangeDetectorRef,
-    media: MediaMatcher,
     private dataService: DataService,
     private meetingsService: MeetingsService,
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.loaderService.hideMatspinner();
-    this.mobileQuery = media.matchMedia("(max-width: 1366px)");
-    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
-    this.mobileQuery.addListener(this._mobileQueryListener);
+    this.mobileQuery.addEventListener("change", this.mobileQueryListener);
     this.dataService.getConfigs();
-    this.dataService.getPublisher().subscribe((data) => {
-      this.Superintendente = data;
-    });
-    this.dataService.getIsAdmin().subscribe((data) => {
-      this.isAdmin = data || this.Superintendente.email === "estarlin.elv@gmail.com";
-    });
+
+    combineLatest([this.dataService.getPublisher(), this.dataService.getIsAdmin()])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([publisher, isAdmin]) => {
+        this.Superintendente = publisher;
+        this.isAdmin = Boolean(isAdmin || publisher.email === this.adminEmail);
+      });
+
+    this.dataService
+      .getCongregation$()
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap((congregation) => {
+          this.congregation = congregation;
+        }),
+        switchMap((congregation) =>
+          this.meetingsService.getWeeksValids(congregation.id).pipe(
+            catchError((error) => {
+              console.error(error);
+              return of([] as Program[]);
+            }),
+          ),
+        ),
+      )
+      .subscribe((programs) => {
+        this.programList = [...programs];
+      });
   }
 
   ngOnDestroy(): void {
-    this.dataService.getCongregation$().subscribe((data) => {
-      this.congregation = data;
-    });
-    this.mobileQuery.removeListener(this._mobileQueryListener);
-    this.meetingsService.getWeeksValids(this.congregation.id).subscribe(
-      (data) => {
-        this.programList = [...data];
-      },
-      (error) => {
-        console.error(error);
-      },
-    );
+    this.mobileQuery.removeEventListener("change", this.mobileQueryListener);
   }
 
-  shouldRun = true;
-  logout() {
+  logout(): void {
     this.dataService.logout();
   }
-  goToPrint() {
+
+  goToPrint(): void {
     this.dataService.setMeeting([...this.programList]);
   }
-  closeMenu() {
+
+  closeMenu(): void {
     if (this.mobileQuery.matches) {
-      this.snav.close();
+      this.snav?.close();
     }
   }
 }

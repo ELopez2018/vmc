@@ -170,9 +170,29 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
             if (data == "close") {
               return;
             }
-            item.openingPrayer = data;
-            program.openingPrayer = data;
-            this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {});
+            if (data) {
+              item.openingPrayer = data;
+              program.openingPrayer = data;
+              this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {});
+              return;
+            }
+            if (data == null) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: `Esta a punto de borrar la oración inicial del programa semanal`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, bórralo!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  item.openingPrayer = data;
+                  program.openingPrayer = data;
+                  this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {});
+                }
+              });
+            }
           })
           .catch((data) => {
             console.info(data);
@@ -185,9 +205,29 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
             if (data == "close") {
               return;
             }
-            item.finalPrayer = data;
-            program.finalPrayer = data;
-            this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {});
+            if (data) {
+              item.finalPrayer = data;
+              program.finalPrayer = data;
+              this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {});
+              return;
+            }
+            if (data == null) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: `Esta a punto de borrar la oración final del programa semanal`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, bórralo!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  item.finalPrayer = data;
+                  program.finalPrayer = data;
+                  this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {});
+                }
+              });
+            }
           })
           .catch((data) => {
             console.info(data);
@@ -200,11 +240,33 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
             if (data == "close") {
               return;
             }
-            item.president = data;
-            program.president = data;
-            this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {
-              console.info(data);
-            });
+            if (data) {
+              item.president = data;
+              program.president = data;
+              this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {
+                console.info(data);
+              });
+              return;
+            }
+            if (data == null) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: `Esta a punto de borrar el presidente del programa semanal`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, bórralo!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  item.president = data;
+                  program.president = data;
+                  this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {
+                    console.info(data);
+                  });
+                }
+              });
+            }
           })
           .catch((data) => {
             console.info(data);
@@ -217,11 +279,33 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
             if (data == "close") {
               return;
             }
-            item.assistantAdviser = data;
-            program.assistantAdviser = data;
-            this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {
-              console.info(data);
-            });
+            if (data) {
+              item.assistantAdviser = data;
+              program.assistantAdviser = data;
+              this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {
+                console.info(data);
+              });
+              return;
+            }
+            if (data == null) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: `Esta a punto de borrar el consejero auxiliar del programa semanal`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, bórralo!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  item.assistantAdviser = data;
+                  program.assistantAdviser = data;
+                  this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {
+                    console.info(data);
+                  });
+                }
+              });
+            }
           })
           .catch((data) => {
             console.info(data);
@@ -234,11 +318,33 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
             if (data == "close") {
               return;
             }
-            item.meeting.openingSong = data;
-            program.meeting.openingSong = data;
-            this.meetingsService.updateMeeting(item.meeting).subscribe((data) => {
-              console.info(data);
-            });
+            if (data) {
+              item.meeting.openingSong = data;
+              program.meeting.openingSong = data;
+              this.meetingsService.updateMeeting(item.meeting).subscribe((data) => {
+                console.info(data);
+              });
+              return;
+            }
+            if (data == null) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: `Esta a punto de borrar la canción inicial del programa semanal`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, bórralo!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  item.meeting.openingSong = data;
+                  program.meeting.openingSong = data;
+                  this.meetingsService.updateMeeting(item.meeting).subscribe((data) => {
+                    console.info(data);
+                  });
+                }
+              });
+            }
           })
           .catch((data) => {
             console.info(data);
@@ -251,11 +357,33 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
             if (data == "close") {
               return;
             }
-            item.meeting.intermediateSong = data;
-            program.meeting.intermediateSong = data;
-            this.meetingsService.updateMeeting(item.meeting).subscribe((data) => {
-              console.info(data);
-            });
+            if (data) {
+              item.meeting.intermediateSong = data;
+              program.meeting.intermediateSong = data;
+              this.meetingsService.updateMeeting(item.meeting).subscribe((data) => {
+                console.info(data);
+              });
+              return;
+            }
+            if (data == null) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: `Esta a punto de borrar la canción intermedia del programa semanal`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, bórralo!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  item.meeting.intermediateSong = data;
+                  program.meeting.intermediateSong = data;
+                  this.meetingsService.updateMeeting(item.meeting).subscribe((data) => {
+                    console.info(data);
+                  });
+                }
+              });
+            }
           })
           .catch((data) => {
             console.info(data);
@@ -304,8 +432,6 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
         break;
     }
   }
-
-
 
   selectAssignmentType(item: WeeklyProgram, type: string) {
     switch (item.assignment.number) {
@@ -377,12 +503,34 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
             if (data == "close") {
               return;
             }
-            console.log("ya paso");
-            item.responsible = data;
-            itemA.responsible = data;
-            this.meetingsService.saveOrUpdateWeeklyProgram(itemA).subscribe((data) => {
-              console.info("saved responsible", data);
-            });
+            if (data) {
+              console.log("ya paso");
+              item.responsible = data;
+              itemA.responsible = data;
+              this.meetingsService.saveOrUpdateWeeklyProgram(itemA).subscribe((data) => {
+                console.info("saved responsible", data);
+              });
+              return;
+            }
+            if (data == null) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: `Esta a punto de borrar el responsable de la asignación`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, bórralo!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  item.responsible = data;
+                  itemA.responsible = data;
+                  this.meetingsService.saveOrUpdateWeeklyProgram(itemA).subscribe((data) => {
+                    console.info("saved responsible", data);
+                  });
+                }
+              });
+            }
           })
           .catch((data) => {
             console.error(data);
@@ -396,22 +544,44 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
             if (data == "close") {
               return;
             }
-            item.assistant = <Publisher>data;
-            if (item.assistant.designations?.find((i) => i.description)) {
+            if (data) {
+              item.assistant = <Publisher>data;
+              if (item.assistant.designations?.find((i) => i.description)) {
+              }
+              itemA.assistant = <Publisher>data;
+
+              this.meetingsService.saveOrUpdateWeeklyProgram(itemA).subscribe((data) => {
+                console.info("saved assistant", data);
+              });
+
+              if (this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY_READER) {
+                this.modalService.info(
+                  "Recordatorio",
+                  "Los hermanos deben ser lectores aprobados por el cuerpo de  Ancianos (sfl 1:2.8). Si ya fué aprobado vaya al modulo PRIVILEGIOS.",
+                  ModalTitleEnums.INFORMACION,
+                  ModalTypeEnums.INFO,
+                );
+              }
+              return;
             }
-            itemA.assistant = <Publisher>data;
-
-            this.meetingsService.saveOrUpdateWeeklyProgram(itemA).subscribe((data) => {
-              console.info("saved assistant", data);
-            });
-
-            if (this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY_READER) {
-              this.modalService.info(
-                "Recordatorio",
-                "Los hermanos deben ser lectores aprobados por el cuerpo de  Ancianos (sfl 1:2.8). Si ya fué aprobado vaya al modulo PRIVILEGIOS.",
-                ModalTitleEnums.INFORMACION,
-                ModalTypeEnums.INFO,
-              );
+            if (data == null) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: `Esta a punto de borrar el ayudante de la asignación`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, bórralo!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  item.assistant = <Publisher>data;
+                  itemA.assistant = <Publisher>data;
+                  this.meetingsService.saveOrUpdateWeeklyProgram(itemA).subscribe((data) => {
+                    console.info("saved assistant", data);
+                  });
+                }
+              });
             }
           })
           .catch((data) => {
@@ -463,11 +633,33 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
             if (data == "close") {
               return;
             }
-            item.responsibleB = data;
-            itemResponsibleB.responsible = data;
-            this.meetingsService.saveOrUpdateWeeklyProgram(itemResponsibleB).subscribe((data) => {
-              console.info("saved responsible", data);
-            });
+            if (data) {
+              item.responsibleB = data;
+              itemResponsibleB.responsible = data;
+              this.meetingsService.saveOrUpdateWeeklyProgram(itemResponsibleB).subscribe((data) => {
+                console.info("saved responsible", data);
+              });
+              return;
+            }
+            if (data == null) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: `Esta a punto de borrar el responsable B de la asignación`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, bórralo!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  item.responsibleB = data;
+                  itemResponsibleB.responsible = data;
+                  this.meetingsService.saveOrUpdateWeeklyProgram(itemResponsibleB).subscribe((data) => {
+                    console.info("saved responsible", data);
+                  });
+                }
+              });
+            }
           })
           .catch((data) => {
             console.error(data);
@@ -486,19 +678,41 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
             if (data == "close") {
               return;
             }
-            item.assistantB = <Publisher>data;
-            itemAssistantB.assistant = <Publisher>data;
-            this.meetingsService.saveOrUpdateWeeklyProgram(itemAssistantB).subscribe((data) => {
-              console.info("saved assistantB", data);
-            });
+            if (data) {
+              item.assistantB = <Publisher>data;
+              itemAssistantB.assistant = <Publisher>data;
+              this.meetingsService.saveOrUpdateWeeklyProgram(itemAssistantB).subscribe((data) => {
+                console.info("saved assistantB", data);
+              });
 
-            if (this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY_READER) {
-              this.modalService.info(
-                "Recordatorio",
-                "Los hermanos deben ser lectores aprobados por el cuerpo de  Ancianos (sfl 1:2.8). Si ya fué aprobado vaya al modulo PRIVILEGIOS.",
-                ModalTitleEnums.INFORMACION,
-                ModalTypeEnums.INFO,
-              );
+              if (this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY_READER) {
+                this.modalService.info(
+                  "Recordatorio",
+                  "Los hermanos deben ser lectores aprobados por el cuerpo de  Ancianos (sfl 1:2.8). Si ya fué aprobado vaya al modulo PRIVILEGIOS.",
+                  ModalTitleEnums.INFORMACION,
+                  ModalTypeEnums.INFO,
+                );
+              }
+              return;
+            }
+            if (data == null) {
+              Swal.fire({
+                title: "¿Estás seguro?",
+                text: `Esta a punto de borrar el ayudante B de la asignación`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, bórralo!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  item.assistantB = <Publisher>data;
+                  itemAssistantB.assistant = <Publisher>data;
+                  this.meetingsService.saveOrUpdateWeeklyProgram(itemAssistantB).subscribe((data) => {
+                    console.info("saved assistantB", data);
+                  });
+                }
+              });
             }
           })
           .catch((data) => {

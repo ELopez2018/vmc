@@ -46,7 +46,6 @@ export class UsersCreateOrUpdateComponent implements OnInit, AfterViewInit {
         this.makeFormWithData(publi);
       });
     } else {
-      console.log(this.formulario);
       this.makeForm();
     }
 
@@ -106,56 +105,21 @@ export class UsersCreateOrUpdateComponent implements OnInit, AfterViewInit {
     const nameParts = [values.firstName, values.secondName, values.surname, values.lastName].filter(Boolean);
     values.fullName = nameParts.join(" ").trim();
     values.congregation = this.congregationSelected;
-    this.usersService.save(values).subscribe(
-      (data) => {
+    values.congregationId = this.congregationSelected?.id ?? null;
+    this.usersService.save(values).subscribe({
+      next: (data) => {
         this.modalService.info("Se han guardados los datos", "El usuario fue almacenado", ModalTitleEnums.GREAT, ModalTypeEnums.SUCCESS);
         this.formulario.reset();
         this.dataService.getPublishersFromDB();
       },
-      (error) => {
+      error: (error) => {
         this.modalService.errorHandler(error, "No se puede guardar.".toUpperCase());
-        //this.modalService.errorHandler(error.error, "No se puede guardar.".toUpperCase())
       },
-    );
+    });
   }
 
   onChange() {
     console.log(this.congregationSelected);
   }
 }
-/*
-    this.formulario = this.fb.group({
-      fullName: new FormControl(""),
-      image: new FormControl(""),
-      firstName: new FormControl(""),
-      secondName: new FormControl(""),
-      lastName: new FormControl(""),
-      surname: new FormControl(""),
-      birthdate: new FormControl(""),
-      gender: new FormControl(""),
-      documentNumber: new FormControl(""),
-      documentType: new FormControl(""),
-      cellPhone: new FormControl(""),
-      phone: new FormControl(""),
-      email: new FormControl(""),
-      congregationid: new FormControl(this.congregationSelected.id ?? 0)
-    })
 
-    this.formulario = this.fb.group({
-      fullName: new FormControl(""),
-      image: new FormControl(""),
-      firstName: new FormControl("Estarlin"),
-      secondName: new FormControl("Enrique"),
-      lastName: new FormControl("Valero"),
-      surname: new FormControl("Lopez"),
-      birthdate: new FormControl(""),
-      gender: new FormControl("Masculino"),
-      documentNumber: new FormControl("1365875"),
-      documentType: new FormControl("ce"),
-      cellPhone: new FormControl("3204454846"),
-      phone: new FormControl(""),
-      email: new FormControl("estarlin.elv1@gmail.com"),
-      congregation: new FormControl(this.congregationSelected ?? null)
-    })
-
-    */

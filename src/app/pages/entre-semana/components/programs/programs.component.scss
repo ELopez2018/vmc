@@ -18,6 +18,7 @@
     padding: 10px 0 0 0;
     border-top: none;
     border-bottom-style: double;
+      width: 100%;
   }
 
   legend {
@@ -69,7 +70,7 @@
   .text-title-custom {
     font-size: 10px;
     font-weight: bold;
-    line-height: 24px;
+    line-height: 18px;
   }
 
   .big-title {
@@ -87,31 +88,32 @@
   }
 
   .text-publisher {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1366px) {
   .program {
     .width-timeStart {
-      width: 7%;
+      width: 36px;
     }
 
     .big-title {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      width: 44vw;
+      // width: 44vw;
     }
 
     &__header {
-      padding: 50px 0 0 0;
+      width: 100%;
+      padding: 0px 0 0 0;
       border-top: none;
       border-bottom-style: double;
     }
 
     .wrapper {
-      height: 87vh;
+      height: 90vh;
       overflow: auto;
     }
 
@@ -119,7 +121,7 @@
       font-size: 1rem;
       margin-bottom: -2px;
       color: white;
-      width: 50vw;
+      width: 44vw;
       height: 35px;
       padding-left: 10px;
       position: relative;
@@ -141,7 +143,7 @@
 @media (min-width: 1600px) {
   .program {
     .width-timeStart {
-      width: 5%;
+      width: 36px;
     }
 
     .wrapper {
@@ -153,7 +155,7 @@
       font-size: 1rem;
       margin-bottom: -2px;
       color: white;
-      width: 45vw;
+      width: 39vw;
       padding-left: 10px;
       position: relative;
 

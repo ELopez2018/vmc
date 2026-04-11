@@ -8,6 +8,7 @@ import { Congregation } from "../../core/interfaces/reuniones.interface";
 import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
 import { Subscription } from "rxjs";
 import { PrintPdfOnePageService } from "src/app/core/services/pdf/print-pdf-one-page.service";
+import { LoaderService } from "src/app/core/services/loader/loader.service";
 
 @Component({
   selector: "app-printer",
@@ -16,6 +17,9 @@ import { PrintPdfOnePageService } from "src/app/core/services/pdf/print-pdf-one-
   standalone: false,
 })
 export class PrinterComponent implements OnInit {
+  fechaDesde: any;
+  fechaHasta: any;
+
   @ViewChild("pdfViewerOnDemand") pdfViewerOnDemand: any;
   @ViewChild("pdfViewerAutoLoad") pdfViewerAutoLoad: any;
   @Output() onClosed = new EventEmitter();
@@ -27,13 +31,15 @@ export class PrinterComponent implements OnInit {
     private meetingsService: MeetingsService,
     private dataService: DataService,
     private modalService: ModalService,
-    private printPdfOnePageService: PrintPdfOnePageService
+    private printPdfOnePageService: PrintPdfOnePageService,
+    private loaderService: LoaderService,
+
   ) {
     this.modalService.loading();
     this.subs.add(
       this.dataService.getCongregation$().subscribe((data) => {
         this.congregation = data;
-      })
+      }),
     );
     this.subs.add(
       this.dataService.getMeetingsPDF$().subscribe(
@@ -48,14 +54,12 @@ export class PrinterComponent implements OnInit {
         },
         (error) => {
           this.modalService.errorHandler(error, "Error");
-        }
-      )
+        },
+      ),
     );
   }
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
 
   getWeeks() {
     if (this.congregation) {
@@ -67,7 +71,7 @@ export class PrinterComponent implements OnInit {
         (error) => {
           this.modalService.close();
           this.modalService.errorHandler("No se han podido obtener las semanas", "Error");
-        }
+        },
       );
     }
   }
@@ -110,5 +114,18 @@ export class PrinterComponent implements OnInit {
 
   onCLose() {
     this.onClosed.emit(true);
+  }
+  consultar() {
+    this.loaderService.showMatspinner();
+    this.meetingsService.getProgramsByDateRange(this.fechaDesde, this.fechaHasta, this.congregation.id).subscribe({
+      next: (data) => {
+        this.loaderService.hideMatspinner();
+        this.printMeetings(this.dataService.makePDfVersion(data));
+      },
+      error: (error) => {
+        this.loaderService.hideMatspinner();
+        this.modalService.errorHandler("No se han podido obtener los programas", "Error");
+      },
+    });
   }
 }

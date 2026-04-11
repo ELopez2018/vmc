@@ -1,328 +1,275 @@
 <div class="publisher">
+  <div class="col-md-12 d-flex justify-content-end p-2 pe-4">
+    <vmc-icon-close (click)="closeModal()"></vmc-icon-close>
+  </div>
   <div class="container">
-    <div class="row">
-      <div class="col-md-12 d-flex justify-content-end p-2 pe-4">
-        <vmc-icon-close (click)="closeModal()"></vmc-icon-close>
-      </div>
-    </div>
     <div class="row">
       <div class="col-md-12">
         <mat-tab-group animationDuration="0ms">
           <mat-tab label="Frecuentes">
             @if (assignment && assignment.assignment) {
-            <fieldset class="fieldset-basic">
-              <legend></legend>
-
-              <div class="row">
-                <div class="col-md-2">
-                  <span>Asignaciónes:</span>
+              <fieldset class="fieldset-basic">
+                <legend></legend>
+                <div class="row">
+                  <div class="col-md-2">Título:</div>
+                  <div class="col-md-6 h6">{{ assignment.assignment.title }}</div>
+                  <div class="col-md-2">Tiempo:</div>
+                  <div class="col-md-2">{{ assignment.assignment.time }} {{ assignment.assignment.timeType }}</div>
                 </div>
-                <div class="col-md-6 h6">
-                  <span>{{ assignment.assignment.title }}</span>
+                <div class="row">
+                  <div class="col-md-2">Asignado</div>
+                  <div class="col-md-5 h6">
+                    <input
+                      class="form-control mb-3"
+                      [value]="type === 'responsible' ? (assignment.responsible?.fullName ?? 'Por asignar') : (assignment.assistant?.fullName ?? 'Por asignar')"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-1"><button class="btn btn-sm btn-danger" (click)="clean()">Borrar</button></div>
+                  <div class="col-md-2">Asignación:</div>
+                  <div class="col-md-2">
+                    {{ type === "responsible" ? "Responsable" : "Asistente" }}
+                  </div>
                 </div>
-                <div class="col-md-2">
-                  <div>Tiempo:</div>
-                </div>
-                <div class="col-md-2">
-                  <span>
-                    {{ assignment.assignment.time }}
-                    {{ assignment.assignment.timeType }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-2">
-                  <div>Tips:</div>
-                </div>
-                <div class="col-md-6 h6">
-                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text"
-                    id="tips" name="tips" />
-                </div>
-                <div class="col-md-2">
-                  <div>Mostrar:</div>
-                </div>
-                <div class="col-md-2">
-                  <mat-slide-toggle [(ngModel)]="assignment.assignment.showTips"></mat-slide-toggle>
-                </div>
-              </div>
-            </fieldset>
+              </fieldset>
             }
 
-            <div class="">
-              <fieldset class="fieldset-basic table-container">
-                <legend></legend>
-
-                @if (showSpinner) {
+            <fieldset class="fieldset-basic">
+              @if (showSpinner) {
                 <mat-spinner></mat-spinner>
-                }
+              }
 
-                @if (!isAssigment) {
-                @if (usedPublishersDataSource.data.length > 0) {
+              @if (!isAssigment) {
                 <div class="table-responsive">
+                  <input class="form-control mb-3" placeholder="busqueda1" (keyup)="onSearch($event, 'usedPublishersDataSource')" />
+
                   <table mat-table [dataSource]="usedPublishersDataSource" matSort class="mat-elevation-z8">
-                    <!-- Publicador Column -->
                     <ng-container matColumnDef="fullName">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
                     </ng-container>
-                    <!-- Dynamic Count Column -->
+
                     <ng-container matColumnDef="count">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ headerText }}</th>
                       <td mat-cell *matCellDef="let item">
-                        @if (assignmentType === assignmentTypeEnums.PRESIDENT) {
-                        {{ item.presidentCount }}
-                        }
-                        @if (assignmentType === assignmentTypeEnums.OPENING_PRAYER) {
-                        {{ item.openingPrayerCount }}
-                        }
-                        @if (assignmentType === assignmentTypeEnums.FINAL_PRAYER) {
-                        {{ item.finalPrayerCount }}
-                        }
+                        {{
+                          assignmentType === assignmentTypeEnums.PRESIDENT
+                            ? item.presidentCount
+                            : assignmentType === assignmentTypeEnums.OPENING_PRAYER
+                              ? item.openingPrayerCount
+                              : item.finalPrayerCount
+                        }}
                       </td>
                     </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count'];" (click)="selected(row)"></tr>
+
+                    <ng-container matColumnDef="lastAssignmentDate">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Ultima Asignación</th>
+                      <td mat-cell *matCellDef="let item">
+                        {{ parseDate(item.lastAssignmentDate) }}
+                      </td>
+                    </ng-container>
+
+                    <!-- NUEVA COLUMNA -->
+                    <ng-container matColumnDef="more">
+                      <th mat-header-cell *matHeaderCellDef>Más</th>
+                      <td mat-cell *matCellDef="let item">
+                        <button class="btn btn-sm btn-primary" (click)="more(item, $event)">Más..</button>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count', 'lastAssignmentDate', 'more']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count', 'lastAssignmentDate', 'more']" (click)="selected(row)"></tr>
                   </table>
                 </div>
-                }
-                }
+              }
 
-                @if (isAssigment) {
-                @if (usedPublishersAllByAssigDataSource.data.length > 0) {
+              @if (isAssigment) {
                 <div class="table-responsive">
+                  <input class="form-control mb-3" placeholder="busqueda" (keyup)="onSearch($event, 'usedPublishersAllByAssigDataSource')" />
+
                   <table mat-table [dataSource]="usedPublishersAllByAssigDataSource" matSort class="mat-elevation-z8">
                     <ng-container matColumnDef="fullName">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
                       <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
                     </ng-container>
+
                     <ng-container matColumnDef="count">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ headerText }}</th>
                       <td mat-cell *matCellDef="let item">{{ item.count }}</td>
                     </ng-container>
+
                     <ng-container matColumnDef="all">
                       <th mat-header-cell *matHeaderCellDef mat-sort-header>Todas</th>
                       <td mat-cell *matCellDef="let item">{{ item.all }}</td>
                     </ng-container>
+
+                    <ng-container matColumnDef="lastAssignByRoom">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Sala {{ room == "B" ? "Auxiliar" : "Principal" }}</th>
+                      <td mat-cell *matCellDef="let item">
+                        {{ parseDate(item.lastAssignByRoom) }}
+                      </td>
+                    </ng-container>
+
                     <ng-container matColumnDef="lastDate">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Ultima Fecha</th>
-                      <td mat-cell *matCellDef="let item">{{ parseDate(item.lastDate) }}</td>
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Ultima Participacion</th>
+                      <td mat-cell *matCellDef="let item">
+                        {{ parseDate(item.lastDate) }}
+                      </td>
                     </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count', 'all', 'lastDate']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count', 'all', 'lastDate'];"
-                      (click)="selected(row)"></tr>
+
+                    <!-- NUEVA -->
+                    <ng-container matColumnDef="more">
+                      <th mat-header-cell *matHeaderCellDef>Más</th>
+                      <td mat-cell *matCellDef="let item">
+                        <button class="btn btn-sm btn-primary" (click)="more(item, $event); $event.stopPropagation()">Más..</button>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count', 'all', 'lastAssignByRoom', 'lastDate', 'more']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count', 'all', 'lastAssignByRoom', 'lastDate', 'more']" (click)="selected(row)"></tr>
                   </table>
                 </div>
-                }
-                }
-              </fieldset>
-            </div>
+              }
+            </fieldset>
           </mat-tab>
+
+          <!-- HERMANOS -->
           <mat-tab label="Hermanos">
-            @if (assignment && assignment.assignment) {
-            <fieldset class="fieldset-basic">
-              <legend></legend>
-
-              <div class="row">
-                <div class="col-md-2">
-                  <span>Asignación:</span>
-                </div>
-                <div class="col-md-6 h6">
-                  <span>{{ assignment.assignment.title }}</span>
-                </div>
-                <div class="col-md-2">
-                  <div>Tiempo:</div>
-                </div>
-                <div class="col-md-2">
-                  <span>
-                    {{ assignment.assignment.time }}
-                    {{ assignment.assignment.timeType }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-2">
-                  <div>Tips:</div>
-                </div>
-                <div class="col-md-6 h6">
-                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text"
-                    id="tips" name="tips" />
-                </div>
-                <div class="col-md-2">
-                  <div>Mostrar:</div>
-                </div>
-                <div class="col-md-2">
-                  <mat-slide-toggle [(ngModel)]="assignment.assignment.showTips"></mat-slide-toggle>
-                </div>
-              </div>
-            </fieldset>
-            }
-            <div class="">
-              <fieldset class="fieldset-basic table-container">
-                <legend></legend>
-
-                @if (showSpinner) {
-                <mat-spinner></mat-spinner>
-                }
-
-                @if (maleDataSource.data.length > 0) {
+            <fieldset class="fieldset-basic table-container">
+              @if (maleDataSource.data.length > 0) {
                 <div class="table-responsive">
-                  <table mat-table [dataSource]="maleDataSource" matSort class="mat-elevation-z8">
+                  <table mat-table [dataSource]="maleDataSource" matSort>
                     <ng-container matColumnDef="fullName">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
+                      <th mat-header-cell *matHeaderCellDef>Publicador</th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
                     </ng-container>
+
                     <ng-container matColumnDef="estado">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
-                      <td mat-cell *matCellDef="let item" class="text-center participa"
-                        [ngClass]="{ noparticipa: !item.participate }">
-                        {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
+                      <th mat-header-cell *matHeaderCellDef>Estado</th>
+                      <td mat-cell *matCellDef="let item">
+                        <span [class.text-danger]="!item.participate" [class.text-success]="item.participate">
+                          {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
+                        </span>
                       </td>
                     </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="['fullName', 'estado']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'estado'];" (click)="selected(row)"></tr>
+
+                    <ng-container matColumnDef="more">
+                      <th mat-header-cell *matHeaderCellDef>Más</th>
+                      <td mat-cell *matCellDef="let item">
+                        <button class="btn btn-sm btn-primary" (click)="more(item, $event)">Más..</button>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'estado', 'more']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'estado', 'more']" (click)="selected(row)"></tr>
                   </table>
                 </div>
-                }
-              </fieldset>
-            </div>
+              }
+            </fieldset>
           </mat-tab>
+
+          <!-- HERMANAS -->
           <mat-tab label="Hermanas">
-            @if (assignment && assignment.assignment) {
-            <fieldset class="fieldset-basic">
-              <legend></legend>
-
-              <div class="row">
-                <div class="col-md-2">
-                  <span>Asignación:</span>
-                </div>
-                <div class="col-md-6 h6">
-                  <span>{{ assignment.assignment.title }}</span>
-                </div>
-                <div class="col-md-2">
-                  <div>Tiempo:</div>
-                </div>
-                <div class="col-md-2">
-                  <span>
-                    {{ assignment.assignment.time }}
-                    {{ assignment.assignment.timeType }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-2">
-                  <div>Tips:</div>
-                </div>
-                <div class="col-md-6 h6">
-                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text"
-                    id="tips" name="tips" />
-                </div>
-                <div class="col-md-2">
-                  <div>Mostrar:</div>
-                </div>
-                <div class="col-md-2">
-                  <mat-slide-toggle [(ngModel)]="assignment.assignment.showTips"></mat-slide-toggle>
-                </div>
-              </div>
-            </fieldset>
-            }
-            <div class="">
-              <fieldset class="fieldset-basic table-container">
-                <legend></legend>
-
-                @if (showSpinner) {
-                <mat-spinner></mat-spinner>
-                }
-
-                @if (femaleDataSource.data.length > 0) {
+            <fieldset class="fieldset-basic table-container">
+              @if (femaleDataSource.data.length > 0) {
                 <div class="table-responsive">
-                  <table mat-table [dataSource]="femaleDataSource" matSort class="mat-elevation-z8">
+                  <table mat-table [dataSource]="femaleDataSource" matSort>
                     <ng-container matColumnDef="fullName">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
+                      <th mat-header-cell *matHeaderCellDef>Publicador</th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
                     </ng-container>
+
                     <ng-container matColumnDef="estado">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
-                      <td mat-cell *matCellDef="let item" class="text-center participa"
-                        [ngClass]="{ noparticipa: !item.participate }">
-                        {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
+                      <th mat-header-cell *matHeaderCellDef>Estado</th>
+                      <td mat-cell *matCellDef="let item">
+                        <span [class.text-danger]="!item.participate" [class.text-success]="item.participate">
+                          {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
+                        </span>
                       </td>
                     </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="['fullName', 'estado']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'estado'];" (click)="selected(row)"></tr>
+
+                    <ng-container matColumnDef="more">
+                      <th mat-header-cell *matHeaderCellDef>Más</th>
+                      <td mat-cell *matCellDef="let item">
+                        <button class="btn btn-sm btn-primary" (click)="more(item, $event)">Más..</button>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'estado', 'more']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'estado', 'more']" (click)="selected(row)"></tr>
                   </table>
                 </div>
-                }
-              </fieldset>
-            </div>
-          </mat-tab>
-          <mat-tab label="Todos">
-            @if (assignment && assignment.assignment) {
-            <fieldset class="fieldset-basic">
-              <legend></legend>
-
-              <div class="row">
-                <div class="col-md-2">
-                  <span>Asignación:</span>
-                </div>
-                <div class="col-md-6 h6">
-                  <span>{{ assignment.assignment.title }}</span>
-                </div>
-                <div class="col-md-2">
-                  <div>Tiempo:</div>
-                </div>
-                <div class="col-md-2">
-                  <span>
-                    {{ assignment.assignment.time }}
-                    {{ assignment.assignment.timeType }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-2">
-                  <div>Tips:</div>
-                </div>
-                <div class="col-md-6 h6">
-                  <input class="form-control col-md-8 mb-3" [(ngModel)]="assignment.assignment.tips" type="text"
-                    id="tips" name="tips" />
-                </div>
-                <div class="col-md-2">
-                  <div>Mostrar:</div>
-                </div>
-                <div class="col-md-2">
-                  <mat-slide-toggle [(ngModel)]="assignment.assignment.showTips"></mat-slide-toggle>
-                </div>
-              </div>
+              }
             </fieldset>
-            }
-            <div class="">
-              <fieldset class="fieldset-basic table-container">
-                <legend></legend>
+          </mat-tab>
 
-                @if (showSpinner) {
-                <mat-spinner></mat-spinner>
-                }
-
-                @if (publishersAllDataSource.data.length > 0) {
+          <!-- TODOS -->
+          <mat-tab label="Todos">
+            <fieldset class="fieldset-basic table-container">
+              @if (publishersAllDataSource.data.length > 0) {
                 <div class="table-responsive">
-                  <table mat-table [dataSource]="publishersAllDataSource" matSort class="mat-elevation-z8">
+                  <table mat-table [dataSource]="publishersAllDataSource" matSort>
                     <ng-container matColumnDef="fullName">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
+                      <th mat-header-cell *matHeaderCellDef>Publicador</th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
                     </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="['fullName']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['fullName'];" (click)="selected(row)"></tr>
+
+                    <ng-container matColumnDef="more">
+                      <th mat-header-cell *matHeaderCellDef>Más</th>
+                      <td mat-cell *matCellDef="let item">
+                        <button class="btn btn-sm btn-primary" (click)="more(item, $event)">Más..</button>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'more']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'more']" (click)="selected(row)"></tr>
                   </table>
                 </div>
-                }
-              </fieldset>
-            </div>
+              }
+            </fieldset>
           </mat-tab>
         </mat-tab-group>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUB MODAL -->
+<div class="sub-modal-backdrop" *ngIf="showSubModal">
+  <div class="sub-modal">
+    <!-- HEADER -->
+    <div class="d-flex justify-content-end align-items-end mb-3">
+      <button class="btn-close" (click)="closeSubModal()"></button>
+    </div>
+    <h5 class="m-0 text-center">{{ subModalDataSourceNamePublisher }}</h5>
+
+    <!-- TABLA -->
+    <div class="table-responsive">
+      <table mat-table [dataSource]="subModalDataSource" class="mat-elevation-z8 w-100">
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let item">
+            {{ parseDate(item.date) }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Título</th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.title }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let item">
+            {{ item.type }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['date', 'title', 'type']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['date', 'title', 'type']"></tr>
+      </table>
     </div>
   </div>
 </div>

@@ -37,9 +37,10 @@ export class AppComponent {
     this.mobileQuery.addListener(this._mobileQueryListener);
     this.dataService.getConfigs()
     this.loaderService.getShowMatspinner$().subscribe((show) => {
-      console.log(show);
       this.showMatspinner = show;
     });
+
+    this.dataService.getPublishersFromDB();
   }
 
   ngOnDestroy(): void {

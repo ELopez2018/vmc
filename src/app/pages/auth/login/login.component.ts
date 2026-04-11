@@ -27,12 +27,14 @@ export class LoginComponent {
     });
   }
   login() {
+    this.error = false;
     this.loaderService.showMatspinner();
     this.authService.login(this.credential.getRawValue()).subscribe({
       next: (data) => {
-        this.error = false;
+        console.log('Logueado');
       },
       error: (error) => {
+        this.loaderService.hideMatspinner();
         this.error = true;
       },
     });

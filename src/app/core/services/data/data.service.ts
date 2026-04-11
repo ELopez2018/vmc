@@ -96,6 +96,9 @@ export class DataService {
   public getPubliherList$(): Observable<Publisher[]> {
     if (!this.publisherListTemp || this.publisherListTemp?.length < 1) {
       this.getPublishersFromDB();
+    } else {
+      this.publisherList.next(this.publisherListTemp);
+      return this.publisherList.asObservable();
     }
     return this.publisherList.asObservable();
   }

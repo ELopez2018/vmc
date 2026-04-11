@@ -19,7 +19,7 @@ export const LoginGuard: CanActivateFn = (route, state) => {
     return true;
   } else {
     // El token no existe o ha expirado, redirigir a la página de login
-    router.navigate(['/inicio']);
+    router.navigate(['/']);
     return false;
   }
 };

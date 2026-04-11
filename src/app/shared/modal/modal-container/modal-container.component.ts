@@ -31,6 +31,8 @@ export class ModalContainerComponent implements OnInit {
   @Input() assignmentType!: string;
   @Input() sectionMeeting!: string;
   @Input() isModal: boolean = true;
+  @Input() type: string = 'responsible' ;
+  @Input() room: string = 'A' ;
 
   public typeOfModals = ModalTypeEnums
 

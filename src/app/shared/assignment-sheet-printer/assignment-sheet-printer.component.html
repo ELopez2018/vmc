@@ -6,7 +6,52 @@
     </div>
   </div>
   }
+  <!-- FILTROS -->
+  <div class="row align-items-end mb-3">
 
+    <div class="col-md-3 mb-2">
+      <label class="form-label fw-semibold">Fecha desde</label>
+
+      <p-calendar
+        [(ngModel)]="fechaDesde"
+        [showIcon]="true"
+        dateFormat="dd/mm/yy"
+        inputId="fechaDesde"
+        styleClass="w-100"
+        placeholder="Seleccionar fecha">
+      </p-calendar>
+
+    </div>
+
+    <div class="col-md-3 mb-2">
+      <label class="form-label fw-semibold">Fecha hasta</label>
+
+      <p-calendar
+        [(ngModel)]="fechaHasta"
+        [showIcon]="true"
+        dateFormat="dd/mm/yy"
+        inputId="fechaHasta"
+        styleClass="w-100"
+        placeholder="Seleccionar fecha">
+      </p-calendar>
+
+    </div>
+
+    <div class="col-md-2 mb-2">
+
+      <button
+        pButton
+        type="button"
+        label="Consultar"
+        icon="pi pi-search"
+        class="p-button-primary w-100"
+        (click)="consultar()">
+      </button>
+
+    </div>
+
+  </div>
+  
   <div class="row">
     <div class="col-md-12 px-md-5" style="height: 90vh">
       <ng2-pdfjs-viewer [fullScreen]="true" [zoom]="'auto'" [print]="true" [showSpinner]="true" #pdfViewerAutoLoad></ng2-pdfjs-viewer>

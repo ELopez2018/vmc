@@ -17,6 +17,9 @@ export class ModalService {
     backdrop: 'static',
     backdropClass: 'customBackdrop',
     centered: true,
+    animation: true,
+    fullscreen: 'xl',
+    size: 'xl',
   };
 
   private modalRef!: NgbModalRef;
@@ -36,11 +39,13 @@ export class ModalService {
     return this.modalRef.result
   }
 
-  public assignPublisherWeeklyProgram(assignment?: WeeklyProgram, assignmentType?: string) {
+  public assignPublisherWeeklyProgram(assignment?: WeeklyProgram, assignmentType?: string, type?: string, room: string = "A") {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
     this.modalRef.componentInstance.assignment = assignment;
     this.modalRef.componentInstance.assignmentType = assignmentType;
+    this.modalRef.componentInstance.type = type;
+    this.modalRef.componentInstance.room = room;
     return this.modalRef.result
   }
 

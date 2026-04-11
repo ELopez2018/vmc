@@ -11,33 +11,40 @@ import { PrintPdfOnePageService } from "src/app/core/services/pdf/print-pdf-one-
 import { IconCloseComponent } from "../modal/modal-container/search-publisher/icon-close/icon-close.component";
 import { PdfJsViewerModule } from "ng2-pdfjs-viewer";
 import { PrintS89FromProgramService } from "src/app/core/services/pdf/print-s89-four-per-page.service";
+import { CalendarModule } from "primeng/calendar";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-assignment-sheet-printer",
   templateUrl: "./assignment-sheet-printer.component.html",
   styleUrls: ["./assignment-sheet-printer.component.scss"],
   standalone: true,
-  imports: [IconCloseComponent, PdfJsViewerModule],
+  imports: [IconCloseComponent, PdfJsViewerModule, CalendarModule, ReactiveFormsModule, FormsModule],
 })
 export class AssignmentSheetPrinterComponent implements OnInit {
+  consultar() {
+    throw new Error("Method not implemented.");
+  }
   @ViewChild("pdfViewerOnDemand") pdfViewerOnDemand: any;
   @ViewChild("pdfViewerAutoLoad") pdfViewerAutoLoad: any;
   @Output() onClosed = new EventEmitter();
   @Input() public isModal: boolean = false;
   private congregation!: Congregation;
   private subs: Subscription = new Subscription();
+  public fechaDesde: any;
+  public fechaHasta: any;
   constructor(
     private printService: PrintPdfService,
     private meetingsService: MeetingsService,
     private dataService: DataService,
     private modalService: ModalService,
-    private printS89FromProgramService: PrintS89FromProgramService
+    private printS89FromProgramService: PrintS89FromProgramService,
   ) {
     this.modalService.loading();
     this.subs.add(
       this.dataService.getCongregation$().subscribe((data) => {
         this.congregation = data;
-      })
+      }),
     );
     this.subs.add(
       this.dataService.getMeetingsPDF$().subscribe(
@@ -52,8 +59,8 @@ export class AssignmentSheetPrinterComponent implements OnInit {
         },
         (error) => {
           this.modalService.errorHandler(error, "Error");
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -69,7 +76,7 @@ export class AssignmentSheetPrinterComponent implements OnInit {
         (error) => {
           this.modalService.close();
           this.modalService.errorHandler("No se han podido obtener las semanas", "Error");
-        }
+        },
       );
     }
   }

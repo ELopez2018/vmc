@@ -1,10 +1,5 @@
 <div class="entre-semana">
-  <mat-tab-group animationDuration="0ms">
-    <mat-tab label="Principal">
-       <vmc-programs [semanas]="semanas" [RoomA]="true" [room]="'A'"></vmc-programs>
-    </mat-tab>
-    <mat-tab label="Auxiliar">
-      <vmc-programs [semanas]="semanasSalaAuxiliar" [RoomA]="false" [room]="'B'"></vmc-programs>
-    </mat-tab>
-  </mat-tab-group>
+  <vmc-programs [semanas]="semanas" [semanasAllRooms]="semanasAllRooms" [RoomA]="true" [room]="'A'"
+    (filtrar)="consultar($event)"
+  ></vmc-programs>
 </div>

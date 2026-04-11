@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, signal, ViewChildren } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { AssignmentService } from "../../../../core/services/assignment/assignment.service";
 import { UsersService } from "src/app/core/services/users/users.service";
-import { Assignment, Meeting, Publisher, WeeklyProgram, Congregation } from "src/app/core/interfaces/reuniones.interface";
+import { Assignment, Meeting, Publisher, WeeklyProgram, Congregation, Program } from "src/app/core/interfaces/reuniones.interface";
 import { PublisherDto, ResponsibleCountDTO } from "src/app/core/interfaces/publishers.interface";
 import { OtherAssignment } from "src/app/core/enums/meetings.enums";
 import { MeetingsService } from "src/app/core/services/meetings/meetings.service";
@@ -12,6 +12,7 @@ import { LoaderService } from "../../../../core/services/loader/loader.service";
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { Subscription } from "rxjs";
 import { PublisherMeetingResposne, PublisherResposne } from "src/app/core/interfaces/publisher-response";
+import { Combobox } from "src/app/pages/notifications/notifications.component";
 
 @Component({
   selector: "search-publisher",
@@ -23,9 +24,13 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
   public publishersAll!: Publisher[];
   @Input() public assignment!: WeeklyProgram;
   @Input() public assignmentType: string = "";
-  public frequentPublishers!: PublisherDto[];
+  @Input() public type: string = "responsible";
+  @Input() public room: string = "A";
   @Output() onClicked: EventEmitter<Publisher> = new EventEmitter();
   @Output() onClose: EventEmitter<boolean> = new EventEmitter();
+  @ViewChildren(MatSort) sorts!: QueryList<MatSort>;
+
+  public frequentPublishers!: PublisherDto[];
   public showSpinner = true;
   public congregation!: Congregation;
   public usedPublishersList: any[] = [];
@@ -37,14 +42,25 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
   public assignmentTypeEnums = AssignmentType;
   private subs = new Subscription();
 
-  // MatTableDataSource para ordenamiento
+  // Frecuentes
   public usedPublishersDataSource = new MatTableDataSource<any>([]);
   public usedPublishersAllByAssigDataSource = new MatTableDataSource<ResponsibleCountDTO>([]);
+  // hermanos
   public maleDataSource = new MatTableDataSource<any>([]);
+  // hermanas
   public femaleDataSource = new MatTableDataSource<any>([]);
+  // todos
   public publishersAllDataSource = new MatTableDataSource<Publisher>([]);
 
-  @ViewChildren(MatSort) sorts!: QueryList<MatSort>;
+  public filteredResponsibles: ResponsibleCountDTO[] = [];
+
+  public allProgram = signal<any[]>([]);
+  public valuesComboParticipantes: Combobox[] = [];
+  public showSubModal = false;
+
+  public subModalDataSource = new MatTableDataSource<any>([]);
+  public subModalDataSourceNamePublisher = "";
+
   constructor(
     private dataService: DataService,
     private loaderService: LoaderService,
@@ -58,6 +74,46 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
 
   ngOnInit() {
     this.getPublihersByAssignment();
+    // new
+    this.dataService.getMeeting().subscribe((data) => {
+      this.allProgram.set(this.parseProgram(data));
+    });
+  }
+  parseProgram(program: Program[]): any {
+    let users: any[] = [];
+    const participantes = new Set<string>();
+    program.forEach((item) => {
+      const programId = item.id;
+      item.weeklyProgram.forEach((wp) => {
+        participantes.add(wp.assistant?.fullName || "");
+        participantes.add(wp.responsible?.fullName || "");
+        if (wp.assistant) {
+          users.push({
+            programId: wp.id,
+            user: wp.assistant,
+            assignmentType: "Ayudante",
+            assignment: wp.assignment,
+            notificationSentAt: wp.notificationSentAt,
+          });
+        }
+
+        if (wp.responsible) {
+          users.push({
+            programId: wp.id,
+            user: wp.responsible,
+            assignmentType: "Responsable",
+            assignment: wp.assignment,
+            notificationSentAt: wp.notificationSentAt,
+          });
+        }
+      });
+    });
+    this.valuesComboParticipantes = Array.from(participantes)
+      .map((n) => (n ?? "").trim())
+      .filter((n) => n.length > 0)
+      .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
+      .map((name) => ({ value: name, label: name }));
+    return users;
   }
 
   ngAfterViewInit() {
@@ -130,12 +186,11 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
       this.dataService.getPubliherList$().subscribe((data) => {
         this.female = [];
         this.male = [];
+        console.log(data);
         if (data) {
           this.publishersAll = data;
           this.female = this.publishersAll.filter((data) => data.gender === "Femenino");
           this.male = this.publishersAll.filter((data) => data.gender === "Masculino");
-          // this.checkIfYouParticipate1();
-          // this.checkIfYouParticipate2();
           this.updateDataSources();
         }
       }),
@@ -154,163 +209,144 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     this.onClicked.emit(item);
   }
 
+  clean(){
+    this.onClicked.emit(null);
+  }
+
   getPublihersByAssignment() {
     this.usedPublishersListAll = [];
     this.usedPublishersListAllByAssig = [];
-    console.log(this.assignment);
     const timestamp = this.assignment?.assignment?.meeting?.week;
-    const fecha = new Date(timestamp).toISOString().split('T')[0];
- 
-    this.usersService.getPublihersByAssignment(this.assignmentType, this.congregation.id,fecha).subscribe((data) => {
+    const fecha = new Date(timestamp).toISOString().split("T")[0];
+    this.showSpinner = true;
+    this.usersService.getPublihersByAssignment(this.assignmentType, this.congregation.id, fecha, this.room).subscribe((data) => {
       this.usedPublishersListAll = data;
       this.usedPublishersListAllByAssig = data;
       switch (this.assignmentType) {
         case AssignmentType.PRESIDENT:
           this.headerText = "Presidencia";
           this.usedPublishersList = this.usedPublishersListAll.filter((i) => i.presidentCount > 0);
-          this.usedPublishersList = this.sortByCountPresident(this.usedPublishersList, true);
-          this.checkIfYouParticipate2();
+          this.checkFrecuentEspecial();
           this.updateDataSources();
           break;
         case AssignmentType.OPENING_PRAYER:
           this.headerText = "Oración Inicial";
           this.usedPublishersList = this.usedPublishersListAll.filter((i) => i.openingPrayerCount > 0);
-          this.usedPublishersList = this.sortByCountOpeningPrayer(this.usedPublishersList, true);
-          this.checkIfYouParticipate2();
+          this.checkFrecuentEspecial();
           this.updateDataSources();
           break;
         case AssignmentType.FINAL_PRAYER:
           this.headerText = "Oración Final";
           this.usedPublishersList = [...this.usedPublishersListAll.filter((i) => i.finalPrayerCount > 0)];
-          this.usedPublishersList = [...this.sortByCountFinalPrayer(this.usedPublishersList, true)];
-          this.checkIfYouParticipate2();
+          this.checkFrecuentEspecial();
           this.updateDataSources();
           break;
         case AssignmentType.ASSIGNMENT_1:
           this.headerText = "Discurso Tesoros de la Bíblia";
-          this.usedPublishersListAllByAssig = [...data];
-          this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDate([...data], true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.ASSIGNMENT_2:
           this.headerText = "Perlas Escondidas";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.ASSIGNMENT_3:
           this.headerText = "Lectura de la Bíblia";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.STARTING_A_CONVERSATION:
           this.headerText = "Empiece Conversaciones (Estudiante)";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.EXPLAINING_YOUR_BELIEFS:
           this.headerText = "Explique sus creencias";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.FOLLOWING_UP:
           this.headerText = "Haga revisitas (Estudiante)";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.IMITATE:
           this.headerText = "Imite a...";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.WHAT_HE_DID:
           this.headerText = "Lo que hizo...";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.MAKING_DISCIPLES:
           this.headerText = "Haga discípulos (Estudiante)";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.LOCAL_NEEDS:
           this.headerText = "Necesidades de la congregación";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.CONGREGATION_BIBLE_STUDY:
           this.headerText = "Estudio bíblico de la congregación (Conductor)";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.STARTING_A_CONVERSATION_ASSISTANT:
           this.headerText = "Empiece Conversaciones (Ayudante)";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.EXPLAINING_YOUR_BELIEFS_ASSISTANT:
           this.headerText = "Explique sus creencias (Ayudante)";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.FOLLOWING_UP_ASSISTANT:
           this.headerText = "Haga revisitas (Ayudante)";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.MAKING_DISCIPLES_ASSISTANT:
           this.headerText = "Haga discípulos (Ayudante)";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.CONGREGATION_BIBLE_STUDY_READER:
           this.headerText = "Estudio bíblico de la congregación (Lector)";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
         case AssignmentType.ASSISTANT_ADVISER:
           this.headerText = "Consejero de la sala auxiliar";
-          // this.usedPublishersListAllByAssig = [...this.sortByLastDate(data, true)];
+          this.checkIfYouParticipate1();
+          this.updateDataSources();
+          break;
+        case AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS:
+          this.headerText = this.assignment.assignment.title;
+          this.checkIfYouParticipate1();
+          this.updateDataSources();
+          break;
+        case AssignmentType.SPEECH:
+          this.headerText = this.assignment.assignment.title;
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
       }
+      this.showSpinner = false;
     });
   }
 
-  // checkIfYouParticipate1() {
-  //   if (!this.usedPublishersListAllByAssig || this.usedPublishersListAllByAssig.length <= 0) {
-  //     return;
-  //   }
-  //   this.usedPublishersListAllByAssig = [...this.sortByLastDate(this.usedPublishersListAllByAssig, true)];
-  //   const publisherIds = new Set(this.usedPublishersListAllByAssig.map((pub) => pub.user.id));
-  //   this.male.forEach((pub) => {
-  //     pub.participate = publisherIds.has(pub.id);
-  //   });
-  //   this.female.forEach((pub) => {
-  //     pub.participate = publisherIds.has(pub.id);
-  //   });
-  // }
-
   checkIfYouParticipate1(): void {
-    if (!this.usedPublishersListAllByAssig?.length) return;
+    if (!this.usedPublishersListAllByAssig?.length || this.usedPublishersListAllByAssig?.length <= 0) {
+      return;
+    }
 
-    // Ordena (asumiendo que sortByLastDate ya devuelve un nuevo array)
     this.usedPublishersListAllByAssig = this.sortByLastDate(this.usedPublishersListAllByAssig, true);
 
     const publisherIds = new Set(this.usedPublishersListAllByAssig.map((pub) => pub.user.id));
@@ -320,19 +356,13 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     });
   }
 
-  checkIfYouParticipate2() {
+  checkFrecuentEspecial() {
+    //oraciones y presidencias
     if (!this.usedPublishersList || this.usedPublishersList.length <= 0) {
       return;
     }
     const publisherIds = new Set(this.usedPublishersList.map((pub) => pub.id));
-
-    // this.male.forEach((pub) => {
-    //   pub.participate = publisherIds.has(pub.id);
-    // });
-    // this.female.forEach((pub) => {
-    //   pub.participate = publisherIds.has(pub.id);
-    // });
-    [...this.male, ...this.female].forEach((pub) => {
+    this.male.forEach((pub) => {
       pub.participate = publisherIds.has(pub.id);
     });
   }
@@ -374,6 +404,9 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     this.onClose.emit(true);
   }
   parseDate(timestamp: number = 0): string {
+    if (!timestamp) {
+      return "";
+    }
     const date = new Date(timestamp);
 
     // Sumar 4 días
@@ -405,5 +438,51 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
       }
       return 0;
     });
+  }
+
+  onSearch(event: Event, type: string): void {
+    const value = (event.target as HTMLInputElement).value.toLowerCase().trim();
+    if (value === "") {
+      this.usedPublishersDataSource.data = this.usedPublishersList;
+      this.usedPublishersAllByAssigDataSource.data = this.usedPublishersListAllByAssig;
+      return;
+    }
+    if (type === "usedPublishersDataSource") {
+      this.usedPublishersDataSource.data = this.publishersAll.filter((item) => item.fullName.toLowerCase().startsWith(value)).sort((a, b) => a.fullName.localeCompare(b.fullName));
+    } else if (type === "usedPublishersAllByAssigDataSource") {
+      this.usedPublishersAllByAssigDataSource.data = this.publishersAll
+        .filter((item) => item.fullName.toLowerCase().startsWith(value))
+        .sort((a, b) => a.fullName.localeCompare(b.fullName))
+        .map((publisher) => {
+          const found = this.usedPublishersListAllByAssig.find((p) => p.user.id === publisher.id);
+          return found ? { ...found, user: publisher } : { user: publisher, count: 0, lastDate: 0, all: 0 };
+        });
+    }
+  }
+
+  more(item: any, event: any) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.stopImmediatePropagation(); // 🔥 ESTA ES LA CLAVE
+    console.log(item);
+    this.subModalDataSourceNamePublisher = item.user?.fullName ?? item.fullName;
+    this.subModalDataSource.data = [];
+    const participant = item.user?.fullName ?? item.fullName;
+    const items = this.allProgram().filter((row) => {
+      const okParticipant = !participant || row.user.fullName.toString().trim() == participant.toString().trim();
+      return okParticipant /* && okSearch */;
+    });
+    items.forEach((i) => {
+      this.subModalDataSource.data.push({
+        date: i.assignment.meeting.week,
+        title: `${i.assignment.title}`,
+        type: i.assignmentType,
+      });
+    });
+    this.showSubModal = true;
+  }
+
+  closeSubModal() {
+    this.showSubModal = false;
   }
 }

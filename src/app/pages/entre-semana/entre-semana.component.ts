@@ -11,6 +11,7 @@ import { AssignmentService } from "src/app/core/services/assignment/assignment.s
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { SectionMeeting } from "../../core/enums/meetings.enums";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
+import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
 
 @Component({
   selector: "vmc-entre-semana",
@@ -28,6 +29,7 @@ export class EntreSemanaComponent implements OnInit {
   public Superintendente!: Publisher;
   public showSpinner = false;
   private meetingDay = 1;
+  public semanasAllRooms: ProgramPdf[] = [];
   loaderService = inject(LoaderService);
 
   constructor(
@@ -56,7 +58,8 @@ export class EntreSemanaComponent implements OnInit {
     this.meetingsService.getWeeksValids(this.congregation.id).subscribe(
       (data) => {
         this.programList = [...data];
-        this.semanas = this.filterWeekByRoom("A", this.programList);
+        this.semanasAllRooms = this.dataService.makePDfVersion(this.programList);
+        this.semanas = this.programList;
         this.semanasSalaAuxiliar = [...this.filterWeekByRoom("B", this.programList)];
         this.dataService.setMeeting([...data]);
         this.loaderService.hideMatspinner();
@@ -391,5 +394,13 @@ export class EntreSemanaComponent implements OnInit {
     this.semanasSalaAuxiliar = [...this.filterWeekByRoom("B", weeks)];
     this.dataService.setMeeting([...weeks]);
   }
+
+  consultar($event: { fechaDesde: any; fechaHasta: any }) {
+    this.loaderService.showMatspinner();
+    this.semanasAllRooms = [];
+    this.meetingsService.getProgramsByDateRange($event.fechaDesde, $event.fechaHasta, this.congregation.id).subscribe((data) => {
+      this.semanasAllRooms = this.dataService.makePDfVersion(data);
+      this.loaderService.hideMatspinner();
+    });
+  }
 }
-//

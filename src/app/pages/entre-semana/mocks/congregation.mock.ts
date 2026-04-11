@@ -1,4 +1,6 @@
-export const CongregationMock = {
+import { Congregation } from "src/app/core/interfaces/reuniones.interface";
+
+export const CongregationMock: Congregation = {
   "id": 2,
   "name": "Central",
   "number": "23036",

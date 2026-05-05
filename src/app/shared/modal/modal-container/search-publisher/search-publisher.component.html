@@ -77,8 +77,8 @@
                       </td>
                     </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count', 'lastAssignmentDate', 'more']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count', 'lastAssignmentDate', 'more']" (click)="selected(row)"></tr>
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count',  'more']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count', 'more']" (click)="selected(row)"></tr>
                   </table>
                 </div>
               }
@@ -104,16 +104,23 @@
                     </ng-container>
 
                     <ng-container matColumnDef="lastAssignByRoom">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Sala {{ room == "B" ? "Auxiliar" : "Principal" }}</th>
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>En sala {{ room == "B" ? "Auxiliar" : "Principal" }}</th>
                       <td mat-cell *matCellDef="let item">
                         {{ parseDate(item.lastAssignByRoom) }}
                       </td>
                     </ng-container>
 
                     <ng-container matColumnDef="lastDate">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Ultima Participacion</th>
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Por Asignación</th>
                       <td mat-cell *matCellDef="let item">
                         {{ parseDate(item.lastDate) }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="lastAssignGlobal">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Global</th>
+                      <td mat-cell *matCellDef="let item">
+                        {{ parseDate(item.lastAssignGlobal) }}
                       </td>
                     </ng-container>
 
@@ -125,8 +132,8 @@
                       </td>
                     </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count', 'all', 'lastAssignByRoom', 'lastDate', 'more']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count', 'all', 'lastAssignByRoom', 'lastDate', 'more']" (click)="selected(row)"></tr>
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count', 'all', 'lastAssignByRoom', 'lastDate', 'lastAssignGlobal', 'more']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count', 'all', 'lastAssignByRoom', 'lastDate', 'lastAssignGlobal', 'more']" (click)="selected(row)"></tr>
                   </table>
                 </div>
               }

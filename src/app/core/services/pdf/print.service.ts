@@ -11,9 +11,8 @@ export class PrintPdfService {
   private congregation = "ALBORADA";
   private colorFontPublisher = "#ea002e";
 
-
   private sizeHeader = [10, "auto", "*", 20];
-  private sizeBody = [70, 190, 150, "*"];
+  private sizeBody = ["auto", "*", 150, 126];
   private sizeSongs = [16, 244, 150, "*"];
   private sizeHeaderSections = [275, 143, "*"];
 
@@ -32,7 +31,7 @@ export class PrintPdfService {
       }
     });
   }
- 
+
   private verifiRoomB(array: WeeklyProgramPdF[]): boolean {
     return array.some((item) => item.responsibleB != null);
   }
@@ -77,12 +76,12 @@ export class PrintPdfService {
       conAux = [
         [
           {
-            text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + "   |",
+            text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true),
             style: "sub_title",
             border: [false, false, false, false],
           },
           {
-            text: week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA",
+            text: "|  " + (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
             style: "sub_title",
             border: [false, false, false, false],
           },
@@ -124,7 +123,7 @@ export class PrintPdfService {
       conAux = [
         [
           {
-            text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + "   |",
+            text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) + "  |",
             style: "sub_title",
             border: [false, false, false, false],
           },
@@ -561,20 +560,20 @@ export class PrintPdfService {
   }
 
   public print(weeks: ProgramPdf[]) {
-    pdfMake.createPdf(this.makeDocumet(weeks)).open("Reunion Entre senama VMC.pdf");
+    pdfMake.createPdf(this.makeDocument(weeks)).open("Reunion Entre senama VMC.pdf");
   }
   public download(weeks: ProgramPdf[]) {
-    pdfMake.createPdf(this.makeDocumet(weeks)).download("Reunion Entre senama VMC.pdf");
+    pdfMake.createPdf(this.makeDocument(weeks)).download("Reunion Entre senama VMC.pdf");
   }
 
   public getStream(weeks: ProgramPdf[]) {
-    pdfMake.createPdf(this.makeDocumet(weeks)).getStream();
+    pdfMake.createPdf(this.makeDocument(weeks)).getStream();
   }
 
   public async getBlob(weeks: ProgramPdf[]): Promise<Blob> {
     this.congregation = weeks[0].congregation.name;
     return new Promise<Blob>((resolve, reject) => {
-      const pdf = pdfMake.createPdf(this.makeDocumet(weeks));
+      const pdf = pdfMake.createPdf(this.makeDocument(weeks));
       pdf.getBlob((data: Blob) => {
         resolve(data);
         if (!data) {
@@ -583,15 +582,28 @@ export class PrintPdfService {
       });
     });
   }
-  private makeDocumet(weeks: ProgramPdf[]): any {
+  private makeDocument(weeks: ProgramPdf[]): any {
     const contenido: any[] = [];
-    let pageBreak = false;
-    let count = 0;
-    let pageCount = 0;
-    weeks.forEach((week) => {
-      count++;
-      pageCount++;
-      contenido.push(
+
+    weeks.forEach((week, index) => {
+      const isLast = index === weeks.length - 1;
+      const isSecondInPage = (index + 1) % 2 === 0;
+      const block = this.buildWeekBlock(week);
+      contenido.push(...block, this.buildPageBreak(isSecondInPage, isLast));
+    });
+
+    return {
+      header: () => this.makeHeader(false),
+      pageSize: "LETTER",
+      pageOrientation: "portrait",
+      pageMargins: [20, 30, 20, 20],
+      content: contenido,
+      ...this.styles(),
+    };
+  }
+  private buildWeekBlock(week: ProgramPdf): any[] {
+    if (!week.assembly) {
+      return [
         ...this.makeHeaderProgram(week),
         ...this.makeHeaderTreasures(),
         ...this.makeContentTreasures(week),
@@ -602,25 +614,53 @@ export class PrintPdfService {
         ...this.makeIntermediateSong(week),
         ...this.makeContentLife(week),
         ...this.makeFinalBlock(week),
-        { text: null, pageBreak: count == 2 && pageCount < weeks.length ? "before" : null, style: count == 2 ? "endPage" : null }
-      );
-      if (count == 2) {
-        count = 0;
-      }
-    });
+        {},
+      ];
+    }
 
-    return {
-      header: this.makeHeader(pageBreak),
-      pageSize: "LETTER",
-      // by default we use portrait, you can change it to landscape if you wish
-      pageOrientation: "portrait",
-      // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
-      pageMargins: [20, 30, 20, 20],
-
-      content: [...contenido],
-      ...this.styles(),
-    };
+    return [
+      {
+        table: {
+          widths: this.sizeBody,
+          body: [
+            [
+              {
+                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true),
+                style: "sub_title",
+                border: [false, false, false, false],
+              },
+              {
+                text: "|  " + (week.meeting.weeklyBibleReading || "LECTURA SEMANAL DE LA BIBLIA"),
+                style: "sub_title",
+                border: [false, false, false, false],
+              },
+            ],
+          ],
+        },
+      },
+      {
+        table: {
+          widths: ["*"],
+          body: [
+            [
+              {
+                text: week.assembly,
+                style: "assembly",
+                border: [false, false, false, false],
+              },
+            ],
+          ],
+        },
+      },
+      "\n",
+    ];
   }
+private buildPageBreak(isSecondInPage: boolean, isLast: boolean) {
+  if (isSecondInPage && !isLast) {
+    return { text: "", pageBreak: "after" }; // 👈 CAMBIO CLAVE
+  }
+  return { text: "" };
+}
   private styles() {
     return {
       styles: {
@@ -639,6 +679,7 @@ export class PrintPdfService {
           fontSize: 11,
           alignment: "left",
           bold: true,
+          margin: [0, 0, 0, 0],
         },
         tips_r: {
           fontSize: 6,
@@ -747,6 +788,12 @@ export class PrintPdfService {
         },
         endPage: {
           margin: [0, 0, 0, 0],
+        },
+        assembly: {
+          fontSize: 40,
+          italics: true,
+          alignment: "center",
+          margin: [10, 100, 10, 100],
         },
       },
     };

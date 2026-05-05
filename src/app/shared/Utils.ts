@@ -1,23 +1,21 @@
 import { Meeting } from "../core/interfaces/reuniones.interface";
 export class Utils {
-  public static showDayOfMeeting(fechaSemana: any, meetingDay: number) {
+  public static showDayOfMeeting(fechaSemana: any, meetingDay: number, onlyMonth: boolean = false) {
     const fecha = new Date(fechaSemana);
-    const diaSemana = fecha.getDay(); // 0 (Domingo) a 6 (Sábado)
-    // Calcula el número de d ías que hay que restar para llegar al jueves
-    let diaReunion = meetingDay; // 0 (Domingo) a 6 (Sábado)
 
-    // Ajusta la fecha al jueves correspondiente
-    fecha.setDate(fecha.getDate() + (meetingDay - 1));
+    // Ajusta la fecha según el día de reunión
+    fecha.setDate(fecha.getDate() + meetingDay );
 
-    // Guarda la fecha en el formato deseado
-    //return fecha.toISOString().split('T')[0]
+    const dia = fecha.getDate().toString().padStart(2, "0");
+    const mesIndex = fecha.getMonth(); // 0 - 11
+    const año = fecha.getFullYear();
 
-    // Guarda la fecha en el formato deseado "DD/MM/YYYY"
-    const dia = fecha.toISOString().split("T")[0].split("-")[2];
-    const mes = fecha.toISOString().split("T")[0].split("-")[1]; // El mes es base 0, por eso se suma 1
-    const año = fecha.toISOString().split("T")[0].split("-")[0];
-    //return fecha.toLocaleDateString();
-    return `${dia}-${mes}-${año}`;
+    const meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+
+    const mesNombre = meses[mesIndex];
+    const mesNumero = (mesIndex + 1).toString().padStart(2, "0");
+
+    return onlyMonth ? `${dia} DE ${mesNombre}` : `${dia}-${mesNumero}-${año}`;
   }
 
   public static adapterTime(dateTime: any) {

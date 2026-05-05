@@ -1,18 +1,17 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
-import { MediaMatcher } from '@angular/cdk/layout';
-import { DataService } from './core/services/data/data.service';
-import { LoaderService } from './core/services/loader/loader.service';
+import { ChangeDetectorRef, Component, inject } from "@angular/core";
+import { MediaMatcher } from "@angular/cdk/layout";
+import { DataService } from "./core/services/data/data.service";
+import { LoaderService } from "./core/services/loader/loader.service";
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: false
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
+  standalone: false,
 })
 export class AppComponent {
-
   showMatspinner = false;
-  loaderService = inject(LoaderService)
-  title = 'vmc';
+  loaderService = inject(LoaderService);
+  title = "vmc";
   showFiller = true;
 
   mobileQuery: MediaQueryList;
@@ -31,16 +30,24 @@ export class AppComponent {
 
   private _mobileQueryListener: () => void;
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private dataService: DataService) {
-    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+  constructor(
+    changeDetectorRef: ChangeDetectorRef,
+    media: MediaMatcher,
+    private dataService: DataService,
+  ) {
+    this.mobileQuery = media.matchMedia("(max-width: 600px)");
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
-    this.dataService.getConfigs()
+
+    // Solo configurar si hay sesión válida
+    if (this.dataService.hasValidToken()) {
+      this.dataService.getConfigs();
+      this.dataService.getPublishersFromDB();
+    }
+
     this.loaderService.getShowMatspinner$().subscribe((show) => {
       this.showMatspinner = show;
     });
-
-    this.dataService.getPublishersFromDB();
   }
 
   ngOnDestroy(): void {

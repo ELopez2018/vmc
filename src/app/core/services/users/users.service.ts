@@ -46,9 +46,9 @@ delete(publisher: Publisher): Observable<any> {
   );
 }
 
-  getPublihersByAssignment(assignment: string, congregationId: number, fechaCadena: any, room: string): Observable<any> {
+  getPublihersByAssignment(assignment: string, congregationId: number, fechaCadena: any, room: string, assignmentTitle: string): Observable<any> {
     this.loaderService.setLoaderSearchPublisher(true);
-    const url = `${this.server}${this.api.USERS}/by-congregation/by-assignment?assignment=${assignment}&congregationId=${congregationId}&dateAssignment=${fechaCadena}&room=${room}`;
+    const url = `${this.server}${this.api.USERS}/by-congregation/by-assignment?assignment=${assignment}&congregationId=${congregationId}&dateAssignment=${fechaCadena}&room=${room}&assignmentTitle=${assignmentTitle}`;
     return this.httpClient.get<any>(url).pipe(
       tap((data) => {
         this.loaderService.setLoaderSearchPublisher(false);

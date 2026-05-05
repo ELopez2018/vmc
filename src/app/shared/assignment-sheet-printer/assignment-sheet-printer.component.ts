@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { PrintPdfService } from "../../core/services/pdf/print.service";
 import { MeetingsService } from "../../core/services/meetings/meetings.service";
 import { Meeting, Program } from "src/app/core/interfaces/reuniones.interface";
@@ -13,6 +13,7 @@ import { PdfJsViewerModule } from "ng2-pdfjs-viewer";
 import { PrintS89FromProgramService } from "src/app/core/services/pdf/print-s89-four-per-page.service";
 import { CalendarModule } from "primeng/calendar";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { LoaderService } from "src/app/core/services/loader/loader.service";
 
 @Component({
   selector: "app-assignment-sheet-printer",
@@ -22,9 +23,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
   imports: [IconCloseComponent, PdfJsViewerModule, CalendarModule, ReactiveFormsModule, FormsModule],
 })
 export class AssignmentSheetPrinterComponent implements OnInit {
-  consultar() {
-    throw new Error("Method not implemented.");
-  }
+  loaderService = inject(LoaderService);
   @ViewChild("pdfViewerOnDemand") pdfViewerOnDemand: any;
   @ViewChild("pdfViewerAutoLoad") pdfViewerAutoLoad: any;
   @Output() onClosed = new EventEmitter();
@@ -85,10 +84,7 @@ export class AssignmentSheetPrinterComponent implements OnInit {
     this.modalService.close();
     this.printS89FromProgramService
       .getBlob(weeks)
-      .then((data) => {
-        this.pdfViewerAutoLoad.pdfSrc = data;
-        this.pdfViewerAutoLoad.refresh();
-      })
+      .then((data) => this.updatePdfViewer(data))
       .catch((error) => {
         console.error(error);
       });
@@ -98,6 +94,11 @@ export class AssignmentSheetPrinterComponent implements OnInit {
     return data.some((root) => root.weeklyProgram.some((program) => program.assistantB !== undefined || program.responsibleB !== undefined));
   }
 
+  updatePdfViewer(data: any) {
+    this.pdfViewerAutoLoad.pdfSrc = data;
+    this.pdfViewerAutoLoad.refresh();
+  }
+
   download() {
     const dataIpm: any = {};
     this.printService.download(dataIpm);
@@ -105,5 +106,20 @@ export class AssignmentSheetPrinterComponent implements OnInit {
 
   onCLose() {
     this.onClosed.emit(true);
+  }
+  consultar() {
+    this.loaderService.showMatspinner();
+    this.updatePdfViewer([]);
+    this.meetingsService.getProgramsByDateRange(this.fechaDesde, this.fechaHasta, this.congregation.id).subscribe({
+      next: (data) => {
+        this.updatePdfViewer(this.dataService.makePDfVersion(data));
+        this.loaderService.hideMatspinner();
+      },
+      error: (error) => {
+        this.updatePdfViewer([]);
+        this.loaderService.hideMatspinner();
+        this.modalService.errorHandler(error, "Error");
+      },
+    });
   }
 }

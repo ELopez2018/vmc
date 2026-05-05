@@ -22,9 +22,6 @@ import Swal from "sweetalert2";
   imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule],
 })
 export class ProgramsComponent implements OnInit, AfterViewInit {
-  consultar() {
-    this.filtrar.emit({ fechaDesde: this.fechaDesde, fechaHasta: this.fechaHasta });
-  }
   @Output() public filtrar = new EventEmitter<{ fechaDesde: any; fechaHasta: any }>();
   @Input() public semanas: Program[] = [];
   @Input() public semanasAllRooms: ProgramPdf[] = [];
@@ -741,5 +738,8 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
 
   filterProgram(item: Program, room = "B") {
     return this.semanas.find((p) => p.id == item.id);
+  }
+    consultar() {
+    this.filtrar.emit({ fechaDesde: this.fechaDesde, fechaHasta: this.fechaHasta });
   }
 }

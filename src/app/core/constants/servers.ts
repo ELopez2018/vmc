@@ -1,8 +1,7 @@
 import { environment } from "src/environments/environment"
 
 export const Servers = {
-  URL: environment.server,
- // URL: 'http://localhost:7700',
+ URL: environment.server,
   home: "/"
 }
 export const Apis = {

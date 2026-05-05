@@ -16,6 +16,9 @@ import { CookieService } from "ngx-cookie-service";
   providedIn: "root",
 })
 export class DataService {
+  private readonly tokenStorageKey = "token";
+  private readonly publisherCookieKey = "publisher";
+  private readonly congregationCookieKey = "congregation";
   private meetings$: BehaviorSubject<Program[]> = new BehaviorSubject<Program[]>([]);
   private meetingsPDF$: BehaviorSubject<ProgramPdf[]> = new BehaviorSubject<ProgramPdf[]>([]);
   private weekPrograms: Program[] = [];
@@ -28,7 +31,12 @@ export class DataService {
   private rooms$: BehaviorSubject<Room[]> = new BehaviorSubject<Room[]>([]);
   jwtUtils!: JwtHelperService;
   private isAdmin$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  constructor(private cookieService: CookieService, private usersService: UsersService, private configsService: ConfigsService, private roomsService: RoomsService) {
+  constructor(
+    private cookieService: CookieService,
+    private usersService: UsersService,
+    private configsService: ConfigsService,
+    private roomsService: RoomsService,
+  ) {
     this.jwtUtils = new JwtHelperService();
   }
 
@@ -103,6 +111,10 @@ export class DataService {
     return this.publisherList.asObservable();
   }
   public getPublishersFromDB() {
+    if (!this.hasValidToken() || !this.congregation?.id) {
+      return;
+    }
+
     this.usersService.getUsersByCongregation(this.congregation.id).subscribe((data) => {
       this.setPubliherList(data);
     });
@@ -119,18 +131,84 @@ export class DataService {
   }
 
   public getConfigs() {
+    if (!this.hasValidToken()) {
+      this.clearSession();
+      this.setPublisher(<Publisher>{});
+      this.setCongregation(<Congregation>{});
+      return;
+    }
+
     this.configsService.getAllDesignations().subscribe((data) => {
       if (data) {
         this.setDesignations(data);
       }
     });
-   this.setPublisher(this.cookieService.get('publisher') ? JSON.parse(this.cookieService.get('publisher')) : <Publisher>{});
-   this.setCongregation(this.cookieService.get('congregation') ? JSON.parse(this.cookieService.get('congregation')) : <Congregation>{});
+
+    this.setPublisher(this.readCookieObject<Publisher>(this.publisherCookieKey) ?? <Publisher>{});
+    this.setCongregation(this.readCookieObject<Congregation>(this.congregationCookieKey) ?? <Congregation>{});
   }
-  logout() {
+
+  public getAccessToken(): string | null {
+    const tokenStorage = localStorage.getItem(this.tokenStorageKey);
+
+    if (!tokenStorage) {
+      return null;
+    }
+
+    try {
+      const parsedToken = JSON.parse(tokenStorage);
+      return typeof parsedToken?.token === "string" ? parsedToken.token : null;
+    } catch {
+      return tokenStorage;
+    }
+  }
+
+  public hasValidToken(): boolean {
+    const token = this.getAccessToken();
+
+    if (!token) {
+      return false;
+    }
+
+    try {
+      return !this.jwtUtils.isTokenExpired(token);
+    } catch {
+      return false;
+    }
+  }
+
+  public clearSession() {
     localStorage.clear();
+    this.cookieService.delete(this.publisherCookieKey);
+    this.cookieService.delete(this.publisherCookieKey, "/");
+    this.cookieService.delete(this.congregationCookieKey);
+    this.cookieService.delete(this.congregationCookieKey, "/");
+    this.publisher$.next(<Publisher>{});
+    this.congregation$.next(<Congregation>{});
+    this.isAdmin$.next(false);
+    this.publisherList.next([]);
+    this.rooms$.next([]);
+  }
+
+  logout() {
+    this.clearSession();
     window.location.href = Servers.home;
   }
+
+  private readCookieObject<T>(cookieName: string): T | null {
+    const cookieValue = this.cookieService.get(cookieName);
+
+    if (!cookieValue) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(cookieValue) as T;
+    } catch {
+      return null;
+    }
+  }
+
   public setRooms(rooms: Room[]) {
     this.rooms$.next(rooms);
   }

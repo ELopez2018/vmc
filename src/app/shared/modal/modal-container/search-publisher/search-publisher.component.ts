@@ -186,7 +186,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
       this.dataService.getPubliherList$().subscribe((data) => {
         this.female = [];
         this.male = [];
-        console.log(data);
         if (data) {
           this.publishersAll = data;
           this.female = this.publishersAll.filter((data) => data.gender === "Femenino");
@@ -209,7 +208,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     this.onClicked.emit(item);
   }
 
-  clean(){
+  clean() {
     this.onClicked.emit(null);
   }
 
@@ -218,8 +217,9 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     this.usedPublishersListAllByAssig = [];
     const timestamp = this.assignment?.assignment?.meeting?.week;
     const fecha = new Date(timestamp).toISOString().split("T")[0];
+    const title = this.assignment?.assignment?.title || "";
     this.showSpinner = true;
-    this.usersService.getPublihersByAssignment(this.assignmentType, this.congregation.id, fecha, this.room).subscribe((data) => {
+    this.usersService.getPublihersByAssignment(this.assignmentType, this.congregation.id, fecha, this.room, title).subscribe((data) => {
       this.usedPublishersListAll = data;
       this.usedPublishersListAllByAssig = data;
       switch (this.assignmentType) {
@@ -243,7 +243,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
           break;
         case AssignmentType.ASSIGNMENT_1:
           this.headerText = "Discurso Tesoros de la Bíblia";
-          this.usedPublishersListAllByAssig = [...this.sortByLastDate([...data], true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDateGlobal([...data], true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
@@ -347,12 +347,28 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
       return;
     }
 
-    this.usedPublishersListAllByAssig = this.sortByLastDate(this.usedPublishersListAllByAssig, true);
+    this.usedPublishersListAllByAssig = this.sortByLastDateGlobal(this.usedPublishersListAllByAssig, true);
 
     const publisherIds = new Set(this.usedPublishersListAllByAssig.map((pub) => pub.user.id));
 
     [...this.male, ...this.female].forEach((pub) => {
       pub.participate = publisherIds.has(pub.id);
+    });
+    this.female.sort((a, b) => {
+      // 1. Ordenar por participate (false primero)
+      const diff = Number(a.participate) - Number(b.participate);
+      if (diff !== 0) return diff;
+
+      // 2. Si son iguales, ordenar por nombre
+      return a.fullName.localeCompare(b.fullName);
+    });
+    this.male.sort((a, b) => {
+      // 1. Ordenar por participate (false primero)
+      const diff = Number(a.participate) - Number(b.participate);
+      if (diff !== 0) return diff;
+
+      // 2. Si son iguales, ordenar por nombre
+      return a.fullName.localeCompare(b.fullName);
     });
   }
 
@@ -364,6 +380,14 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     const publisherIds = new Set(this.usedPublishersList.map((pub) => pub.id));
     this.male.forEach((pub) => {
       pub.participate = publisherIds.has(pub.id);
+    });
+    this.male.sort((a, b) => {
+      // 1. Ordenar por participate (false primero)
+      const diff = Number(a.participate) - Number(b.participate);
+      if (diff !== 0) return diff;
+
+      // 2. Si son iguales, ordenar por nombre
+      return a.fullName.localeCompare(b.fullName);
     });
   }
 
@@ -377,9 +401,9 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     });
   }
 
-  private sortByLastDate(data: any[], ascending: boolean = true): PublisherResposne[] {
+  private sortByLastDateGlobal(data: any[], ascending: boolean = true): PublisherResposne[] {
     return data.sort((a, b) => {
-      return ascending ? a.lastDate - b.lastDate : b.lastDate - a.lastDate;
+      return ascending ? a.lastAssignGlobal - b.lastAssignGlobal : b.lastAssignGlobal - a.lastAssignGlobal;
     });
   }
 
@@ -464,7 +488,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     event.stopPropagation();
     event.preventDefault();
     event.stopImmediatePropagation(); // 🔥 ESTA ES LA CLAVE
-    console.log(item);
     this.subModalDataSourceNamePublisher = item.user?.fullName ?? item.fullName;
     this.subModalDataSource.data = [];
     const participant = item.user?.fullName ?? item.fullName;

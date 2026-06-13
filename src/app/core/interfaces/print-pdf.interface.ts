@@ -1,7 +1,7 @@
 import { Program, Publisher, WeeklyProgram } from "./reuniones.interface";
 
 export interface ProgramPdf extends Program {
-  weeklyProgram: WeeklyProgramPdF[]
+  weeklyPrograms: WeeklyProgramPdF[];
 }
 export interface WeeklyProgramPdF extends WeeklyProgram {
   responsible: Publisher;

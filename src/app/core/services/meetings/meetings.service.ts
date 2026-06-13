@@ -11,10 +11,7 @@ import { DataService } from "../data/data.service";
 })
 export class MeetingsService {
   private server = Servers.URL;
-  constructor(
-    private httpClient: HttpClient,
-    private dataService: DataService,
-  ) {}
+  constructor(private httpClient: HttpClient) {}
   getAllPrograms(): Observable<any> {
     const url = `${this.server}/meetings/all-program`;
     return this.httpClient.get(url);
@@ -42,7 +39,25 @@ export class MeetingsService {
     const url = `${this.server}/meetings/search-publisher${params}`;
     return this.httpClient.get<any[]>(url);
   }
-  getWeeksValids(congregationId: Number): Observable<any> {
+  ///meetings/weekly-program/2?page=0&size=4
+  getWeeksValids(congregationId: Number, page: number = 0, size: number = 4): Observable<any> {
+    const url = `${this.server}/meetings/current-weeks/${congregationId}?page=${page}&size=${size}`;
+    return this.httpClient.get<Program[]>(url).pipe(
+      map((data) => {
+        if (!data) {
+          return []; // Devuelve un array vacío si data es null o undefined
+        }
+        data.forEach((program) => {
+          if (program.weeklyPrograms) {
+            program.weeklyPrograms.sort((a, b) => a.assignment.number - b.assignment.number);
+          }
+        });
+        return data ?? []; // Devuelve los datos transformados
+      }),
+    );
+  }
+  /**
+   *   getWeeksValids(congregationId: Number): Observable<any> {
     const url = `${this.server}/meetings/current-weeks/${congregationId}`;
     return this.httpClient.get<Program[]>(url).pipe(
       map((data) => {
@@ -55,6 +70,8 @@ export class MeetingsService {
       }),
     );
   }
+   */
+
   getUpdateWeeksFromJW(): Observable<any> {
     const url = `${this.server}/meetings/automatic`;
     return this.httpClient.get(url);
@@ -71,8 +88,8 @@ export class MeetingsService {
   getProgramsByDateRange(fechaDesde: any, fechaHasta: any, congregationId: number): Observable<Program[]> {
     fechaDesde = new Date(fechaDesde);
     fechaHasta = new Date(fechaHasta);
-    fechaDesde = fechaDesde.toISOString().split('T')[0];
-    fechaHasta = fechaHasta.toISOString().split('T')[0];
+    fechaDesde = fechaDesde.toISOString().split("T")[0];
+    fechaHasta = fechaHasta.toISOString().split("T")[0];
 
     const url = `${this.server}/meetings/get-programs-by-date-range?congregationId=${congregationId}&startDate=${fechaDesde}&endDate=${fechaHasta}`;
     return this.httpClient.get<Program[]>(url);

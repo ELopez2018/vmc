@@ -4,39 +4,31 @@ import { ModalContainerComponent } from "src/app/shared/modal/modal-container/mo
 import { ModalTitleEnums, ModalIconEnums, ModalResponseEnums, ModalTypeEnums } from "../../enums/modal.enums";
 import { Assignment, Program, WeeklyProgram } from "../../interfaces/reuniones.interface";
 
-
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ModalService {
-  constructor(
-    private ngbModal: NgbModal
-  ) { }
+  constructor(private ngbModal: NgbModal) {}
 
   private modalOptions: NgbModalOptions = {
-    backdrop: 'static',
-    backdropClass: 'customBackdrop',
+    backdrop: "static",
+    backdropClass: "customBackdrop",
     centered: true,
     animation: true,
-    fullscreen: 'xl',
-    size: 'xl',
+    fullscreen: "xl",
+    size: "xl",
   };
 
   private modalRef!: NgbModalRef;
 
-  public yesOrNot(
-    titulo: ModalTitleEnums,
-    mensaje: string,
-    Icon: ModalIconEnums,
-    textButton: ModalResponseEnums = ModalResponseEnums.CONTINUAR
-  ) {
+  public yesOrNot(titulo: ModalTitleEnums, mensaje: string, Icon: ModalIconEnums, textButton: ModalResponseEnums = ModalResponseEnums.CONTINUAR) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.typeModal = ModalResponseEnums.SI;
     this.modalRef.componentInstance.titulo = titulo;
     this.modalRef.componentInstance.mensaje = mensaje;
     this.modalRef.componentInstance.Icon = Icon;
     this.modalRef.componentInstance.textButton = textButton;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
 
   public assignPublisherWeeklyProgram(assignment?: WeeklyProgram, assignmentType?: string, type?: string, room: string = "A") {
@@ -46,15 +38,15 @@ export class ModalService {
     this.modalRef.componentInstance.assignmentType = assignmentType;
     this.modalRef.componentInstance.type = type;
     this.modalRef.componentInstance.room = room;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
 
   public assignPublisherProgram(program: Program, assignmentType?: string) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
-    this.modalRef.componentInstance.assignment = program.weeklyProgram[0];
+    this.modalRef.componentInstance.assignment = program.weeklyPrograms[0];
     this.modalRef.componentInstance.assignmentType = assignmentType;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
 
   public changeSong(program: Program, song: string) {
@@ -62,32 +54,32 @@ export class ModalService {
     this.modalRef.componentInstance.modalType = ModalTypeEnums.CHANGE_SONGS;
     this.modalRef.componentInstance.program = program;
     this.modalRef.componentInstance.song = song;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
 
   public selectedHour() {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.SELECT_HOUR;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
   public setTitleAndTime(item: WeeklyProgram) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.TITLE_AND_TIME;
     this.modalRef.componentInstance.assignment = item;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
   public printer() {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.PRINTER;
-    this.modalRef.componentInstance.isModal= true;
-    return this.modalRef.result
+    this.modalRef.componentInstance.isModal = true;
+    return this.modalRef.result;
   }
 
-    public printerAssig() {
+  public printerAssig() {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.PRINTER_ASSIG;
-    this.modalRef.componentInstance.isModal= true;
-    return this.modalRef.result
+    this.modalRef.componentInstance.isModal = true;
+    return this.modalRef.result;
   }
 
   public errorHandler(error: any, title: string) {
@@ -96,7 +88,7 @@ export class ModalService {
     this.modalRef.componentInstance.errorType = ModalTitleEnums.ERROR;
     this.modalRef.componentInstance.errorMessage = error;
     this.modalRef.componentInstance.errorTitle = title;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
   public info(subtitle: string, message: string, title: ModalTitleEnums, type: ModalTypeEnums) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
@@ -104,30 +96,30 @@ export class ModalService {
     this.modalRef.componentInstance.subTitle = subtitle;
     this.modalRef.componentInstance.titulo = title;
     this.modalRef.componentInstance.modalType = type;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
 
   public loading() {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.LOADER;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
   public AddAssignment(program: Program, sectionMeeting: string) {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ADDASSIG;
     this.modalRef.componentInstance.program = program;
     this.modalRef.componentInstance.sectionMeeting = sectionMeeting;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
   public selectPublisher() {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.SELECT_PUBLISHER;
-    return this.modalRef.result
+    return this.modalRef.result;
   }
 
   public close() {
     if (this.modalRef) {
-      this.modalRef.dismiss()
+      this.modalRef.dismiss();
     }
   }
 }

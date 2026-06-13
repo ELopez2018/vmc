@@ -31,7 +31,7 @@ export class EntreSemanaComponent implements OnInit {
   private meetingDay = 1;
   public semanasAllRooms: ProgramPdf[] = [];
   loaderService = inject(LoaderService);
-
+  pages = 0;
   constructor(
     private meetingsService: MeetingsService,
     private modalService: ModalService,
@@ -49,29 +49,37 @@ export class EntreSemanaComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-    this.getPrograms();
+    this.loaderService.showMatspinner();
+    this.getPrograms(this.pages, 4);
   }
 
-  getPrograms() {
+  getPrograms(page: number = 0, size: number = 4) {
+    console.log("getPrograms");
     this.semanas = [];
-    this.loaderService.showMatspinner();
-    this.meetingsService.getWeeksValids(this.congregation.id).subscribe(
-      (data) => {
-        this.programList = [...data];
-        this.semanasAllRooms = this.dataService.makePDfVersion(this.programList);
-        this.semanas = this.programList;
-        this.semanasSalaAuxiliar = [...this.filterWeekByRoom("B", this.programList)];
-        this.dataService.setMeeting([...data]);
-        this.loaderService.hideMatspinner();
-        if (localStorage.getItem("week")) {
-          this.filterByWeekNumber(parseInt(localStorage.getItem("week") ?? ""));
-        }
-      },
-      (error) => {
-        console.error(error);
-        this.loaderService.hideMatspinner();
-      },
-    );
+    this.meetingsService.getWeeksValids(this.congregation.id, page, size).subscribe({
+      next: this.onSuccess.bind(this),
+      error: this.onError.bind(this),
+    });
+  }
+
+  onSuccess(data: any) {
+    this.programList.push(...data);
+    this.semanasAllRooms = this.dataService.makePDfVersion(this.programList);
+    this.semanas = this.programList;
+    this.semanasSalaAuxiliar = [...this.filterWeekByRoom("B", this.programList)];
+    this.dataService.setMeeting([...this.programList]);
+    this.loaderService.hideMatspinner();
+    if (localStorage.getItem("week")) {
+      this.filterByWeekNumber(parseInt(localStorage.getItem("week") ?? ""));
+    }
+    if (data.length != 0) {
+      this.getPrograms((this.pages += 1), 4);
+    }
+  }
+
+  onError(error: any) {
+    console.error(error);
+    this.loaderService.hideMatspinner();
   }
 
   showDayOfMeeting(fechaSemana: string) {
@@ -370,12 +378,12 @@ export class EntreSemanaComponent implements OnInit {
 
   filterWeekByRoom(room: string, weeks: Program[]) {
     return weeks.filter((i) => {
-      return i.weeklyProgram.filter((b) => b.room == room)?.length > 0;
+      return i.weeklyPrograms.filter((b) => b.room == room)?.length > 0;
     });
   }
   select() {
     this.semanasSalaAuxiliar = this.semanasSalaAuxiliar.map((i) => {
-      i.weeklyProgram = i.weeklyProgram.filter((a) => a.room == "B");
+      i.weeklyPrograms = i.weeklyPrograms.filter((a) => a.room == "B");
       return i;
     });
   }

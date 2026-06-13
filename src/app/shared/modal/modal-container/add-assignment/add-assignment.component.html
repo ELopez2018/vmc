@@ -65,7 +65,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (item of week.weeklyProgram; track item.id) {
+              @for (item of week.weeklyPrograms; track item.id) {
               @if (item.assignment.sectionMeeting==sectionMeeting) {
               <tr>
                 <td class="text-center">{{ item.assignment.number}}</td>

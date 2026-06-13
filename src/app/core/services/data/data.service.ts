@@ -74,7 +74,7 @@ export class DataService {
       const weeklyProgramPdf: WeeklyProgramPdF[] = [];
       const arrayTem: any[] = [];
 
-      week.weeklyProgram.forEach((assig: any) => {
+      week.weeklyPrograms.forEach((assig: any) => {
         if (!weeklyProgramPdf.some((i) => i.assignment.id === assig.assignment.id) && assig.room === "A") {
           weeklyProgramPdf.push({ ...assig });
         } else {
@@ -90,7 +90,7 @@ export class DataService {
         }
       });
 
-      return { ...week, weeklyProgram: weeklyProgramPdf };
+      return { ...week, weeklyPrograms: weeklyProgramPdf };
     });
 
     this.meetingsPDF$.next(meetingsPdf);

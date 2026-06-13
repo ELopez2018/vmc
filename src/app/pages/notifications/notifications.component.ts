@@ -54,7 +54,7 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
   @Output() sendReminder = new EventEmitter<AssignmentRow>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  public displayedColumns: string[] = ["week", "fullName", "title", "assignmentType", "email", "actions"];
+  public displayedColumns: string[] = ["week", "fullName","number", "title", "assignmentType", "email", "actions"];
   public dataSource = new MatTableDataSource<AssignmentRow>([]);
 
   public valuesComboSemanas: Combobox[] = [];
@@ -65,7 +65,11 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
   private destroy$ = new Subject<void>();
   private readonly notify = inject(NotificationService);
   public loadingByKey = new Set<number>();
-  constructor(private assignmentService: AssignmentService, private dataService: DataService, private fb: FormBuilder) {}
+  constructor(
+    private assignmentService: AssignmentService,
+    private dataService: DataService,
+    private fb: FormBuilder,
+  ) {}
   ngOnInit(): void {
     this.filtersForm = this.fb.group({
       week: [""],
@@ -75,6 +79,7 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
     });
 
     this.dataService.getMeeting().subscribe((data) => {
+      console.log("Programas recibidos:", data);
       this.fitroComboSemanas(data);
       this.fitroComboSeccion(data);
       this.dataSource.data = this.parseProgram(data);
@@ -112,7 +117,6 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
     // const searchRaw = (this.filtersForm.get("search")!.value ?? "").toString();
     // const search = searchRaw.trim().toLowerCase();
 
-
     this.dataSource.data = this.dataSourceAllRaws.data.filter((row) => {
       // Filtros por combos (si vienen vacíos, no filtran)
       const okWeek = !week || row.assignment?.meeting?.week?.toString() == week;
@@ -143,7 +147,7 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
     const participantes = new Set<string>();
     program.forEach((item) => {
       const programId = item.id;
-      item.weeklyProgram.forEach((wp) => {
+      item.weeklyPrograms.forEach((wp) => {
         participantes.add(wp.assistant?.fullName || "");
         participantes.add(wp.responsible?.fullName || "");
         if (wp.assistant) {
@@ -153,6 +157,7 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
             assignmentType: "Ayudante",
             assignment: wp.assignment,
             notificationSentAt: wp.notificationSentAt,
+            number: wp.assignment?.number,
           });
         }
 
@@ -163,6 +168,7 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
             assignmentType: "Responsable",
             assignment: wp.assignment,
             notificationSentAt: wp.notificationSentAt,
+            number: wp.assignment?.number,
           });
         }
       });
@@ -185,7 +191,7 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
   getUniqueSectionMeetings(programs: Program[]): Combobox[] {
     const map = new Map<string, Combobox>();
     for (const program of programs ?? []) {
-      for (const wp of program?.weeklyProgram ?? []) {
+      for (const wp of program?.weeklyPrograms ?? []) {
         const value = wp?.assignment?.sectionMeeting?.trim();
         // ignora null/undefined/""
         if (!value) continue;
@@ -254,8 +260,8 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
       },
       error: (err) => {
         this.loadingByKey.delete(body.programId);
-         this.notify.error(err.message, "Ups. algo salió mal");
-        console.error( err);
+        this.notify.error(err.message, "Ups. algo salió mal");
+        console.error(err);
       },
     });
   }

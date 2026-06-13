@@ -239,7 +239,7 @@ export class PrintPdfOnePageService {
     ];
   }
   private makeContentTreasures(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "TESOROS DE LA BIBLIA");
+    const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "TESOROS DE LA BIBLIA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       if (asigment.assignment.number != 3) {
@@ -284,7 +284,7 @@ export class PrintPdfOnePageService {
     ];
   }
   private makeContentTreasuresReader(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "TESOROS DE LA BIBLIA");
+    const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "TESOROS DE LA BIBLIA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       if (asigment.assignment.number == 3) {
@@ -357,7 +357,7 @@ export class PrintPdfOnePageService {
     ];
   }
   private makeContentTeachers(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "SEAMOS MEJORES MAESTROS");
+    const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "SEAMOS MEJORES MAESTROS");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       content.push([
@@ -429,7 +429,7 @@ export class PrintPdfOnePageService {
     ];
   }
   private makeContentLife(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA");
+    const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       // if (asigment.assignment.title !== "Estudio bíblico de la congregación") {
@@ -473,7 +473,7 @@ export class PrintPdfOnePageService {
     ];
   }
   private makeContentLifeEstudyB(week: ProgramPdf) {
-    const treasures = [...week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA")];
+    const treasures = [...week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA")];
     let content: any[] = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       if (asigment.assignment.title.includes("Estudio bíblico de la congregación")) {
@@ -660,7 +660,7 @@ export class PrintPdfOnePageService {
           ...this.makeIntermediateSong(week),
           ...this.makeContentLife(week),
           ...this.makeFinalBlock(week),
-          { text: null, pageBreak: count == 2 && pageCount < weeks.length ? "before" : null, style: count == 1 ? "endPage" : null }
+          { text: null, pageBreak: count == 2 && pageCount < weeks.length ? "before" : null, style: count == 1 ? "endPage" : null },
         );
       } else {
         contenido.push([

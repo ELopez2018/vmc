@@ -91,7 +91,7 @@ export class AssignmentSheetPrinterComponent implements OnInit {
   }
 
   hasAssistantBOrResponsibleB(data: ProgramPdf[]): boolean {
-    return data.some((root) => root.weeklyProgram.some((program) => program.assistantB !== undefined || program.responsibleB !== undefined));
+    return data.some((root) => root.weeklyPrograms.some((program) => program.assistantB !== undefined || program.responsibleB !== undefined));
   }
 
   updatePdfViewer(data: any) {

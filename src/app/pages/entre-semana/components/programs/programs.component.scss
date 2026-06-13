@@ -54,7 +54,7 @@
   }
 
   &__title-maestros {
-    background-color: #c69200;
+    background-color: #bd8a00;
   }
 
   &__title-vida {
@@ -70,20 +70,17 @@
   .text-title-custom {
     font-size: 10px;
     font-weight: bold;
-    line-height: 18px;
+    line-height: 20px;
   }
 
   .big-title {
-    // white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    // width: 100vw;
   }
 
   .hover {
     &:hover {
       cursor: pointer;
-      // background-color: rgb(219, 221, 221);
     }
   }
 
@@ -176,4 +173,10 @@ $icon-size: 42px;
   height: $icon-size;
   // line-height: $icon-size;
    color: rgb(124, 123, 123);
+}
+
+.tooltip-custom {
+  --mdc-plain-tooltip-container-color: #003366;
+  --mdc-plain-tooltip-supporting-text-color: #ffffff;
+  font-size: 13px;
 }

@@ -84,7 +84,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     const participantes = new Set<string>();
     program.forEach((item) => {
       const programId = item.id;
-      item.weeklyProgram.forEach((wp) => {
+      item.weeklyPrograms.forEach((wp) => {
         participantes.add(wp.assistant?.fullName || "");
         participantes.add(wp.responsible?.fullName || "");
         if (wp.assistant) {

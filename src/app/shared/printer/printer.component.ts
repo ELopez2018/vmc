@@ -33,7 +33,6 @@ export class PrinterComponent implements OnInit {
     private modalService: ModalService,
     private printPdfOnePageService: PrintPdfOnePageService,
     private loaderService: LoaderService,
-
   ) {
     this.modalService.loading();
     this.subs.add(
@@ -104,7 +103,7 @@ export class PrinterComponent implements OnInit {
   }
 
   hasAssistantBOrResponsibleB(data: ProgramPdf[]): boolean {
-    return data.some((root) => root.weeklyProgram.some((program) => program.assistantB !== undefined || program.responsibleB !== undefined));
+    return data.some((root) => root.weeklyPrograms.some((program) => program.assistantB !== undefined || program.responsibleB !== undefined));
   }
 
   download() {

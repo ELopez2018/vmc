@@ -31,7 +31,6 @@ export interface Publisher {
   congregationId?: number;
 }
 
-
 export interface Designation {
   id: number;
   description: string;
@@ -52,9 +51,17 @@ export interface Program {
   assistantAdviser?: Publisher;
   finalPrayer?: Publisher;
   congregation: Congregation;
-  weeklyProgram: WeeklyProgram[];
-  assembly: string
-  
+  weeklyPrograms: WeeklyProgram[];
+  assembly: string;
+}
+
+interface InitialSong {
+  id: number;
+  songNumber: number;
+  title: string;
+  source: string;
+  createdAt: number[];
+  updatedAt: number[];
 }
 export interface WeeklyProgram {
   id?: number;
@@ -66,7 +73,6 @@ export interface WeeklyProgram {
   startTime?: string;
   room: string;
   notificationSentAt?: string | null;
-
 }
 export interface Assignment {
   id?: number;
@@ -79,7 +85,6 @@ export interface Assignment {
   number: number;
   meeting: Meeting;
 }
-
 
 export interface Congregation {
   id: number;
@@ -102,6 +107,9 @@ export interface Meeting {
   url: string;
   assignmentType: any;
   weeklyBibleReading: string;
+  initialSong?: InitialSong;
+  middleSong?: InitialSong;
+  lastSong?: InitialSong;
 }
 
 export interface Room {
@@ -124,8 +132,7 @@ export interface DataTable {
   assignmentType: string;
 }
 
-
-export type NotifyType = 'success' | 'info' | 'warning' | 'error';
+export type NotifyType = "success" | "info" | "warning" | "error";
 
 export interface NotifyOptions {
   message: string;

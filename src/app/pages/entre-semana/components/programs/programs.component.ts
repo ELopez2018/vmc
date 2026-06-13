@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { Congregation, Meeting, Program, Publisher, WeeklyProgram } from "src/app/core/interfaces/reuniones.interface";
@@ -14,12 +14,13 @@ import { ModalTitleEnums } from "src/app/core/enums/modal.enums";
 import { ModalTypeEnums } from "../../../../core/enums/modal.enums";
 import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.interface";
 import Swal from "sweetalert2";
+import { MatTooltip, MatTooltipModule } from "@angular/material/tooltip";
 
 @Component({
   selector: "vmc-programs",
   templateUrl: "./programs.component.html",
   styleUrls: ["./programs.component.scss"],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule, MatTooltipModule],
 })
 export class ProgramsComponent implements OnInit, AfterViewInit {
   @Output() public filtrar = new EventEmitter<{ fechaDesde: any; fechaHasta: any }>();
@@ -27,6 +28,7 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
   @Input() public semanasAllRooms: ProgramPdf[] = [];
   @Input() public RoomA = false;
   @Input() public room = "A";
+  @ViewChild('tooltipPresiden') tooltipPresiden!: MatTooltip;
   porAsignar = "por asignar";
   isAdmin = false;
   public congregation: Congregation = CongregationMock;
@@ -46,6 +48,7 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
     this.semanasAllRooms = this.dataService.makePDfVersion(this.semanas);
     //  console.log(this.semanas);
     //  console.log(this.semanasAllRooms);
+    this.tooltipPresiden.show();
   }
   ngOnInit(): void {
     this.dataService.getPublisher().subscribe((data) => {
@@ -58,6 +61,7 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
       this.congregation = data;
       this.meetingDay = data.day;
     });
+    this.tooltipPresiden.show();
     // console.log(this.semanasAllRooms);
   }
 
@@ -733,13 +737,13 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
     this.modalService.printerAssig();
   }
   filterRoom(item: WeeklyProgram, room = "B") {
-    return this.semanas.find((i) => i.weeklyProgram.find((j) => j.id === item.id))?.weeklyProgram.find((k) => k.room === room && k.assignment.number === item.assignment.number);
+    return this.semanas.find((i) => i.weeklyPrograms.find((j) => j.id === item.id))?.weeklyPrograms.find((k) => k.room === room && k.assignment.number === item.assignment.number);
   }
 
   filterProgram(item: Program, room = "B") {
     return this.semanas.find((p) => p.id == item.id);
   }
-    consultar() {
+  consultar() {
     this.filtrar.emit({ fechaDesde: this.fechaDesde, fechaHasta: this.fechaHasta });
   }
 }

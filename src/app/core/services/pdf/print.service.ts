@@ -70,7 +70,10 @@ export class PrintPdfService {
     ];
   }
   private makeHeaderProgram(week: ProgramPdf) {
-    const roomB = this.verifiRoomB(week.weeklyProgram);
+    const song = week.meeting.initialSong
+      ? week.meeting.initialSong.songNumber + " " + week.meeting.initialSong.title + " (" + week.meeting.initialSong.source + ")"
+      : week.meeting.openingSong;
+    const roomB = this.verifiRoomB(week.weeklyPrograms);
     let conAux = [];
     if (roomB) {
       conAux = [
@@ -166,7 +169,7 @@ export class PrintPdfService {
                 border: [false, false, false, false],
               },
               {
-                text: "• Canción " + week.meeting.openingSong,
+                text: "• Canción " + song,
                 style: "titles",
                 border: [false, false, false, false],
               },
@@ -239,7 +242,7 @@ export class PrintPdfService {
     ];
   }
   private makeContentTreasures(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "TESOROS DE LA BIBLIA");
+    const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "TESOROS DE LA BIBLIA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       if (asigment.assignment.number != 3) {
@@ -283,7 +286,7 @@ export class PrintPdfService {
     ];
   }
   private makeContentTreasuresReader(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "TESOROS DE LA BIBLIA");
+    const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "TESOROS DE LA BIBLIA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       if (asigment.assignment.number == 3) {
@@ -357,7 +360,7 @@ export class PrintPdfService {
     ];
   }
   private makeContentTeachers(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "SEAMOS MEJORES MAESTROS");
+    const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "SEAMOS MEJORES MAESTROS");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       content.push([
@@ -429,7 +432,7 @@ export class PrintPdfService {
     ];
   }
   private makeContentLife(week: ProgramPdf) {
-    const treasures = week.weeklyProgram.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA");
+    const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
       content.push([
@@ -470,6 +473,9 @@ export class PrintPdfService {
     ];
   }
   private makeIntermediateSong(week: ProgramPdf) {
+    const song = week.meeting.middleSong
+      ? week.meeting.middleSong.songNumber + " " + week.meeting.middleSong.title + " (" + week.meeting.middleSong.source + ")"
+      : week.meeting.intermediateSong;
     return [
       {
         table: {
@@ -482,7 +488,7 @@ export class PrintPdfService {
                 border: [false, false, false, false],
               },
               {
-                text: "• Canción " + week.meeting.intermediateSong,
+                text: "• Canción " + song,
                 style: "titles",
                 border: [false, false, false, false],
               },
@@ -503,6 +509,7 @@ export class PrintPdfService {
     ];
   }
   private makeFinalBlock(week: ProgramPdf) {
+    const song = week.meeting.lastSong ? week.meeting.lastSong.songNumber + " " + week.meeting.lastSong.title + " (" + week.meeting.lastSong.source + ")" : week.meeting.finalSong;
     return [
       {
         table: {
@@ -537,7 +544,7 @@ export class PrintPdfService {
                 border: [false, false, false, false],
               },
               {
-                text: "• Canción " + week.meeting.finalSong,
+                text: "• Canción " + song,
                 style: "titles",
                 border: [false, false, false, false],
               },
@@ -655,12 +662,12 @@ export class PrintPdfService {
       "\n",
     ];
   }
-private buildPageBreak(isSecondInPage: boolean, isLast: boolean) {
-  if (isSecondInPage && !isLast) {
-    return { text: "", pageBreak: "after" }; // 👈 CAMBIO CLAVE
+  private buildPageBreak(isSecondInPage: boolean, isLast: boolean) {
+    if (isSecondInPage && !isLast) {
+      return { text: "", pageBreak: "after" }; // 👈 CAMBIO CLAVE
+    }
+    return { text: "" };
   }
-  return { text: "" };
-}
   private styles() {
     return {
       styles: {

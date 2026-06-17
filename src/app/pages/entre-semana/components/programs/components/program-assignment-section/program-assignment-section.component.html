@@ -1,0 +1,232 @@
+@if (renderFieldset) {
+<fieldset class="mb-0">
+  <legend [class]="legendClass + ' my-md-2'">
+    {{ title }}
+    @if (isAdmin) {
+    <mat-icon (click)="onAddAssignment()">edit</mat-icon>
+    }
+  </legend>
+
+  <ng-container [ngTemplateOutlet]="sectionRows"></ng-container>
+</fieldset>
+} @else {
+<ng-container [ngTemplateOutlet]="sectionRows"></ng-container>
+}
+
+<ng-template #sectionRows>
+  @for (item of sectionItems; track item.id) {
+  @if (sectionMeeting == treasuresSection) {
+  <div class="row px-3 program__tesoros">
+    @if (item.assignment.number == 1 || item.assignment.number == 2) {
+    <div class="col-md-9 mt-1">
+      <div class="row">
+        <div class="col-md-1 ms-2 ms-xl-2 width-timeStart hover d-none d-xl-inline"
+          (click)="onWeeklyProgramChange(item, 'startTime')">
+          {{ adapterTime(item.startTime) }}
+        </div>
+        <div class="col-md-11 big-title p-0 ps-xl-2 m-0"
+          [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
+          <span class="title-number hover" (click)="onWeeklyProgramChange(item, 'number')">
+            {{ item.assignment.number }}.
+          </span>
+
+          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, 'title')">
+            {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3 mb-md-0">
+      <span class="hover text-publisher"
+        [class.text-danger]="!item.responsible || hasPublisherWarning(item.responsible)"
+        (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        {{ item?.responsible?.fullName ?? porAsignar }}
+      </span>
+    </div>
+    } @else {
+    <div class="col-md-5 mt-1">
+      <div class="row">
+        <div class="col-md-1 mx-2 width-timeStart hover d-none d-xl-inline"
+          (click)="onWeeklyProgramChange(item, 'startTime')">
+          {{ adapterTime(item.startTime) }}
+        </div>
+        <div class="col-md-11 big-title p-0 m-0"
+          [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
+          <span class="title-number hover" (click)="onWeeklyProgramChange(item, 'number')">
+            {{ item.assignment.number }}.
+          </span>
+
+          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, 'title')">
+            {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom">
+      @if (item.assignment.showTips) {
+      <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, 'tips')">
+        {{ item.assignment.tips }}
+      </span>
+      }
+    </div>
+
+    <div class="col-md-3 mb-3 mb-md-0">
+      @if (item.assignment.number == 3) {
+      <span class="hover text-publisher"
+        [class.text-danger]="!item.responsibleB || hasPublisherWarning(item.responsibleB)"
+        (click)="onWeeklyProgramChange(item, 'responsibleB')" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        {{ item?.responsibleB?.fullName ?? porAsignar }}
+      </span>
+      }
+    </div>
+    <div class="col-md-2 mb-3 mb-md-0">
+      <span class="hover text-publisher"
+        [class.text-danger]="!item.responsible || hasPublisherWarning(item.responsible)"
+        (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        {{ item?.responsible?.fullName ?? porAsignar }}
+      </span>
+    </div>
+    }
+  </div>
+  }
+
+  @if (sectionMeeting == teachersSection) {
+  <div class="row px-3 program__tesoros">
+    <div class="col-md-5 mt-1">
+      <div class="row">
+        <div class="col-md-1 mx-2 width-timeStart hover d-none d-xl-inline"
+          (click)="onWeeklyProgramChange(item, 'startTime')">
+          {{ adapterTime(item.startTime) }}
+        </div>
+
+        <div class="col-md-11 big-title p-0 m-0"
+          [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
+          <span class="title-number hover" (click)="onWeeklyProgramChange(item, 'number')">
+            {{ item.assignment.number }}.
+          </span>
+          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, 'title')">
+            {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom">
+      @if (item.assignment.showTips) {
+      <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, 'tips')">
+        {{ item.assignment.tips }}
+      </span>
+      }
+    </div>
+
+    <div class="col-md-3 pe-0 mb-3 mb-md-0">
+      <span class="hover text-publisher"
+        [class.text-danger]="!item.responsibleB || hasPublisherWarning(item.responsibleB)"
+        (click)="onWeeklyProgramChange(item, 'responsibleB')" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        {{ item?.responsibleB?.fullName ?? porAsignar }}
+      </span>
+      @if (item.assignment.title !== "Discurso") {
+      <span class="hover text-publisher" [class.text-danger]="!item.assistantB || hasPublisherWarning(item.assistantB)"
+        (click)="onWeeklyProgramChange(item, 'assistantB')" [ngbTooltip]="item.assistantB?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        {{ item?.assistantB ? "/" + item.assistantB.fullName : "/" + porAsignar }}
+      </span>
+      }
+    </div>
+
+    <div class="col-md-3 mb-3 pe-0 mb-md-0">
+      <span class="hover text-publisher"
+        [class.text-danger]="!item.responsible || hasPublisherWarning(item.responsible)"
+        (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        {{ item?.responsible?.fullName ?? porAsignar }}
+      </span>
+      @if (item.assignment.title !== "Discurso") {
+      <span class="hover text-publisher" [class.text-danger]="!item.assistant || hasPublisherWarning(item.assistant)"
+        (click)="onWeeklyProgramChange(item, 'assistant')" [ngbTooltip]="item.assistant?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        {{ item?.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}
+      </span>
+      }
+    </div>
+  </div>
+  }
+
+  @if (sectionMeeting == livingSection) {
+  @if (item.assignment.title != "Estudio bíblico de la congregación") {
+  <div class="row px-3 program__tesoros">
+    <div class="col-md-9">
+      <div class="row">
+        <div class="col-md-1 width-timeStart ms-2 hover d-none d-xl-inline"
+          (click)="onWeeklyProgramChange(item, 'startTime')">
+          {{ adapterTime(item.startTime) }}
+        </div>
+        <div class="col-md-11 big-title p-0 m-0 ps-xl-2 hover"
+          [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
+          <span class="title-number hover" (click)="onWeeklyProgramChange(item, 'number')">
+            {{ item.assignment.number }}.
+          </span>
+          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, 'title')">
+            {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3 mb-md-0">
+      <span class="hover text-publisher"
+        [class.text-danger]="!item.responsible || hasPublisherWarning(item.responsible)"
+        (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        {{ item.responsible ? item.responsible.fullName : porAsignar }}
+      </span>
+    </div>
+  </div>
+  } @else {
+  <div class="row px-3 program__tesoros">
+    <div class="col-md-8">
+      <div class="row">
+        <div class="col-md-1 width-timeStart ms-2 hover d-none d-xl-inline"
+          (click)="onWeeklyProgramChange(item, 'startTime')">
+          {{ adapterTime(item.startTime) }}
+        </div>
+        <div class="col-md-11 big-title p-0 m-0 ps-xl-2 hover"
+          [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
+          <span class="title-number hover" (click)="onWeeklyProgramChange(item, 'number')">
+            {{ item.assignment.number }}.
+          </span>
+          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, 'title')">
+            {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-1 mt-0 text-end text-title-custom">
+      @if (item.assignment.showTips) {
+      <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, 'tips')">
+        {{ item.assignment.tips }}
+      </span>
+      }
+    </div>
+    <div class="col-md-3 mb-3 mb-md-0">
+      <span class="hover text-publisher"
+        [class.text-danger]="!item.responsible || hasPublisherWarning(item.responsible)"
+        (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        {{ item.responsible ? item.responsible.fullName : porAsignar }}
+      </span>
+      <span class="hover text-publisher" [class.text-danger]="!item.assistant || hasPublisherWarning(item.assistant)"
+        (click)="onWeeklyProgramChange(item, 'assistant')" [ngbTooltip]="item.assistant?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        {{ item.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}
+      </span>
+    </div>
+  </div>
+  }
+  }
+  }
+</ng-template>

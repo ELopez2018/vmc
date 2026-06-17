@@ -1,0 +1,231 @@
+<div class="container-fluid p-0 program__body pb-4 pt-1 mb-4 shadow-page">
+  @if (semana.assembly != null && semana.assembly != "") {
+  <div class="row text-center assembly pt-5 mb-5">
+    <div class="col-md-12 mt-5 p-5">
+      <h2>{{ semana.assembly | uppercase }}</h2>
+      <h4>{{ showDayOfMeeting(semana.meeting.week) }}</h4>
+    </div>
+  </div>
+  }
+
+  @if (semana.assembly == null || semana.assembly == "") {
+  <div class="row program__header text-center text-md-start">
+    <div class="col-md-3 h3 d-none d-xl-inline">
+      <div class="program__congregacion ps-3 pt-md-2">
+        {{ semana.congregation.name }}
+      </div>
+    </div>
+    <div class="col-md-7 d-none d-xl-inline h2 text-center text-md-end pe-md-5">
+      <div class="program__title pt-2">Programa para la reunión de entre semana</div>
+    </div>
+    <div class="col-12 col-md-12 col-xl-2 d-flex justify-content-end pe-5 py-2">
+      <div class="d-flex justify-content-end">
+        <a class="me-2" (click)="printAssignments.emit(semana)">
+          <mat-icon class="icon-lg hover">assignment_turned_in</mat-icon>
+        </a>
+        <a (click)="print.emit(semana)">
+          <mat-icon class="icon-lg hover">printer_outline</mat-icon>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3 program__reunion pe-xl-4">
+    <div class="row px-3">
+      <div class="col-md-7 fw-bold text-md-start">
+        <a href="{{ semana.meeting.url }}" target="_blank">
+          {{ showDayOfMeeting(semana.meeting.week) }}
+        </a>
+        @if (semana.meeting.weeklyBibleReading) {
+        |
+        {{ semana.meeting.weeklyBibleReading }}
+        } @else {
+        | LECTURA SEMANAL DE LA BIBLIA
+        }
+      </div>
+
+      @if (roomA) {
+      <div class="col-md-2 text-md-end text-title-custom">Presidente:</div>
+      <div class="col-md-3 text-md-start hover text-publisher">
+        <span
+          (click)="onProgramChange('president')"
+          [class.text-danger]="!semana.president || hasPublisherWarning(semana.president)"
+          #tooltipPresiden="ngbTooltip"
+          [ngbTooltip]="getPublisherTooltipText(semana.president, tooltipPresidenText)"
+          placement="end"
+          container="body"
+          [tooltipClass]="getPublisherTooltipClass(semana.president, 'tooltip-custom')"
+        >
+          {{ semana.president ? semana.president.fullName : porAsignar }}
+        </span>
+      </div>
+      }
+    </div>
+
+    @if (roomA) {
+    <div class="row px-3">
+      <div class="col-md-6"></div>
+      <div class="col-md-3 text-md-end text-title-custom">Consejero de la sala auxiliar:</div>
+      <div class="col-md-3 text-md-start hover text-publisher">
+        <span
+          (click)="onProgramChange('assistantAdviser')"
+          [class.text-danger]="!semana.assistantAdviser || hasPublisherWarning(semana.assistantAdviser)"
+          [ngbTooltip]="semana.assistantAdviser?.publisherTooltipText"
+          [placement]="publisherTooltipPlacement"
+          container="body"
+          [tooltipClass]="publisherTooltipClass"
+        >
+          {{ semana.assistantAdviser ? semana.assistantAdviser.fullName : porAsignar }}
+        </span>
+      </div>
+    </div>
+    }
+
+    @if (roomA) {
+    <div class="row px-3">
+      <div class="col-md-7 ps-2 ps-xl-3 text-md-start">
+        <span class="ms-md-1"></span>
+        <span class="hover d-none d-xl-inline" (click)="onProgramChange('startTimeOpeningSong')">
+          {{ adapterTime(semana.startTimeOpeningSong) }}
+        </span>
+        <span class="ms-md-2 fw-bold hover" (click)="onProgramChange('openingSong')">
+          Canción {{ semana.meeting.initialSong?.songNumber }}
+        </span>
+        <span class="ms-md-2 fw-bold hover" (click)="onProgramChange('openingSong')">
+          {{ semana.meeting.initialSong?.title }} ({{ semana.meeting.initialSong?.source }})
+        </span>
+      </div>
+      <div class="col-md-2 text-md-end text-title-custom">Oración:</div>
+      <div class="col-md-3 text-md-start hover text-publisher">
+        <span
+          (click)="onProgramChange('openingPrayer')"
+          [class.text-danger]="!semana.openingPrayer || hasPublisherWarning(semana.openingPrayer)"
+          [ngbTooltip]="semana.openingPrayer?.publisherTooltipText"
+          [placement]="publisherTooltipPlacement"
+          container="body"
+          [tooltipClass]="publisherTooltipClass"
+        >
+          {{ semana.openingPrayer ? semana.openingPrayer.fullName : porAsignar }}
+        </span>
+      </div>
+    </div>
+    }
+
+    @if (roomA) {
+    <div class="row px-3 program__tesoros">
+      <div class="col-md-12 ps-xl-3 text-md-start">
+        <span class="ms-xl-1"></span>
+        <span class="hover d-none d-xl-inline" (click)="onProgramChange('startTimeIntro')">
+          {{ adapterTime(semana.startTimeIntro) }}
+        </span>
+        <span class="hover ps-2" (click)="onProgramChange('introTime')">
+          Palabras de introducción ({{ semana.meeting.introTime + " " + semana.meeting.timeType }})
+        </span>
+      </div>
+    </div>
+    }
+
+    <vmc-program-assignment-section
+      [week]="semana"
+      [sectionMeeting]="treasuresSection"
+      title="TESOROS DE LA BIBLIA"
+      legendClass="program__title-tesoros"
+      [room]="room"
+      [isAdmin]="isAdmin"
+      [porAsignar]="porAsignar"
+      (addAssignment)="onAddAssignment($event)"
+      (weeklyProgramChange)="onWeeklyProgramChange($event)"
+    ></vmc-program-assignment-section>
+
+    <vmc-program-assignment-section
+      [week]="semana"
+      [sectionMeeting]="teachersSection"
+      title="SEAMOS MEJORES MAESTROS"
+      legendClass="program__title-maestros"
+      [room]="room"
+      [isAdmin]="isAdmin"
+      [porAsignar]="porAsignar"
+      (addAssignment)="onAddAssignment($event)"
+      (weeklyProgramChange)="onWeeklyProgramChange($event)"
+    ></vmc-program-assignment-section>
+
+    @if (roomA) {
+    <fieldset>
+      <legend class="program__title-vida my-md-2">
+        NUESTRA VIDA CRISTIANA
+        @if (isAdmin) {
+        <mat-icon (click)="addAssignment.emit({ program: semana, sectionMeeting: livingSection })">edit</mat-icon>
+        }
+      </legend>
+      <div class="row px-3">
+        <div class="col-md-12 mt-1">
+          <span class="mx-2 hover d-none d-xl-inline" (click)="onProgramChange('startTimeIntermediateSong')">
+            {{ adapterTime(semana.startTimeIntermediateSong) }}
+          </span>
+          <span class="fw-bold hover" (click)="onProgramChange('intermediateSong')">
+            Canción {{ semana.meeting.middleSong?.songNumber }}
+          </span>
+          <span class="ms-md-2 fw-bold hover" (click)="onProgramChange('openingSong')">
+            {{ semana.meeting.middleSong?.title }} ({{ semana.meeting.middleSong?.source }})
+          </span>
+        </div>
+      </div>
+
+      <vmc-program-assignment-section
+        [week]="semana"
+        [sectionMeeting]="livingSection"
+        title=""
+        legendClass=""
+        [room]="room"
+        [isAdmin]="false"
+        [porAsignar]="porAsignar"
+        [renderFieldset]="false"
+        (weeklyProgramChange)="onWeeklyProgramChange($event)"
+      ></vmc-program-assignment-section>
+    </fieldset>
+    }
+
+    @if (roomA) {
+    <div class="row px-3">
+      <div class="col-md-7 mt-1">
+        <span class="ms-md-1"></span>
+        <span class="mx-2 hover d-none d-xl-inline" (click)="onProgramChange('startTimeConclusionWords')">
+          {{ adapterTime(semana.startTimeConclusionWords) }}
+        </span>
+        Palabras de conclusión
+      </div>
+      <div class="col-md-2 mt-1 text-end text-title-custom"></div>
+    </div>
+    }
+
+    @if (roomA) {
+    <div class="row px-3">
+      <div class="col-md-7 mt-1">
+        <span class="ms-md-1"></span>
+        <span class="hover d-none mx-2 d-xl-inline" (click)="onProgramChange('startTimeFinalSong')">
+          {{ adapterTime(semana.startTimeFinalSong) }}
+        </span>
+        <span class="fw-bold hover" (click)="onProgramChange('finalSong')">
+          Canción {{ semana.meeting.lastSong?.songNumber }}
+        </span>
+        <span class="ms-md-2 fw-bold hover" (click)="onProgramChange('openingSong')">
+          {{ semana.meeting.lastSong?.title }} ({{ semana.meeting.lastSong?.source }})
+        </span>
+      </div>
+      <div class="col-md-2 text-md-end text-title-custom">Oracion:</div>
+      <div
+        class="col-md-3 hover text-publisher"
+        (click)="onProgramChange('finalPrayer')"
+        [class.text-danger]="!semana.finalPrayer || hasPublisherWarning(semana.finalPrayer)"
+        [ngbTooltip]="semana.finalPrayer?.publisherTooltipText"
+        [placement]="publisherTooltipPlacement"
+        container="body"
+        [tooltipClass]="publisherTooltipClass"
+      >
+        {{ semana.finalPrayer ? semana.finalPrayer.fullName : porAsignar }}
+      </div>
+    </div>
+    }
+  </div>
+  }
+</div>

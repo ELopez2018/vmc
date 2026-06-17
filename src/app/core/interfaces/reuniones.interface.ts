@@ -29,6 +29,7 @@ export interface Publisher {
   congregation: Congregation;
   designations: Designation[];
   congregationId?: number;
+  publisherTooltipText?: string;
 }
 
 export interface Designation {

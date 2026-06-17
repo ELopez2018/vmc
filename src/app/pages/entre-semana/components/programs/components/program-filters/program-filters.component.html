@@ -1,0 +1,37 @@
+<div class="row align-items-end p-2">
+  <div class="col-md-5">
+    <p-calendar
+      [(ngModel)]="fechaDesde"
+      [showIcon]="true"
+      dateFormat="dd/mm/yy"
+      inputId="fechaDesde"
+      styleClass="w-100"
+      placeholder="Desde"
+    >
+    </p-calendar>
+  </div>
+
+  <div class="col-md-5">
+    <p-calendar
+      [(ngModel)]="fechaHasta"
+      [showIcon]="true"
+      dateFormat="dd/mm/yy"
+      inputId="fechaHasta"
+      styleClass="w-100"
+      placeholder="Hasta"
+    >
+    </p-calendar>
+  </div>
+
+  <div class="col-md-2">
+    <button
+      autofocus
+      pButton
+      type="button"
+      label="buscar"
+      icon="pi pi-search"
+      class="p-button-primary w-100"
+      (click)="consultar()"
+    ></button>
+  </div>
+</div>

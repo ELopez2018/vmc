@@ -1,6 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { Congregation, Meeting, Program, Publisher, WeeklyProgram } from "src/app/core/interfaces/reuniones.interface";
 import { AssignmentService } from "src/app/core/services/assignment/assignment.service";
@@ -14,28 +13,28 @@ import { ModalTitleEnums } from "src/app/core/enums/modal.enums";
 import { ModalTypeEnums } from "../../../../core/enums/modal.enums";
 import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.interface";
 import Swal from "sweetalert2";
-import { MatTooltip, MatTooltipModule } from "@angular/material/tooltip";
+import { ProgramFiltersComponent } from "./components/program-filters/program-filters.component";
+import { ProgramWeekComponent } from "./components/program-week/program-week.component";
 
 @Component({
   selector: "vmc-programs",
   templateUrl: "./programs.component.html",
   styleUrls: ["./programs.component.scss"],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule, MatTooltipModule],
+  imports: [CommonModule, SharedModule, ProgramFiltersComponent, ProgramWeekComponent],
 })
-export class ProgramsComponent implements OnInit, AfterViewInit {
+export class ProgramsComponent implements OnInit, OnChanges {
   @Output() public filtrar = new EventEmitter<{ fechaDesde: any; fechaHasta: any }>();
   @Input() public semanas: Program[] = [];
   @Input() public semanasAllRooms: ProgramPdf[] = [];
   @Input() public RoomA = false;
   @Input() public room = "A";
-  @ViewChild('tooltipPresiden') tooltipPresiden!: MatTooltip;
   porAsignar = "por asignar";
   isAdmin = false;
   public congregation: Congregation = CongregationMock;
   public assignmentType: string = "";
   public superintendente!: Publisher;
   public showSpinner = false;
-  private meetingDay = 1;
+  public meetingDay = 1;
   fechaHasta: any;
   fechaDesde: any;
   constructor(
@@ -44,25 +43,28 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
     private dataService: DataService,
     private assignmentService: AssignmentService,
   ) {}
-  ngAfterViewInit(): void {
-    this.semanasAllRooms = this.dataService.makePDfVersion(this.semanas);
-    //  console.log(this.semanas);
-    //  console.log(this.semanasAllRooms);
-    this.tooltipPresiden.show();
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes["semanas"]) {
+      this.updateWeeksForPrint();
+    }
   }
+
   ngOnInit(): void {
     this.dataService.getPublisher().subscribe((data) => {
       this.superintendente = data;
+      this.isAdmin = data.email === "estarlin.elv@gmail.com";
     });
-
-    this.isAdmin = this.superintendente.email === "estarlin.elv@gmail.com";
 
     this.dataService.getCongregation$().subscribe((data) => {
       this.congregation = data;
       this.meetingDay = data.day;
     });
-    this.tooltipPresiden.show();
-    // console.log(this.semanasAllRooms);
+    this.updateWeeksForPrint();
+  }
+
+  private updateWeeksForPrint(): void {
+    this.semanasAllRooms = this.dataService.makePDfVersion(this.semanas);
   }
 
   showDayOfMeeting(fechaSemana: any) {
@@ -743,7 +745,7 @@ export class ProgramsComponent implements OnInit, AfterViewInit {
   filterProgram(item: Program, room = "B") {
     return this.semanas.find((p) => p.id == item.id);
   }
-  consultar() {
-    this.filtrar.emit({ fechaDesde: this.fechaDesde, fechaHasta: this.fechaHasta });
+  consultar(filtros: { fechaDesde: any; fechaHasta: any }) {
+    this.filtrar.emit(filtros);
   }
 }

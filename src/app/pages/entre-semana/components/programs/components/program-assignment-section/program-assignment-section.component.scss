@@ -1,0 +1,120 @@
+:host {
+  display: block;
+}
+
+legend {
+  font-size: 0.8rem;
+  margin-bottom: -2px;
+  color: white;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  padding-left: 10px;
+  position: relative;
+
+  & mat-icon {
+    position: absolute;
+    right: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.program__title-asingment {
+  font-style: normal;
+}
+
+.program__title-tesoros {
+  background-color: #2a6b77;
+}
+
+.program__title-maestros {
+  background-color: #bd8a00;
+}
+
+.program__title-vida {
+  background-color: #7a0026;
+}
+
+.title-number {
+  display: inline-block;
+  width: 20px;
+  text-align: right;
+}
+
+.text-title-custom {
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 20px;
+}
+
+.big-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hover:hover {
+  cursor: pointer;
+}
+
+.text-publisher {
+  font-size: 13px;
+}
+
+@media (min-width: 1366px) {
+  .width-timeStart {
+    width: 36px;
+  }
+
+  .big-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  legend {
+    font-size: 1rem;
+    margin-bottom: -2px;
+    color: white;
+    width: 44vw;
+    height: 35px;
+    padding-left: 10px;
+    position: relative;
+    line-height: 35px;
+
+    & mat-icon {
+      position: absolute;
+      right: 10px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+@media (min-width: 1600px) {
+  .width-timeStart {
+    width: 36px;
+  }
+
+  legend {
+    font-size: 1rem;
+    margin-bottom: -2px;
+    color: white;
+    width: 39vw;
+    padding-left: 10px;
+    position: relative;
+
+    & mat-icon {
+      position: absolute;
+      right: 10px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ export class PrintPdfService {
   private colorFontPublisher = "#ea002e";
 
   private sizeHeader = [10, "auto", "*", 20];
-  private sizeBody = ["auto", "*", 150, 126];
+  private sizeBody = [200, "*", 150, 126];
   private sizeSongs = [16, 244, 150, "*"];
   private sizeHeaderSections = [275, 143, "*"];
 
@@ -79,12 +79,15 @@ export class PrintPdfService {
       conAux = [
         [
           {
-            text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true),
+            text:
+              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) +
+              " | " +
+              (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
             style: "sub_title",
             border: [false, false, false, false],
           },
           {
-            text: "|  " + (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
+            text: "",
             style: "sub_title",
             border: [false, false, false, false],
           },
@@ -126,12 +129,15 @@ export class PrintPdfService {
       conAux = [
         [
           {
-            text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) + "  |",
+            text:
+              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) +
+              " | " +
+              (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
             style: "sub_title",
             border: [false, false, false, false],
           },
           {
-            text: week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA",
+            text: "",
             style: "sub_title",
             border: [false, false, false, false],
           },
@@ -632,12 +638,12 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true),
+                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) + " | ",
                 style: "sub_title",
                 border: [false, false, false, false],
               },
               {
-                text: "|  " + (week.meeting.weeklyBibleReading || "LECTURA SEMANAL DE LA BIBLIA"),
+                text: week.meeting.weeklyBibleReading || "LECTURA SEMANAL DE LA BIBLIA",
                 style: "sub_title",
                 border: [false, false, false, false],
               },

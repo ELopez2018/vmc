@@ -33,6 +33,11 @@ const routes: Routes = [
         canActivate: [LoginGuard],
       },
       {
+        path: "imprimir/:tipo",
+        component: PrinterComponent,
+        canActivate: [LoginGuard],
+      },
+      {
         path: "publicador",
         component: UsersCreateOrUpdateComponent,
         canActivate: [LoginGuard],
@@ -67,12 +72,11 @@ const routes: Routes = [
         component: AssignmentSheetPrinterComponent,
         canActivate: [LoginGuard],
       },
-            {
+      {
         path: "notificaciones",
-        loadComponent: () => import("../notifications/notifications.component").then(m => m.NotificationsComponent),
+        loadComponent: () => import("../notifications/notifications.component").then((m) => m.NotificationsComponent),
         canActivate: [LoginGuard],
       },
-
     ],
   },
 ];

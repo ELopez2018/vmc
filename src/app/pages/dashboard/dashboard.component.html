@@ -59,7 +59,7 @@
   <mat-sidenav-container class="sidenav-container">
 
     <mat-sidenav #snav class="sidenav" mode="side" [fixedInViewport]="true" fixedTopGap="56"
-      (backdropClick)="snav.close()"  [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'">
+      (backdropClick)="snav.close()" [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'">
 
       <div class="sidenav-header">
         <mat-icon color="primary">menu_book</mat-icon>
@@ -73,10 +73,17 @@
           <span>Programa</span>
         </a>
 
-        <a mat-list-item routerLink="imprimir" (click)="closeMenu()">
+        <div class="divider"></div>
+        <span class="section-title">Imprimir</span>
+        <a mat-list-item routerLink="imprimir" [queryParams]="{  tipo: 'normal' }" (click)="closeMenu()">
           <mat-icon>print</mat-icon>
-          <span>Imprimir</span>
+          <span>Normal</span>
         </a>
+        <a mat-list-item routerLink="imprimir" [queryParams]="{ tipo: 'landscape' }" (click)="closeMenu()">
+          <mat-icon>print</mat-icon>
+          <span>Landscape</span>
+        </a>
+
 
         <div class="divider"></div>
 
@@ -131,7 +138,7 @@
         </a>
         <div class="divider"></div>
 
-  
+
         <img src="./../../../assets/img/Logo.png" width="200" alt="">
 
 

@@ -6,9 +6,11 @@ import { DataService } from "../../core/services/data/data.service";
 import { ModalService } from "../../core/services/modal/modal.service";
 import { Congregation } from "../../core/interfaces/reuniones.interface";
 import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
-import { Subscription } from "rxjs";
+import { distinctUntilChanged, map, Subscription } from "rxjs";
 import { PrintPdfOnePageService } from "src/app/core/services/pdf/print-pdf-one-page.service";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
+import { PrintPdfLandscapeService } from "src/app/core/services/pdf/print-pdf-landscape.service";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-printer",
@@ -26,13 +28,17 @@ export class PrinterComponent implements OnInit {
   @Input() public isModal: boolean = false;
   private congregation!: Congregation;
   private subs: Subscription = new Subscription();
+  public type: string = "normal";
+  public weeks: ProgramPdf[] = [];
   constructor(
     private printService: PrintPdfService,
+    private printPDFLandScapeService: PrintPdfLandscapeService,
     private meetingsService: MeetingsService,
     private dataService: DataService,
     private modalService: ModalService,
     private printPdfOnePageService: PrintPdfOnePageService,
     private loaderService: LoaderService,
+    private route: ActivatedRoute,
   ) {
     this.modalService.loading();
     this.subs.add(
@@ -45,9 +51,9 @@ export class PrinterComponent implements OnInit {
         (data) => {
           if (data && data.length > 0) {
             this.modalService.close();
-            this.printMeetings(data);
+            this.weeks = data;
+            this.printMeetings(this.weeks);
           } else {
-            console.log("No hay data");
             this.getWeeks();
           }
         },
@@ -58,7 +64,17 @@ export class PrinterComponent implements OnInit {
     );
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.route.queryParamMap
+      .pipe(
+        map((params) => params.get("tipo")),
+        distinctUntilChanged(),
+      )
+      .subscribe((tipo) => {
+        this.type = tipo ?? "normal";
+        this.printMeetings(this.weeks);
+      });
+  }
 
   getWeeks() {
     if (this.congregation) {
@@ -78,18 +94,30 @@ export class PrinterComponent implements OnInit {
   printMeetings(weeks: ProgramPdf[]) {
     this.modalService.close();
     if (this.hasAssistantBOrResponsibleB(weeks)) {
-      // console.log("printService");
-      this.printService
-        .getBlob(weeks)
-        .then((data) => {
-          this.pdfViewerAutoLoad.pdfSrc = data;
-          this.pdfViewerAutoLoad.refresh();
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      switch (this.type) {
+        case "landscape":
+          this.printPDFLandScapeService
+            .getBlob(weeks)
+            .then((data) => {
+              this.pdfViewerAutoLoad.pdfSrc = data;
+              this.pdfViewerAutoLoad.refresh();
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+          break;
+        default:
+          this.printService
+            .getBlob(weeks)
+            .then((data) => {
+              this.pdfViewerAutoLoad.pdfSrc = data;
+              this.pdfViewerAutoLoad.refresh();
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+      }
     } else {
-      // console.log("printPdfOnePageService");
       this.printPdfOnePageService
         .getBlob(weeks)
         .then((data) => {

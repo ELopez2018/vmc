@@ -7,21 +7,25 @@ declare const pdfMake: any;
 @Injectable({
   providedIn: "root",
 })
-export class PrintPdfService {
+export class PrintPdfLandscapeService {
   private congregation = "ALBORADA";
   private colorFontPublisher = "#ea002e";
 
   private sizeHeader = [10, "auto", "*", 20];
-  private sizeBody = ["auto", "*", 150, 126];
-  private sizeSongs = [16, 244, 150, "*"];
-  private sizeHeaderSections = [275, 143, "*"];
 
-  private sizeContenTreasure = [16, 238, 0, 146, "*"];
-  private sizeContenTreasureReaders = [16, 214, 30, 140, "*"];
+  private sizeBody = [250, 200, 90, 170];
 
-  private sizeContenTeachers = [16, 185, 60, 139, "*"];
+  private sizeSongs = [32, 418, 90, 170];
 
-  private sizeContenLife = [16, 258, 0, 126, "*"];
+  private sizeHeaderSections = [380, 170, "*"];
+
+  private sizeContenTreasure = [32, 290, 65, 145, "*"];
+  private sizeContenTreasureReaders = [32, 225, 105, 170, "*"];
+
+  private sizeContenTeachers = [32, 240, 90, 170, "*"];
+
+  private sizeContenLife = [32, 350, 60, 90, "*"];
+
   private dayMeet: any = null;
   constructor(private dataService: DataService) {
     this.dataService.getPublisher().subscribe((data) => {
@@ -79,12 +83,15 @@ export class PrintPdfService {
       conAux = [
         [
           {
-            text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true),
+            text:
+              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) +
+              " | " +
+              (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
             style: "sub_title",
             border: [false, false, false, false],
           },
           {
-            text: "|  " + (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
+            text: "",
             style: "sub_title",
             border: [false, false, false, false],
           },
@@ -126,12 +133,15 @@ export class PrintPdfService {
       conAux = [
         [
           {
-            text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) + "  |",
+            text:
+              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) +
+              " | " +
+              (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
             style: "sub_title",
             border: [false, false, false, false],
           },
           {
-            text: week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA",
+            text: "",
             style: "sub_title",
             border: [false, false, false, false],
           },
@@ -590,23 +600,22 @@ export class PrintPdfService {
     });
   }
   private makeDocument(weeks: ProgramPdf[]): any {
-    const contenido: any[] = [];
-
-    weeks.forEach((week, index) => {
-      const isLast = index === weeks.length - 1;
-      const isSecondInPage = (index + 1) % 2 === 0;
-      const block = this.buildWeekBlock(week);
-      contenido.push(...block, this.buildPageBreak(isSecondInPage, isLast));
-    });
-
     return {
       header: () => this.makeHeader(false),
       pageSize: "LETTER",
-      pageOrientation: "portrait",
-      pageMargins: [20, 30, 20, 20],
-      content: contenido,
+      pageOrientation: "landscape",
+      pageMargins: [20, 36, 0, 20],
+      content: this.buildOneWeekPages(weeks),
       ...this.styles(),
     };
+  }
+  private buildOneWeekPages(weeks: ProgramPdf[]): any[] {
+    return weeks.flatMap((week, index) => {
+      const pageContent = this.buildWeekBlock(week);
+      const isLastWeek = index === weeks.length - 1;
+
+      return isLastWeek ? pageContent : [...pageContent, { text: "", pageBreak: "after" }];
+    });
   }
   private buildWeekBlock(week: ProgramPdf): any[] {
     if (!week.assembly) {
@@ -615,8 +624,10 @@ export class PrintPdfService {
         ...this.makeHeaderTreasures(),
         ...this.makeContentTreasures(week),
         ...this.makeContentTreasuresReader(week),
+        { text: "" },
         ...this.makeHeaderTeachers(),
         ...this.makeContentTeachers(week),
+        { text: "" },
         ...this.makeHeaderLife(),
         ...this.makeIntermediateSong(week),
         ...this.makeContentLife(week),
@@ -662,47 +673,41 @@ export class PrintPdfService {
       "\n",
     ];
   }
-  private buildPageBreak(isSecondInPage: boolean, isLast: boolean) {
-    if (isSecondInPage && !isLast) {
-      return { text: "", pageBreak: "after" }; // 👈 CAMBIO CLAVE
-    }
-    return { text: "" };
-  }
   private styles() {
     return {
       styles: {
         header_a: {
-          fontSize: 15,
+          fontSize: 18,
           bold: true,
           margin: [0, 6, 0, 0],
         },
         header_b: {
-          fontSize: 17,
+          fontSize: 20,
           bold: true,
           alignment: "right",
           margin: [0, 4, 0, 0],
         },
         sub_title: {
-          fontSize: 11,
+          fontSize: 13,
           alignment: "left",
           bold: true,
           margin: [0, 0, 0, 0],
         },
         tips_r: {
-          fontSize: 6,
+          fontSize: 7,
           bold: true,
           alignment: "right",
           margin: [0, 3, 0, 0],
         },
         tips_l: {
-          fontSize: 7,
+          fontSize: 9.5,
           bold: true,
           color: this.colorFontPublisher,
           alignment: "left",
           margin: [0, 2, 0, 0],
         },
         tips_c: {
-          fontSize: 7,
+          fontSize: 10,
           bold: true,
           alignment: "left",
           color: "#b6b4b4",
@@ -710,43 +715,43 @@ export class PrintPdfService {
         },
         titles: {
           bold: true,
-          fontSize: 8,
+          fontSize: 10.5,
           margin: [0, 0, 0, 0],
         },
 
         treasures: {
           bold: true,
-          fontSize: 8,
+          fontSize: 10,
           color: "#fff",
           margin: [0, 0, 0, 0],
         },
         teachers: {
           bold: true,
-          fontSize: 8,
+          fontSize: 10,
           color: "#fff",
           margin: [0, 0, 0, 0],
         },
         life: {
           bold: true,
-          fontSize: 8,
+          fontSize: 10,
           color: "#fff",
           margin: [0, 0, 0, 0],
         },
         fontTreasures: {
           bold: true,
-          fontSize: 8.5,
+          fontSize: 10,
           color: "#5F6366",
           margin: [0, 0, 0, 0],
         },
         fontTeachers: {
           bold: true,
-          fontSize: 8.5,
+          fontSize: 10,
           color: "#C69200",
           margin: [0, 0, 0, 0],
         },
         fontLife: {
           bold: true,
-          fontSize: 8.5,
+          fontSize: 10,
           color: "#7A0026",
           margin: [0, 0, 0, 0],
         },

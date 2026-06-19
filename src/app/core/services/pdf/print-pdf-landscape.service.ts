@@ -15,7 +15,7 @@ export class PrintPdfLandscapeService {
 
   private sizeBody = [250, 200, 90, 170];
 
-  private sizeSongs = [32, 418, 90, 170];
+  private sizeSongs = [25, 418, 90, 170];
 
   private sizeHeaderSections = [380, 170, "*"];
 
@@ -175,7 +175,7 @@ export class PrintPdfLandscapeService {
             [
               {
                 text: Utils.adapterTime(week.startTimeOpeningSong),
-                style: "titles",
+                style: "timeStart",
                 border: [false, false, false, false],
               },
               {
@@ -197,7 +197,7 @@ export class PrintPdfLandscapeService {
             [
               {
                 text: Utils.adapterTime(week.startTimeIntro),
-                style: "titles",
+                style: "timeStart",
                 border: [false, false, false, false],
               },
               {
@@ -259,7 +259,7 @@ export class PrintPdfLandscapeService {
         content.push([
           {
             text: Utils.adapterTime(asigment.startTime),
-            style: "titles",
+            style: "timeStart",
             border: [false, false, false, false],
           },
           {
@@ -303,7 +303,7 @@ export class PrintPdfLandscapeService {
         content.push([
           {
             text: Utils.adapterTime(asigment.startTime),
-            style: "titles",
+            style: "timeStart",
             border: [false, false, false, false],
           },
           {
@@ -376,7 +376,7 @@ export class PrintPdfLandscapeService {
       content.push([
         {
           text: Utils.adapterTime(asigment.startTime),
-          style: "titles",
+          style: "timeStart",
           border: [false, false, false, false],
         },
         {
@@ -448,7 +448,7 @@ export class PrintPdfLandscapeService {
       content.push([
         {
           text: Utils.adapterTime(asigment.startTime),
-          style: "titles",
+          style: "timeStart",
           border: [false, false, false, false],
         },
         {
@@ -494,7 +494,7 @@ export class PrintPdfLandscapeService {
             [
               {
                 text: Utils.adapterTime(week.startTimeIntermediateSong),
-                style: "titles",
+                style: "timeStart",
                 border: [false, false, false, false],
               },
               {
@@ -528,7 +528,7 @@ export class PrintPdfLandscapeService {
             [
               {
                 text: Utils.adapterTime(week.startTimeConclusionWords),
-                style: "titles",
+                style: "timeStart",
                 border: [false, false, false, false],
               },
               {
@@ -550,7 +550,7 @@ export class PrintPdfLandscapeService {
             [
               {
                 text: Utils.adapterTime(week.startTimeFinalSong),
-                style: "titles",
+                style: "timeStart",
                 border: [false, false, false, false],
               },
               {
@@ -621,6 +621,7 @@ export class PrintPdfLandscapeService {
     if (!week.assembly) {
       return [
         ...this.makeHeaderProgram(week),
+        { text: "" },
         ...this.makeHeaderTreasures(),
         ...this.makeContentTreasures(week),
         ...this.makeContentTreasuresReader(week),
@@ -631,6 +632,7 @@ export class PrintPdfLandscapeService {
         ...this.makeHeaderLife(),
         ...this.makeIntermediateSong(week),
         ...this.makeContentLife(week),
+        { text: "" },
         ...this.makeFinalBlock(week),
         {},
       ];
@@ -717,6 +719,12 @@ export class PrintPdfLandscapeService {
           bold: true,
           fontSize: 10.5,
           margin: [0, 0, 0, 0],
+        },
+        timeStart: {
+          bold: true,
+          fontSize: 10.5,
+          margin: [0, 0, 0, 0],
+          alignment: "left",
         },
 
         treasures: {

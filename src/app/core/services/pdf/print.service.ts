@@ -10,7 +10,7 @@ declare const pdfMake: any;
 export class PrintPdfService {
   private congregation = "ALBORADA";
   private colorFontPublisher = "#ea002e";
-
+  
   private sizeHeader = [10, "auto", "*", 20];
   private sizeBody = [200, "*", 150, 126];
   private sizeSongs = [16, 244, 150, "*"];

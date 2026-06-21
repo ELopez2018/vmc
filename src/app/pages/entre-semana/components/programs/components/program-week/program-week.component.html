@@ -49,7 +49,7 @@
       <div class="col-md-3 text-md-start hover text-publisher">
         <span
           (click)="onProgramChange('president')"
-          [class.text-danger]="!semana.president || hasPublisherWarning(semana.president)"
+          [ngClass]="getPublisherTextClasses(semana.president)"
           #tooltipPresiden="ngbTooltip"
           [ngbTooltip]="getPublisherTooltipText(semana.president, tooltipPresidenText)"
           placement="end"
@@ -69,7 +69,7 @@
       <div class="col-md-3 text-md-start hover text-publisher">
         <span
           (click)="onProgramChange('assistantAdviser')"
-          [class.text-danger]="!semana.assistantAdviser || hasPublisherWarning(semana.assistantAdviser)"
+          [ngClass]="getPublisherTextClasses(semana.assistantAdviser)"
           [ngbTooltip]="semana.assistantAdviser?.publisherTooltipText"
           [placement]="publisherTooltipPlacement"
           container="body"
@@ -99,7 +99,7 @@
       <div class="col-md-3 text-md-start hover text-publisher">
         <span
           (click)="onProgramChange('openingPrayer')"
-          [class.text-danger]="!semana.openingPrayer || hasPublisherWarning(semana.openingPrayer)"
+          [ngClass]="getPublisherTextClasses(semana.openingPrayer)"
           [ngbTooltip]="semana.openingPrayer?.publisherTooltipText"
           [placement]="publisherTooltipPlacement"
           container="body"
@@ -216,7 +216,7 @@
       <div
         class="col-md-3 hover text-publisher"
         (click)="onProgramChange('finalPrayer')"
-        [class.text-danger]="!semana.finalPrayer || hasPublisherWarning(semana.finalPrayer)"
+        [ngClass]="getPublisherTextClasses(semana.finalPrayer)"
         [ngbTooltip]="semana.finalPrayer?.publisherTooltipText"
         [placement]="publisherTooltipPlacement"
         container="body"

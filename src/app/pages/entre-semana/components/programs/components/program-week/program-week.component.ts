@@ -6,6 +6,11 @@ import { Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
 import { ProgramAssignmentSectionComponent } from "../program-assignment-section/program-assignment-section.component";
+import {
+  getPublisherTextClasses as getPublisherWarningTextClasses,
+  PUBLISHER_REPEATED_CURRENT_WEEK_TEXT,
+  PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT,
+} from "../publisher-warning.util";
 
 type ProgramPublisherField = "president" | "assistantAdviser" | "openingPrayer" | "finalPrayer";
 type WeeklyPublisherField = "responsible" | "assistant" | "responsibleB" | "assistantB";
@@ -49,8 +54,8 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
   public readonly publisherTooltipClass = "tooltip-publisher-warning";
   public readonly publisherTooltipPlacement = "top";
 
-  private readonly repeatedPreviousWeekText = "Repetido en la semana anterior";
-  private readonly repeatedCurrentWeekText = "Repetido esta semana";
+  private readonly repeatedPreviousWeekText = PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT;
+  private readonly repeatedCurrentWeekText = PUBLISHER_REPEATED_CURRENT_WEEK_TEXT;
   private readonly programPublisherFields: ProgramPublisherField[] = ["president", "assistantAdviser", "openingPrayer", "finalPrayer"];
   private readonly weeklyPublisherFields: WeeklyPublisherField[] = ["responsible", "assistant", "responsibleB", "assistantB"];
   private publisherSignature = "";
@@ -106,8 +111,8 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
     return publisher?.publisherTooltipText ? this.publisherTooltipClass : fallbackClass;
   }
 
-  public hasPublisherWarning(publisher?: Publisher | null): boolean {
-    return !!publisher?.publisherTooltipText;
+  public getPublisherTextClasses(publisher?: Publisher | null): Record<string, boolean> {
+    return getPublisherWarningTextClasses(publisher);
   }
 
   private openPresidentTooltip(): void {

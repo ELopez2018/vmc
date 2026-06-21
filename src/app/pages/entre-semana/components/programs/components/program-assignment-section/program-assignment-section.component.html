@@ -38,7 +38,7 @@
     </div>
     <div class="col-md-3 mb-3 mb-md-0">
       <span class="hover text-publisher"
-        [class.text-danger]="!item.responsible || hasPublisherWarning(item.responsible)"
+        [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.responsible?.fullName ?? porAsignar }}
@@ -75,7 +75,7 @@
     <div class="col-md-3 mb-3 mb-md-0">
       @if (item.assignment.number == 3) {
       <span class="hover text-publisher"
-        [class.text-danger]="!item.responsibleB || hasPublisherWarning(item.responsibleB)"
+        [ngClass]="getPublisherTextClasses(item.responsibleB)"
         (click)="onWeeklyProgramChange(item, 'responsibleB')" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
@@ -84,7 +84,7 @@
     </div>
     <div class="col-md-2 mb-3 mb-md-0">
       <span class="hover text-publisher"
-        [class.text-danger]="!item.responsible || hasPublisherWarning(item.responsible)"
+        [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.responsible?.fullName ?? porAsignar }}
@@ -125,13 +125,13 @@
 
     <div class="col-md-3 pe-0 mb-3 mb-md-0">
       <span class="hover text-publisher"
-        [class.text-danger]="!item.responsibleB || hasPublisherWarning(item.responsibleB)"
+        [ngClass]="getPublisherTextClasses(item.responsibleB)"
         (click)="onWeeklyProgramChange(item, 'responsibleB')" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
       </span>
       @if (item.assignment.title !== "Discurso") {
-      <span class="hover text-publisher" [class.text-danger]="!item.assistantB || hasPublisherWarning(item.assistantB)"
+      <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistantB)"
         (click)="onWeeklyProgramChange(item, 'assistantB')" [ngbTooltip]="item.assistantB?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.assistantB ? "/" + item.assistantB.fullName : "/" + porAsignar }}
@@ -141,13 +141,13 @@
 
     <div class="col-md-3 mb-3 pe-0 mb-md-0">
       <span class="hover text-publisher"
-        [class.text-danger]="!item.responsible || hasPublisherWarning(item.responsible)"
+        [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
       @if (item.assignment.title !== "Discurso") {
-      <span class="hover text-publisher" [class.text-danger]="!item.assistant || hasPublisherWarning(item.assistant)"
+      <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
         (click)="onWeeklyProgramChange(item, 'assistant')" [ngbTooltip]="item.assistant?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}
@@ -179,7 +179,7 @@
     </div>
     <div class="col-md-3 mb-3 mb-md-0">
       <span class="hover text-publisher"
-        [class.text-danger]="!item.responsible || hasPublisherWarning(item.responsible)"
+        [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item.responsible ? item.responsible.fullName : porAsignar }}
@@ -214,12 +214,12 @@
     </div>
     <div class="col-md-3 mb-3 mb-md-0">
       <span class="hover text-publisher"
-        [class.text-danger]="!item.responsible || hasPublisherWarning(item.responsible)"
+        [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item.responsible ? item.responsible.fullName : porAsignar }}
       </span>
-      <span class="hover text-publisher" [class.text-danger]="!item.assistant || hasPublisherWarning(item.assistant)"
+      <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
         (click)="onWeeklyProgramChange(item, 'assistant')" [ngbTooltip]="item.assistant?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}

@@ -5,6 +5,7 @@ import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.
 import { Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
+import { getPublisherTextClasses as getPublisherWarningTextClasses } from "../publisher-warning.util";
 
 @Component({
   selector: "vmc-program-assignment-section",
@@ -55,7 +56,7 @@ export class ProgramAssignmentSectionComponent {
     this.weeklyProgramChange.emit({ item, type });
   }
 
-  public hasPublisherWarning(publisher?: Publisher | null): boolean {
-    return !!publisher?.publisherTooltipText;
+  public getPublisherTextClasses(publisher?: Publisher | null): Record<string, boolean> {
+    return getPublisherWarningTextClasses(publisher);
   }
 }

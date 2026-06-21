@@ -75,6 +75,21 @@ export interface WeeklyProgram {
   room: string;
   notificationSentAt?: string | null;
 }
+export interface WeeklyProgramUpsertByTitleRequest {
+  weeklyProgramId?: number;
+  programId: number;
+  congregationId: number;
+  title: string;
+  number: number;
+  sectionMeeting: string;
+  time?: number;
+  timeType: string;
+  showTips: boolean;
+  responsibleId?: number | null;
+  assistantId?: number | null;
+  startTime?: string | null;
+  room: string;
+}
 export interface Assignment {
   id?: number;
   time?: number | number;

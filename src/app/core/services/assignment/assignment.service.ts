@@ -23,6 +23,7 @@ export class AssignmentService {
     const url = `${this.server}${this.api.ASSIGNMENT}`
     return this.httpClient.put(url, assignment)
   }
+
   getPublishersByAssignment(assignment: Meeting): Observable<PublisherDto[]> {
     const params = ``
     const url = `${this.server}${this.api.ASSIGNMENT}/publisher-by-assignment${params}`

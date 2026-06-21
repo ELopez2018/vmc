@@ -94,4 +94,6 @@ export class MeetingsService {
     const url = `${this.server}/meetings/get-programs-by-date-range?congregationId=${congregationId}&startDate=${fechaDesde}&endDate=${fechaHasta}`;
     return this.httpClient.get<Program[]>(url);
   }
+
+  
 }

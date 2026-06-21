@@ -63,6 +63,11 @@ legend {
   font-size: 13px;
 }
 
+.publisher-warning-previous-week {
+  color: var(--bs-primary, #0d6efd);
+  // font-weight: 700;
+}
+
 @media (min-width: 1366px) {
   .width-timeStart {
     width: 36px;

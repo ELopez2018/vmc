@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Apis, Servers } from "../../constants/servers";
-import { Observable, tap } from "rxjs";
+import { finalize, Observable, tap } from "rxjs";
 import { Publisher, Room } from '../../interfaces/reuniones.interface';
 import { LoaderService } from "../loader/loader.service";
 
@@ -33,7 +33,7 @@ export class UsersService {
 
   save(publisher: Publisher): Observable<any> {
     const url = `${this.server}${this.api.USERS}`;
-    return this.httpClient.post<Publisher>(url, publisher).pipe(tap((data) => console.log(data)));
+    return this.httpClient.post<Publisher>(url, this.convertUserToSaveRequest(publisher)).pipe(tap((data) => console.log(data)));
   }
 
 delete(publisher: Publisher): Observable<any> {
@@ -56,16 +56,25 @@ delete(publisher: Publisher): Observable<any> {
     );
   }
 
-  getById(userId: Number): Observable<any> {
+  getById(userId: number): Observable<any> {
     this.loaderService.setLoaderSearchPublisher(true);
-    const url = `${this.server}${this.api.USERS}/by-id?userId=${userId}`;
-    return this.httpClient.get<any>(url);
+    const url = `${this.server}${this.api.USERS}/${userId}`;
+    return this.httpClient.get<any>(url).pipe(
+      finalize(() => {
+        this.loaderService.setLoaderSearchPublisher(false);
+      }),
+    );
   }
 
   convertUserToSaveRequest(user: any): any {
   return {
     id: user.id,
     fullName: user.fullName,
+    firstName: user.firstName,
+    secondName: user.secondName,
+    lastName: user.lastName,
+    surname: user.surname,
+    image: user.image,
     email: user.email,
     documentNumber: user.documentNumber,
     documentType: user.documentType,
@@ -73,7 +82,8 @@ delete(publisher: Publisher): Observable<any> {
     phone: user.phone,
     gender: user.gender,
     birthdate: user.birthdate,
-    congregationId: user.myCongregationId
+    congregationId: user.congregationId ?? user.myCongregationId ?? user.congregation?.id,
+    assignmentTypePermissions: user.assignmentTypePermissions ?? [],
   };
 }
 }

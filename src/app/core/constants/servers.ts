@@ -12,4 +12,6 @@ export const Apis = {
   CONGREGATIONS: '/congregations',
   AUTH: '/auth',
   WEEKLYPROGRAM: '/weeklyProgram',
+  ASSIGNMENT_TYPES: '/assignment-types',
+  USER_ASSIGNMENT_TYPES: '/user-assignment-types',
 }

@@ -1,6 +1,5 @@
 <div class="page-container">
 
-  <!-- CARD CONGREGACIÓN -->
   <mat-card class="section-card">
     <div class="section-title">
       <mat-icon>groups</mat-icon>
@@ -8,7 +7,6 @@
     </div>
 
     <div class="form-grid">
-
       @if (!isAdmin && congregationSelected) {
       <mat-form-field appearance="outline">
         <mat-label>Congregación</mat-label>
@@ -20,33 +18,25 @@
       <mat-form-field appearance="outline">
         <mat-label>Congregación</mat-label>
         <mat-select (selectionChange)="onChange()" [(value)]="congregationSelected" required>
-
           @for (item of allCongregations; track item.id) {
           <mat-option [value]="item">
-            {{item.name}}
+            {{ item.name }}
           </mat-option>
           }
-
         </mat-select>
       </mat-form-field>
       }
-
     </div>
   </mat-card>
 
-
-  <!-- CARD REGISTRO -->
   <mat-card class="section-card">
-
     <div class="section-title">
       <mat-icon>person_add</mat-icon>
       <span>Registro de Publicador</span>
     </div>
 
-    @if(formulario) {
-
+    @if (formulario) {
     <form [formGroup]="formulario" class="form-grid">
-
       <mat-form-field appearance="outline">
         <mat-label>Tipo de Documento</mat-label>
         <mat-select formControlName="documentType">
@@ -57,6 +47,9 @@
           <mat-option value="PPT">Permiso Temporal</mat-option>
           <mat-option value="DNI">DNI</mat-option>
         </mat-select>
+        @if (formulario.get("documentType")?.hasError("required")) {
+        <mat-error>Requerido</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
@@ -67,6 +60,9 @@
       <mat-form-field appearance="outline">
         <mat-label>Primer Nombre</mat-label>
         <input matInput formControlName="firstName"/>
+        @if (formulario.get("firstName")?.hasError("required")) {
+        <mat-error>Requerido</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
@@ -92,6 +88,9 @@
       <mat-form-field appearance="outline">
         <mat-label>Correo electrónico</mat-label>
         <input matInput formControlName="email"/>
+        @if (formulario.get("email")?.hasError("email")) {
+        <mat-error>Correo inválido</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
@@ -100,6 +99,9 @@
           <mat-option value="Masculino">Masculino</mat-option>
           <mat-option value="Femenino">Femenino</mat-option>
         </mat-select>
+        @if (formulario.get("gender")?.hasError("required")) {
+        <mat-error>Requerido</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
@@ -108,17 +110,63 @@
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker touchUi #picker></mat-datepicker>
       </mat-form-field>
-
     </form>
     }
-
-    <div class="actions">
-      <button mat-raised-button color="primary" (click)="save()">
-        <mat-icon>save</mat-icon>
-        Guardar
-      </button>
-    </div>
-
   </mat-card>
 
+  <mat-card class="section-card">
+    <div class="section-title">
+      <mat-icon>assignment_ind</mat-icon>
+      <span>Tipos de asignación</span>
+    </div>
+
+    @if (isLoadingAssignmentTypes) {
+    <div class="state-row">
+      <mat-progress-spinner mode="indeterminate" diameter="28"></mat-progress-spinner>
+      <span>Cargando tipos de asignación</span>
+    </div>
+    }
+
+    @if (!isLoadingAssignmentTypes && assignmentTypesLoadFailed) {
+    <div class="state-row state-row--error">
+      <mat-icon>error</mat-icon>
+      <span>No se pudieron cargar los tipos de asignación</span>
+    </div>
+    }
+
+    @if (!isLoadingAssignmentTypes && !assignmentTypesLoadFailed && assignmentTypes.length === 0) {
+    <div class="state-row">
+      <mat-icon>info</mat-icon>
+      <span>Sin tipos de asignación</span>
+    </div>
+    }
+
+    @if (!isLoadingAssignmentTypes && !assignmentTypesLoadFailed && assignmentTypes.length > 0) {
+    <div class="permission-grid">
+      @for (assignmentType of assignmentTypes; track assignmentType.id) {
+      <div class="permission-item">
+        <div class="permission-copy">
+          <span class="permission-number">{{ assignmentType.number }}</span>
+          <span class="permission-name">{{ assignmentType.description }}</span>
+        </div>
+
+        <mat-slide-toggle
+          color="primary"
+          [checked]="isPermissionEnabled(assignmentType)"
+          (change)="onPermissionChange(assignmentType, $event.checked)"
+        ></mat-slide-toggle>
+      </div>
+      }
+    </div>
+    }
+  </mat-card>
+
+  @if (formulario) {
+  <div class="actions">
+    <button mat-raised-button color="primary" [disabled]="disabledSave" (click)="save()">
+      <mat-icon>save</mat-icon>
+      {{ isSaving ? "Guardando" : "Guardar" }}
+    </button>
+  </div>
+  }
 </div>

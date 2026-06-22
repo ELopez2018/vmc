@@ -11,23 +11,37 @@ export interface Asignacion {
   pos: number;
   seccion: string;
 }
+export type BackendTime = string | number[];
+export type BackendDateTime = string | number[];
+
 export interface Publisher {
   id: number;
   fullName: string;
-  image?: any;
+  image?: string | null;
   firstName: string;
-  secondName: string;
-  lastName: string;
+  secondName?: string | null;
+  lastName?: string | null;
   surname: string;
-  birthdate?: any;
-  gender?: any;
-  documentNumber?: any;
-  documentType?: any;
-  cellPhone?: any;
-  phone?: any;
-  email?: any;
-  congregation: Congregation;
+  birthdate?: string | null;
+  gender?: string | null;
+  documentNumber?: number | null;
+  documentType?: string | null;
+  cellPhone?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  password?: string | null;
+  accessCode?: string | null;
+  deletedAt?: BackendDateTime | null;
+  congregation?: Congregation;
   designations: Designation[];
+  assignmentTypePermissions?: AssignmentTypePermission[];
+  enabled?: boolean;
+  authorities?: unknown[];
+  accountNonLocked?: boolean;
+  accountNonExpired?: boolean;
+  credentialsNonExpired?: boolean;
+  username?: string | null;
+  myCongregationId?: number;
   congregationId?: number;
   publisherTooltipText?: string;
 }
@@ -35,34 +49,59 @@ export interface Publisher {
 export interface Designation {
   id: number;
   description: string;
-  dateAssigned: string;
+  dateAssigned?: string | null;
+}
+
+export interface AssignmentTypePermission {
+  userId?: number | null;
+  assignmentTypeId: number;
+  assignmentTypeDescription: string;
+  assignmentTypeNumber: number | null;
+  enabled: boolean;
+}
+
+export interface AssignmentType {
+  id: number;
+  description: string;
+  number: number;
+}
+
+export interface UserAssignmentTypeBulkUpdateRequest {
+  userId: number;
+  assignments: UserAssignmentTypeBulkUpdateItem[];
+}
+
+export interface UserAssignmentTypeBulkUpdateItem {
+  assignmentTypeId: number;
+  enabled: boolean;
 }
 
 /// news
 export interface Program {
   id: number;
   meeting: Meeting;
-  startTimeOpeningSong: string;
-  startTimeIntro: string;
-  startTimeIntermediateSong: string;
-  startTimeFinalSong: string;
-  startTimeConclusionWords: string;
-  openingPrayer?: Publisher;
-  president?: Publisher;
-  assistantAdviser?: Publisher;
-  finalPrayer?: Publisher;
+  weekNumber: number;
+  startTimeOpeningSong: BackendTime;
+  startTimeIntro: BackendTime;
+  startTimeIntermediateSong: BackendTime;
+  startTimeFinalSong: BackendTime;
+  startTimeConclusionWords: BackendTime;
+  openingPrayer?: Publisher | null;
+  president?: Publisher | null;
+  assistantAdviser?: Publisher | null;
+  finalPrayer?: Publisher | null;
   congregation: Congregation;
   weeklyPrograms: WeeklyProgram[];
-  assembly: string;
+  assembly: string | null;
 }
 
-interface InitialSong {
+export interface Song {
   id: number;
   songNumber: number;
   title: string;
   source: string;
-  createdAt: number[];
-  updatedAt: number[];
+  createdAt: BackendDateTime;
+  updatedAt: BackendDateTime;
 }
 export interface WeeklyProgram {
   id?: number;
@@ -71,9 +110,9 @@ export interface WeeklyProgram {
   assistant?: Publisher | null;
   congregation: Congregation;
   program: number;
-  startTime?: string;
+  startTime?: BackendTime | null;
   room: string;
-  notificationSentAt?: string | null;
+  notificationSentAt?: BackendDateTime | null;
 }
 export interface WeeklyProgramUpsertByTitleRequest {
   weeklyProgramId?: number;
@@ -92,10 +131,10 @@ export interface WeeklyProgramUpsertByTitleRequest {
 }
 export interface Assignment {
   id?: number;
-  time?: number | number;
+  time?: number;
   timeType: string;
   title: string;
-  tips?: string;
+  tips?: string | null;
   sectionMeeting: string;
   showTips: boolean;
   number: number;
@@ -110,6 +149,7 @@ export interface Congregation {
   day: number;
   assistantAdviser?: Publisher | undefined | null;
   fontColorPublisher?: string;
+  deletedAt?: BackendDateTime | null;
 }
 export interface Meeting {
   id: number;
@@ -121,11 +161,11 @@ export interface Meeting {
   intermediateSong: string;
   finalSong: string;
   url: string;
-  assignmentType: any;
+  assignmentType?: any;
   weeklyBibleReading: string;
-  initialSong?: InitialSong;
-  middleSong?: InitialSong;
-  lastSong?: InitialSong;
+  initialSong?: Song;
+  middleSong?: Song;
+  lastSong?: Song;
 }
 
 export interface Room {
@@ -160,4 +200,18 @@ export interface NotifyOptions {
 
   /** Texto del CTA opcional (ej: "Ver") */
   actionText?: string;
+}
+
+export interface FieldValidationError {
+  field: string;
+  message: string;
+}
+
+export interface ApiErrorResponse {
+  timestamp?: number;
+  status?: number;
+  error?: string;
+  message?: string;
+  path?: string;
+  errors?: FieldValidationError[];
 }

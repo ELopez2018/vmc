@@ -54,7 +54,7 @@
 
 .permission-grid{
   display:grid;
-  grid-template-columns: repeat(auto-fit,minmax(350px,1fr));
+  grid-template-columns: repeat(auto-fit,minmax(400px,1fr));
   gap:12px;
 }
 
@@ -108,4 +108,15 @@ button{
   padding:10px 25px;
   font-size:15px;
   border-radius:8px;
+}
+.permission-type{
+  color:#6b7280;
+  font-size:13px;
+}
+.type-ayudante {
+  color: red;
+}
+
+.type-encargado {
+  color: blue;
 }

@@ -15,6 +15,15 @@ import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.
 import Swal from "sweetalert2";
 import { ProgramFiltersComponent } from "./components/program-filters/program-filters.component";
 import { ProgramWeekComponent } from "./components/program-week/program-week.component";
+import {
+  ADMIN_EMAIL,
+  ASSIGNMENT_TITLE,
+  MeetingRoom,
+  ModalResult,
+  ProgramChangeType,
+  WeeklyProgramChangeType,
+} from "src/app/core/constants/program.constants";
+import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 
 @Component({
   selector: "vmc-programs",
@@ -27,7 +36,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
   @Input() public semanas: Program[] = [];
   @Input() public semanasAllRooms: ProgramPdf[] = [];
   @Input() public RoomA = false;
-  @Input() public room = "A";
+  @Input() public room = MeetingRoom.MAIN;
   porAsignar = "por asignar";
   isAdmin = false;
   public congregation: Congregation = CongregationMock;
@@ -53,7 +62,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.dataService.getPublisher().subscribe((data) => {
       this.superintendente = data;
-      this.isAdmin = data.email === "estarlin.elv@gmail.com";
+      this.isAdmin = data.email === ADMIN_EMAIL;
     });
 
     this.dataService.getCongregation$().subscribe((data) => {
@@ -132,11 +141,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
     console.log("changeProgram");
     let item = this.filterProgram(program) ?? program;
     switch (type) {
-      case "startTimeOpeningSong":
+      case ProgramChangeType.START_TIME_OPENING_SONG:
         this.modalService
           .selectedHour()
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             item.startTimeOpeningSong = data;
@@ -147,11 +156,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case "startTimeIntro":
+      case ProgramChangeType.START_TIME_INTRO:
         this.modalService
           .selectedHour()
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             item.startTimeIntro = data;
@@ -164,11 +173,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case "startTimeIntermediateSong":
+      case ProgramChangeType.START_TIME_INTERMEDIATE_SONG:
         this.modalService
           .selectedHour()
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             item.startTimeIntermediateSong = data;
@@ -181,11 +190,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case "startTimeConclusionWords":
+      case ProgramChangeType.START_TIME_CONCLUSION_WORDS:
         this.modalService
           .selectedHour()
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             item.startTimeConclusionWords = data;
@@ -198,11 +207,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case "startTimeFinalSong":
+      case ProgramChangeType.START_TIME_FINAL_SONG:
         this.modalService
           .selectedHour()
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             item.startTimeFinalSong = data;
@@ -217,7 +226,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
         this.modalService
           .assignPublisherProgram(item, AssignmentType.OPENING_PRAYER)
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -252,7 +261,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
         this.modalService
           .assignPublisherProgram(item, AssignmentType.FINAL_PRAYER)
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -287,7 +296,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
         this.modalService
           .assignPublisherProgram(item, AssignmentType.PRESIDENT)
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -326,7 +335,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
         this.modalService
           .assignPublisherProgram(item, AssignmentType.ASSISTANT_ADVISER)
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -361,11 +370,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case "openingSong":
+      case ProgramChangeType.OPENING_SONG:
         this.modalService
           .changeSong(item, item.meeting.openingSong)
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -400,11 +409,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case "intermediateSong":
+      case ProgramChangeType.INTERMEDIATE_SONG:
         this.modalService
           .changeSong(item, item.meeting.intermediateSong)
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -439,11 +448,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case "finalSong":
+      case ProgramChangeType.FINAL_SONG:
         this.modalService
           .changeSong(item, item.meeting.finalSong)
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -496,39 +505,42 @@ export class ProgramsComponent implements OnInit, OnChanges {
         break;
       default:
         this.assignmentType = this.selectAssignmentTypeByTitle(item.assignment.title);
-        if (type == "assistant" && this.assignmentType == AssignmentType.CONGREGATION_BIBLE_STUDY) {
+        if (type === WeeklyProgramChangeType.ASSISTANT && this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY) {
           this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY_READER;
-        } else if ((type == "assistant" || type == "assistantB") && this.assignmentType != AssignmentType.CONGREGATION_BIBLE_STUDY) {
+        } else if (
+          (type === WeeklyProgramChangeType.ASSISTANT || type === WeeklyProgramChangeType.ASSISTANT_B) &&
+          this.assignmentType !== AssignmentType.CONGREGATION_BIBLE_STUDY
+        ) {
           this.assignmentType += "Assistant";
         }
     }
   }
   selectAssignmentTypeByTitle(title: string) {
-    if (title.includes("Lo que hizo")) {
+    if (title.includes(ASSIGNMENT_TITLE.WHAT_HE_DID)) {
       return AssignmentType.WHAT_HE_DID;
     }
-    if (title.includes("Imite a")) {
+    if (title.includes(ASSIGNMENT_TITLE.IMITATE)) {
       return AssignmentType.IMITATE;
     }
-    if (title.includes("Empiece conversaciones")) {
+    if (title.includes(ASSIGNMENT_TITLE.STARTING_A_CONVERSATION)) {
       return AssignmentType.STARTING_A_CONVERSATION;
     }
-    if (title.includes("Haga revisitas")) {
+    if (title.includes(ASSIGNMENT_TITLE.FOLLOWING_UP)) {
       return AssignmentType.FOLLOWING_UP;
     }
-    if (title.includes("Explique sus creencias")) {
+    if (title.includes(ASSIGNMENT_TITLE.EXPLAINING_YOUR_BELIEFS)) {
       return AssignmentType.EXPLAINING_YOUR_BELIEFS;
     }
-    if (title.includes("Haga discípulos")) {
+    if (title.includes(ASSIGNMENT_TITLE.MAKING_DISCIPLES)) {
       return AssignmentType.MAKING_DISCIPLES;
     }
-    if (title.includes("Estudio bíblico de la congregación")) {
+    if (title.includes(ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY)) {
       return AssignmentType.CONGREGATION_BIBLE_STUDY;
     }
-    if (title.includes("Necesidades de la congregación")) {
+    if (title.includes(ASSIGNMENT_TITLE.LOCAL_NEEDS)) {
       return AssignmentType.LOCAL_NEEDS;
     }
-    if (title.includes("Discurso")) {
+    if (title.includes(ASSIGNMENT_TITLE.SPEECH)) {
       return AssignmentType.SPEECH;
     }
     return "";
@@ -536,9 +548,9 @@ export class ProgramsComponent implements OnInit, OnChanges {
   changeWeeklyProgram(item: WeeklyProgramPdF, type: string) {
     console.log("changeWeeklyProgram", item);
     if (
-      item.assignment.sectionMeeting.includes("NUESTRA VIDA CRISTIANA") &&
-      !item.assignment.title.includes("Estudio bíblico de la congregación") &&
-      !item.assignment.title.includes("Necesidades de la congregación")
+      item.assignment.sectionMeeting.includes(SectionMeeting.NUESTRA_VIDA_CRISTIANA) &&
+      !item.assignment.title.includes(ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY) &&
+      !item.assignment.title.includes(ASSIGNMENT_TITLE.LOCAL_NEEDS)
     ) {
       this.assignmentType = AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS;
     } else {
@@ -546,12 +558,12 @@ export class ProgramsComponent implements OnInit, OnChanges {
     }
     let itemA: WeeklyProgram;
     switch (type) {
-      case "responsible":
-        itemA = this.filterRoom(item, "A") ?? <WeeklyProgram>{};
+      case WeeklyProgramChangeType.RESPONSIBLE:
+        itemA = this.filterRoom(item, MeetingRoom.MAIN) ?? <WeeklyProgram>{};
         this.modalService
           .assignPublisherWeeklyProgram(itemA, this.assignmentType, type)
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -586,12 +598,12 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.error(data);
           });
         break;
-      case "assistant":
-        itemA = this.filterRoom(item, "A") ?? <WeeklyProgram>{};
+      case WeeklyProgramChangeType.ASSISTANT:
+        itemA = this.filterRoom(item, MeetingRoom.MAIN) ?? <WeeklyProgram>{};
         this.modalService
           .assignPublisherWeeklyProgram(itemA, this.assignmentType, type)
           .then((data: any) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -638,11 +650,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case "startTime":
+      case WeeklyProgramChangeType.START_TIME:
         this.modalService
           .selectedHour()
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             item.startTime = data;
@@ -654,11 +666,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case "title":
+      case WeeklyProgramChangeType.TITLE:
         this.modalService
           .setTitleAndTime(item)
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             item = data;
@@ -670,7 +682,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case "responsibleB":
+      case WeeklyProgramChangeType.RESPONSIBLE_B:
         console.log("responsibleB", item);
         const itemResponsibleB = this.filterRoom(item);
         if (!itemResponsibleB) {
@@ -678,9 +690,9 @@ export class ProgramsComponent implements OnInit, OnChanges {
           return;
         }
         this.modalService
-          .assignPublisherWeeklyProgram(itemResponsibleB, this.assignmentType, null, "B")
+          .assignPublisherWeeklyProgram(itemResponsibleB, this.assignmentType, null, MeetingRoom.AUXILIARY)
           .then((data) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -715,7 +727,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.error(data);
           });
         break;
-      case "assistantB":
+      case WeeklyProgramChangeType.ASSISTANT_B:
         console.log("assistantB", item);
         const itemAssistantB = this.filterRoom(item);
         if (!itemAssistantB) {
@@ -723,9 +735,9 @@ export class ProgramsComponent implements OnInit, OnChanges {
           return;
         }
         this.modalService
-          .assignPublisherWeeklyProgram(itemAssistantB, this.assignmentType, null, "B")
+          .assignPublisherWeeklyProgram(itemAssistantB, this.assignmentType, null, MeetingRoom.AUXILIARY)
           .then((data: any) => {
-            if (data == "close") {
+            if (data === ModalResult.CLOSE) {
               return;
             }
             if (data) {
@@ -785,11 +797,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
     this.dataService.setMeeting([week]);
     this.modalService.printerAssig();
   }
-  filterRoom(item: WeeklyProgram, room = "B") {
+  filterRoom(item: WeeklyProgram, room = MeetingRoom.AUXILIARY) {
     return this.semanas.find((i) => i.weeklyPrograms.find((j) => j.id === item.id))?.weeklyPrograms.find((k) => k.room === room && k.assignment.number === item.assignment.number);
   }
 
-  filterProgram(item: Program, room = "B") {
+  filterProgram(item: Program, room = MeetingRoom.AUXILIARY) {
     return this.semanas.find((p) => p.id == item.id);
   }
   consultar(filtros: { fechaDesde: any; fechaHasta: any }) {

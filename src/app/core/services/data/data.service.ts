@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, of, Subject } from "rxjs";
+import { BehaviorSubject, filter, Observable } from "rxjs";
 import { Meeting, Program, Publisher, Congregation, Room } from "../../interfaces/reuniones.interface";
 import { UsersService } from "../users/users.service";
 import { ConfigsService } from "../configs/configs.service";
@@ -17,6 +17,7 @@ import { CookieService } from "ngx-cookie-service";
 })
 export class DataService {
   private readonly tokenStorageKey = "token";
+  private readonly publisherStorageKey = "publisher";
   private readonly publisherCookieKey = "publisher";
   private readonly congregationCookieKey = "congregation";
   private meetings$: BehaviorSubject<Program[]> = new BehaviorSubject<Program[]>([]);
@@ -26,7 +27,7 @@ export class DataService {
   private congregation$: BehaviorSubject<Congregation> = new BehaviorSubject<Congregation>(<Congregation>{});
   private publisherListTemp: Publisher[] = [];
   private congregation!: Congregation;
-  private publisher$: BehaviorSubject<Publisher> = new BehaviorSubject<Publisher>(<Publisher>{});
+  private publisher$: BehaviorSubject<Publisher | null> = new BehaviorSubject<Publisher | null>(null);
   private designations$: BehaviorSubject<Generic[]> = new BehaviorSubject<Generic[]>([]);
   private rooms$: BehaviorSubject<Room[]> = new BehaviorSubject<Room[]>([]);
   jwtUtils!: JwtHelperService;
@@ -58,7 +59,7 @@ export class DataService {
     this.publisher$.next(publisher);
   }
   public getPublisher(): Observable<Publisher> {
-    return this.publisher$.asObservable();
+    return this.publisher$.pipe(filter((publisher): publisher is Publisher => publisher !== null && !!publisher.id));
   }
 
   public setMeeting(meetings: Program[]) {
@@ -133,7 +134,6 @@ export class DataService {
   public getConfigs() {
     if (!this.hasValidToken()) {
       this.clearSession();
-      this.setPublisher(<Publisher>{});
       this.setCongregation(<Congregation>{});
       return;
     }
@@ -144,7 +144,10 @@ export class DataService {
       }
     });
 
-    this.setPublisher(this.readCookieObject<Publisher>(this.publisherCookieKey) ?? <Publisher>{});
+    const publisher = this.readStorageObject<Publisher>(this.publisherStorageKey) ?? this.readCookieObject<Publisher>(this.publisherCookieKey);
+    if (publisher?.id) {
+      this.setPublisher(publisher);
+    }
     this.setCongregation(this.readCookieObject<Congregation>(this.congregationCookieKey) ?? <Congregation>{});
   }
 
@@ -183,7 +186,7 @@ export class DataService {
     this.cookieService.delete(this.publisherCookieKey, "/");
     this.cookieService.delete(this.congregationCookieKey);
     this.cookieService.delete(this.congregationCookieKey, "/");
-    this.publisher$.next(<Publisher>{});
+    this.publisher$.next(null);
     this.congregation$.next(<Congregation>{});
     this.isAdmin$.next(false);
     this.publisherList.next([]);
@@ -204,6 +207,20 @@ export class DataService {
 
     try {
       return JSON.parse(cookieValue) as T;
+    } catch {
+      return null;
+    }
+  }
+
+  private readStorageObject<T>(storageKey: string): T | null {
+    const storageValue = localStorage.getItem(storageKey);
+
+    if (!storageValue) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(storageValue) as T;
     } catch {
       return null;
     }

@@ -3,16 +3,23 @@ import { MatSort } from "@angular/material/sort";
 import { MatTableDataSource } from "@angular/material/table";
 import { AssignmentService } from "../../../../core/services/assignment/assignment.service";
 import { UsersService } from "src/app/core/services/users/users.service";
-import { Assignment, Meeting, Publisher, WeeklyProgram, Congregation, Program } from "src/app/core/interfaces/reuniones.interface";
+import { Assignment, Meeting, Publisher, WeeklyProgram, Congregation, Program, AssignmentTypePermission, AssignmentType as AssignmentTypeModel } from "src/app/core/interfaces/reuniones.interface";
 import { PublisherDto, ResponsibleCountDTO } from "src/app/core/interfaces/publishers.interface";
 import { OtherAssignment } from "src/app/core/enums/meetings.enums";
 import { MeetingsService } from "src/app/core/services/meetings/meetings.service";
 import { DataService } from "src/app/core/services/data/data.service";
 import { LoaderService } from "../../../../core/services/loader/loader.service";
-import { AssignmentType } from "src/app/core/enums/assignments.enums";
+import { AssignmentType, normalizeAssignmentTypeValue, OTHER_PART_LIVING_AS_CHRISTIANS_DESCRIPTION } from "src/app/core/enums/assignments.enums";
 import { Subscription } from "rxjs";
 import { PublisherMeetingResposne, PublisherResposne } from "src/app/core/interfaces/publisher-response";
 import { Combobox } from "src/app/pages/notifications/notifications.component";
+import { AssignmentTypesService } from "src/app/core/services/assignment-types/assignment-types.service";
+
+interface AssignmentTypeMatcher {
+  description: string;
+  type: "Encargado" | "Estudiante" | "Ayudante" | "Conductor";
+  sectionMeetingTitle: string;
+}
 
 @Component({
   selector: "search-publisher",
@@ -60,11 +67,35 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
 
   public subModalDataSource = new MatTableDataSource<any>([]);
   public subModalDataSourceNamePublisher = "";
+  private assignmentTypes: AssignmentTypeModel[] = [];
+  private publishersSource: Publisher[] = [];
+  private readonly assignmentTypeMatchers: Partial<Record<AssignmentType, AssignmentTypeMatcher>> = {
+    [AssignmentType.ASSIGNMENT_1]: this.assignmentTypeMatcher("Tesoros - Discurso", "Encargado", "TESOROS DE LA BIBLIA"),
+    [AssignmentType.ASSIGNMENT_2]: this.assignmentTypeMatcher("Perlas Escondidas", "Encargado", "TESOROS DE LA BIBLIA"),
+    [AssignmentType.ASSIGNMENT_3]: this.assignmentTypeMatcher("Lectura de la bíblia", "Encargado", "TESOROS DE LA BIBLIA"),
+    [AssignmentType.STARTING_A_CONVERSATION]: this.assignmentTypeMatcher("Empiece conversaciones", "Estudiante", "SEAMOS MEJORES MAESTROS"),
+    [AssignmentType.STARTING_A_CONVERSATION_ASSISTANT]: this.assignmentTypeMatcher("Empiece conversaciones", "Ayudante", "SEAMOS MEJORES MAESTROS"),
+    [AssignmentType.FOLLOWING_UP]: this.assignmentTypeMatcher("Haga revisitas", "Estudiante", "SEAMOS MEJORES MAESTROS"),
+    [AssignmentType.FOLLOWING_UP_ASSISTANT]: this.assignmentTypeMatcher("Haga revisitas", "Ayudante", "SEAMOS MEJORES MAESTROS"),
+    [AssignmentType.MAKING_DISCIPLES]: this.assignmentTypeMatcher("Haga discípulos", "Estudiante", "SEAMOS MEJORES MAESTROS"),
+    [AssignmentType.MAKING_DISCIPLES_ASSISTANT]: this.assignmentTypeMatcher("Haga discípulos", "Ayudante", "NUESTRA VIDA CRISTIANA"),
+    [AssignmentType.EXPLAINING_YOUR_BELIEFS]: this.assignmentTypeMatcher("Explique sus creencias", "Estudiante", "SEAMOS MEJORES MAESTROS"),
+    [AssignmentType.EXPLAINING_YOUR_BELIEFS_ASSISTANT]: this.assignmentTypeMatcher("Explique sus creencias", "Ayudante", "NUESTRA VIDA CRISTIANA"),
+    [AssignmentType.SPEECH]: this.assignmentTypeMatcher("Discurso", "Estudiante", "SEAMOS MEJORES MAESTROS"),
+    [AssignmentType.PRESIDENT]: this.assignmentTypeMatcher("Presidencia", "Encargado", "ORACIONES"),
+    [AssignmentType.OPENING_PRAYER]: this.assignmentTypeMatcher("Oracion Inicial", "Encargado", "ESPECIAL"),
+    [AssignmentType.FINAL_PRAYER]: this.assignmentTypeMatcher("Oracion Final", "Encargado", "ESPECIAL"),
+    [AssignmentType.LOCAL_NEEDS]: this.assignmentTypeMatcher("Necesidades de la congregación", "Encargado", "NUESTRA VIDA CRISTIANA"),
+    [AssignmentType.CONGREGATION_BIBLE_STUDY]: this.assignmentTypeMatcher("Estudio bíblico de la congregación", "Conductor", "NUESTRA VIDA CRISTIANA"),
+    [AssignmentType.CONGREGATION_BIBLE_STUDY_READER]: this.assignmentTypeMatcher("Lectura EBC", "Encargado", "NUESTRA VIDA CRISTIANA"),
+    [AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS]: this.assignmentTypeMatcher(OTHER_PART_LIVING_AS_CHRISTIANS_DESCRIPTION, "Encargado", "NUESTRA VIDA CRISTIANA"),
+  };
 
   constructor(
     private dataService: DataService,
     private loaderService: LoaderService,
     private usersService: UsersService,
+    private assignmentTypesService: AssignmentTypesService,
   ) {
     this.subscrp();
   }
@@ -73,7 +104,8 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   ngOnInit() {
-    this.getPublihersByAssignment();
+    this.assignmentType = normalizeAssignmentTypeValue(this.assignmentType);
+    this.loadAssignmentTypes();
     // new
     this.dataService.getMeeting().subscribe((data) => {
       this.allProgram.set(this.parseProgram(data));
@@ -187,10 +219,8 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
         this.female = [];
         this.male = [];
         if (data) {
-          this.publishersAll = data;
-          this.female = this.publishersAll.filter((data) => data.gender === "Femenino");
-          this.male = this.publishersAll.filter((data) => data.gender === "Masculino");
-          this.updateDataSources();
+          this.publishersSource = data;
+          this.applyPublisherPermissionFilter();
         }
       }),
     );
@@ -220,8 +250,9 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     const title = this.assignment?.assignment?.title || "";
     this.showSpinner = true;
     this.usersService.getPublihersByAssignment(this.assignmentType, this.congregation.id, fecha, this.room, title).subscribe((data) => {
-      this.usedPublishersListAll = data;
-      this.usedPublishersListAllByAssig = data;
+      const publishersEnabledForAssignment = this.filterPublishersByAssignmentPermission<ResponsibleCountDTO>(data ?? []);
+      this.usedPublishersListAll = publishersEnabledForAssignment;
+      this.usedPublishersListAllByAssig = publishersEnabledForAssignment;
       switch (this.assignmentType) {
         case AssignmentType.PRESIDENT:
           this.headerText = "Presidencia";
@@ -243,7 +274,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
           break;
         case AssignmentType.ASSIGNMENT_1:
           this.headerText = "Discurso Tesoros de la Bíblia";
-          this.usedPublishersListAllByAssig = [...this.sortByLastDateGlobal([...data], true)];
+          this.usedPublishersListAllByAssig = [...this.sortByLastDateGlobal([...publishersEnabledForAssignment], true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
@@ -389,6 +420,87 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
       // 2. Si son iguales, ordenar por nombre
       return a.fullName.localeCompare(b.fullName);
     });
+  }
+
+  private filterPublishersByAssignmentPermission<T>(items: T[]): T[] {
+    const assignmentTypePermissionId = this.getAssignmentTypePermissionId();
+
+    if (!assignmentTypePermissionId) {
+      return items;
+    }
+
+    return items.filter((item) => this.hasAssignmentTypePermission(item, assignmentTypePermissionId));
+  }
+
+  private getAssignmentTypePermissionId(): number | undefined {
+    const matcher = this.assignmentTypeMatchers[this.assignmentType as AssignmentType];
+
+    if (!matcher) {
+      return undefined;
+    }
+
+    return this.assignmentTypes.find((assignmentType) => this.matchesAssignmentType(assignmentType, matcher))?.id;
+  }
+
+  private hasAssignmentTypePermission(item: unknown, assignmentTypePermissionId: number): boolean {
+    const publisher = this.getPublisherFromItem(item);
+    const permissions = publisher?.assignmentTypePermissions ?? [];
+
+    return permissions.some(
+      (permission: AssignmentTypePermission) => permission.assignmentTypeId === assignmentTypePermissionId && permission.enabled,
+    );
+  }
+
+  private getPublisherFromItem(item: any): Publisher | null {
+    return item?.user ?? item?.userEnt ?? item ?? null;
+  }
+
+  private loadAssignmentTypes(): void {
+    this.assignmentTypesService.getAll().subscribe({
+      next: (assignmentTypes) => {
+        this.assignmentTypes = assignmentTypes ?? [];
+        this.applyPublisherPermissionFilter();
+        this.getPublihersByAssignment();
+      },
+      error: () => {
+        this.assignmentTypes = [];
+        this.applyPublisherPermissionFilter();
+        this.getPublihersByAssignment();
+      },
+    });
+  }
+
+  private applyPublisherPermissionFilter(): void {
+    this.publishersAll = this.filterPublishersByAssignmentPermission(this.publishersSource);
+    this.female = this.publishersAll.filter((publisher) => publisher.gender === "Femenino");
+    this.male = this.publishersAll.filter((publisher) => publisher.gender === "Masculino");
+    this.updateDataSources();
+  }
+
+  private assignmentTypeMatcher(
+    description: string,
+    type: AssignmentTypeMatcher["type"],
+    sectionMeetingTitle: string,
+  ): AssignmentTypeMatcher {
+    return { description, type, sectionMeetingTitle };
+  }
+
+  private matchesAssignmentType(assignmentType: AssignmentTypeModel, matcher: AssignmentTypeMatcher): boolean {
+    return (
+      this.normalizeText(assignmentType.description) === this.normalizeText(matcher.description) &&
+      this.normalizeText(assignmentType.type ?? "") === this.normalizeText(matcher.type) &&
+      this.normalizeText(assignmentType.sectionMeetingTitle ?? "") === this.normalizeText(matcher.sectionMeetingTitle)
+    );
+  }
+
+  private normalizeText(value: string): string {
+    return value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s*-\s*/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
   }
 
   get isAssigment() {

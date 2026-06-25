@@ -147,7 +147,15 @@
       <div class="permission-item">
         <div class="permission-copy">
           <span class="permission-number">{{ assignmentType.number }}</span>
-          <span class="permission-name">{{ assignmentType.description }}</span>
+          <span class="permission-name">{{ assignmentType.description }} </span> <span
+  class="permission-type"
+  [ngClass]="{
+    'type-ayudante': assignmentType.type === 'Ayudante', 
+    'type-encargado': assignmentType.type === 'Encargado' || assignmentType.type === 'Estudiante'
+  }"
+>
+  ({{ assignmentType.type }})
+</span>
         </div>
 
         <mat-slide-toggle

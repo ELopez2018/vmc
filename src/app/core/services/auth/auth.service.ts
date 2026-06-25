@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Servers, Apis } from "../../constants/servers";
-import { Observable, tap } from "rxjs";
+import { map, Observable, switchMap, tap } from "rxjs";
 import { Congregation, Publisher } from "../../interfaces/reuniones.interface";
 import { Credentials } from "../../interfaces/auth.interface";
 import { JwtHelperService } from "@auth0/angular-jwt";
@@ -29,8 +29,21 @@ export class AuthService {
       tap((data) => {
         localStorage.setItem("token", JSON.stringify(data));
         this.token = this.jwtUtils.decodeToken(data.token) ?? "";
-        this.getByCongregationId(this.token.congregationId).subscribe();
-      })
+      }),
+      switchMap((loginResponse) =>
+        this.getByCongregationId(this.token.congregationId).pipe(
+          switchMap((congregation) =>
+            this.getByUserId(this.token.userId).pipe(
+              map((publisher) => ({
+                loginResponse,
+                congregation,
+                publisher,
+              })),
+            ),
+          ),
+        ),
+      ),
+      map(({ loginResponse }) => loginResponse),
     );
   }
 
@@ -40,10 +53,9 @@ export class AuthService {
       tap((data) => {
         this.congregacion = data;
         this.dataService.setCongregation(data);
-         this.cookieService.set('congregation', JSON.stringify(data));
+        this.cookieService.set("congregation", JSON.stringify(data), { path: "/", sameSite: "Lax" });
         localStorage.setItem("congregation", JSON.stringify(data));
-        this.getByUserId(this.token.userId).subscribe();
-      })
+      }),
     );
   }
 
@@ -57,9 +69,10 @@ export class AuthService {
           congregation: this.congregacion,
         };
         this.dataService.setPublisher(publisher);
-        this.cookieService.set('publisher', JSON.stringify(publisher));
+        localStorage.setItem("publisher", JSON.stringify(publisher));
+        this.cookieService.set("publisher", JSON.stringify(publisher), { path: "/", sameSite: "Lax" });
         this.router.navigateByUrl("/tablero");
-      })
+      }),
     );
   }
 }

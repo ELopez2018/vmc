@@ -11,9 +11,20 @@ import {
   PUBLISHER_REPEATED_CURRENT_WEEK_TEXT,
   PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT,
 } from "../publisher-warning.util";
+import { MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { AssignmentType } from "src/app/core/enums/assignments.enums";
+import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 
-type ProgramPublisherField = "president" | "assistantAdviser" | "openingPrayer" | "finalPrayer";
-type WeeklyPublisherField = "responsible" | "assistant" | "responsibleB" | "assistantB";
+type ProgramPublisherField =
+  | AssignmentType.PRESIDENT
+  | AssignmentType.ASSISTANT_ADVISER
+  | AssignmentType.OPENING_PRAYER
+  | AssignmentType.FINAL_PRAYER;
+type WeeklyPublisherField =
+  | WeeklyProgramChangeType.RESPONSIBLE
+  | WeeklyProgramChangeType.ASSISTANT
+  | WeeklyProgramChangeType.RESPONSIBLE_B
+  | WeeklyProgramChangeType.ASSISTANT_B;
 type PublisherField = ProgramPublisherField | WeeklyPublisherField;
 
 interface PublisherSlot {
@@ -34,7 +45,7 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
   @Input() public weeks: ProgramPdf[] = [];
   @Input() public roomA = false;
   @Input() public showPresidentTooltip = false;
-  @Input() public room = "A";
+  @Input() public room = MeetingRoom.MAIN;
   @Input() public isAdmin = false;
   @Input() public porAsignar = "por asignar";
   @Input() public meetingDay = 1;
@@ -47,17 +58,29 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
 
   @ViewChild("tooltipPresiden") private tooltipPresiden?: NgbTooltip;
 
-  public readonly treasuresSection = "TESOROS DE LA BIBLIA";
-  public readonly teachersSection = "SEAMOS MEJORES MAESTROS";
-  public readonly livingSection = "NUESTRA VIDA CRISTIANA";
+  public readonly assignmentType = AssignmentType;
+  public readonly programChangeType = ProgramChangeType;
+  public readonly treasuresSection = SectionMeeting.TESOROS_DE_LA_BIBLIA;
+  public readonly teachersSection = SectionMeeting.SEAMOS_MEJORES_MAESTROS;
+  public readonly livingSection = SectionMeeting.NUESTRA_VIDA_CRISTIANA;
   public readonly tooltipPresidenText = "";
   public readonly publisherTooltipClass = "tooltip-publisher-warning";
   public readonly publisherTooltipPlacement = "top";
 
   private readonly repeatedPreviousWeekText = PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT;
   private readonly repeatedCurrentWeekText = PUBLISHER_REPEATED_CURRENT_WEEK_TEXT;
-  private readonly programPublisherFields: ProgramPublisherField[] = ["president", "assistantAdviser", "openingPrayer", "finalPrayer"];
-  private readonly weeklyPublisherFields: WeeklyPublisherField[] = ["responsible", "assistant", "responsibleB", "assistantB"];
+  private readonly programPublisherFields: ProgramPublisherField[] = [
+    AssignmentType.PRESIDENT,
+    AssignmentType.ASSISTANT_ADVISER,
+    AssignmentType.OPENING_PRAYER,
+    AssignmentType.FINAL_PRAYER,
+  ];
+  private readonly weeklyPublisherFields: WeeklyPublisherField[] = [
+    WeeklyProgramChangeType.RESPONSIBLE,
+    WeeklyProgramChangeType.ASSISTANT,
+    WeeklyProgramChangeType.RESPONSIBLE_B,
+    WeeklyProgramChangeType.ASSISTANT_B,
+  ];
   private publisherSignature = "";
   private viewInitialized = false;
   private tooltipShowTimeout?: ReturnType<typeof setTimeout>;

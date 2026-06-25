@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { SemanasMock } from "./mocks/semanas.mock";
 import { MeetingsService } from "../../core/services/meetings/meetings.service";
 import { Meeting, Program, Publisher, WeeklyProgram } from "src/app/core/interfaces/reuniones.interface";
@@ -12,6 +13,7 @@ import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { SectionMeeting } from "../../core/enums/meetings.enums";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
 import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
+import { ASSIGNMENT_TITLE, MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 
 @Component({
   selector: "vmc-entre-semana",
@@ -20,18 +22,21 @@ import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
   standalone: false,
 })
 export class EntreSemanaComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly pageSize = 4;
+  private readonly requestedPages = new Set<number>();
+  public readonly meetingRoom = MeetingRoom;
   private programList: Program[] = [];
   public semanas: Program[] = [];
   public semanasSalaAuxiliar: Program[] = [];
   public porAsignar = "por asignar";
   public congregation: Congregation = CongregationMock;
   public assignmentType: string = "";
-  public Superintendente!: Publisher;
+  public superintendente!: Publisher;
   public showSpinner = false;
   private meetingDay = 1;
   public semanasAllRooms: ProgramPdf[] = [];
   loaderService = inject(LoaderService);
-  pages = 0;
   constructor(
     private meetingsService: MeetingsService,
     private modalService: ModalService,
@@ -40,7 +45,7 @@ export class EntreSemanaComponent implements OnInit {
   ) {
     this.loaderService.hideMatspinner();
     this.dataService.getPublisher().subscribe((data) => {
-      this.Superintendente = data;
+      this.superintendente = data;
     });
 
     this.dataService.getCongregation$().subscribe((data) => {
@@ -49,31 +54,39 @@ export class EntreSemanaComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-    this.loaderService.showMatspinner();
-    this.getPrograms(this.pages, 4);
-  }
-
-  getPrograms(page: number = 0, size: number = 4) {
-    console.log("getPrograms");
     this.semanas = [];
-    this.meetingsService.getWeeksValids(this.congregation.id, page, size).subscribe({
-      next: this.onSuccess.bind(this),
-      error: this.onError.bind(this),
-    });
+    this.loaderService.showMatspinner();
+    this.getPrograms();
   }
 
-  onSuccess(data: any) {
+  getPrograms(page = 0): void {
+    console.log("getPrograms");
+    if (this.requestedPages.has(page)) {
+      return;
+    }
+
+    this.requestedPages.add(page);
+    this.meetingsService
+      .getWeeksValids(this.congregation.id, page, this.pageSize)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => this.onSuccess(data, page),
+        error: this.onError.bind(this),
+      });
+  }
+
+  onSuccess(data: Program[], page: number): void {
     this.programList.push(...data);
     this.semanasAllRooms = this.dataService.makePDfVersion(this.programList);
     this.semanas = this.programList;
-    this.semanasSalaAuxiliar = [...this.filterWeekByRoom("B", this.programList)];
+    this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, this.programList)];
     this.dataService.setMeeting([...this.programList]);
     this.loaderService.hideMatspinner();
     if (localStorage.getItem("week")) {
       this.filterByWeekNumber(parseInt(localStorage.getItem("week") ?? ""));
     }
-    if (data.length != 0) {
-      this.getPrograms((this.pages += 1), 4);
+    if (data.length === this.pageSize) {
+      this.getPrograms(page + 1);
     }
   }
 
@@ -100,7 +113,7 @@ export class EntreSemanaComponent implements OnInit {
 
   changeProgram(item: Program, type: string) {
     switch (type) {
-      case "startTimeOpeningSong":
+      case ProgramChangeType.START_TIME_OPENING_SONG:
         this.modalService
           .selectedHour()
           .then((data) => {
@@ -113,7 +126,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "startTimeIntro":
+      case ProgramChangeType.START_TIME_INTRO:
         this.modalService
           .selectedHour()
           .then((data) => {
@@ -126,7 +139,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "startTimeIntermediateSong":
+      case ProgramChangeType.START_TIME_INTERMEDIATE_SONG:
         this.modalService
           .selectedHour()
           .then((data) => {
@@ -139,7 +152,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "startTimeConclusionWords":
+      case ProgramChangeType.START_TIME_CONCLUSION_WORDS:
         this.modalService
           .selectedHour()
           .then((data) => {
@@ -152,7 +165,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "startTimeFinalSong":
+      case ProgramChangeType.START_TIME_FINAL_SONG:
         this.modalService
           .selectedHour()
           .then((data) => {
@@ -198,7 +211,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "assistantAdviser":
+      case AssignmentType.ASSISTANT_ADVISER:
         this.modalService
           .assignPublisherProgram(item)
           .then((data) => {
@@ -211,7 +224,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "openingSong":
+      case ProgramChangeType.OPENING_SONG:
         this.modalService
           .changeSong(item, item.meeting.openingSong)
           .then((data) => {
@@ -224,7 +237,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "intermediateSong":
+      case ProgramChangeType.INTERMEDIATE_SONG:
         this.modalService
           .changeSong(item, item.meeting.intermediateSong)
           .then((data) => {
@@ -237,7 +250,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "finalSong":
+      case ProgramChangeType.FINAL_SONG:
         this.modalService
           .changeSong(item, item.meeting.finalSong)
           .then((data) => {
@@ -268,45 +281,45 @@ export class EntreSemanaComponent implements OnInit {
         break;
       default:
         this.assignmentType = this.selectAssignmentTypeByTitle(item.assignment.title);
-        if (type == "assistant" && this.assignmentType == AssignmentType.CONGREGATION_BIBLE_STUDY) {
+        if (type === WeeklyProgramChangeType.ASSISTANT && this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY) {
           this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY_READER;
-        } else if (type == "assistant" && this.assignmentType != AssignmentType.CONGREGATION_BIBLE_STUDY) {
+        } else if (type === WeeklyProgramChangeType.ASSISTANT && this.assignmentType !== AssignmentType.CONGREGATION_BIBLE_STUDY) {
           this.assignmentType += "Assistant";
         }
     }
   }
   selectAssignmentTypeByTitle(title: string) {
-    if (title.includes("Lo que hizo")) {
+    if (title.includes(ASSIGNMENT_TITLE.WHAT_HE_DID)) {
       return AssignmentType.WHAT_HE_DID;
     }
-    if (title.includes("Imite a")) {
+    if (title.includes(ASSIGNMENT_TITLE.IMITATE)) {
       return AssignmentType.IMITATE;
     }
-    if (title.includes("Empiece conversaciones")) {
+    if (title.includes(ASSIGNMENT_TITLE.STARTING_A_CONVERSATION)) {
       return AssignmentType.STARTING_A_CONVERSATION;
     }
-    if (title.includes("Haga revisitas")) {
+    if (title.includes(ASSIGNMENT_TITLE.FOLLOWING_UP)) {
       return AssignmentType.FOLLOWING_UP;
     }
-    if (title.includes("Explique sus creencias")) {
+    if (title.includes(ASSIGNMENT_TITLE.EXPLAINING_YOUR_BELIEFS)) {
       return AssignmentType.EXPLAINING_YOUR_BELIEFS;
     }
-    if (title.includes("Haga discípulos")) {
+    if (title.includes(ASSIGNMENT_TITLE.MAKING_DISCIPLES)) {
       return AssignmentType.MAKING_DISCIPLES;
     }
-    if (title.includes("Estudio bíblico de la congregación")) {
+    if (title.includes(ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY)) {
       return AssignmentType.CONGREGATION_BIBLE_STUDY;
     }
-    if (title.includes("Necesidades de la congregación")) {
+    if (title.includes(ASSIGNMENT_TITLE.LOCAL_NEEDS)) {
       return AssignmentType.LOCAL_NEEDS;
     }
     return "";
   }
   changeWeeklyProgram(item: WeeklyProgram, type: string) {
     if (
-      item.assignment.sectionMeeting.includes("NUESTRA VIDA CRISTIANA") &&
-      !item.assignment.title.includes("Estudio bíblico de la congregación") &&
-      !item.assignment.title.includes("Necesidades de la congregación")
+      item.assignment.sectionMeeting.includes(SectionMeeting.NUESTRA_VIDA_CRISTIANA) &&
+      !item.assignment.title.includes(ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY) &&
+      !item.assignment.title.includes(ASSIGNMENT_TITLE.LOCAL_NEEDS)
     ) {
       this.assignmentType = AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS;
     } else {
@@ -314,7 +327,7 @@ export class EntreSemanaComponent implements OnInit {
     }
 
     switch (type) {
-      case "responsible":
+      case WeeklyProgramChangeType.RESPONSIBLE:
         this.modalService
           .assignPublisherWeeklyProgram(item, this.assignmentType)
           .then((data) => {
@@ -327,7 +340,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "assistant":
+      case WeeklyProgramChangeType.ASSISTANT:
         this.modalService
           .assignPublisherWeeklyProgram(item, this.assignmentType)
           .then((data) => {
@@ -340,7 +353,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "startTime":
+      case WeeklyProgramChangeType.START_TIME:
         this.modalService
           .selectedHour()
           .then((data) => {
@@ -354,7 +367,7 @@ export class EntreSemanaComponent implements OnInit {
             console.info(data);
           });
         break;
-      case "title":
+      case WeeklyProgramChangeType.TITLE:
         this.modalService
           .setTitleAndTime(item)
           .then((data) => {
@@ -383,7 +396,7 @@ export class EntreSemanaComponent implements OnInit {
   }
   select() {
     this.semanasSalaAuxiliar = this.semanasSalaAuxiliar.map((i) => {
-      i.weeklyPrograms = i.weeklyPrograms.filter((a) => a.room == "B");
+      i.weeklyPrograms = i.weeklyPrograms.filter((a) => a.room === MeetingRoom.AUXILIARY);
       return i;
     });
   }
@@ -398,8 +411,8 @@ export class EntreSemanaComponent implements OnInit {
     } else {
       weeks = weeks.filter((week) => week.meeting.weekNumber === event);
     }
-    this.semanas = this.filterWeekByRoom("A", weeks);
-    this.semanasSalaAuxiliar = [...this.filterWeekByRoom("B", weeks)];
+    this.semanas = this.filterWeekByRoom(MeetingRoom.MAIN, weeks);
+    this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, weeks)];
     this.dataService.setMeeting([...weeks]);
   }
 

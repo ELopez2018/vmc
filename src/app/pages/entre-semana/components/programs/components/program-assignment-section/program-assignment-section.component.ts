@@ -6,6 +6,8 @@ import { Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
 import { getPublisherTextClasses as getPublisherWarningTextClasses } from "../publisher-warning.util";
+import { ASSIGNMENT_TITLE, MeetingRoom, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 
 @Component({
   selector: "vmc-program-assignment-section",
@@ -18,7 +20,7 @@ export class ProgramAssignmentSectionComponent {
   @Input() public sectionMeeting = "";
   @Input() public title = "";
   @Input() public legendClass = "";
-  @Input() public room = "A";
+  @Input() public room = MeetingRoom.MAIN;
   @Input() public isAdmin = false;
   @Input() public porAsignar = "por asignar";
   @Input() public renderFieldset = true;
@@ -26,9 +28,11 @@ export class ProgramAssignmentSectionComponent {
   @Output() public addAssignment = new EventEmitter<{ program: ProgramPdf; sectionMeeting: string }>();
   @Output() public weeklyProgramChange = new EventEmitter<{ item: WeeklyProgramPdF; type: string }>();
 
-  public readonly treasuresSection = "TESOROS DE LA BIBLIA";
-  public readonly teachersSection = "SEAMOS MEJORES MAESTROS";
-  public readonly livingSection = "NUESTRA VIDA CRISTIANA";
+  public readonly assignmentTitle = ASSIGNMENT_TITLE;
+  public readonly weeklyProgramChangeType = WeeklyProgramChangeType;
+  public readonly treasuresSection = SectionMeeting.TESOROS_DE_LA_BIBLIA;
+  public readonly teachersSection = SectionMeeting.SEAMOS_MEJORES_MAESTROS;
+  public readonly livingSection = SectionMeeting.NUESTRA_VIDA_CRISTIANA;
   public readonly publisherTooltipClass = "tooltip-publisher-warning";
   public readonly publisherTooltipPlacement = "top";
 

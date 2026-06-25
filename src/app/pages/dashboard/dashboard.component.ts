@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly mobileQuery = this.mediaMatcher.matchMedia("(max-width: 1366px)");
   readonly shouldRun = true;
 
-  public Superintendente!: Publisher;
+  public superintendente!: Publisher;
   private programList: Program[] = [];
   public congregation: Congregation = CongregationMock;
   public isAdmin = false;
@@ -43,11 +43,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.loaderService.hideMatspinner();
     this.mobileQuery.addEventListener("change", this.mobileQueryListener);
     this.dataService.getConfigs();
-
     combineLatest([this.dataService.getPublisher(), this.dataService.getIsAdmin()])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([publisher, isAdmin]) => {
-        this.Superintendente = publisher;
+        this.superintendente = publisher;
         this.isAdmin = Boolean(isAdmin || publisher.email === this.adminEmail);
       });
 

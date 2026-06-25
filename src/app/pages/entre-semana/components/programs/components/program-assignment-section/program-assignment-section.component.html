@@ -21,16 +21,16 @@
     <div class="col-md-9 mt-1">
       <div class="row">
         <div class="col-md-1 ms-2 ms-xl-2 width-timeStart hover d-none d-xl-inline"
-          (click)="onWeeklyProgramChange(item, 'startTime')">
+          (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
         <div class="col-md-11 big-title p-0 ps-xl-2 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
-          <span class="title-number hover" (click)="onWeeklyProgramChange(item, 'number')">
+          <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
 
-          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, 'title')">
+          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
         </div>
@@ -39,7 +39,7 @@
     <div class="col-md-3 mb-3 mb-md-0">
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
-        (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
@@ -48,16 +48,16 @@
     <div class="col-md-5 mt-1">
       <div class="row">
         <div class="col-md-1 mx-2 width-timeStart hover d-none d-xl-inline"
-          (click)="onWeeklyProgramChange(item, 'startTime')">
+          (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
         <div class="col-md-11 big-title p-0 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
-          <span class="title-number hover" (click)="onWeeklyProgramChange(item, 'number')">
+          <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
 
-          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, 'title')">
+          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
         </div>
@@ -66,7 +66,7 @@
 
     <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom">
       @if (item.assignment.showTips) {
-      <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, 'tips')">
+      <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TIPS)">
         {{ item.assignment.tips }}
       </span>
       }
@@ -76,7 +76,7 @@
       @if (item.assignment.number == 3) {
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsibleB)"
-        (click)="onWeeklyProgramChange(item, 'responsibleB')" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
       </span>
@@ -85,7 +85,7 @@
     <div class="col-md-2 mb-3 mb-md-0">
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
-        (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
@@ -99,16 +99,16 @@
     <div class="col-md-5 mt-1">
       <div class="row">
         <div class="col-md-1 mx-2 width-timeStart hover d-none d-xl-inline"
-          (click)="onWeeklyProgramChange(item, 'startTime')">
+          (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
 
         <div class="col-md-11 big-title p-0 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
-          <span class="title-number hover" (click)="onWeeklyProgramChange(item, 'number')">
+          <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
-          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, 'title')">
+          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
         </div>
@@ -117,7 +117,7 @@
 
     <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom">
       @if (item.assignment.showTips) {
-      <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, 'tips')">
+      <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TIPS)">
         {{ item.assignment.tips }}
       </span>
       }
@@ -126,13 +126,13 @@
     <div class="col-md-3 pe-0 mb-3 mb-md-0">
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsibleB)"
-        (click)="onWeeklyProgramChange(item, 'responsibleB')" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
       </span>
-      @if (item.assignment.title !== "Discurso") {
+      @if (item.assignment.title !== assignmentTitle.SPEECH) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistantB)"
-        (click)="onWeeklyProgramChange(item, 'assistantB')" [ngbTooltip]="item.assistantB?.publisherTooltipText"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT_B)" [ngbTooltip]="item.assistantB?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.assistantB ? "/" + item.assistantB.fullName : "/" + porAsignar }}
       </span>
@@ -142,13 +142,13 @@
     <div class="col-md-3 mb-3 pe-0 mb-md-0">
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
-        (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
-      @if (item.assignment.title !== "Discurso") {
+      @if (item.assignment.title !== assignmentTitle.SPEECH) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
-        (click)="onWeeklyProgramChange(item, 'assistant')" [ngbTooltip]="item.assistant?.publisherTooltipText"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)" [ngbTooltip]="item.assistant?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item?.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}
       </span>
@@ -158,20 +158,20 @@
   }
 
   @if (sectionMeeting == livingSection) {
-  @if (item.assignment.title != "Estudio bíblico de la congregación") {
+  @if (item.assignment.title !== assignmentTitle.CONGREGATION_BIBLE_STUDY) {
   <div class="row px-3 program__tesoros">
     <div class="col-md-9">
       <div class="row">
         <div class="col-md-1 width-timeStart ms-2 hover d-none d-xl-inline"
-          (click)="onWeeklyProgramChange(item, 'startTime')">
+          (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
         <div class="col-md-11 big-title p-0 m-0 ps-xl-2 hover"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
-          <span class="title-number hover" (click)="onWeeklyProgramChange(item, 'number')">
+          <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
-          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, 'title')">
+          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
         </div>
@@ -180,7 +180,7 @@
     <div class="col-md-3 mb-3 mb-md-0">
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
-        (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item.responsible ? item.responsible.fullName : porAsignar }}
       </span>
@@ -191,15 +191,15 @@
     <div class="col-md-8">
       <div class="row">
         <div class="col-md-1 width-timeStart ms-2 hover d-none d-xl-inline"
-          (click)="onWeeklyProgramChange(item, 'startTime')">
+          (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
         <div class="col-md-11 big-title p-0 m-0 ps-xl-2 hover"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
-          <span class="title-number hover" (click)="onWeeklyProgramChange(item, 'number')">
+          <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
-          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, 'title')">
+          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
         </div>
@@ -207,7 +207,7 @@
     </div>
     <div class="col-md-1 mt-0 text-end text-title-custom">
       @if (item.assignment.showTips) {
-      <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, 'tips')">
+      <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TIPS)">
         {{ item.assignment.tips }}
       </span>
       }
@@ -215,12 +215,12 @@
     <div class="col-md-3 mb-3 mb-md-0">
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
-        (click)="onWeeklyProgramChange(item, 'responsible')" [ngbTooltip]="item.responsible?.publisherTooltipText"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item.responsible ? item.responsible.fullName : porAsignar }}
       </span>
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
-        (click)="onWeeklyProgramChange(item, 'assistant')" [ngbTooltip]="item.assistant?.publisherTooltipText"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)" [ngbTooltip]="item.assistant?.publisherTooltipText"
         [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
         {{ item.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}
       </span>

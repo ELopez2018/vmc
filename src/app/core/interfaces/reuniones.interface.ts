@@ -63,7 +63,10 @@ export interface AssignmentTypePermission {
 export interface AssignmentType {
   id: number;
   description: string;
-  number: number;
+  number: number | null;
+  type?: string | null;
+  sectionMeetingId?: number | null;
+  sectionMeetingTitle?: string | null;
 }
 
 export interface UserAssignmentTypeBulkUpdateRequest {

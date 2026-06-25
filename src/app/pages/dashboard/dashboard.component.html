@@ -7,10 +7,10 @@
     </button>
 
     <div class="w-100 d-flex justify-content-between align-items-center">
-      <span class="d-md-none pt-1">{{ Superintendente.fullName }}</span>
+      <span class="d-md-none pt-1">{{ superintendente.fullName }}</span>
 
       <span class="d-none d-md-inline pt-1">
-        {{ Superintendente.fullName }} | {{ Superintendente.congregation.name }}
+        {{ superintendente.fullName }} | {{ superintendente.congregation?.name }}
       </span>
 
       <div class="w-50 w-md-25 d-flex justify-content-end">

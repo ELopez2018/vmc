@@ -15,7 +15,6 @@ export class AssignmentTypesService {
 
   getAll(): Observable<AssignmentType[]> {
     const url = `${this.server}${this.api.ASSIGNMENT_TYPES}`;
-
     return this.httpClient.get<AssignmentType[]>(url);
   }
 }

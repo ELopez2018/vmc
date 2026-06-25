@@ -3,6 +3,7 @@ import { NgbModal, NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstr
 import { ModalContainerComponent } from "src/app/shared/modal/modal-container/modal-container.component";
 import { ModalTitleEnums, ModalIconEnums, ModalResponseEnums, ModalTypeEnums } from "../../enums/modal.enums";
 import { Assignment, Program, WeeklyProgram } from "../../interfaces/reuniones.interface";
+import { normalizeAssignmentTypeValue } from "../../enums/assignments.enums";
 
 @Injectable({
   providedIn: "root",
@@ -35,7 +36,7 @@ export class ModalService {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
     this.modalRef.componentInstance.assignment = assignment;
-    this.modalRef.componentInstance.assignmentType = assignmentType;
+    this.modalRef.componentInstance.assignmentType = normalizeAssignmentTypeValue(assignmentType);
     this.modalRef.componentInstance.type = type;
     this.modalRef.componentInstance.room = room;
     return this.modalRef.result;
@@ -45,7 +46,7 @@ export class ModalService {
     this.modalRef = this.ngbModal.open(ModalContainerComponent, this.modalOptions);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
     this.modalRef.componentInstance.assignment = program.weeklyPrograms[0];
-    this.modalRef.componentInstance.assignmentType = assignmentType;
+    this.modalRef.componentInstance.assignmentType = normalizeAssignmentTypeValue(assignmentType);
     return this.modalRef.result;
   }
 

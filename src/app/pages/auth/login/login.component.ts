@@ -31,7 +31,7 @@ export class LoginComponent {
     this.loaderService.showMatspinner();
     this.authService.login(this.credential.getRawValue()).subscribe({
       next: (data) => {
-        console.log('Logueado');
+         this.loaderService.hideMatspinner();
       },
       error: (error) => {
         this.loaderService.hideMatspinner();

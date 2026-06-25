@@ -22,3 +22,15 @@ export enum AssignmentType {
   SPEECH = 'speech',
   ASSISTANT_ADVISER = 'assistantAdviser'
 }
+
+export const OTHER_PART_LIVING_AS_CHRISTIANS_DESCRIPTION = "Partes Reunion no Estudiantiles";
+
+export function normalizeAssignmentTypeValue(assignmentType?: string): string {
+  if (!assignmentType) {
+    return "";
+  }
+
+  return assignmentType.trim().toLocaleLowerCase() === OTHER_PART_LIVING_AS_CHRISTIANS_DESCRIPTION.toLocaleLowerCase()
+    ? AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS
+    : assignmentType;
+}

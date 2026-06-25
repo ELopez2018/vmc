@@ -48,7 +48,7 @@
       <div class="col-md-2 text-md-end text-title-custom">Presidente:</div>
       <div class="col-md-3 text-md-start hover text-publisher">
         <span
-          (click)="onProgramChange('president')"
+          (click)="onProgramChange(assignmentType.PRESIDENT)"
           [ngClass]="getPublisherTextClasses(semana.president)"
           #tooltipPresiden="ngbTooltip"
           [ngbTooltip]="getPublisherTooltipText(semana.president, tooltipPresidenText)"
@@ -68,7 +68,7 @@
       <div class="col-md-3 text-md-end text-title-custom">Consejero de la sala auxiliar:</div>
       <div class="col-md-3 text-md-start hover text-publisher">
         <span
-          (click)="onProgramChange('assistantAdviser')"
+          (click)="onProgramChange(assignmentType.ASSISTANT_ADVISER)"
           [ngClass]="getPublisherTextClasses(semana.assistantAdviser)"
           [ngbTooltip]="semana.assistantAdviser?.publisherTooltipText"
           [placement]="publisherTooltipPlacement"
@@ -85,20 +85,20 @@
     <div class="row px-3">
       <div class="col-md-7 ps-2 ps-xl-3 text-md-start">
         <span class="ms-md-1"></span>
-        <span class="hover d-none d-xl-inline" (click)="onProgramChange('startTimeOpeningSong')">
+        <span class="hover d-none d-xl-inline" (click)="onProgramChange(programChangeType.START_TIME_OPENING_SONG)">
           {{ adapterTime(semana.startTimeOpeningSong) }}
         </span>
-        <span class="ms-md-2 fw-bold hover" (click)="onProgramChange('openingSong')">
+        <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
           Canción {{ semana.meeting.initialSong?.songNumber }}
         </span>
-        <span class="ms-md-2 fw-bold hover" (click)="onProgramChange('openingSong')">
+        <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
           {{ semana.meeting.initialSong?.title }} ({{ semana.meeting.initialSong?.source }})
         </span>
       </div>
       <div class="col-md-2 text-md-end text-title-custom">Oración:</div>
       <div class="col-md-3 text-md-start hover text-publisher">
         <span
-          (click)="onProgramChange('openingPrayer')"
+          (click)="onProgramChange(assignmentType.OPENING_PRAYER)"
           [ngClass]="getPublisherTextClasses(semana.openingPrayer)"
           [ngbTooltip]="semana.openingPrayer?.publisherTooltipText"
           [placement]="publisherTooltipPlacement"
@@ -115,10 +115,10 @@
     <div class="row px-3 program__tesoros">
       <div class="col-md-12 ps-xl-3 text-md-start">
         <span class="ms-xl-1"></span>
-        <span class="hover d-none d-xl-inline" (click)="onProgramChange('startTimeIntro')">
+        <span class="hover d-none d-xl-inline" (click)="onProgramChange(programChangeType.START_TIME_INTRO)">
           {{ adapterTime(semana.startTimeIntro) }}
         </span>
-        <span class="hover ps-2" (click)="onProgramChange('introTime')">
+        <span class="hover ps-2" (click)="onProgramChange(programChangeType.INTRO_TIME)">
           Palabras de introducción ({{ semana.meeting.introTime + " " + semana.meeting.timeType }})
         </span>
       </div>
@@ -159,13 +159,13 @@
       </legend>
       <div class="row px-3">
         <div class="col-md-12 mt-1">
-          <span class="mx-2 hover d-none d-xl-inline" (click)="onProgramChange('startTimeIntermediateSong')">
+          <span class="mx-2 hover d-none d-xl-inline" (click)="onProgramChange(programChangeType.START_TIME_INTERMEDIATE_SONG)">
             {{ adapterTime(semana.startTimeIntermediateSong) }}
           </span>
-          <span class="fw-bold hover" (click)="onProgramChange('intermediateSong')">
+          <span class="fw-bold hover" (click)="onProgramChange(programChangeType.INTERMEDIATE_SONG)">
             Canción {{ semana.meeting.middleSong?.songNumber }}
           </span>
-          <span class="ms-md-2 fw-bold hover" (click)="onProgramChange('openingSong')">
+          <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
             {{ semana.meeting.middleSong?.title }} ({{ semana.meeting.middleSong?.source }})
           </span>
         </div>
@@ -189,7 +189,7 @@
     <div class="row px-3">
       <div class="col-md-7 mt-1">
         <span class="ms-md-1"></span>
-        <span class="mx-2 hover d-none d-xl-inline" (click)="onProgramChange('startTimeConclusionWords')">
+        <span class="mx-2 hover d-none d-xl-inline" (click)="onProgramChange(programChangeType.START_TIME_CONCLUSION_WORDS)">
           {{ adapterTime(semana.startTimeConclusionWords) }}
         </span>
         Palabras de conclusión
@@ -202,20 +202,20 @@
     <div class="row px-3">
       <div class="col-md-7 mt-1">
         <span class="ms-md-1"></span>
-        <span class="hover d-none mx-2 d-xl-inline" (click)="onProgramChange('startTimeFinalSong')">
+        <span class="hover d-none mx-2 d-xl-inline" (click)="onProgramChange(programChangeType.START_TIME_FINAL_SONG)">
           {{ adapterTime(semana.startTimeFinalSong) }}
         </span>
-        <span class="fw-bold hover" (click)="onProgramChange('finalSong')">
+        <span class="fw-bold hover" (click)="onProgramChange(programChangeType.FINAL_SONG)">
           Canción {{ semana.meeting.lastSong?.songNumber }}
         </span>
-        <span class="ms-md-2 fw-bold hover" (click)="onProgramChange('openingSong')">
+        <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
           {{ semana.meeting.lastSong?.title }} ({{ semana.meeting.lastSong?.source }})
         </span>
       </div>
       <div class="col-md-2 text-md-end text-title-custom">Oracion:</div>
       <div
         class="col-md-3 hover text-publisher"
-        (click)="onProgramChange('finalPrayer')"
+        (click)="onProgramChange(assignmentType.FINAL_PRAYER)"
         [ngClass]="getPublisherTextClasses(semana.finalPrayer)"
         [ngbTooltip]="semana.finalPrayer?.publisherTooltipText"
         [placement]="publisherTooltipPlacement"

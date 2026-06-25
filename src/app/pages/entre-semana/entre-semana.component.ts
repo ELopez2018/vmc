@@ -23,7 +23,7 @@ import { ASSIGNMENT_TITLE, MeetingRoom, ProgramChangeType, WeeklyProgramChangeTy
 })
 export class EntreSemanaComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly pageSize = 4;
+  private readonly pageSize = 20;
   private readonly requestedPages = new Set<number>();
   public readonly meetingRoom = MeetingRoom;
   private programList: Program[] = [];
@@ -56,11 +56,10 @@ export class EntreSemanaComponent implements OnInit {
   ngOnInit(): void {
     this.semanas = [];
     this.loaderService.showMatspinner();
-    this.getPrograms();
+      this.getPrograms();
   }
 
   getPrograms(page = 0): void {
-    console.log("getPrograms");
     if (this.requestedPages.has(page)) {
       return;
     }
@@ -85,9 +84,9 @@ export class EntreSemanaComponent implements OnInit {
     if (localStorage.getItem("week")) {
       this.filterByWeekNumber(parseInt(localStorage.getItem("week") ?? ""));
     }
-    if (data.length === this.pageSize) {
-      this.getPrograms(page + 1);
-    }
+    // if (data.length === this.pageSize) {
+    //   this.getPrograms(page + 1);
+    // }
   }
 
   onError(error: any) {

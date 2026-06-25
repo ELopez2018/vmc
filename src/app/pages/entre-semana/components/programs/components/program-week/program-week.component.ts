@@ -6,25 +6,13 @@ import { Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
 import { ProgramAssignmentSectionComponent } from "../program-assignment-section/program-assignment-section.component";
-import {
-  getPublisherTextClasses as getPublisherWarningTextClasses,
-  PUBLISHER_REPEATED_CURRENT_WEEK_TEXT,
-  PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT,
-} from "../publisher-warning.util";
-import { MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { getPublisherTextClasses as getPublisherWarningTextClasses, PUBLISHER_REPEATED_CURRENT_WEEK_TEXT, PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT } from "../publisher-warning.util";
+import { ASSIGNMENT_TITLE, MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 
-type ProgramPublisherField =
-  | AssignmentType.PRESIDENT
-  | AssignmentType.ASSISTANT_ADVISER
-  | AssignmentType.OPENING_PRAYER
-  | AssignmentType.FINAL_PRAYER;
-type WeeklyPublisherField =
-  | WeeklyProgramChangeType.RESPONSIBLE
-  | WeeklyProgramChangeType.ASSISTANT
-  | WeeklyProgramChangeType.RESPONSIBLE_B
-  | WeeklyProgramChangeType.ASSISTANT_B;
+type ProgramPublisherField = AssignmentType.PRESIDENT | AssignmentType.ASSISTANT_ADVISER | AssignmentType.OPENING_PRAYER | AssignmentType.FINAL_PRAYER;
+type WeeklyPublisherField = WeeklyProgramChangeType.RESPONSIBLE | WeeklyProgramChangeType.ASSISTANT | WeeklyProgramChangeType.RESPONSIBLE_B | WeeklyProgramChangeType.ASSISTANT_B;
 type PublisherField = ProgramPublisherField | WeeklyPublisherField;
 
 interface PublisherSlot {
@@ -74,12 +62,6 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
     AssignmentType.ASSISTANT_ADVISER,
     AssignmentType.OPENING_PRAYER,
     AssignmentType.FINAL_PRAYER,
-  ];
-  private readonly weeklyPublisherFields: WeeklyPublisherField[] = [
-    WeeklyProgramChangeType.RESPONSIBLE,
-    WeeklyProgramChangeType.ASSISTANT,
-    WeeklyProgramChangeType.RESPONSIBLE_B,
-    WeeklyProgramChangeType.ASSISTANT_B,
   ];
   private publisherSignature = "";
   private viewInitialized = false;
@@ -165,7 +147,11 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
 
   private setPublisherTooltipText(): void {
     const currentSlots = this.getPublisherSlots(this.semana);
-    const previousPublisherIds = new Set(this.getPublisherSlots(this.getAdjacentWeek(-1)).map((slot) => slot.publisher?.id).filter((id): id is number => !!id));
+    const previousPublisherIds = new Set(
+      this.getPublisherSlots(this.getAdjacentWeek(-1))
+        .map((slot) => slot.publisher?.id)
+        .filter((id): id is number => !!id),
+    );
     const currentPublisherCounts = this.getPublisherCounts(currentSlots);
 
     currentSlots.forEach((slot) => {
@@ -185,9 +171,8 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
   private buildPublisherSignature(): string {
     const currentWeek = this.semana;
     const previousWeek = this.getAdjacentWeek(-1);
-    const nextWeek = this.getAdjacentWeek(1);
 
-    return [previousWeek, currentWeek, nextWeek]
+    return [previousWeek, currentWeek]
       .filter((week): week is ProgramPdf => !!week)
       .map((week) => {
         const publisherIds = this.getPublisherSlots(week)
@@ -213,7 +198,16 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
   private getOrderedWeeks(): ProgramPdf[] {
     const weeks = this.weeks?.length ? this.weeks : [this.semana];
 
-    return [...weeks].sort((a, b) => (a.meeting?.week ?? 0) - (b.meeting?.week ?? 0));
+    return [...weeks].sort((a, b) => {
+      const diff = this.getWeekTimestamp(a) - this.getWeekTimestamp(b);
+      return diff !== 0 ? diff : (a.id ?? 0) - (b.id ?? 0);
+    });
+  }
+
+  private getWeekTimestamp(week: ProgramPdf): number {
+    const raw = week.meeting?.week as unknown;
+    const time = raw ? new Date(raw as string | number | Date).getTime() : NaN;
+    return Number.isNaN(time) ? 0 : time;
   }
 
   private getPublisherSlots(week?: ProgramPdf): PublisherSlot[] {
@@ -221,14 +215,16 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
       return [];
     }
 
-    const programSlots = this.programPublisherFields.map((field) => ({
-      field,
-      publisher: week[field],
-      week,
-    }));
+    const programSlots = this.roomA
+      ? this.programPublisherFields.map((field) => ({
+          field,
+          publisher: week[field],
+          week,
+        }))
+      : [];
 
     const weeklyProgramSlots = (week.weeklyPrograms ?? []).flatMap((weeklyProgram) =>
-      this.weeklyPublisherFields.map((field) => ({
+      this.getRenderedWeeklyFields(weeklyProgram).map((field) => ({
         field,
         publisher: weeklyProgram[field],
         week,
@@ -237,6 +233,29 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
     );
 
     return [...programSlots, ...weeklyProgramSlots];
+  }
+
+  private getRenderedWeeklyFields(weeklyProgram: WeeklyProgramPdF): WeeklyPublisherField[] {
+    const section = weeklyProgram.assignment?.sectionMeeting;
+    const title = weeklyProgram.assignment?.title ?? "";
+    const number = weeklyProgram.assignment?.number;
+
+    if (section === SectionMeeting.TESOROS_DE_LA_BIBLIA) {
+      return number === 3 ? [WeeklyProgramChangeType.RESPONSIBLE, WeeklyProgramChangeType.RESPONSIBLE_B] : [WeeklyProgramChangeType.RESPONSIBLE];
+    }
+
+    if (section === SectionMeeting.SEAMOS_MEJORES_MAESTROS) {
+      if (title === ASSIGNMENT_TITLE.SPEECH) {
+        return [WeeklyProgramChangeType.RESPONSIBLE, WeeklyProgramChangeType.RESPONSIBLE_B];
+      }
+      return [WeeklyProgramChangeType.RESPONSIBLE, WeeklyProgramChangeType.ASSISTANT, WeeklyProgramChangeType.RESPONSIBLE_B, WeeklyProgramChangeType.ASSISTANT_B];
+    }
+
+    if (section === SectionMeeting.NUESTRA_VIDA_CRISTIANA) {
+      return title === ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY ? [WeeklyProgramChangeType.RESPONSIBLE, WeeklyProgramChangeType.ASSISTANT] : [WeeklyProgramChangeType.RESPONSIBLE];
+    }
+
+    return [];
   }
 
   private getPublisherCounts(slots: PublisherSlot[]): Map<number, number> {

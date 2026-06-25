@@ -83,6 +83,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     [AssignmentType.EXPLAINING_YOUR_BELIEFS_ASSISTANT]: this.assignmentTypeMatcher("Explique sus creencias", "Ayudante", "NUESTRA VIDA CRISTIANA"),
     [AssignmentType.SPEECH]: this.assignmentTypeMatcher("Discurso", "Estudiante", "SEAMOS MEJORES MAESTROS"),
     [AssignmentType.PRESIDENT]: this.assignmentTypeMatcher("Presidencia", "Encargado", "ORACIONES"),
+    [AssignmentType.ASSISTANT_ADVISER]: this.assignmentTypeMatcher("Consejero de la sala auxiliar", "Encargado", "ESPECIAL"),
     [AssignmentType.OPENING_PRAYER]: this.assignmentTypeMatcher("Oracion Inicial", "Encargado", "ESPECIAL"),
     [AssignmentType.FINAL_PRAYER]: this.assignmentTypeMatcher("Oracion Final", "Encargado", "ESPECIAL"),
     [AssignmentType.LOCAL_NEEDS]: this.assignmentTypeMatcher("Necesidades de la congregación", "Encargado", "NUESTRA VIDA CRISTIANA"),
@@ -423,23 +424,17 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   private filterPublishersByAssignmentPermission<T>(items: T[]): T[] {
-    const assignmentTypePermissionId = this.getAssignmentTypePermissionId();
-
-    if (!assignmentTypePermissionId) {
-      return items;
-    }
-
-    return items.filter((item) => this.hasAssignmentTypePermission(item, assignmentTypePermissionId));
-  }
-
-  private getAssignmentTypePermissionId(): number | undefined {
     const matcher = this.assignmentTypeMatchers[this.assignmentType as AssignmentType];
 
     if (!matcher) {
-      return undefined;
+      return items;
     }
 
-    return this.assignmentTypes.find((assignmentType) => this.matchesAssignmentType(assignmentType, matcher))?.id;
+    const assignmentTypePermissionId = this.assignmentTypes.find((assignmentType) => this.matchesAssignmentType(assignmentType, matcher))?.id;
+
+    return assignmentTypePermissionId
+      ? items.filter((item) => this.hasAssignmentTypePermission(item, assignmentTypePermissionId))
+      : [];
   }
 
   private hasAssignmentTypePermission(item: unknown, assignmentTypePermissionId: number): boolean {

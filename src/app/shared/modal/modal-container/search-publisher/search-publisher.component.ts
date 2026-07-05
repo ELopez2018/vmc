@@ -1,5 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, signal, ViewChildren } from "@angular/core";
-import { MatSort } from "@angular/material/sort";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
 import { AssignmentService } from "../../../../core/services/assignment/assignment.service";
 import { UsersService } from "src/app/core/services/users/users.service";
@@ -11,7 +10,6 @@ import { DataService } from "src/app/core/services/data/data.service";
 import { LoaderService } from "../../../../core/services/loader/loader.service";
 import { AssignmentType, normalizeAssignmentTypeValue, OTHER_PART_LIVING_AS_CHRISTIANS_DESCRIPTION } from "src/app/core/enums/assignments.enums";
 import { Subscription } from "rxjs";
-import { PublisherMeetingResposne, PublisherResposne } from "src/app/core/interfaces/publisher-response";
 import { Combobox } from "src/app/pages/notifications/notifications.component";
 import { AssignmentTypesService } from "src/app/core/services/assignment-types/assignment-types.service";
 
@@ -27,7 +25,7 @@ interface AssignmentTypeMatcher {
   styleUrls: ["./search-publisher.component.scss"],
   standalone: false,
 })
-export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SearchPublisherComponent implements OnInit, OnDestroy {
   public publishersAll!: Publisher[];
   @Input() public assignment!: WeeklyProgram;
   @Input() public assignmentType: string = "";
@@ -35,8 +33,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
   @Input() public room: string = "A";
   @Output() onClicked: EventEmitter<Publisher> = new EventEmitter();
   @Output() onClose: EventEmitter<boolean> = new EventEmitter();
-  @ViewChildren(MatSort) sorts!: QueryList<MatSort>;
-
   public frequentPublishers!: PublisherDto[];
   public showSpinner = true;
   public congregation!: Congregation;
@@ -144,31 +140,8 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     this.valuesComboParticipantes = Array.from(participantes)
       .map((n) => (n ?? "").trim())
       .filter((n) => n.length > 0)
-      .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
       .map((name) => ({ value: name, label: name }));
     return users;
-  }
-
-  ngAfterViewInit() {
-    this.assignSorts();
-    this.sorts.changes.subscribe(() => this.assignSorts());
-  }
-
-  private assignSorts() {
-    const sortsArray = this.sorts.toArray();
-    if (sortsArray.length > 0) {
-      this.usedPublishersDataSource.sort = sortsArray[0];
-      this.usedPublishersAllByAssigDataSource.sort = sortsArray[0];
-    }
-    if (sortsArray.length > 1) {
-      this.maleDataSource.sort = sortsArray[1];
-    }
-    if (sortsArray.length > 2) {
-      this.femaleDataSource.sort = sortsArray[2];
-    }
-    if (sortsArray.length > 3) {
-      this.publishersAllDataSource.sort = sortsArray[3];
-    }
   }
 
   private updateDataSources() {
@@ -177,36 +150,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     this.maleDataSource.data = this.male;
     this.femaleDataSource.data = this.female;
     this.publishersAllDataSource.data = this.publishersAll || [];
-
-    // Configurar sortingDataAccessor personalizado para nested properties
-    this.usedPublishersAllByAssigDataSource.sortingDataAccessor = (item: any, property: string) => {
-      switch (property) {
-        case "fullName":
-          return item.user?.fullName || "";
-        case "count":
-          return item.count || 0;
-        case "all":
-          return item.all || 0;
-        case "lastDate":
-          return item.lastDate || 0;
-        default:
-          return item[property];
-      }
-    };
-
-    this.usedPublishersDataSource.sortingDataAccessor = (item: any, property: string) => {
-      switch (property) {
-        case "fullName":
-          return item.fullName || "";
-        case "count":
-          if (this.assignmentType === AssignmentType.PRESIDENT) return item.presidentCount || 0;
-          if (this.assignmentType === AssignmentType.OPENING_PRAYER) return item.openingPrayerCount || 0;
-          if (this.assignmentType === AssignmentType.FINAL_PRAYER) return item.finalPrayerCount || 0;
-          return 0;
-        default:
-          return item[property];
-      }
-    };
   }
 
   subscrp() {
@@ -275,7 +218,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
           break;
         case AssignmentType.ASSIGNMENT_1:
           this.headerText = "Discurso Tesoros de la Bíblia";
-          this.usedPublishersListAllByAssig = [...this.sortByLastDateGlobal([...publishersEnabledForAssignment], true)];
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
@@ -379,28 +321,10 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
       return;
     }
 
-    this.usedPublishersListAllByAssig = this.sortByLastDateGlobal(this.usedPublishersListAllByAssig, true);
-
     const publisherIds = new Set(this.usedPublishersListAllByAssig.map((pub) => pub.user.id));
 
     [...this.male, ...this.female].forEach((pub) => {
       pub.participate = publisherIds.has(pub.id);
-    });
-    this.female.sort((a, b) => {
-      // 1. Ordenar por participate (false primero)
-      const diff = Number(a.participate) - Number(b.participate);
-      if (diff !== 0) return diff;
-
-      // 2. Si son iguales, ordenar por nombre
-      return a.fullName.localeCompare(b.fullName);
-    });
-    this.male.sort((a, b) => {
-      // 1. Ordenar por participate (false primero)
-      const diff = Number(a.participate) - Number(b.participate);
-      if (diff !== 0) return diff;
-
-      // 2. Si son iguales, ordenar por nombre
-      return a.fullName.localeCompare(b.fullName);
     });
   }
 
@@ -412,14 +336,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     const publisherIds = new Set(this.usedPublishersList.map((pub) => pub.id));
     this.male.forEach((pub) => {
       pub.participate = publisherIds.has(pub.id);
-    });
-    this.male.sort((a, b) => {
-      // 1. Ordenar por participate (false primero)
-      const diff = Number(a.participate) - Number(b.participate);
-      if (diff !== 0) return diff;
-
-      // 2. Si son iguales, ordenar por nombre
-      return a.fullName.localeCompare(b.fullName);
     });
   }
 
@@ -508,29 +424,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
     });
   }
 
-  private sortByLastDateGlobal(data: any[], ascending: boolean = true): PublisherResposne[] {
-    return data.sort((a, b) => {
-      return ascending ? a.lastAssignGlobal - b.lastAssignGlobal : b.lastAssignGlobal - a.lastAssignGlobal;
-    });
-  }
-
-  private sortByCountFinalPrayer(data: PublisherMeetingResposne[], ascending: boolean = true): PublisherMeetingResposne[] {
-    return data.sort((a, b) => {
-      return ascending ? a.finalPrayerCount - b.finalPrayerCount : b.finalPrayerCount - a.finalPrayerCount;
-    });
-  }
-
-  private sortByCountPresident(data: PublisherMeetingResposne[], ascending: boolean = true): PublisherMeetingResposne[] {
-    return data.sort((a, b) => {
-      return ascending ? a.presidentCount - b.presidentCount : b.presidentCount - a.presidentCount;
-    });
-  }
-  private sortByCountOpeningPrayer(data: PublisherMeetingResposne[], ascending: boolean = true): PublisherMeetingResposne[] {
-    return data.sort((a, b) => {
-      return ascending ? a.openingPrayerCount - b.openingPrayerCount : b.openingPrayerCount - a.openingPrayerCount;
-    });
-  }
-
   closeModal() {
     this.onClose.emit(true);
   }
@@ -549,28 +442,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
 
     return `${day}-${month}-${year}`;
   }
-  sortColumn: string = "";
-  sortDirection: "asc" | "desc" = "asc";
-
-  get sortedPublishers() {
-    if (!this.sortColumn) {
-      return this.usedPublishersList;
-    }
-
-    return [...this.usedPublishersList].sort((a, b) => {
-      const valueA = a[this.sortColumn];
-      const valueB = b[this.sortColumn];
-
-      if (valueA < valueB) {
-        return this.sortDirection === "asc" ? -1 : 1;
-      }
-      if (valueA > valueB) {
-        return this.sortDirection === "asc" ? 1 : -1;
-      }
-      return 0;
-    });
-  }
-
   onSearch(event: Event, type: string): void {
     const value = (event.target as HTMLInputElement).value.toLowerCase().trim();
     if (value === "") {
@@ -579,15 +450,11 @@ export class SearchPublisherComponent implements OnInit, OnDestroy, AfterViewIni
       return;
     }
     if (type === "usedPublishersDataSource") {
-      this.usedPublishersDataSource.data = this.publishersAll.filter((item) => item.fullName.toLowerCase().startsWith(value)).sort((a, b) => a.fullName.localeCompare(b.fullName));
+      this.usedPublishersDataSource.data = this.usedPublishersList.filter((item) => item.fullName.toLowerCase().startsWith(value));
     } else if (type === "usedPublishersAllByAssigDataSource") {
-      this.usedPublishersAllByAssigDataSource.data = this.publishersAll
-        .filter((item) => item.fullName.toLowerCase().startsWith(value))
-        .sort((a, b) => a.fullName.localeCompare(b.fullName))
-        .map((publisher) => {
-          const found = this.usedPublishersListAllByAssig.find((p) => p.user.id === publisher.id);
-          return found ? { ...found, user: publisher } : { user: publisher, count: 0, lastDate: 0, all: 0 };
-        });
+      this.usedPublishersAllByAssigDataSource.data = this.usedPublishersListAllByAssig.filter((item) =>
+        item.user.fullName.toLowerCase().startsWith(value),
+      );
     }
   }
 

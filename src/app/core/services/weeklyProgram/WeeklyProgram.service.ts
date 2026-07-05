@@ -23,4 +23,9 @@ export class WeeklyProgramService {
     return this.httpClient.post<WeeklyProgram>(url, body)
   }
 
+  update(weeklyProgram: WeeklyProgram): Observable<WeeklyProgram> {
+    const url = `${this.server}${this.api.WEEKLYPROGRAM}`
+    return this.httpClient.put<WeeklyProgram>(url, weeklyProgram)
+  }
+
 }

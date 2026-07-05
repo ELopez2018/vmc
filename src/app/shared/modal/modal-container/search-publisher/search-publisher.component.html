@@ -43,14 +43,14 @@
                 <div class="table-responsive">
                   <input class="form-control mb-3" placeholder="busqueda1" (keyup)="onSearch($event, 'usedPublishersDataSource')" />
 
-                  <table mat-table [dataSource]="usedPublishersDataSource" matSort class="mat-elevation-z8">
+                  <table mat-table [dataSource]="usedPublishersDataSource" class="mat-elevation-z8">
                     <ng-container matColumnDef="fullName">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
+                      <th mat-header-cell *matHeaderCellDef>Publicador</th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="count">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ headerText }}</th>
+                      <th mat-header-cell *matHeaderCellDef>{{ headerText }}</th>
                       <td mat-cell *matCellDef="let item">
                         {{
                           assignmentType === assignmentTypeEnums.PRESIDENT
@@ -63,7 +63,7 @@
                     </ng-container>
 
                     <ng-container matColumnDef="lastAssignmentDate">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Ultima Asignación</th>
+                      <th mat-header-cell *matHeaderCellDef>Ultima Asignación</th>
                       <td mat-cell *matCellDef="let item">
                         {{ parseDate(item.lastAssignmentDate) }}
                       </td>
@@ -87,38 +87,38 @@
                 <div class="table-responsive">
                   <input class="form-control mb-3" placeholder="busqueda" (keyup)="onSearch($event, 'usedPublishersAllByAssigDataSource')" />
 
-                  <table mat-table [dataSource]="usedPublishersAllByAssigDataSource" matSort class="mat-elevation-z8">
+                  <table mat-table [dataSource]="usedPublishersAllByAssigDataSource" class="mat-elevation-z8">
                     <ng-container matColumnDef="fullName">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Publicador</th>
+                      <th mat-header-cell *matHeaderCellDef>Publicador</th>
                       <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="count">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ headerText }}</th>
+                      <th mat-header-cell *matHeaderCellDef>{{ headerText }}</th>
                       <td mat-cell *matCellDef="let item">{{ item.count }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="all">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Todas</th>
+                      <th mat-header-cell *matHeaderCellDef>Todas</th>
                       <td mat-cell *matCellDef="let item">{{ item.all }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="lastAssignByRoom">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>En sala {{ room == "B" ? "Auxiliar" : "Principal" }}</th>
+                      <th mat-header-cell *matHeaderCellDef>En sala {{ room == "B" ? "Auxiliar" : "Principal" }}</th>
                       <td mat-cell *matCellDef="let item">
                         {{ parseDate(item.lastAssignByRoom) }}
                       </td>
                     </ng-container>
 
                     <ng-container matColumnDef="lastDate">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Por Asignación</th>
+                      <th mat-header-cell *matHeaderCellDef>Por Asignación</th>
                       <td mat-cell *matCellDef="let item">
                         {{ parseDate(item.lastDate) }}
                       </td>
                     </ng-container>
 
                     <ng-container matColumnDef="lastAssignGlobal">
-                      <th mat-header-cell *matHeaderCellDef mat-sort-header>Global</th>
+                      <th mat-header-cell *matHeaderCellDef>Global</th>
                       <td mat-cell *matCellDef="let item">
                         {{ parseDate(item.lastAssignGlobal) }}
                       </td>
@@ -145,7 +145,7 @@
             <fieldset class="fieldset-basic table-container">
               @if (maleDataSource.data.length > 0) {
                 <div class="table-responsive">
-                  <table mat-table [dataSource]="maleDataSource" matSort>
+                  <table mat-table [dataSource]="maleDataSource">
                     <ng-container matColumnDef="fullName">
                       <th mat-header-cell *matHeaderCellDef>Publicador</th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
@@ -180,7 +180,7 @@
             <fieldset class="fieldset-basic table-container">
               @if (femaleDataSource.data.length > 0) {
                 <div class="table-responsive">
-                  <table mat-table [dataSource]="femaleDataSource" matSort>
+                  <table mat-table [dataSource]="femaleDataSource">
                     <ng-container matColumnDef="fullName">
                       <th mat-header-cell *matHeaderCellDef>Publicador</th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
@@ -215,7 +215,7 @@
             <fieldset class="fieldset-basic table-container">
               @if (publishersAllDataSource.data.length > 0) {
                 <div class="table-responsive">
-                  <table mat-table [dataSource]="publishersAllDataSource" matSort>
+                  <table mat-table [dataSource]="publishersAllDataSource">
                     <ng-container matColumnDef="fullName">
                       <th mat-header-cell *matHeaderCellDef>Publicador</th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>

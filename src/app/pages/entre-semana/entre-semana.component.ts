@@ -84,9 +84,9 @@ export class EntreSemanaComponent implements OnInit {
     if (localStorage.getItem("week")) {
       this.filterByWeekNumber(parseInt(localStorage.getItem("week") ?? ""));
     }
-    // if (data.length === this.pageSize) {
-    //   this.getPrograms(page + 1);
-    // }
+    if (data.length === this.pageSize) {
+      this.getPrograms(page + 1);
+    }
   }
 
   onError(error: any) {

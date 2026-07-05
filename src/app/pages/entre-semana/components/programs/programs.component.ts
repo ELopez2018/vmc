@@ -88,6 +88,10 @@ export class ProgramsComponent implements OnInit, OnChanges {
     return this.weeklyProgramService.upsertByTitle(this.mapWeeklyProgramUpsertByTitleRequest(weeklyProgram));
   }
 
+  private updateWeeklyProgram(weeklyProgram: WeeklyProgram) {
+    return this.weeklyProgramService.update(weeklyProgram);
+  }
+
   private mapWeeklyProgramUpsertByTitleRequest(weeklyProgram: WeeklyProgram): WeeklyProgramUpsertByTitleRequest {
     return {
       weeklyProgramId: weeklyProgram.id,
@@ -569,7 +573,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
             if (data) {
               item.responsible = data;
               itemA.responsible = data;
-              this.saveWeeklyProgram(itemA).subscribe((data) => {
+              this.updateWeeklyProgram(itemA).subscribe((data) => {
                 console.info("saved responsible", data);
               });
               return;
@@ -587,7 +591,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
                 if (result.isConfirmed) {
                   item.responsible = data;
                   itemA.responsible = data;
-                  this.saveWeeklyProgram(itemA).subscribe((data) => {
+                  this.updateWeeklyProgram(itemA).subscribe((data) => {
                     console.info("saved responsible", data);
                   });
                 }
@@ -612,7 +616,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
               }
               itemA.assistant = <Publisher>data;
 
-              this.saveWeeklyProgram(itemA).subscribe((data) => {
+              this.updateWeeklyProgram(itemA).subscribe((data) => {
                 console.info("saved assistant", data);
               });
 
@@ -639,7 +643,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
                 if (result.isConfirmed) {
                   item.assistant = <Publisher>data;
                   itemA.assistant = <Publisher>data;
-                  this.saveWeeklyProgram(itemA).subscribe((data) => {
+                  this.updateWeeklyProgram(itemA).subscribe((data) => {
                     console.info("saved assistant", data);
                   });
                 }
@@ -698,7 +702,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
             if (data) {
               item.responsibleB = data;
               itemResponsibleB.responsible = data;
-              this.saveWeeklyProgram(itemResponsibleB).subscribe((data) => {
+              this.updateWeeklyProgram(itemResponsibleB).subscribe((data) => {
                 console.info("saved responsible", data);
               });
               return;
@@ -716,7 +720,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
                 if (result.isConfirmed) {
                   item.responsibleB = data;
                   itemResponsibleB.responsible = data;
-                  this.saveWeeklyProgram(itemResponsibleB).subscribe((data) => {
+                  this.updateWeeklyProgram(itemResponsibleB).subscribe((data) => {
                     console.info("saved responsible", data);
                   });
                 }
@@ -743,7 +747,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
             if (data) {
               item.assistantB = <Publisher>data;
               itemAssistantB.assistant = <Publisher>data;
-              this.saveWeeklyProgram(itemAssistantB).subscribe((data) => {
+              this.updateWeeklyProgram(itemAssistantB).subscribe((data) => {
                 console.info("saved assistantB", data);
               });
 
@@ -770,7 +774,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
                 if (result.isConfirmed) {
                   item.assistantB = <Publisher>data;
                   itemAssistantB.assistant = <Publisher>data;
-                  this.saveWeeklyProgram(itemAssistantB).subscribe((data) => {
+                  this.updateWeeklyProgram(itemAssistantB).subscribe((data) => {
                     console.info("saved assistantB", data);
                   });
                 }
@@ -798,7 +802,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
     this.modalService.printerAssig();
   }
   filterRoom(item: WeeklyProgram, room = MeetingRoom.AUXILIARY) {
-    return this.semanas.find((i) => i.weeklyPrograms.find((j) => j.id === item.id))?.weeklyPrograms.find((k) => k.room === room && k.assignment.number === item.assignment.number);
+    const program = this.semanas.find((week) => week.id === item.program || week.weeklyPrograms.some((weeklyProgram) => weeklyProgram.id === item.id));
+
+    return program?.weeklyPrograms.find(
+      (weeklyProgram) => weeklyProgram.room === room && weeklyProgram.assignment.id === item.assignment.id,
+    );
   }
 
   filterProgram(item: Program, room = MeetingRoom.AUXILIARY) {

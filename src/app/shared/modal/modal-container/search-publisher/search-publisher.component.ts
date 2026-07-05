@@ -19,6 +19,20 @@ interface AssignmentTypeMatcher {
   sectionMeetingTitle: string;
 }
 
+type SortDirection = "asc" | "desc";
+type SortableDataSourceName =
+  | "usedPublishersDataSource"
+  | "usedPublishersAllByAssigDataSource"
+  | "maleDataSource"
+  | "femaleDataSource"
+  | "publishersAllDataSource"
+  | "subModalDataSource";
+
+interface SortState {
+  active: string;
+  direction: SortDirection;
+}
+
 @Component({
   selector: "search-publisher",
   templateUrl: "./search-publisher.component.html",
@@ -65,6 +79,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   public subModalDataSourceNamePublisher = "";
   private assignmentTypes: AssignmentTypeModel[] = [];
   private publishersSource: Publisher[] = [];
+  private sortStates: Partial<Record<SortableDataSourceName, SortState>> = {};
   private readonly assignmentTypeMatchers: Partial<Record<AssignmentType, AssignmentTypeMatcher>> = {
     [AssignmentType.ASSIGNMENT_1]: this.assignmentTypeMatcher("Tesoros - Discurso", "Encargado", "TESOROS DE LA BIBLIA"),
     [AssignmentType.ASSIGNMENT_2]: this.assignmentTypeMatcher("Perlas Escondidas", "Encargado", "TESOROS DE LA BIBLIA"),
@@ -150,6 +165,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     this.maleDataSource.data = this.male;
     this.femaleDataSource.data = this.female;
     this.publishersAllDataSource.data = this.publishersAll || [];
+    this.applyActiveSorts();
   }
 
   subscrp() {
@@ -442,11 +458,95 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
     return `${day}-${month}-${year}`;
   }
+
+  sortDataSource(dataSourceName: SortableDataSourceName, key: string): void {
+    const currentState = this.sortStates[dataSourceName];
+    const direction: SortDirection = currentState?.active === key && currentState.direction === "asc" ? "desc" : "asc";
+
+    this.sortStates[dataSourceName] = { active: key, direction };
+    const dataSource = this.getDataSource(dataSourceName);
+    dataSource.data = this.sortItems(dataSource.data, key, direction);
+  }
+
+  getSortIcon(dataSourceName: SortableDataSourceName, key: string): string {
+    const state = this.sortStates[dataSourceName];
+
+    if (state?.active !== key) {
+      return "unfold_more";
+    }
+
+    return state.direction === "asc" ? "arrow_upward" : "arrow_downward";
+  }
+
+  private applyActiveSorts(): void {
+    (Object.keys(this.sortStates) as SortableDataSourceName[]).forEach((dataSourceName) => {
+      const state = this.sortStates[dataSourceName];
+
+      if (!state) {
+        return;
+      }
+
+      const dataSource = this.getDataSource(dataSourceName);
+      dataSource.data = this.sortItems(dataSource.data, state.active, state.direction);
+    });
+  }
+
+  private getDataSource(dataSourceName: SortableDataSourceName): MatTableDataSource<any> {
+    return this[dataSourceName] as MatTableDataSource<any>;
+  }
+
+  private sortItems<T>(items: T[], key: string, direction: SortDirection): T[] {
+    return [...items].sort((current, next) => {
+      const comparison = this.compareValues(this.getSortValue(current, key), this.getSortValue(next, key));
+      return direction === "asc" ? comparison : -comparison;
+    });
+  }
+
+  private getSortValue(item: any, key: string): unknown {
+    switch (key) {
+      case "fullName":
+        return item?.user?.fullName ?? item?.fullName ?? "";
+      case "count":
+        return this.getCountValue(item);
+      case "estado":
+        return item?.participate ? 1 : 0;
+      case "date":
+        return item?.date ?? 0;
+      default:
+        return item?.[key] ?? "";
+    }
+  }
+
+  private getCountValue(item: any): number {
+    if (typeof item?.count === "number") {
+      return item.count;
+    }
+
+    if (this.assignmentType === AssignmentType.PRESIDENT) {
+      return item?.presidentCount ?? 0;
+    }
+
+    if (this.assignmentType === AssignmentType.OPENING_PRAYER) {
+      return item?.openingPrayerCount ?? 0;
+    }
+
+    return item?.finalPrayerCount ?? 0;
+  }
+
+  private compareValues(current: unknown, next: unknown): number {
+    if (typeof current === "number" && typeof next === "number") {
+      return current - next;
+    }
+
+    return String(current ?? "").localeCompare(String(next ?? ""), "es", { numeric: true, sensitivity: "base" });
+  }
+
   onSearch(event: Event, type: string): void {
     const value = (event.target as HTMLInputElement).value.toLowerCase().trim();
     if (value === "") {
       this.usedPublishersDataSource.data = this.usedPublishersList;
       this.usedPublishersAllByAssigDataSource.data = this.usedPublishersListAllByAssig;
+      this.applyActiveSorts();
       return;
     }
     if (type === "usedPublishersDataSource") {
@@ -456,6 +556,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
         item.user.fullName.toLowerCase().startsWith(value),
       );
     }
+    this.applyActiveSorts();
   }
 
   more(item: any, event: any) {
@@ -476,6 +577,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
         type: i.assignmentType,
       });
     });
+    this.applyActiveSorts();
     this.showSubModal = true;
   }
 

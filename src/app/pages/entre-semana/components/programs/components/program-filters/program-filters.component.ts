@@ -17,4 +17,9 @@ export class ProgramFiltersComponent {
   public consultar(): void {
     this.filter.emit({ fechaDesde: this.fechaDesde, fechaHasta: this.fechaHasta });
   }
+  onChange() {
+    if (!this.fechaHasta || this.fechaHasta < this.fechaDesde) {
+      this.fechaHasta = this.fechaDesde;
+    }
+  }
 }

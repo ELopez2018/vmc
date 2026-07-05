@@ -45,12 +45,22 @@
 
                   <table mat-table [dataSource]="usedPublishersDataSource" class="mat-elevation-z8">
                     <ng-container matColumnDef="fullName">
-                      <th mat-header-cell *matHeaderCellDef>Publicador</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('usedPublishersDataSource', 'fullName')">
+                          <span>Publicador</span>
+                          <mat-icon>{{ getSortIcon("usedPublishersDataSource", "fullName") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="count">
-                      <th mat-header-cell *matHeaderCellDef>{{ headerText }}</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('usedPublishersDataSource', 'count')">
+                          <span>{{ headerText }}</span>
+                          <mat-icon>{{ getSortIcon("usedPublishersDataSource", "count") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">
                         {{
                           assignmentType === assignmentTypeEnums.PRESIDENT
@@ -89,37 +99,67 @@
 
                   <table mat-table [dataSource]="usedPublishersAllByAssigDataSource" class="mat-elevation-z8">
                     <ng-container matColumnDef="fullName">
-                      <th mat-header-cell *matHeaderCellDef>Publicador</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'fullName')">
+                          <span>Publicador</span>
+                          <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "fullName") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="count">
-                      <th mat-header-cell *matHeaderCellDef>{{ headerText }}</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'count')">
+                          <span>{{ headerText }}</span>
+                          <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "count") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">{{ item.count }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="all">
-                      <th mat-header-cell *matHeaderCellDef>Todas</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'all')">
+                          <span>Todas</span>
+                          <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "all") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">{{ item.all }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="lastAssignByRoom">
-                      <th mat-header-cell *matHeaderCellDef>En sala {{ room == "B" ? "Auxiliar" : "Principal" }}</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'lastAssignByRoom')">
+                          <span>En sala {{ room == "B" ? "Auxiliar" : "Principal" }}</span>
+                          <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "lastAssignByRoom") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">
                         {{ parseDate(item.lastAssignByRoom) }}
                       </td>
                     </ng-container>
 
                     <ng-container matColumnDef="lastDate">
-                      <th mat-header-cell *matHeaderCellDef>Por Asignación</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'lastDate')">
+                          <span>Por Asignación</span>
+                          <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "lastDate") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">
                         {{ parseDate(item.lastDate) }}
                       </td>
                     </ng-container>
 
                     <ng-container matColumnDef="lastAssignGlobal">
-                      <th mat-header-cell *matHeaderCellDef>Global</th>
-                      <td mat-cell *matCellDef="let item">
+                      <th mat-header-cell *matHeaderCellDef class="global-column">
+                        <button type="button" class="sort-header" (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'lastAssignGlobal')">
+                          <span>Global</span>
+                          <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "lastAssignGlobal") }}</mat-icon>
+                        </button>
+                      </th>
+                      <td mat-cell *matCellDef="let item" class="global-column">
                         {{ parseDate(item.lastAssignGlobal) }}
                       </td>
                     </ng-container>
@@ -147,12 +187,22 @@
                 <div class="table-responsive">
                   <table mat-table [dataSource]="maleDataSource">
                     <ng-container matColumnDef="fullName">
-                      <th mat-header-cell *matHeaderCellDef>Publicador</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('maleDataSource', 'fullName')">
+                          <span>Publicador</span>
+                          <mat-icon>{{ getSortIcon("maleDataSource", "fullName") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="estado">
-                      <th mat-header-cell *matHeaderCellDef>Estado</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('maleDataSource', 'estado')">
+                          <span>Estado</span>
+                          <mat-icon>{{ getSortIcon("maleDataSource", "estado") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">
                         <span [class.text-danger]="!item.participate" [class.text-success]="item.participate">
                           {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
@@ -182,12 +232,22 @@
                 <div class="table-responsive">
                   <table mat-table [dataSource]="femaleDataSource">
                     <ng-container matColumnDef="fullName">
-                      <th mat-header-cell *matHeaderCellDef>Publicador</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('femaleDataSource', 'fullName')">
+                          <span>Publicador</span>
+                          <mat-icon>{{ getSortIcon("femaleDataSource", "fullName") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="estado">
-                      <th mat-header-cell *matHeaderCellDef>Estado</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('femaleDataSource', 'estado')">
+                          <span>Estado</span>
+                          <mat-icon>{{ getSortIcon("femaleDataSource", "estado") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">
                         <span [class.text-danger]="!item.participate" [class.text-success]="item.participate">
                           {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
@@ -217,7 +277,12 @@
                 <div class="table-responsive">
                   <table mat-table [dataSource]="publishersAllDataSource">
                     <ng-container matColumnDef="fullName">
-                      <th mat-header-cell *matHeaderCellDef>Publicador</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('publishersAllDataSource', 'fullName')">
+                          <span>Publicador</span>
+                          <mat-icon>{{ getSortIcon("publishersAllDataSource", "fullName") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
                     </ng-container>
 
@@ -254,21 +319,36 @@
     <div class="table-responsive">
       <table mat-table [dataSource]="subModalDataSource" class="mat-elevation-z8 w-100">
         <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <th mat-header-cell *matHeaderCellDef>
+            <button type="button" class="sort-header" (click)="sortDataSource('subModalDataSource', 'date')">
+              <span>Fecha</span>
+              <mat-icon>{{ getSortIcon("subModalDataSource", "date") }}</mat-icon>
+            </button>
+          </th>
           <td mat-cell *matCellDef="let item">
             {{ parseDate(item.date) }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>Título</th>
+          <th mat-header-cell *matHeaderCellDef>
+            <button type="button" class="sort-header" (click)="sortDataSource('subModalDataSource', 'title')">
+              <span>Título</span>
+              <mat-icon>{{ getSortIcon("subModalDataSource", "title") }}</mat-icon>
+            </button>
+          </th>
           <td mat-cell *matCellDef="let item">
             {{ item.title }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <th mat-header-cell *matHeaderCellDef>
+            <button type="button" class="sort-header" (click)="sortDataSource('subModalDataSource', 'type')">
+              <span>Tipo</span>
+              <mat-icon>{{ getSortIcon("subModalDataSource", "type") }}</mat-icon>
+            </button>
+          </th>
           <td mat-cell *matCellDef="let item">
             {{ item.type }}
           </td>

@@ -1,25 +1,78 @@
-<div class="container-fluid p-5">
-  <div class="row pb-3">
-    <div class="col-md-12 text-center">
-      <h1>Lista de Publicadores</h1>
+<main class="publisher-list-page">
+  <header class="publisher-header">
+    <div class="publisher-header__copy">
+      <div class="publisher-header__eyebrow">
+        <mat-icon>groups</mat-icon>
+        <span>Directorio</span>
+      </div>
+      <h1>Publicadores</h1>
+      <p>{{ publisherList.length }} registros disponibles</p>
     </div>
-  </div>
 
-  <div class="row py-2">
-    <div class="col-md-12 mb-3 text-center d-flex justify-content-center align-items-center flex-column ">
-      @if (showSpinner) {
-      <div class="pt-5 mt-5">
-        <mat-spinner></mat-spinner>
+  </header>
+
+  <section class="metrics-grid" aria-label="Resumen de publicadores">
+    <article class="metric-card metric-card--total">
+      <div class="metric-card__icon">
+        <mat-icon>badge</mat-icon>
       </div>
-      } @else {
-      <div class="">
-        <vmc-table-primeng [publisherList]="publisherList" (onSelected)="edit($event)"
-          (onDelete)="delete($event)"></vmc-table-primeng>
-        <mat-paginator [pageSizeOptions]="[20, 30, 40]" showFirstLastButtons
-          aria-label="Elija la pagina de Publicadores">
-        </mat-paginator>
+      <div>
+        <span>Total</span>
+        <strong>{{ publisherList.length }}</strong>
       </div>
-      }
+    </article>
+
+    <article class="metric-card metric-card--email">
+      <div class="metric-card__icon">
+        <mat-icon>alternate_email</mat-icon>
+      </div>
+      <div>
+        <span>Con correo</span>
+        <strong>{{ publishersWithEmail }}</strong>
+      </div>
+    </article>
+
+    <article class="metric-card metric-card--phone">
+      <div class="metric-card__icon">
+        <mat-icon>phone_iphone</mat-icon>
+      </div>
+      <div>
+        <span>Con teléfono</span>
+        <strong>{{ publishersWithPhone }}</strong>
+      </div>
+    </article>
+  </section>
+
+  <section class="directory-panel">
+    <div class="directory-panel__header">
+      <div>
+        <h2>Lista de publicadores</h2>
+        <span>{{ publisherList.length }} registros</span>
+      </div>
     </div>
-  </div>
-</div>
+
+    @if (showSpinner) {
+    <div class="state-panel state-panel--loading" aria-live="polite">
+      <mat-spinner diameter="44"></mat-spinner>
+      <span>Cargando publicadores</span>
+    </div>
+    } @else if (publisherList.length === 0) {
+    <div class="state-panel">
+      <mat-icon>person_search</mat-icon>
+      <h3>Sin publicadores</h3>
+      <p>No hay registros para mostrar.</p>
+    </div>
+    } @else {
+    <div class="table-shell">
+      <vmc-table-primeng
+        [publisherList]="publisherList"
+        scrollHeight="calc(100vh - 430px)"
+        (onSelected)="edit($event)"
+        (onDelete)="delete($event)"
+      ></vmc-table-primeng>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[20, 30, 40]" showFirstLastButtons aria-label="Elija la pagina de Publicadores"></mat-paginator>
+    }
+  </section>
+</main>

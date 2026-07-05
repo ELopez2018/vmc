@@ -23,8 +23,10 @@ import { ASSIGNMENT_TITLE, MeetingRoom, ProgramChangeType, WeeklyProgramChangeTy
 })
 export class EntreSemanaComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly pageSize = 20;
+  private readonly pageSize = 2;
+  private readonly initialForegroundPages = 2;
   private readonly requestedPages = new Set<number>();
+  private readonly loadedPages = new Map<number, Program[]>();
   public readonly meetingRoom = MeetingRoom;
   private programList: Program[] = [];
   public semanas: Program[] = [];
@@ -55,8 +57,12 @@ export class EntreSemanaComponent implements OnInit {
   }
   ngOnInit(): void {
     this.semanas = [];
+    this.semanasAllRooms = [];
+    this.programList = [];
+    this.requestedPages.clear();
+    this.loadedPages.clear();
     this.loaderService.showMatspinner();
-      this.getPrograms();
+    this.getPrograms();
   }
 
   getPrograms(page = 0): void {
@@ -75,17 +81,37 @@ export class EntreSemanaComponent implements OnInit {
   }
 
   onSuccess(data: Program[], page: number): void {
-    this.programList.push(...data);
-    this.semanasAllRooms = this.dataService.makePDfVersion(this.programList);
-    this.semanas = this.programList;
-    this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, this.programList)];
-    this.dataService.setMeeting([...this.programList]);
-    this.loaderService.hideMatspinner();
+    this.loadedPages.set(page, data);
+    this.refreshProgramsFromLoadedPages();
+    this.hideInitialLoaderIfReady(page, data);
+
     if (localStorage.getItem("week")) {
       this.filterByWeekNumber(parseInt(localStorage.getItem("week") ?? ""));
     }
+
     if (data.length === this.pageSize) {
       this.getPrograms(page + 1);
+    }
+  }
+
+  private refreshProgramsFromLoadedPages(): void {
+    const loadedPrograms = [...this.loadedPages.entries()]
+      .sort(([currentPage], [nextPage]) => currentPage - nextPage)
+      .flatMap(([, programs]) => programs);
+
+    this.programList = loadedPrograms;
+    this.semanas = [...this.programList];
+    this.semanasAllRooms = this.dataService.makePDfVersion([...this.programList]);
+    this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, this.programList)];
+    this.dataService.setMeeting([...this.programList]);
+  }
+
+  private hideInitialLoaderIfReady(page: number, data: Program[]): void {
+    const firstPagesLoaded = page >= this.initialForegroundPages - 1;
+    const noMorePages = data.length < this.pageSize;
+
+    if (firstPagesLoaded || noMorePages) {
+      this.loaderService.hideMatspinner();
     }
   }
 
@@ -412,6 +438,7 @@ export class EntreSemanaComponent implements OnInit {
     }
     this.semanas = this.filterWeekByRoom(MeetingRoom.MAIN, weeks);
     this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, weeks)];
+    this.semanasAllRooms = this.dataService.makePDfVersion([...weeks]);
     this.dataService.setMeeting([...weeks]);
   }
 
@@ -419,6 +446,9 @@ export class EntreSemanaComponent implements OnInit {
     this.loaderService.showMatspinner();
     this.semanasAllRooms = [];
     this.meetingsService.getProgramsByDateRange($event.fechaDesde, $event.fechaHasta, this.congregation.id).subscribe((data) => {
+      this.programList = [...data];
+      this.semanas = [...data];
+      this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, data)];
       this.semanasAllRooms = this.dataService.makePDfVersion(data);
       this.loaderService.hideMatspinner();
     });

@@ -4,10 +4,14 @@ import { MatTableDataSource } from "@angular/material/table";
 import { Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { DataService } from "src/app/core/services/data/data.service";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
-import { Router } from "@angular/router";
 import { UsersService } from "src/app/core/services/users/users.service";
 import Swal from "sweetalert2";
 import { MatPaginatorIntl } from "@angular/material/paginator";
+import { MatDialog } from "@angular/material/dialog";
+import type {
+  UsersCreateOrUpdateComponent as UsersCreateOrUpdateComponentType,
+  UsersCreateOrUpdateDialogData,
+} from "src/app/shared/components/users-create-or-update/users-create-or-update.component";
 
 export function getSpanishPaginatorIntl() {
   const paginatorIntl = new MatPaginatorIntl();
@@ -45,7 +49,7 @@ export class PublisherListComponent implements AfterViewInit, OnInit {
   constructor(
     private dataService: DataService,
     private loaderService: LoaderService,
-    private router: Router,
+    private dialog: MatDialog,
   ) {
     this.subscrp();
   }
@@ -63,8 +67,40 @@ export class PublisherListComponent implements AfterViewInit, OnInit {
   }
   ngAfterViewInit() {}
 
-  edit(publisherSelected: Publisher) {
-    this.router.navigateByUrl(`/tablero/publicador/${publisherSelected.id}`);
+  get publishersWithEmail(): number {
+    return this.publisherList.filter((publisher) => this.hasValue(publisher.email)).length;
+  }
+
+  get publishersWithPhone(): number {
+    return this.publisherList.filter((publisher) => this.hasValue(publisher.cellPhone ?? publisher.phone)).length;
+  }
+
+  private hasValue(value?: string | number | null): boolean {
+    return value !== null && value !== undefined && value.toString().trim().length > 0;
+  }
+
+  async edit(publisherSelected: Publisher) {
+    const { UsersCreateOrUpdateComponent } = await import(
+      "src/app/shared/components/users-create-or-update/users-create-or-update.component"
+    );
+
+    this.dialog
+      .open<UsersCreateOrUpdateComponentType, UsersCreateOrUpdateDialogData, Publisher>(UsersCreateOrUpdateComponent, {
+        data: { publisherId: publisherSelected.id },
+        width: "min(1200px, 96vw)",
+        maxWidth: "96vw",
+        maxHeight: "92vh",
+        autoFocus: false,
+      })
+      .afterClosed()
+      .subscribe((savedPublisher) => {
+        if (!savedPublisher?.id) {
+          return;
+        }
+
+        this.publisherList = this.publisherList.map((publisher) => (publisher.id === savedPublisher.id ? savedPublisher : publisher));
+        this.dataSource.data = this.publisherList;
+      });
   }
 
   delete(publisherSelected: Publisher) {

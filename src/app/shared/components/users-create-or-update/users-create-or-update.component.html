@@ -1,4 +1,12 @@
-<div class="page-container">
+<div class="page-container" [class.page-container--dialog]="isDialog">
+  @if (isDialog) {
+  <div class="dialog-header">
+    <h2>Editar publicador</h2>
+    <button mat-icon-button type="button" aria-label="Cerrar" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  }
 
   <mat-card class="section-card">
     <div class="section-title">

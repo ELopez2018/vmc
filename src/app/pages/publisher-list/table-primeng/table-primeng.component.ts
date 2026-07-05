@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 })
 export class TablePrimengComponent implements OnInit {
   @Input() publisherList:Publisher[]=[];
+  @Input() scrollHeight = "650px";
   @Output() onSelected= new EventEmitter<Publisher>()
   @Output() onDelete= new EventEmitter<Publisher>()
   selectedSize: any = '';

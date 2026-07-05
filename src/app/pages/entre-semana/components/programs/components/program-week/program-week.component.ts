@@ -69,15 +69,11 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
 
   public ngAfterViewInit(): void {
     this.viewInitialized = true;
-    this.openPresidentTooltip();
+    this.refreshPublisherTooltips(true);
   }
 
   public ngOnChanges(): void {
-    this.syncPublisherTooltips();
-
-    if (this.viewInitialized) {
-      this.openPresidentTooltip();
-    }
+    this.refreshPublisherTooltips(true);
   }
 
   public ngDoCheck(): void {
@@ -130,14 +126,22 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
     this.tooltipShowTimeout = setTimeout(() => this.tooltipPresiden?.open(), 0);
   }
 
-  private syncPublisherTooltips(): void {
+  private refreshPublisherTooltips(force = false): void {
+    this.syncPublisherTooltips(force);
+
+    if (this.viewInitialized) {
+      this.openPresidentTooltip();
+    }
+  }
+
+  private syncPublisherTooltips(force = false): void {
     if (!this.semana) {
       return;
     }
 
     const signature = this.buildPublisherSignature();
 
-    if (signature === this.publisherSignature) {
+    if (!force && signature === this.publisherSignature) {
       return;
     }
 

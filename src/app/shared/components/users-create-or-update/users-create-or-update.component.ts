@@ -1,7 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, Optional } from "@angular/core";
 import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from "@angular/forms";
 import { DateAdapter, MAT_DATE_LOCALE } from "@angular/material/core";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute } from "@angular/router";
 import { finalize, map, of, switchMap } from "rxjs";
 import { ApiErrorResponse, AssignmentType, AssignmentTypePermission, Congregation, Publisher } from "src/app/core/interfaces/reuniones.interface";
@@ -12,6 +13,10 @@ import { NotificationService } from "src/app/core/services/nofitications/notific
 import { UserAssignmentTypesService } from "src/app/core/services/user-assignment-types/user-assignment-types.service";
 import { UsersService } from "src/app/core/services/users/users.service";
 import { SharedModule } from "../../shared.module";
+
+export interface UsersCreateOrUpdateDialogData {
+  publisherId?: number;
+}
 
 @Component({
   selector: "users-create-or-update",
@@ -28,6 +33,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   public isSaving = false;
   public isLoadingAssignmentTypes = false;
   public assignmentTypesLoadFailed = false;
+  public isDialog = false;
 
   private currentPublisher?: Publisher;
   private userId: number | null = null;
@@ -43,9 +49,12 @@ export class UsersCreateOrUpdateComponent implements OnInit {
     private userAssignmentTypesService: UserAssignmentTypesService,
     private notify: NotificationService,
     private routes: ActivatedRoute,
+    @Optional() @Inject(MAT_DIALOG_DATA) private dialogData: UsersCreateOrUpdateDialogData | null,
+    @Optional() private dialogRef: MatDialogRef<UsersCreateOrUpdateComponent, Publisher> | null,
   ) {
     this.locale = "co";
     this.adapter.setLocale(this.locale);
+    this.isDialog = Boolean(this.dialogRef);
   }
 
   ngOnInit(): void {
@@ -173,6 +182,11 @@ export class UsersCreateOrUpdateComponent implements OnInit {
           this.userId = savedPublisher.id ?? this.userId;
           this.dataService.getPublishersFromDB();
 
+          if (this.isDialog) {
+            this.dialogRef?.close(savedPublisher);
+            return;
+          }
+
           if (!this.userId) {
             this.formulario.reset();
             this.makeForm();
@@ -189,6 +203,10 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       congregation: this.congregationSelected,
       congregationId: this.congregationSelected?.id ?? null,
     });
+  }
+
+  closeDialog(): void {
+    this.dialogRef?.close();
   }
 
   isPermissionEnabled(assignmentType: AssignmentType): boolean {
@@ -250,6 +268,12 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   }
 
   private loadPublisherForEdit(): void {
+    if (this.dialogData?.publisherId) {
+      this.userId = this.dialogData.publisherId;
+      this.loadPublisherById(this.dialogData.publisherId);
+      return;
+    }
+
     const routeUserId = Number(this.routes.snapshot.paramMap.get("id"));
 
     if (!routeUserId) {

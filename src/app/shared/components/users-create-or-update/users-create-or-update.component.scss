@@ -14,6 +14,28 @@
   min-height:100vh;
 }
 
+.page-container--dialog{
+  min-height:auto;
+  max-height:92vh;
+  overflow:auto;
+  padding:24px;
+}
+
+.dialog-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.dialog-header h2{
+  margin:0;
+  color:#111827;
+  font-size:22px;
+  font-weight:600;
+}
+
 /* tarjetas */
 .section-card{
   margin-bottom:30px;

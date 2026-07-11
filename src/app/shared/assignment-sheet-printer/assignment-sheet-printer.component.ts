@@ -122,4 +122,10 @@ export class AssignmentSheetPrinterComponent implements OnInit {
       },
     });
   }
+
+    onSelect(){
+    if (!this.fechaHasta || this.fechaHasta < this.fechaDesde) {
+      this.fechaHasta = this.fechaDesde;
+    }
+  }
 }

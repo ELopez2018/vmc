@@ -11,6 +11,28 @@
   }
 }
 
+.program-filter-modal {
+  padding: 1rem;
+}
+
+.program-filter-modal__header {
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+}
+
+.program-filter-modal__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.program-filter-modal__body {
+  padding-top: 1rem;
+}
+
 @media (min-width: 1366px) {
   .program {
     .wrapper {

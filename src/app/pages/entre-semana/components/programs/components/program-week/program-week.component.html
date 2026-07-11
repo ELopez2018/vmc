@@ -20,6 +20,10 @@
     </div>
     <div class="col-12 col-md-12 col-xl-2 d-flex justify-content-end pe-5 py-2">
       <div class="d-flex justify-content-end">
+        <a class="me-2 program-filter-icon" (click)="openFilters.emit()">
+          <mat-icon class="icon-lg hover">calendar_month</mat-icon>
+          <mat-icon class="program-filter-icon__search hover">search</mat-icon>
+        </a>
         <a class="me-2" (click)="printAssignments.emit(semana)">
           <mat-icon class="icon-lg hover">assignment_turned_in</mat-icon>
         </a>

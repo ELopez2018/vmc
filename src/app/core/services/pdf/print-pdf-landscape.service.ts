@@ -15,16 +15,16 @@ export class PrintPdfLandscapeService {
 
   private sizeBody = [250, 200, 90, 170];
 
-  private sizeSongs = [25, 418, 90, 170];
+  private sizeSongs = [25, 418, 97, 170];
 
   private sizeHeaderSections = [380, 170, "*"];
 
-  private sizeContenTreasure = [32, 290, 65, 145, "*"];
-  private sizeContenTreasureReaders = [32, 225, 105, 170, "*"];
+  private sizeContenTreasure = [25, 297, 65, 145, "*"];
+  private sizeContenTreasureReaders = [25, 232, 105, 170, "*"];
 
-  private sizeContenTeachers = [32, 240, 90, 170, "*"];
+  private sizeContenTeachers = [25, 247, 90, 170, "*"];
 
-  private sizeContenLife = [32, 350, 60, 90, "*"];
+  private sizeContenLife = [25, 357, 60, 90, "*"];
 
   private dayMeet: any = null;
   constructor(private dataService: DataService) {
@@ -632,7 +632,6 @@ export class PrintPdfLandscapeService {
         ...this.makeHeaderLife(),
         ...this.makeIntermediateSong(week),
         ...this.makeContentLife(week),
-        { text: "" },
         ...this.makeFinalBlock(week),
         {},
       ];

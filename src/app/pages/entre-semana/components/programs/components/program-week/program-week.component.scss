@@ -65,6 +65,26 @@ $icon-size: 42px;
   width: $icon-size;
 }
 
+.program-filter-icon {
+  display: inline-flex;
+  height: $icon-size;
+  position: relative;
+  width: $icon-size;
+}
+
+.program-filter-icon__search {
+  background-color: white;
+  border-radius: 50%;
+  bottom: 0;
+  color: rgb(124, 123, 123);
+  font-size: 20px;
+  height: 20px;
+  line-height: 20px;
+  position: absolute;
+  right: 0;
+  width: 20px;
+}
+
 @media (min-width: 1366px) {
   .program__header {
     width: 100%;

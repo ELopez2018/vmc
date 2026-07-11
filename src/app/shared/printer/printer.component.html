@@ -1,10 +1,10 @@
 <div class="container-fluid">
   @if (isModal) {
-    <div class="row">
-      <div class="col-md-12 d-flex justify-content-end p-2">
-        <vmc-icon-close (click)="onCLose()"></vmc-icon-close>
-      </div>
+  <div class="row">
+    <div class="col-md-12 d-flex justify-content-end p-2">
+      <vmc-icon-close (click)="onCLose()"></vmc-icon-close>
     </div>
+  </div>
   }
 
   <!-- FILTROS -->
@@ -12,17 +12,22 @@
     <div class="col-md-5 mb-2">
       <!-- <label class="form-label fw-semibold">Fecha desde</label> -->
 
-      <p-calendar  [showOnFocus]="false" [(ngModel)]="fechaDesde" [showIcon]="true" dateFormat="dd/mm/yy" inputId="fechaDesde" styleClass="w-100" placeholder="Desde"> </p-calendar>
+      <p-calendar [showOnFocus]="false" [(ngModel)]="fechaDesde" [showIcon]="true" dateFormat="dd/mm/yy"
+        inputId="fechaDesde" styleClass="w-100" placeholder="Desde"
+        (onSelect)="onSelect()"
+        > </p-calendar>
     </div>
 
     <div class="col-md-5 mb-2">
       <!-- <label class="form-label fw-semibold">Fecha hasta</label> -->
 
-      <p-calendar  [showOnFocus]="false" [(ngModel)]="fechaHasta" [showIcon]="true" dateFormat="dd/mm/yy" inputId="fechaHasta" styleClass="w-100" placeholder="Hasta"> </p-calendar>
+      <p-calendar [showOnFocus]="false" [(ngModel)]="fechaHasta" [showIcon]="true" dateFormat="dd/mm/yy"
+        inputId="fechaHasta" styleClass="w-100" placeholder="Hasta"> </p-calendar>
     </div>
 
     <div class="col-md-2 mb-2">
-      <button pButton type="button" label="Buscar" icon="pi pi-search" class="p-button-primary w-100" (click)="consultar()"></button>
+      <button pButton type="button" label="Buscar" icon="pi pi-search" class="p-button-primary w-100"
+        (click)="consultar()"></button>
     </div>
   </div>
 
@@ -30,7 +35,8 @@
 
   <div class="row">
     <div class="col-md-12 pe-xl-5" style="height: 100vh">
-      <ng2-pdfjs-viewer  [fullScreen]="true" [zoom]="'auto'" [print]="true" [showSpinner]="true" #pdfViewerAutoLoad> </ng2-pdfjs-viewer>
+      <ng2-pdfjs-viewer [fullScreen]="true" [zoom]="'auto'" [print]="true" [showSpinner]="true" #pdfViewerAutoLoad>
+      </ng2-pdfjs-viewer>
     </div>
   </div>
 </div>

@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, TemplateRef } from "@angular/core";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { Congregation, Meeting, Program, Publisher, WeeklyProgram, WeeklyProgramUpsertByTitleRequest } from "src/app/core/interfaces/reuniones.interface";
 import { DataService } from "src/app/core/services/data/data.service";
@@ -51,6 +52,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
     private modalService: ModalService,
     private dataService: DataService,
     private weeklyProgramService: WeeklyProgramService,
+    private ngbModal: NgbModal,
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -816,5 +818,25 @@ export class ProgramsComponent implements OnInit, OnChanges {
     this.filtrar.emit(filtros);
   }
 
-  
+  private filtersModalRef?: NgbModalRef;
+
+  public openFiltersModal(content: TemplateRef<unknown>): void {
+    this.filtersModalRef = this.ngbModal.open(content, {
+      backdrop: "static",
+      centered: true,
+      animation: true,
+      size: "md",
+    });
+  }
+
+  public closeFiltersModal(): void {
+    this.filtersModalRef?.dismiss();
+    this.filtersModalRef = undefined;
+  }
+
+  public onFiltersSelected(filtros: { fechaDesde: any; fechaHasta: any }): void {
+    this.consultar(filtros);
+    this.filtersModalRef?.close();
+    this.filtersModalRef = undefined;
+  }
 }

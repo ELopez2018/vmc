@@ -73,7 +73,12 @@
                     </ng-container>
 
                     <ng-container matColumnDef="lastAssignmentDate">
-                      <th mat-header-cell *matHeaderCellDef>Ultima Asignación</th>
+                      <th mat-header-cell *matHeaderCellDef>
+                        <button type="button" class="sort-header" (click)="sortDataSource('usedPublishersDataSource', 'lastAssignmentDate')">
+                          <span>Última Asignación</span>
+                          <mat-icon>{{ getSortIcon("usedPublishersDataSource", "lastAssignmentDate") }}</mat-icon>
+                        </button>
+                      </th>
                       <td mat-cell *matCellDef="let item">
                         {{ parseDate(item.lastAssignmentDate) }}
                       </td>
@@ -87,8 +92,8 @@
                       </td>
                     </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count',  'more']"></tr>
-                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count', 'more']" (click)="selected(row)"></tr>
+                    <tr mat-header-row *matHeaderRowDef="['fullName', 'count', 'lastAssignmentDate', 'more']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['fullName', 'count', 'lastAssignmentDate', 'more']" (click)="selected(row)"></tr>
                   </table>
                 </div>
               }

@@ -1,4 +1,14 @@
-<vmc-program-filters (filter)="consultar($event)"></vmc-program-filters>
+<ng-template #filtersModal>
+  <div class="program-filter-modal">
+    <div class="program-filter-modal__header">
+      <h5 class="program-filter-modal__title">Buscar programas</h5>
+      <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeFiltersModal()"></button>
+    </div>
+    <div class="program-filter-modal__body">
+      <vmc-program-filters (filter)="onFiltersSelected($event)"></vmc-program-filters>
+    </div>
+  </div>
+</ng-template>
 
 <div class="program">
   <div class="container-wrapper p-0 p-md-1">
@@ -15,6 +25,7 @@
         [meetingDay]="meetingDay"
         (print)="print($event)"
         (printAssignments)="printAssig($event)"
+        (openFilters)="openFiltersModal(filtersModal)"
         (programChange)="changeProgram($event.program, $event.type)"
         (weeklyProgramChange)="changeWeeklyProgram($event.item, $event.type)"
         (addAssignment)="addAssign($event.program, $event.sectionMeeting)"

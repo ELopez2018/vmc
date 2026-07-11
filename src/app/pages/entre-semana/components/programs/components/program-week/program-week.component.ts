@@ -40,6 +40,7 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
 
   @Output() public print = new EventEmitter<ProgramPdf>();
   @Output() public printAssignments = new EventEmitter<ProgramPdf>();
+  @Output() public openFilters = new EventEmitter<void>();
   @Output() public programChange = new EventEmitter<{ program: ProgramPdf; type: string }>();
   @Output() public weeklyProgramChange = new EventEmitter<{ item: WeeklyProgramPdF; type: string }>();
   @Output() public addAssignment = new EventEmitter<{ program: ProgramPdf; sectionMeeting: string }>();

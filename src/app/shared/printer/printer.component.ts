@@ -155,4 +155,10 @@ export class PrinterComponent implements OnInit {
       },
     });
   }
+
+  onSelect(){
+    if (!this.fechaHasta || this.fechaHasta < this.fechaDesde) {
+      this.fechaHasta = this.fechaDesde;
+    }
+  }
 }

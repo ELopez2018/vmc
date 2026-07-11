@@ -12,25 +12,29 @@
 }
 
 .program-filter-modal {
-  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .program-filter-modal__header {
   align-items: center;
-  border-bottom: 1px solid #dee2e6;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e7eaee;
   display: flex;
   justify-content: space-between;
-  padding-bottom: 0.75rem;
+  padding: 0.9rem 1rem;
 }
 
 .program-filter-modal__title {
-  font-size: 1rem;
+  color: #2f3438;
+  font-size: 1.05rem;
   font-weight: 600;
   margin: 0;
 }
 
 .program-filter-modal__body {
-  padding-top: 1rem;
+  padding: 1rem;
 }
 
 @media (min-width: 1366px) {

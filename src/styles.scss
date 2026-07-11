@@ -135,6 +135,21 @@ body {
   margin-left: auto;
 }
 
+.program-filter-modal-window {
+  .modal-dialog {
+    max-width: min(92vw, 620px);
+    width: min(92vw, 620px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .modal-content {
+    border: 0;
+    border-radius: 8px;
+    overflow: visible;
+  }
+}
+
 .fieldset-basic {
   border: 2px solid gainsboro;
   padding: 10px;

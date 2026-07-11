@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+.program-filters {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, 560px);
+}
+
+.program-filters__field {
+  color: #495057;
+  display: grid;
+  font-size: 0.85rem;
+  font-weight: 600;
+  gap: 0.35rem;
+  margin: 0;
+  min-width: 0;
+}
+
+.program-filters__button {
+  align-self: end;
+  height: 42px;
+  justify-content: center;
+  width: 100%;
+}
+
+:host ::ng-deep {
+  .program-filters__calendar,
+  .program-filters__calendar .p-calendar,
+  .program-filters__calendar .p-inputtext {
+    width: 100%;
+  }
+
+  .program-filters__calendar .p-inputtext {
+    min-width: 0;
+  }
+}
+
+@media (min-width: 576px) {
+  .program-filters {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 120px;
+  }
+}

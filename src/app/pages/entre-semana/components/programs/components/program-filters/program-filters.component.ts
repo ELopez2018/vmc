@@ -6,6 +6,7 @@ import { SharedModule } from "src/app/shared/shared.module";
 @Component({
   selector: "vmc-program-filters",
   templateUrl: "./program-filters.component.html",
+  styleUrls: ["./program-filters.component.scss"],
   imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule],
 })
 export class ProgramFiltersComponent {

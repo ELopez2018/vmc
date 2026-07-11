@@ -825,7 +825,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
       backdrop: "static",
       centered: true,
       animation: true,
-      size: "md",
+      windowClass: "program-filter-modal-window",
     });
   }
 

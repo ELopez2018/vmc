@@ -1,38 +1,39 @@
-<div class="row align-items-end p-2">
-  <div class="col-md-5">
+<div class="program-filters">
+  <label class="program-filters__field">
+    <span>Desde</span>
     <p-calendar
       [(ngModel)]="fechaDesde"
       [showIcon]="true"
+      [appendTo]="'body'"
       dateFormat="dd/mm/yy"
       inputId="fechaDesde"
-      styleClass="w-100"
+      styleClass="program-filters__calendar"
       placeholder="Desde"
       (onSelect)="onChange()"
     >
     </p-calendar>
-  </div>
+  </label>
 
-  <div class="col-md-5">
+  <label class="program-filters__field">
+    <span>Hasta</span>
     <p-calendar
       [(ngModel)]="fechaHasta"
       [showIcon]="true"
+      [appendTo]="'body'"
       dateFormat="dd/mm/yy"
       inputId="fechaHasta"
-      styleClass="w-100"
+      styleClass="program-filters__calendar"
       placeholder="Hasta"
     >
     </p-calendar>
-  </div>
+  </label>
 
-  <div class="col-md-2">
-    <button
-      autofocus
-      pButton
-      type="button"
-      label="buscar"
-      icon="pi pi-search"
-      class="p-button-primary w-100"
-      (click)="consultar()"
-    ></button>
-  </div>
+  <button
+    pButton
+    type="button"
+    label="Buscar"
+    icon="pi pi-search"
+    class="p-button-primary program-filters__button"
+    (click)="consultar()"
+  ></button>
 </div>

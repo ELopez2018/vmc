@@ -1,18 +1,33 @@
 .container-fluid {
-  width: 100vw;
-  height:100vh;
+  width: 100%;
+  height: min(94vh, 860px);
+  max-width: none;
+  overflow: hidden;
 }
 
 ng2-pdfjs-viewer {
   height: 100%;
   width: 100%;
 }
+
+.pdf-viewer-shell {
+  height: calc(min(94vh, 860px) - 92px);
+}
+
 vmc-icon-close {
   cursor: pointer;
 }
-@media (min-width: 1366px) {
+
+@media (max-width: 575.98px) {
   .container-fluid {
-    width: 85vw;
-    height: 90vh;
+    height: 100vh;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .pdf-viewer-shell {
+    height: calc(100vh - 170px);
+    padding-left: 0;
+    padding-right: 0;
   }
 }

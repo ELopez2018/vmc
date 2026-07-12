@@ -12,7 +12,7 @@
     <div class="col-md-5 mb-2">
       <!-- <label class="form-label fw-semibold">Fecha desde</label> -->
 
-      <p-calendar [showOnFocus]="false" [(ngModel)]="fechaDesde" [showIcon]="true" dateFormat="dd/mm/yy"
+      <p-calendar [showOnFocus]="false" [(ngModel)]="fechaDesde" [showIcon]="true" [appendTo]="'body'" dateFormat="dd/mm/yy"
         inputId="fechaDesde" styleClass="w-100" placeholder="Desde"
         (onSelect)="onSelect()"
         > </p-calendar>
@@ -21,7 +21,7 @@
     <div class="col-md-5 mb-2">
       <!-- <label class="form-label fw-semibold">Fecha hasta</label> -->
 
-      <p-calendar [showOnFocus]="false" [(ngModel)]="fechaHasta" [showIcon]="true" dateFormat="dd/mm/yy"
+      <p-calendar [showOnFocus]="false" [(ngModel)]="fechaHasta" [showIcon]="true" [appendTo]="'body'" dateFormat="dd/mm/yy"
         inputId="fechaHasta" styleClass="w-100" placeholder="Hasta"> </p-calendar>
     </div>
 
@@ -34,7 +34,7 @@
   <!-- VISOR PDF -->
 
   <div class="row">
-    <div class="col-md-12 pe-xl-5" style="height: 100vh">
+    <div class="col-md-12 pe-xl-5 pdf-viewer-shell">
       <ng2-pdfjs-viewer [fullScreen]="true" [zoom]="'auto'" [print]="true" [showSpinner]="true" #pdfViewerAutoLoad>
       </ng2-pdfjs-viewer>
     </div>

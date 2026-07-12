@@ -1,0 +1,11 @@
+.select-hour-modal {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 5vw, 2rem);
+  width: 100%;
+}
+
+.select-hour-modal .btn {
+  min-height: 42px;
+  width: 100%;
+}

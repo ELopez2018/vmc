@@ -41,6 +41,10 @@ export class InterceptorService implements HttpInterceptor {
   }
 
   private manejarError(error: HttpErrorResponse, isLoginRequest: boolean) {
+    if (isLoginRequest) {
+      return throwError(() => error);
+    }
+
     // Si es un error 401/403 en una petición no-login, el token probablemente expiró en el servidor
     // Simplemente propagar el error para que el componente lo maneje
     // El usuario será redirigido al intentar acceder a otra ruta protegida

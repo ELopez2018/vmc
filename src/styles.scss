@@ -128,11 +128,112 @@ body {
 }
 
 .modal-dialog {
-  overflow: hidden;
-  max-width: max-content;
-  max-height: max-content;
+  overflow: visible;
   margin-right: auto;
   margin-left: auto;
+}
+
+.vmc-modal-window {
+  .modal-dialog {
+    align-items: center;
+    display: flex;
+    margin: 0.75rem auto;
+    max-width: min(94vw, 760px);
+    min-height: calc(100% - 1.5rem);
+    width: min(94vw, 760px);
+  }
+
+  .modal-content {
+    border: 0;
+    border-radius: 8px;
+    max-height: min(92vh, 900px);
+    overflow: hidden;
+    width: 100%;
+  }
+}
+
+.vmc-modal-window--compact {
+  .modal-dialog {
+    max-width: min(92vw, 440px);
+    width: min(92vw, 440px);
+  }
+}
+
+.vmc-modal-window--form {
+  .modal-dialog {
+    max-width: min(92vw, 640px);
+    width: min(92vw, 640px);
+  }
+}
+
+.vmc-modal-window--wide {
+  .modal-dialog {
+    max-width: min(96vw, 1120px);
+    width: min(96vw, 1120px);
+  }
+}
+
+.vmc-modal-window--print {
+  .modal-dialog {
+    max-width: min(98vw, 1280px);
+    width: min(98vw, 1280px);
+  }
+
+  .modal-content {
+    max-height: 96vh;
+  }
+}
+
+search-publisher .publisher .container {
+  max-width: none;
+  padding: 0 0.75rem 0.75rem;
+}
+
+search-publisher .sub-modal {
+  max-height: min(88vh, 620px);
+  max-width: min(92vw, 640px);
+  overflow: auto;
+  padding: 1rem;
+  width: 640px;
+}
+
+@media (max-width: 575.98px) {
+  search-publisher .publisher {
+    height: 100vh;
+  }
+
+  search-publisher .publisher .container {
+    padding: 0 0.5rem 0.75rem;
+  }
+
+  search-publisher .table-responsive {
+    height: calc(100vh - 285px);
+    min-height: 260px;
+  }
+
+  search-publisher .fieldset-basic {
+    margin: 0.4rem 0;
+    padding: 0.5rem;
+    width: 100%;
+  }
+
+  search-publisher .sort-header {
+    gap: 3px;
+  }
+
+  search-publisher .global-column {
+    min-width: 92px;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 1100px) {
+  search-publisher .publisher {
+    height: min(88vh, 760px);
+  }
+
+  search-publisher .table-responsive {
+    height: min(56vh, 500px);
+  }
 }
 
 .program-filter-modal-window {
@@ -200,9 +301,7 @@ body {
   }
 
   .modal-dialog {
-    overflow: hidden;
-    max-width: max-content;
-    max-height: max-content;
+    overflow: visible;
     margin-right: auto;
     margin-left: auto;
   }

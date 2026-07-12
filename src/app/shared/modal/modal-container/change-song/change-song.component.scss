@@ -1,3 +1,11 @@
-.container{
-  width: 25vw;
+.change-song-modal {
+  display: grid;
+  gap: 0.75rem;
+  padding: clamp(1rem, 5vw, 2rem);
+  width: 100%;
+}
+
+.change-song-modal .btn {
+  min-height: 42px;
+  width: 100%;
 }

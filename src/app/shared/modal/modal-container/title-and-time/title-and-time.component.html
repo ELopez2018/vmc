@@ -1,25 +1,11 @@
-<div class="container p-5">
-  <div class="row mb-2">
-    <div class="col-md-2 pt-2">
-      Titulo:
-    </div>
-    <div class="col-md-10">
-      <input class="form-control" width="100%" [(ngModel)]="title" placeholder="Titulo" type="text" name="title">
-    </div>
-  </div>
-  <div class="row  mb-2">
-    <div class="col-md-2 pt-2">
-      Tiempo:
-    </div>
-    <div class="col-md-10">
-      <input class="form-control" [(ngModel)]="time" placeholder="0.00" type="number" name="hour">
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-10">
-    </div>
-    <div class="col-md-2 text-end">
-      <button class="btn btn-primary  px-3" type="button" (click)="onClick()">Aceptar</button>
-    </div>
-  </div>
+<div class="title-time-modal">
+  <label class="title-time-modal__field">
+    <span>Título</span>
+    <input class="form-control" [(ngModel)]="title" placeholder="Título" type="text" name="title">
+  </label>
+  <label class="title-time-modal__field">
+    <span>Tiempo</span>
+    <input class="form-control" [(ngModel)]="time" placeholder="0.00" type="number" name="hour">
+  </label>
+  <button class="btn btn-primary" type="button" (click)="onClick()">Aceptar</button>
 </div>

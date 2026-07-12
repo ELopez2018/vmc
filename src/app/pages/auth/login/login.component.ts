@@ -1,5 +1,5 @@
-import { Component, inject, Inject } from "@angular/core";
-import { Router } from "@angular/router";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, inject } from "@angular/core";
 import { AuthService } from "../../../core/services/auth/auth.service";
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
@@ -15,7 +15,7 @@ import { LoaderService } from "src/app/core/services/loader/loader.service";
 export class LoginComponent {
   public credential!: FormGroup;
   public showSpinner = false;
-  public error = false;
+  public errorMessage = "";
   loaderService = inject(LoaderService);
   constructor(
     private authService: AuthService,
@@ -25,18 +25,47 @@ export class LoginComponent {
       username: new FormControl("", Validators.required),
       password: new FormControl("", Validators.required),
     });
+
+    this.credential.valueChanges.subscribe(() => {
+      this.errorMessage = "";
+    });
   }
   login() {
-    this.error = false;
+    this.errorMessage = "";
+
+    if (this.credential.invalid) {
+      this.credential.markAllAsTouched();
+      this.errorMessage = "Completa el usuario y la contraseña para ingresar.";
+      return;
+    }
+
     this.loaderService.showMatspinner();
     this.authService.login(this.credential.getRawValue()).subscribe({
       next: (data) => {
-         this.loaderService.hideMatspinner();
+        this.loaderService.hideMatspinner();
       },
       error: (error) => {
         this.loaderService.hideMatspinner();
-        this.error = true;
+        this.errorMessage = this.resolveLoginErrorMessage(error);
       },
     });
+  }
+
+  private resolveLoginErrorMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 401 || error.status === 403) {
+        return "El usuario y/o la contraseña no son válidos.";
+      }
+
+      if (error.status === 0) {
+        return "No pudimos conectar con el servidor. Revisa tu conexión e intenta nuevamente.";
+      }
+
+      if (error.status >= 500) {
+        return "El servidor no pudo procesar el ingreso en este momento. Intenta nuevamente en unos minutos.";
+      }
+    }
+
+    return "No pudimos completar el ingreso. Intenta nuevamente o contacta al administrador.";
   }
 }

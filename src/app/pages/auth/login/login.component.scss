@@ -1,36 +1,111 @@
+:host {
+  display: block;
+  width: min(100%, 440px);
+}
+
 .login {
-  width: 90vw;
-  height: 300px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background: #ffffff;
+  border: 1px solid rgba(33, 37, 41, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+  width: 100%;
 }
 
-@media (min-width: 640px) {
-  .login {
-    width: 50vw;
-    min-height: 30vh;
-    max-width: 400px;
+.login__brand {
+  align-items: center;
+  background: linear-gradient(135deg, #273c75 0%, #0d6efd 100%);
+  color: #ffffff;
+  display: flex;
+  gap: 1rem;
+  padding: clamp(1.25rem, 4vw, 1.75rem);
+}
+
+.login__mark {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  display: flex;
+  flex: 0 0 64px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  height: 64px;
+  justify-content: center;
+}
+
+.login__eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  margin: 0 0 0.25rem;
+  opacity: 0.86;
+}
+
+.login h1 {
+  font-size: clamp(1.35rem, 5vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.login__form {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.25rem, 5vw, 1.75rem);
+}
+
+.login__field {
+  color: #495057;
+  display: grid;
+  font-size: 0.9rem;
+  font-weight: 600;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.login__field .form-control {
+  border-color: #d7dde5;
+  min-height: 46px;
+}
+
+.login__field .form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.18rem rgba(13, 110, 253, 0.16);
+}
+
+.login__error {
+  background: #fff2f2;
+  border: 1px solid #ffd6d6;
+  border-radius: 6px;
+  color: #b42318;
+  display: block;
+  font-size: 0.88rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.login__button {
+  font-weight: 600;
+  min-height: 46px;
+  width: 100%;
+}
+
+@media (max-width: 575.98px) {
+  :host {
+    width: 100%;
+  }
+
+  .login__brand {
+    align-items: flex-start;
+  }
+
+  .login__mark {
+    flex-basis: 56px;
+    height: 56px;
   }
 }
 
-@media (min-width: 768px) {
-  .login {
-    width: 50vw;
-    min-height: 30vh;
-    max-width: 400px;
-  }
-}
-
-@media (min-width: 992px) {
-  .login {
-    width: 50vw;
-    min-height: 30vh;
-    max-width: 400px;
-  }
-}
-@media (min-width: 1440px) {
-  .login {
-    width: 50vw;
-    min-height: 30vh;
-    max-width: 400px;
+@media (min-width: 576px) and (max-width: 1100px) {
+  :host {
+    width: min(100%, 460px);
   }
 }

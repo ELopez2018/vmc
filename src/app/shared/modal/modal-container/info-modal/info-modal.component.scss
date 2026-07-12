@@ -1,10 +1,28 @@
 .info-modal {
-  max-width: 98vw;
+  max-width: 100%;
+  width: 100%;
 }
 
+.info-modal .container {
+  max-width: 100%;
+}
+
+.info-modal .wrapper {
+  margin: 0 !important;
+  padding: clamp(1rem, 5vw, 1.5rem) !important;
+}
+
+.info-modal .header.h2,
+.info-modal .resume {
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+}
+
+.info-modal .message {
+  overflow-wrap: anywhere;
+}
 
 @media (min-width: 992px) {
   .info-modal {
-    max-width: 35vw;
+    max-width: 100%;
   }
 }

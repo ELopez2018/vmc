@@ -3,6 +3,21 @@
 }
 .container {
   background-color: white;
-  min-width: 25vw;
-  min-height: 25vh;
+  max-width: 100%;
+  min-height: 0;
+  width: 100%;
+}
+
+.wrapper {
+  margin: 0 !important;
+  padding: clamp(1rem, 5vw, 1.5rem) !important;
+}
+
+.header.h2,
+.resume {
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+}
+
+.message {
+  overflow-wrap: anywhere;
 }

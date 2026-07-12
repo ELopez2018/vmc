@@ -2,8 +2,28 @@
   display: block;
 }
 .select_publisher {
-  max-height: 90vh;
-  overflow: hidden;
+  max-height: min(90vh, 760px);
   overflow-y: auto;
-  width: 90vw;
+  padding: 0.75rem;
+  width: 100%;
+
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+}
+
+.table-container {
+  max-height: min(62vh, 520px);
+  overflow: auto;
+}
+
+@media (max-width: 575.98px) {
+  .select_publisher {
+    max-height: 100vh;
+  }
+
+  .table-container {
+    max-height: calc(100vh - 220px);
+  }
 }

@@ -6,7 +6,12 @@ import { Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
 import { ProgramAssignmentSectionComponent } from "../program-assignment-section/program-assignment-section.component";
-import { getPublisherTextClasses as getPublisherWarningTextClasses, PUBLISHER_REPEATED_CURRENT_WEEK_TEXT, PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT } from "../publisher-warning.util";
+import {
+  getPublisherTextClasses as getPublisherWarningTextClasses,
+  getPublisherTooltipClass as getPublisherWarningTooltipClass,
+  PUBLISHER_REPEATED_CURRENT_WEEK_TEXT,
+  PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT,
+} from "../publisher-warning.util";
 import { ASSIGNMENT_TITLE, MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
@@ -53,7 +58,6 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
   public readonly teachersSection = SectionMeeting.SEAMOS_MEJORES_MAESTROS;
   public readonly livingSection = SectionMeeting.NUESTRA_VIDA_CRISTIANA;
   public readonly tooltipPresidenText = "";
-  public readonly publisherTooltipClass = "tooltip-publisher-warning";
   public readonly publisherTooltipPlacement = "top";
 
   private readonly repeatedPreviousWeekText = PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT;
@@ -110,7 +114,7 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
   }
 
   public getPublisherTooltipClass(publisher?: Publisher | null, fallbackClass = ""): string {
-    return publisher?.publisherTooltipText ? this.publisherTooltipClass : fallbackClass;
+    return getPublisherWarningTooltipClass(publisher, fallbackClass);
   }
 
   public getPublisherTextClasses(publisher?: Publisher | null): Record<string, boolean> {
@@ -152,11 +156,7 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
 
   private setPublisherTooltipText(): void {
     const currentSlots = this.getPublisherSlots(this.semana);
-    const previousPublisherIds = new Set(
-      this.getPublisherSlots(this.getAdjacentWeek(-1))
-        .map((slot) => slot.publisher?.id)
-        .filter((id): id is number => !!id),
-    );
+    const previousPublisherTitles = this.getPreviousWeekPublisherTitles();
     const currentPublisherCounts = this.getPublisherCounts(currentSlots);
 
     currentSlots.forEach((slot) => {
@@ -164,9 +164,9 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
       let tooltipText: string | undefined;
 
       if (publisherId && (currentPublisherCounts.get(publisherId) ?? 0) > 1) {
-        tooltipText = this.repeatedCurrentWeekText;
-      } else if (publisherId && previousPublisherIds.has(publisherId)) {
-        tooltipText = this.repeatedPreviousWeekText;
+        tooltipText = this.buildRepeatedCurrentWeekText(this.getOtherCurrentWeekTitles(slot, currentSlots));
+      } else if (publisherId && previousPublisherTitles.has(publisherId)) {
+        tooltipText = this.buildRepeatedPreviousWeekText(previousPublisherTitles.get(publisherId) ?? []);
       }
 
       this.updatePublisherTooltipText(slot, tooltipText);
@@ -181,7 +181,7 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
       .filter((week): week is ProgramPdf => !!week)
       .map((week) => {
         const publisherIds = this.getPublisherSlots(week)
-          .map((slot) => `${slot.field}:${slot.publisher?.id ?? "none"}`)
+          .map((slot) => `${slot.field}:${slot.publisher?.id ?? "none"}:${this.getPublisherSlotTitle(slot)}`)
           .join(",");
 
         return `${week.id}:${publisherIds}`;
@@ -274,6 +274,79 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
       counts.set(publisherId, (counts.get(publisherId) ?? 0) + 1);
       return counts;
     }, new Map<number, number>());
+  }
+
+  private getPreviousWeekPublisherTitles(): Map<number, string[]> {
+    return this.getPublisherSlots(this.getAdjacentWeek(-1)).reduce((publisherTitles, slot) => {
+      const publisherId = slot.publisher?.id;
+
+      if (!publisherId) {
+        return publisherTitles;
+      }
+
+      const title = this.getPublisherSlotTitle(slot);
+      const titles = publisherTitles.get(publisherId) ?? [];
+
+      if (title && !titles.includes(title)) {
+        titles.push(title);
+      }
+
+      publisherTitles.set(publisherId, titles);
+      return publisherTitles;
+    }, new Map<number, string[]>());
+  }
+
+  private buildRepeatedPreviousWeekText(previousTitles: string[]): string {
+    const titleText = previousTitles.length ? previousTitles.join(", ") : "otra asignación";
+
+    return `${this.repeatedPreviousWeekText}: ${titleText}`;
+  }
+
+  private getOtherCurrentWeekTitles(currentSlot: PublisherSlot, currentSlots: PublisherSlot[]): string[] {
+    const publisherId = currentSlot.publisher?.id;
+
+    if (!publisherId) {
+      return [];
+    }
+
+    return currentSlots.reduce((titles, slot) => {
+      if (slot === currentSlot || slot.publisher?.id !== publisherId) {
+        return titles;
+      }
+
+      const title = this.getPublisherSlotTitle(slot);
+
+      if (title && !titles.includes(title)) {
+        titles.push(title);
+      }
+
+      return titles;
+    }, [] as string[]);
+  }
+
+  private buildRepeatedCurrentWeekText(currentTitles: string[]): string {
+    const titleText = currentTitles.length ? currentTitles.join(", ") : "otra asignación";
+
+    return `${this.repeatedCurrentWeekText}: ${titleText}`;
+  }
+
+  private getPublisherSlotTitle(slot: PublisherSlot): string {
+    if (slot.weeklyProgram?.assignment?.title) {
+      return slot.weeklyProgram.assignment.title;
+    }
+
+    switch (slot.field) {
+      case AssignmentType.PRESIDENT:
+        return "Presidencia";
+      case AssignmentType.ASSISTANT_ADVISER:
+        return "Consejero auxiliar";
+      case AssignmentType.OPENING_PRAYER:
+        return "Oración inicial";
+      case AssignmentType.FINAL_PRAYER:
+        return "Oración final";
+      default:
+        return "";
+    }
   }
 
   private updatePublisherTooltipText(slot: PublisherSlot, tooltipText?: string): void {

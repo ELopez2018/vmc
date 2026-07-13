@@ -5,7 +5,10 @@ import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.
 import { Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
-import { getPublisherTextClasses as getPublisherWarningTextClasses } from "../publisher-warning.util";
+import {
+  getPublisherTextClasses as getPublisherWarningTextClasses,
+  getPublisherTooltipClass as getPublisherWarningTooltipClass,
+} from "../publisher-warning.util";
 import { ASSIGNMENT_TITLE, MeetingRoom, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 
@@ -33,7 +36,6 @@ export class ProgramAssignmentSectionComponent {
   public readonly treasuresSection = SectionMeeting.TESOROS_DE_LA_BIBLIA;
   public readonly teachersSection = SectionMeeting.SEAMOS_MEJORES_MAESTROS;
   public readonly livingSection = SectionMeeting.NUESTRA_VIDA_CRISTIANA;
-  public readonly publisherTooltipClass = "tooltip-publisher-warning";
   public readonly publisherTooltipPlacement = "top";
 
   public get sectionItems(): WeeklyProgramPdF[] {
@@ -62,5 +64,9 @@ export class ProgramAssignmentSectionComponent {
 
   public getPublisherTextClasses(publisher?: Publisher | null): Record<string, boolean> {
     return getPublisherWarningTextClasses(publisher);
+  }
+
+  public getPublisherTooltipClass(publisher?: Publisher | null): string {
+    return getPublisherWarningTooltipClass(publisher);
   }
 }

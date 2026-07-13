@@ -30,6 +30,8 @@ export class PrinterComponent implements OnInit {
   private congregation!: Congregation;
   private subs: Subscription = new Subscription();
   private filtersModalRef?: NgbModalRef;
+  private isFilterSearchActive = false;
+  private filterSearchRequestId = 0;
   public type: string = "normal";
   public weeks: ProgramPdf[] = [];
   constructor(
@@ -52,6 +54,10 @@ export class PrinterComponent implements OnInit {
     this.subs.add(
       this.dataService.getMeetingsPDF$().subscribe(
         (data) => {
+          if (this.isFilterSearchActive) {
+            return;
+          }
+
           if (data && data.length > 0) {
             this.modalService.close();
             this.weeks = data;
@@ -83,6 +89,10 @@ export class PrinterComponent implements OnInit {
     if (this.congregation) {
       this.meetingsService.getWeeksValids(this.congregation.id).subscribe(
         (data) => {
+          if (this.isFilterSearchActive) {
+            return;
+          }
+
           this.modalService.close();
           this.dataService.setMeeting(data);
         },
@@ -102,8 +112,7 @@ export class PrinterComponent implements OnInit {
           this.printPDFLandScapeService
             .getBlob(weeks)
             .then((data) => {
-              this.pdfViewerAutoLoad.pdfSrc = data;
-              this.pdfViewerAutoLoad.refresh();
+              this.updatePdfViewer(data);
             })
             .catch((error) => {
               console.error(error);
@@ -113,8 +122,7 @@ export class PrinterComponent implements OnInit {
           this.printService
             .getBlob(weeks)
             .then((data) => {
-              this.pdfViewerAutoLoad.pdfSrc = data;
-              this.pdfViewerAutoLoad.refresh();
+              this.updatePdfViewer(data);
             })
             .catch((error) => {
               console.error(error);
@@ -124,8 +132,7 @@ export class PrinterComponent implements OnInit {
       this.printPdfOnePageService
         .getBlob(weeks)
         .then((data) => {
-          this.pdfViewerAutoLoad.pdfSrc = data;
-          this.pdfViewerAutoLoad.refresh();
+          this.updatePdfViewer(data);
         })
         .catch((error) => {
           console.error(error);
@@ -146,22 +153,46 @@ export class PrinterComponent implements OnInit {
     this.onClosed.emit(true);
   }
   consultar(filtros?: { fechaDesde: any; fechaHasta: any }) {
+    this.isFilterSearchActive = true;
+    const requestId = ++this.filterSearchRequestId;
+
     if (filtros) {
       this.fechaDesde = filtros.fechaDesde;
       this.fechaHasta = filtros.fechaHasta;
     }
 
     this.loaderService.showMatspinner();
+    this.weeks = [];
+    this.updatePdfViewer([]);
     this.meetingsService.getProgramsByDateRange(this.fechaDesde, this.fechaHasta, this.congregation.id).subscribe({
       next: (data) => {
+        if (requestId !== this.filterSearchRequestId) {
+          return;
+        }
+
         this.loaderService.hideMatspinner();
-        this.printMeetings(this.dataService.makePDfVersion(data));
+        this.weeks = this.dataService.makePDfVersion(data);
+        this.printMeetings(this.weeks);
       },
       error: (error) => {
+        if (requestId !== this.filterSearchRequestId) {
+          return;
+        }
+
         this.loaderService.hideMatspinner();
+        this.updatePdfViewer([]);
         this.modalService.errorHandler("No se han podido obtener los programas", "Error");
       },
     });
+  }
+
+  private updatePdfViewer(data: any): void {
+    if (!this.pdfViewerAutoLoad) {
+      return;
+    }
+
+    this.pdfViewerAutoLoad.pdfSrc = data;
+    this.pdfViewerAutoLoad.refresh();
   }
 
   public openFiltersModal(content: TemplateRef<unknown>): void {

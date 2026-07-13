@@ -77,7 +77,7 @@
           [ngbTooltip]="semana.assistantAdviser?.publisherTooltipText"
           [placement]="publisherTooltipPlacement"
           container="body"
-          [tooltipClass]="publisherTooltipClass"
+          [tooltipClass]="getPublisherTooltipClass(semana.assistantAdviser)"
         >
           {{ semana.assistantAdviser ? semana.assistantAdviser.fullName : porAsignar }}
         </span>
@@ -107,7 +107,7 @@
           [ngbTooltip]="semana.openingPrayer?.publisherTooltipText"
           [placement]="publisherTooltipPlacement"
           container="body"
-          [tooltipClass]="publisherTooltipClass"
+          [tooltipClass]="getPublisherTooltipClass(semana.openingPrayer)"
         >
           {{ semana.openingPrayer ? semana.openingPrayer.fullName : porAsignar }}
         </span>
@@ -224,7 +224,7 @@
         [ngbTooltip]="semana.finalPrayer?.publisherTooltipText"
         [placement]="publisherTooltipPlacement"
         container="body"
-        [tooltipClass]="publisherTooltipClass"
+        [tooltipClass]="getPublisherTooltipClass(semana.finalPrayer)"
       >
         {{ semana.finalPrayer ? semana.finalPrayer.fullName : porAsignar }}
       </div>

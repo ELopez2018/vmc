@@ -29,6 +29,8 @@ export class AssignmentSheetPrinterComponent implements OnInit {
   private congregation!: Congregation;
   private subs: Subscription = new Subscription();
   private filtersModalRef?: NgbModalRef;
+  private isFilterSearchActive = false;
+  private filterSearchRequestId = 0;
   public fechaDesde: any;
   public fechaHasta: any;
   constructor(
@@ -48,6 +50,10 @@ export class AssignmentSheetPrinterComponent implements OnInit {
     this.subs.add(
       this.dataService.getMeetingsPDF$().subscribe(
         (data) => {
+          if (this.isFilterSearchActive) {
+            return;
+          }
+
           if (data && data.length > 0) {
             this.modalService.close();
             this.printMeetings(data);
@@ -69,6 +75,10 @@ export class AssignmentSheetPrinterComponent implements OnInit {
     if (this.congregation) {
       this.meetingsService.getWeeksValids(this.congregation.id).subscribe(
         (data) => {
+          if (this.isFilterSearchActive) {
+            return;
+          }
+
           this.modalService.close();
           this.dataService.setMeeting(data);
         },
@@ -108,6 +118,9 @@ export class AssignmentSheetPrinterComponent implements OnInit {
     this.onClosed.emit(true);
   }
   consultar(filtros?: { fechaDesde: any; fechaHasta: any }) {
+    this.isFilterSearchActive = true;
+    const requestId = ++this.filterSearchRequestId;
+
     if (filtros) {
       this.fechaDesde = filtros.fechaDesde;
       this.fechaHasta = filtros.fechaHasta;
@@ -117,10 +130,18 @@ export class AssignmentSheetPrinterComponent implements OnInit {
     this.updatePdfViewer([]);
     this.meetingsService.getProgramsByDateRange(this.fechaDesde, this.fechaHasta, this.congregation.id).subscribe({
       next: (data) => {
+        if (requestId !== this.filterSearchRequestId) {
+          return;
+        }
+
         this.printMeetings(this.dataService.makePDfVersion(data));
         this.loaderService.hideMatspinner();
       },
       error: (error) => {
+        if (requestId !== this.filterSearchRequestId) {
+          return;
+        }
+
         this.updatePdfViewer([]);
         this.loaderService.hideMatspinner();
         this.modalService.errorHandler(error, "Error");

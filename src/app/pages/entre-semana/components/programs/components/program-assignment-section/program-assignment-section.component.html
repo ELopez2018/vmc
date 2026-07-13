@@ -40,7 +40,7 @@
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
     </div>
@@ -77,7 +77,7 @@
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsibleB)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsibleB)">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
       </span>
       }
@@ -86,7 +86,7 @@
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
     </div>
@@ -127,13 +127,13 @@
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsibleB)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsibleB)">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
       </span>
       @if (item.assignment.title !== assignmentTitle.SPEECH) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistantB)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT_B)" [ngbTooltip]="item.assistantB?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.assistantB)">
         {{ item?.assistantB ? "/" + item.assistantB.fullName : "/" + porAsignar }}
       </span>
       }
@@ -143,13 +143,13 @@
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
       @if (item.assignment.title !== assignmentTitle.SPEECH) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)" [ngbTooltip]="item.assistant?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.assistant)">
         {{ item?.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}
       </span>
       }
@@ -181,7 +181,7 @@
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item.responsible ? item.responsible.fullName : porAsignar }}
       </span>
     </div>
@@ -216,12 +216,12 @@
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item.responsible ? item.responsible.fullName : porAsignar }}
       </span>
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)" [ngbTooltip]="item.assistant?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="publisherTooltipClass">
+        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.assistant)">
         {{ item.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}
       </span>
     </div>

@@ -14,6 +14,8 @@ import { SectionMeeting } from "../../core/enums/meetings.enums";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
 import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
 import { ASSIGNMENT_TITLE, MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "vmc-entre-semana",
@@ -27,6 +29,8 @@ export class EntreSemanaComponent implements OnInit {
   private readonly initialForegroundPages = 2;
   private readonly requestedPages = new Set<number>();
   private readonly loadedPages = new Map<number, Program[]>();
+  private readonly cancelInitialProgramLoad$ = new Subject<void>();
+  private searchRequestId = 0;
   public readonly meetingRoom = MeetingRoom;
   private programList: Program[] = [];
   public semanas: Program[] = [];
@@ -73,7 +77,7 @@ export class EntreSemanaComponent implements OnInit {
     this.requestedPages.add(page);
     this.meetingsService
       .getWeeksValids(this.congregation.id, page, this.pageSize)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntil(this.cancelInitialProgramLoad$), takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => this.onSuccess(data, page),
         error: this.onError.bind(this),
@@ -443,14 +447,43 @@ export class EntreSemanaComponent implements OnInit {
   }
 
   consultar($event: { fechaDesde: any; fechaHasta: any }) {
+    this.cancelInitialProgramLoad$.next();
+    const requestId = ++this.searchRequestId;
+
     this.loaderService.showMatspinner();
+    this.requestedPages.clear();
+    this.loadedPages.clear();
+    this.programList = [];
+    this.semanas = [];
+    this.semanasSalaAuxiliar = [];
     this.semanasAllRooms = [];
-    this.meetingsService.getProgramsByDateRange($event.fechaDesde, $event.fechaHasta, this.congregation.id).subscribe((data) => {
-      this.programList = [...data];
-      this.semanas = [...data];
-      this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, data)];
-      this.semanasAllRooms = this.dataService.makePDfVersion(data);
-      this.loaderService.hideMatspinner();
-    });
+    this.dataService.setMeeting([]);
+
+    this.meetingsService
+      .getProgramsByDateRange($event.fechaDesde, $event.fechaHasta, this.congregation.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          if (requestId !== this.searchRequestId) {
+            return;
+          }
+
+          this.programList = [...data];
+          this.semanas = [...data];
+          this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, data)];
+          this.semanasAllRooms = this.dataService.makePDfVersion(data);
+          this.dataService.setMeeting([...data]);
+          this.loaderService.hideMatspinner();
+        },
+        error: (error) => {
+          if (requestId !== this.searchRequestId) {
+            return;
+          }
+
+          console.error(error);
+          this.loaderService.hideMatspinner();
+          this.modalService.errorHandler("No se han podido obtener los programas", "Error");
+        },
+      });
   }
 }

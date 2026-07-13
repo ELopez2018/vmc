@@ -5,7 +5,7 @@
       <div class="col-md-12">
         <div class="wrapper m-4 p-3">
           <div class="header text-center h2">
-            <i class="fa-solid fa-check"></i>
+            <i class="fa-solid" [ngClass]="icon === 'info' ? 'fa-circle-info' : 'fa-check'"></i>
             <p class="error" [innerHTML]="type"></p>
           </div>
           <div class="body text-center">
@@ -14,13 +14,12 @@
             <p class="message" [innerHTML]="message" ></p>
           </div>
           <div class="footer text-center">
-            <button mat-raised-button color="primary" (click)="close()" >Continuar</button>
+            <button mat-raised-button color="primary" (click)="close()" >{{ buttonText }}</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 
 

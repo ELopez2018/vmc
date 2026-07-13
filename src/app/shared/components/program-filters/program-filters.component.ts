@@ -1,13 +1,14 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Output } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { SharedModule } from "src/app/shared/shared.module";
+import { ButtonModule } from "primeng/button";
+import { CalendarModule } from "primeng/calendar";
 
 @Component({
   selector: "vmc-program-filters",
   templateUrl: "./program-filters.component.html",
   styleUrls: ["./program-filters.component.scss"],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, ButtonModule, CalendarModule],
 })
 export class ProgramFiltersComponent {
   @Output() public filter = new EventEmitter<{ fechaDesde: any; fechaHasta: any }>();
@@ -18,7 +19,8 @@ export class ProgramFiltersComponent {
   public consultar(): void {
     this.filter.emit({ fechaDesde: this.fechaDesde, fechaHasta: this.fechaHasta });
   }
-  onChange() {
+
+  public onChange(): void {
     if (!this.fechaHasta || this.fechaHasta < this.fechaDesde) {
       this.fechaHasta = this.fechaDesde;
     }

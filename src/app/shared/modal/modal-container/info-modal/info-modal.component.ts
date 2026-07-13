@@ -11,6 +11,8 @@ export class InfoModalComponent implements OnInit {
   @Input() public subtitle: any
   @Input() public type: any
   @Input() public message: any
+  @Input() public buttonText = "Continuar";
+  @Input() public icon = "check";
   @Output() onClicked: EventEmitter<any> = new EventEmitter()
   constructor() { }
 

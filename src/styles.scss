@@ -251,6 +251,10 @@ search-publisher .sub-modal {
   }
 }
 
+.p-datepicker {
+  z-index: 1200 !important;
+}
+
 .fieldset-basic {
   border: 2px solid gainsboro;
   padding: 10px;

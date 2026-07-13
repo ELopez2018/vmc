@@ -111,11 +111,20 @@ export class ModalService {
     this.modalRef.componentInstance.errorTitle = title;
     return this.modalRef.result;
   }
-  public info(subtitle: string, message: string, title: ModalTitleEnums, type: ModalTypeEnums) {
+  public info(
+    subtitle: string,
+    message: string,
+    title: ModalTitleEnums,
+    type: ModalTypeEnums,
+    textButton: ModalResponseEnums = ModalResponseEnums.CONTINUAR,
+    icon: ModalIconEnums = ModalIconEnums.CHECK,
+  ) {
     this.modalRef = this.openModal("vmc-modal-window--compact");
     this.modalRef.componentInstance.mensaje = message;
     this.modalRef.componentInstance.subTitle = subtitle;
     this.modalRef.componentInstance.titulo = title;
+    this.modalRef.componentInstance.Icon = icon;
+    this.modalRef.componentInstance.textButton = textButton;
     this.modalRef.componentInstance.modalType = type;
     return this.modalRef.result;
   }

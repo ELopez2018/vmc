@@ -1,26 +1,24 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, inject, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { PrintPdfService } from "../../core/services/pdf/print.service";
 import { MeetingsService } from "../../core/services/meetings/meetings.service";
-import { Meeting, Program } from "src/app/core/interfaces/reuniones.interface";
 import { DataService } from "../../core/services/data/data.service";
 import { ModalService } from "../../core/services/modal/modal.service";
 import { Congregation } from "../../core/interfaces/reuniones.interface";
 import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
 import { Subscription } from "rxjs";
-import { PrintPdfOnePageService } from "src/app/core/services/pdf/print-pdf-one-page.service";
 import { IconCloseComponent } from "../modal/modal-container/search-publisher/icon-close/icon-close.component";
 import { PdfJsViewerModule } from "ng2-pdfjs-viewer";
 import { PrintS89FromProgramService } from "src/app/core/services/pdf/print-s89-four-per-page.service";
-import { CalendarModule } from "primeng/calendar";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ProgramFiltersComponent } from "../components/program-filters/program-filters.component";
 
 @Component({
   selector: "app-assignment-sheet-printer",
   templateUrl: "./assignment-sheet-printer.component.html",
   styleUrls: ["./assignment-sheet-printer.component.scss"],
   standalone: true,
-  imports: [IconCloseComponent, PdfJsViewerModule, CalendarModule, ReactiveFormsModule, FormsModule],
+  imports: [IconCloseComponent, PdfJsViewerModule, ProgramFiltersComponent],
 })
 export class AssignmentSheetPrinterComponent implements OnInit {
   loaderService = inject(LoaderService);
@@ -30,6 +28,7 @@ export class AssignmentSheetPrinterComponent implements OnInit {
   @Input() public isModal: boolean = false;
   private congregation!: Congregation;
   private subs: Subscription = new Subscription();
+  private filtersModalRef?: NgbModalRef;
   public fechaDesde: any;
   public fechaHasta: any;
   constructor(
@@ -38,6 +37,7 @@ export class AssignmentSheetPrinterComponent implements OnInit {
     private dataService: DataService,
     private modalService: ModalService,
     private printS89FromProgramService: PrintS89FromProgramService,
+    private ngbModal: NgbModal,
   ) {
     this.modalService.loading();
     this.subs.add(
@@ -107,12 +107,17 @@ export class AssignmentSheetPrinterComponent implements OnInit {
   onCLose() {
     this.onClosed.emit(true);
   }
-  consultar() {
+  consultar(filtros?: { fechaDesde: any; fechaHasta: any }) {
+    if (filtros) {
+      this.fechaDesde = filtros.fechaDesde;
+      this.fechaHasta = filtros.fechaHasta;
+    }
+
     this.loaderService.showMatspinner();
     this.updatePdfViewer([]);
     this.meetingsService.getProgramsByDateRange(this.fechaDesde, this.fechaHasta, this.congregation.id).subscribe({
       next: (data) => {
-        this.updatePdfViewer(this.dataService.makePDfVersion(data));
+        this.printMeetings(this.dataService.makePDfVersion(data));
         this.loaderService.hideMatspinner();
       },
       error: (error) => {
@@ -123,9 +128,24 @@ export class AssignmentSheetPrinterComponent implements OnInit {
     });
   }
 
-    onSelect(){
-    if (!this.fechaHasta || this.fechaHasta < this.fechaDesde) {
-      this.fechaHasta = this.fechaDesde;
-    }
+  public openFiltersModal(content: TemplateRef<unknown>): void {
+    this.filtersModalRef = this.ngbModal.open(content, {
+      backdrop: "static",
+      centered: true,
+      animation: true,
+      fullscreen: "sm",
+      windowClass: "program-filter-modal-window",
+    });
+  }
+
+  public closeFiltersModal(): void {
+    this.filtersModalRef?.dismiss();
+    this.filtersModalRef = undefined;
+  }
+
+  public onFiltersSelected(filtros: { fechaDesde: any; fechaHasta: any }): void {
+    this.consultar(filtros);
+    this.filtersModalRef?.close();
+    this.filtersModalRef = undefined;
   }
 }

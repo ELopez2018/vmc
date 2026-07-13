@@ -1,4 +1,16 @@
-<div class="container-fluid">
+<ng-template #filtersModal>
+  <div class="program-filter-modal">
+    <div class="program-filter-modal__header">
+      <h5 class="program-filter-modal__title">Buscar programas</h5>
+      <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeFiltersModal()"></button>
+    </div>
+    <div class="program-filter-modal__body">
+      <vmc-program-filters (filter)="onFiltersSelected($event)"></vmc-program-filters>
+    </div>
+  </div>
+</ng-template>
+
+<div class="container-fluid printer-shell">
   @if (isModal) {
   <div class="row">
     <div class="col-md-12 d-flex justify-content-end p-2">
@@ -7,31 +19,16 @@
   </div>
   }
 
-  <!-- FILTROS -->
-  <div class="row align-items-end p-2">
-    <div class="col-md-5 mb-2">
-      <!-- <label class="form-label fw-semibold">Fecha desde</label> -->
-
-      <p-calendar [showOnFocus]="false" [(ngModel)]="fechaDesde" [showIcon]="true" [appendTo]="'body'" dateFormat="dd/mm/yy"
-        inputId="fechaDesde" styleClass="w-100" placeholder="Desde"
-        (onSelect)="onSelect()"
-        > </p-calendar>
-    </div>
-
-    <div class="col-md-5 mb-2">
-      <!-- <label class="form-label fw-semibold">Fecha hasta</label> -->
-
-      <p-calendar [showOnFocus]="false" [(ngModel)]="fechaHasta" [showIcon]="true" [appendTo]="'body'" dateFormat="dd/mm/yy"
-        inputId="fechaHasta" styleClass="w-100" placeholder="Hasta"> </p-calendar>
-    </div>
-
-    <div class="col-md-2 mb-2">
-      <button pButton type="button" label="Buscar" icon="pi pi-search" class="p-button-primary w-100"
-        (click)="consultar()"></button>
-    </div>
-  </div>
-
-  <!-- VISOR PDF -->
+  <button
+    type="button"
+    class="printer-filter-fab"
+    title="Buscar programas"
+    aria-label="Buscar programas por fecha"
+    (click)="openFiltersModal(filtersModal)"
+  >
+    <i class="pi pi-calendar"></i>
+    <i class="pi pi-search printer-filter-fab__search"></i>
+  </button>
 
   <div class="row">
     <div class="col-md-12 pe-xl-5 pdf-viewer-shell">

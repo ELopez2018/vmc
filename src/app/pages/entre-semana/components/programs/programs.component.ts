@@ -14,7 +14,7 @@ import { ModalTitleEnums } from "src/app/core/enums/modal.enums";
 import { ModalTypeEnums } from "../../../../core/enums/modal.enums";
 import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.interface";
 import Swal from "sweetalert2";
-import { ProgramFiltersComponent } from "./components/program-filters/program-filters.component";
+import { ProgramFiltersComponent } from "src/app/shared/components/program-filters/program-filters.component";
 import { ProgramWeekComponent } from "./components/program-week/program-week.component";
 import {
   ADMIN_EMAIL,

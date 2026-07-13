@@ -133,7 +133,6 @@ export class DataService {
 
   public getConfigs() {
     if (!this.hasValidToken()) {
-      this.clearSession();
       this.setCongregation(<Congregation>{});
       return;
     }

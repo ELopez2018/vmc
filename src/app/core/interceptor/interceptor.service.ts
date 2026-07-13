@@ -4,6 +4,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { Servers, Apis } from "../constants/servers";
 import { DataService } from "../services/data/data.service";
+import { SessionExpirationService } from "../services/session/session-expiration.service";
 
 @Injectable({
   providedIn: "root",
@@ -12,11 +13,27 @@ export class InterceptorService implements HttpInterceptor {
   private server = Servers.URL;
   private api = Apis;
 
-  constructor(private dataService: DataService) {}
+  constructor(
+    private dataService: DataService,
+    private sessionExpirationService: SessionExpirationService,
+  ) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const accessToken = this.dataService.getAccessToken();
     const isLoginRequest = req.url === `${this.server}${this.api.AUTH}/login`;
+
+    if (!isLoginRequest && accessToken && !this.dataService.hasValidToken()) {
+      this.sessionExpirationService.notifyExpiredSession();
+      return throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 401,
+            statusText: "Unauthorized",
+            url: req.url,
+            error: "La sesión venció o el token ya no es válido.",
+          }),
+      );
+    }
 
     let headers: HttpHeaders;
 
@@ -45,12 +62,8 @@ export class InterceptorService implements HttpInterceptor {
       return throwError(() => error);
     }
 
-    // Si es un error 401/403 en una petición no-login, el token probablemente expiró en el servidor
-    // Simplemente propagar el error para que el componente lo maneje
-    // El usuario será redirigido al intentar acceder a otra ruta protegida
     if (!isLoginRequest && (error.status === 401 || error.status === 403)) {
-      // Limpiar el token para que el próximo guard.check lo detecte
-      this.dataService.clearSession();
+      this.sessionExpirationService.notifyExpiredSession();
     }
 
     return throwError(() => error.error ?? error);

@@ -1,4 +1,16 @@
-<div class="container-fluid">
+<ng-template #filtersModal>
+  <div class="program-filter-modal">
+    <div class="program-filter-modal__header">
+      <h5 class="program-filter-modal__title">Buscar programas</h5>
+      <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeFiltersModal()"></button>
+    </div>
+    <div class="program-filter-modal__body">
+      <vmc-program-filters (filter)="onFiltersSelected($event)"></vmc-program-filters>
+    </div>
+  </div>
+</ng-template>
+
+<div class="container-fluid assignment-sheet-printer-shell">
   @if(isModal){
   <div class="row">
     <div class="col-md-12 d-flex justify-content-end pe-2 pt-1">
@@ -6,55 +18,17 @@
     </div>
   </div>
   }
-  <!-- FILTROS -->
-  <div class="row align-items-end mb-3">
 
-    <div class="col-md-4 mb-2">
-      <label class="form-label fw-semibold">Fecha desde</label>
-
-      <p-calendar
-        [(ngModel)]="fechaDesde"
-        [showIcon]="true"
-        [appendTo]="'body'"
-        dateFormat="dd/mm/yy"
-        inputId="fechaDesde"
-        styleClass="w-100"
-        placeholder="Seleccionar fecha"
-        (onSelect)="onSelect()"
-        >
-      </p-calendar>
-
-    </div>
-
-    <div class="col-md-4 mb-2">
-      <label class="form-label fw-semibold">Fecha hasta</label>
-
-      <p-calendar
-        [(ngModel)]="fechaHasta"
-        [showIcon]="true"
-        [appendTo]="'body'"
-        dateFormat="dd/mm/yy"
-        inputId="fechaHasta"
-        styleClass="w-100"
-        placeholder="Seleccionar fecha">
-      </p-calendar>
-
-    </div>
-
-    <div class="col-md-4 mb-2">
-
-      <button
-        pButton
-        type="button"
-        label="Consultar"
-        icon="pi pi-search"
-        class="p-button-primary w-100"
-        (click)="consultar()">
-      </button>
-
-    </div>
-
-  </div>
+  <button
+    type="button"
+    class="assignment-sheet-filter-fab"
+    title="Buscar programas"
+    aria-label="Buscar programas por fecha"
+    (click)="openFiltersModal(filtersModal)"
+  >
+    <i class="pi pi-calendar"></i>
+    <i class="pi pi-search assignment-sheet-filter-fab__search"></i>
+  </button>
   
   <div class="row">
     <div class="col-md-12 px-md-5 pdf-viewer-shell">

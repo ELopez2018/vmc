@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { PrintPdfService } from "../../core/services/pdf/print.service";
 import { MeetingsService } from "../../core/services/meetings/meetings.service";
 import { Meeting, Program } from "src/app/core/interfaces/reuniones.interface";
@@ -11,6 +11,7 @@ import { PrintPdfOnePageService } from "src/app/core/services/pdf/print-pdf-one-
 import { LoaderService } from "src/app/core/services/loader/loader.service";
 import { PrintPdfLandscapeService } from "src/app/core/services/pdf/print-pdf-landscape.service";
 import { ActivatedRoute } from "@angular/router";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "app-printer",
@@ -28,6 +29,7 @@ export class PrinterComponent implements OnInit {
   @Input() public isModal: boolean = false;
   private congregation!: Congregation;
   private subs: Subscription = new Subscription();
+  private filtersModalRef?: NgbModalRef;
   public type: string = "normal";
   public weeks: ProgramPdf[] = [];
   constructor(
@@ -39,6 +41,7 @@ export class PrinterComponent implements OnInit {
     private printPdfOnePageService: PrintPdfOnePageService,
     private loaderService: LoaderService,
     private route: ActivatedRoute,
+    private ngbModal: NgbModal,
   ) {
     this.modalService.loading();
     this.subs.add(
@@ -142,7 +145,12 @@ export class PrinterComponent implements OnInit {
   onCLose() {
     this.onClosed.emit(true);
   }
-  consultar() {
+  consultar(filtros?: { fechaDesde: any; fechaHasta: any }) {
+    if (filtros) {
+      this.fechaDesde = filtros.fechaDesde;
+      this.fechaHasta = filtros.fechaHasta;
+    }
+
     this.loaderService.showMatspinner();
     this.meetingsService.getProgramsByDateRange(this.fechaDesde, this.fechaHasta, this.congregation.id).subscribe({
       next: (data) => {
@@ -156,9 +164,24 @@ export class PrinterComponent implements OnInit {
     });
   }
 
-  onSelect(){
-    if (!this.fechaHasta || this.fechaHasta < this.fechaDesde) {
-      this.fechaHasta = this.fechaDesde;
-    }
+  public openFiltersModal(content: TemplateRef<unknown>): void {
+    this.filtersModalRef = this.ngbModal.open(content, {
+      backdrop: "static",
+      centered: true,
+      animation: true,
+      fullscreen: "sm",
+      windowClass: "program-filter-modal-window",
+    });
+  }
+
+  public closeFiltersModal(): void {
+    this.filtersModalRef?.dismiss();
+    this.filtersModalRef = undefined;
+  }
+
+  public onFiltersSelected(filtros: { fechaDesde: any; fechaHasta: any }): void {
+    this.consultar(filtros);
+    this.filtersModalRef?.close();
+    this.filtersModalRef = undefined;
   }
 }

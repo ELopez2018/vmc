@@ -19,6 +19,7 @@ import { IconCloseComponent } from "./modal/modal-container/search-publisher/ico
 import { SelectPublisherComponent } from "./modal/modal-container/select-publisher/select-publisher.component";
 import { AssignmentSheetPrinterComponent } from "./assignment-sheet-printer/assignment-sheet-printer.component";
 import { CalendarModule } from 'primeng/calendar';
+import { ProgramFiltersComponent } from "./components/program-filters/program-filters.component";
 
 const MODULES = [
   MaterialModule,
@@ -31,7 +32,8 @@ const MODULES = [
   ChangeSongComponent,
   ErrorModalComponent,
   AddAssignmentComponent,
-  CalendarModule
+  CalendarModule,
+  ProgramFiltersComponent
 ];
 const COMPONENTS = [
   PrinterComponent,

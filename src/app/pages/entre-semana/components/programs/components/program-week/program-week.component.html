@@ -86,17 +86,17 @@
     }
 
     @if (roomA) {
-    <div class="row px-3">
+    <div class="row px-3 program-line">
       <div class="col-md-7 ps-2 ps-xl-3 text-md-start">
         <span class="ms-md-1"></span>
-        <span class="hover d-none d-xl-inline" (click)="onProgramChange(programChangeType.START_TIME_OPENING_SONG)">
+        <span class="program-time-start hover" (click)="onProgramChange(programChangeType.START_TIME_OPENING_SONG)">
           {{ adapterTime(semana.startTimeOpeningSong) }}
         </span>
         <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
           Canción {{ semana.meeting.initialSong?.songNumber }}
         </span>
         <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
-          {{ semana.meeting.initialSong?.title }} ({{ semana.meeting.initialSong?.source }})
+          {{ semana.meeting.initialSong?.title }} {{ semana.meeting.initialSong?.source }}
         </span>
       </div>
       <div class="col-md-2 text-md-end text-title-custom">Oración:</div>
@@ -116,10 +116,10 @@
     }
 
     @if (roomA) {
-    <div class="row px-3 program__tesoros">
+    <div class="row px-3 program__tesoros program-line">
       <div class="col-md-12 ps-xl-3 text-md-start">
         <span class="ms-xl-1"></span>
-        <span class="hover d-none d-xl-inline" (click)="onProgramChange(programChangeType.START_TIME_INTRO)">
+        <span class="program-time-start hover" (click)="onProgramChange(programChangeType.START_TIME_INTRO)">
           {{ adapterTime(semana.startTimeIntro) }}
         </span>
         <span class="hover ps-2" (click)="onProgramChange(programChangeType.INTRO_TIME)">
@@ -161,16 +161,16 @@
         <mat-icon (click)="addAssignment.emit({ program: semana, sectionMeeting: livingSection })">edit</mat-icon>
         }
       </legend>
-      <div class="row px-3">
+      <div class="row px-3 program-line">
         <div class="col-md-12 mt-1">
-          <span class="mx-2 hover d-none d-xl-inline" (click)="onProgramChange(programChangeType.START_TIME_INTERMEDIATE_SONG)">
+          <span class="program-time-start hover" (click)="onProgramChange(programChangeType.START_TIME_INTERMEDIATE_SONG)">
             {{ adapterTime(semana.startTimeIntermediateSong) }}
           </span>
           <span class="fw-bold hover" (click)="onProgramChange(programChangeType.INTERMEDIATE_SONG)">
             Canción {{ semana.meeting.middleSong?.songNumber }}
           </span>
           <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
-            {{ semana.meeting.middleSong?.title }} ({{ semana.meeting.middleSong?.source }})
+            {{ semana.meeting.middleSong?.title }} {{ semana.meeting.middleSong?.source }}
           </span>
         </div>
       </div>
@@ -190,10 +190,10 @@
     }
 
     @if (roomA) {
-    <div class="row px-3">
+    <div class="row px-3 program-line">
       <div class="col-md-7 mt-1">
         <span class="ms-md-1"></span>
-        <span class="mx-2 hover d-none d-xl-inline" (click)="onProgramChange(programChangeType.START_TIME_CONCLUSION_WORDS)">
+        <span class="program-time-start hover" (click)="onProgramChange(programChangeType.START_TIME_CONCLUSION_WORDS)">
           {{ adapterTime(semana.startTimeConclusionWords) }}
         </span>
         Palabras de conclusión
@@ -203,17 +203,17 @@
     }
 
     @if (roomA) {
-    <div class="row px-3">
+    <div class="row px-3 program-line">
       <div class="col-md-7 mt-1">
         <span class="ms-md-1"></span>
-        <span class="hover d-none mx-2 d-xl-inline" (click)="onProgramChange(programChangeType.START_TIME_FINAL_SONG)">
+        <span class="program-time-start hover" (click)="onProgramChange(programChangeType.START_TIME_FINAL_SONG)">
           {{ adapterTime(semana.startTimeFinalSong) }}
         </span>
         <span class="fw-bold hover" (click)="onProgramChange(programChangeType.FINAL_SONG)">
           Canción {{ semana.meeting.lastSong?.songNumber }}
         </span>
         <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
-          {{ semana.meeting.lastSong?.title }} ({{ semana.meeting.lastSong?.source }})
+          {{ semana.meeting.lastSong?.title }} {{ semana.meeting.lastSong?.source }}
         </span>
       </div>
       <div class="col-md-2 text-md-end text-title-custom">Oracion:</div>

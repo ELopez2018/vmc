@@ -4,13 +4,14 @@ import { AssignmentService } from 'src/app/core/services/assignment/assignment.s
 import { TableModule } from "primeng/table";
 import { ButtonModule } from "primeng/button";
 import { DatePipe } from '@angular/common';
+import { AssignmentSourceComponent } from "src/app/shared/components/assignment-source/assignment-source.component";
 
 @Component({
     selector: 'vmc-assignment',
     templateUrl: './assignment.component.html',
     styleUrls: ['./assignment.component.scss'],
     standalone: true,
-    imports: [TableModule, ButtonModule, DatePipe]
+    imports: [TableModule, ButtonModule, DatePipe, AssignmentSourceComponent]
 })
 export class AssignmentComponent {
   @Input() assignment: Assignment[]=[]

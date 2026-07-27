@@ -1,8 +1,13 @@
 .container-fluid {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: min(94vh, 860px);
+  height: 100dvh;
+  min-height: 0;
   max-width: none;
+  box-sizing: border-box;
   overflow: hidden;
+  padding: 0.75rem;
 }
 
 .assignment-sheet-printer-shell {
@@ -10,12 +15,30 @@
 }
 
 ng2-pdfjs-viewer {
+  display: block;
   height: 100%;
   width: 100%;
 }
 
+.pdf-viewer-row {
+  flex: 1 1 auto;
+  margin-left: 0;
+  margin-right: 0;
+  min-height: 0;
+}
+
 .pdf-viewer-shell {
-  height: calc(min(94vh, 860px) - 50px);
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  width: 100%;
+}
+
+:host ::ng-deep ng2-pdfjs-viewer iframe,
+:host ::ng-deep ng2-pdfjs-viewer .ng2-pdfjs-viewer {
+  display: block;
+  height: 100% !important;
+  width: 100% !important;
 }
 
 vmc-icon-close {
@@ -93,19 +116,18 @@ vmc-icon-close {
 
 @media (max-width: 575.98px) {
   .container-fluid {
-    height: 100vh;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-  }
-
-  .pdf-viewer-shell {
-    height: calc(100vh - 60px);
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    height: 100dvh;
+    padding: 0.5rem;
   }
 
   .assignment-sheet-filter-fab {
     bottom: 1rem;
     right: 1rem;
+  }
+}
+
+@supports not (height: 100dvh) {
+  .container-fluid {
+    height: 100vh;
   }
 }

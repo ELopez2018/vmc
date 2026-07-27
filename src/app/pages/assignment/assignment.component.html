@@ -9,6 +9,7 @@
           <th>Semana</th>
           <th>Sección</th>
           <th>Titulo</th>
+          <th>Fuente</th>
           <th>Tiempo</th>
           <th></th>
       </tr>
@@ -20,6 +21,9 @@
          <td>{{ item.meeting.week | date:'dd-MM-yyyy' }}</td>
           <td>{{ item.sectionMeeting }}</td>
           <td>{{ item.title }}</td>
+          <td>
+            <vmc-assignment-source [assignment]="item" [compact]="true"></vmc-assignment-source>
+          </td>
           <td>{{ item.time }}</td>
           <td>
             <!-- <p-button icon="pi pi-check" styleClass="p-button-rounded p-button-text"></p-button>
@@ -35,4 +39,3 @@
       </tr>
   </ng-template>
 </p-table>
-

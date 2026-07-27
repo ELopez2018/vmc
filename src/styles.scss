@@ -191,7 +191,8 @@ body {
   }
 
   .modal-content {
-    max-height: 96vh;
+    height: calc(100dvh - 1.5rem);
+    max-height: calc(100dvh - 1.5rem);
   }
 }
 

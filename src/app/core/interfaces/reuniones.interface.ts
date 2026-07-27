@@ -132,6 +132,10 @@ export interface WeeklyProgramUpsertByTitleRequest {
   startTime?: string | null;
   room: string;
 }
+export interface AssignmentSourceLink {
+  text: string;
+  url: string;
+}
 export interface Assignment {
   id?: number;
   time?: number;
@@ -141,6 +145,10 @@ export interface Assignment {
   sectionMeeting: string;
   showTips: boolean;
   number: number;
+  sourceText?: string | null;
+  sourceHtml?: string | null;
+  sourceLinks?: string | null;
+  sourceUrl?: string | null;
   meeting: Meeting;
 }
 

@@ -20,6 +20,7 @@ import { SelectPublisherComponent } from "./modal/modal-container/select-publish
 import { AssignmentSheetPrinterComponent } from "./assignment-sheet-printer/assignment-sheet-printer.component";
 import { CalendarModule } from 'primeng/calendar';
 import { ProgramFiltersComponent } from "./components/program-filters/program-filters.component";
+import { AssignmentSourceComponent } from "./components/assignment-source/assignment-source.component";
 
 const MODULES = [
   MaterialModule,
@@ -33,7 +34,8 @@ const MODULES = [
   ErrorModalComponent,
   AddAssignmentComponent,
   CalendarModule,
-  ProgramFiltersComponent
+  ProgramFiltersComponent,
+  AssignmentSourceComponent
 ];
 const COMPONENTS = [
   PrinterComponent,

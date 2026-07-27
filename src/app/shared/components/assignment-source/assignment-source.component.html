@@ -1,0 +1,9 @@
+@if (hasSource) {
+<div class="assignment-source" [class.assignment-source--compact]="compact">
+  @if (assignment?.sourceHtml) {
+  <div #sourceContent class="assignment-source__content" [innerHTML]="assignment?.sourceHtml"></div>
+  } @else {
+  <p class="assignment-source__text">{{ sourceText }}</p>
+  }
+</div>
+}

@@ -75,7 +75,7 @@ export class PrintPdfLandscapeService {
   }
   private makeHeaderProgram(week: ProgramPdf) {
     const song = week.meeting.initialSong
-      ? week.meeting.initialSong.songNumber + " " + week.meeting.initialSong.title + " (" + week.meeting.initialSong.source + ")"
+      ? week.meeting.initialSong.songNumber + " " + week.meeting.initialSong.title + " " + week.meeting.initialSong.source
       : week.meeting.openingSong;
     const roomB = this.verifiRoomB(week.weeklyPrograms);
     let conAux = [];
@@ -484,7 +484,7 @@ export class PrintPdfLandscapeService {
   }
   private makeIntermediateSong(week: ProgramPdf) {
     const song = week.meeting.middleSong
-      ? week.meeting.middleSong.songNumber + " " + week.meeting.middleSong.title + " (" + week.meeting.middleSong.source + ")"
+      ? week.meeting.middleSong.songNumber + " " + week.meeting.middleSong.title + " " + week.meeting.middleSong.source
       : week.meeting.intermediateSong;
     return [
       {
@@ -519,7 +519,7 @@ export class PrintPdfLandscapeService {
     ];
   }
   private makeFinalBlock(week: ProgramPdf) {
-    const song = week.meeting.lastSong ? week.meeting.lastSong.songNumber + " " + week.meeting.lastSong.title + " (" + week.meeting.lastSong.source + ")" : week.meeting.finalSong;
+    const song = week.meeting.lastSong ? week.meeting.lastSong.songNumber + " " + week.meeting.lastSong.title + " " + week.meeting.lastSong.source : week.meeting.finalSong;
     return [
       {
         table: {

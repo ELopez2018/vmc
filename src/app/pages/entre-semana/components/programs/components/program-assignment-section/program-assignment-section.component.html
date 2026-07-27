@@ -19,12 +19,12 @@
   <div class="row px-3 program__tesoros">
     @if (item.assignment.number == 1 || item.assignment.number == 2) {
     <div class="col-md-9 mt-1">
-      <div class="row">
-        <div class="col-md-1 ms-2 ms-xl-2 width-timeStart hover d-none d-xl-inline"
+      <div class="row program-assignment-line">
+        <div class="col-md-1 ms-2 ms-xl-2 width-timeStart program-time-start hover"
           (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
-        <div class="col-md-11 big-title p-0 ps-xl-2 m-0"
+        <div class="col-md-11 big-title program-assignment-title p-0 ps-xl-2 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
@@ -33,6 +33,7 @@
           <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
+          <vmc-assignment-source [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
@@ -46,12 +47,12 @@
     </div>
     } @else {
     <div class="col-md-5 mt-1">
-      <div class="row">
-        <div class="col-md-1 mx-2 width-timeStart hover d-none d-xl-inline"
+      <div class="row program-assignment-line">
+        <div class="col-md-1 mx-2 width-timeStart program-time-start hover"
           (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
-        <div class="col-md-11 big-title p-0 m-0"
+        <div class="col-md-11 big-title program-assignment-title p-0 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
@@ -60,6 +61,7 @@
           <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
+          <vmc-assignment-source [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
@@ -74,6 +76,7 @@
 
     <div class="col-md-3 mb-3 mb-md-0">
       @if (item.assignment.number == 3) {
+      <div class="d-md-none text-title-custom">Sala auxiliar</div>
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsibleB)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
@@ -83,6 +86,9 @@
       }
     </div>
     <div class="col-md-2 mb-3 mb-md-0">
+      @if (item.assignment.number == 3) {
+      <div class="d-md-none text-title-custom">Sala principal</div>
+      }
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
@@ -97,13 +103,13 @@
   @if (sectionMeeting == teachersSection) {
   <div class="row px-3 program__tesoros">
     <div class="col-md-5 mt-1">
-      <div class="row">
-        <div class="col-md-1 mx-2 width-timeStart hover d-none d-xl-inline"
+      <div class="row program-assignment-line">
+        <div class="col-md-1 mx-2 width-timeStart program-time-start hover"
           (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
 
-        <div class="col-md-11 big-title p-0 m-0"
+        <div class="col-md-11 big-title program-assignment-title p-0 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
@@ -111,6 +117,7 @@
           <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
+          <vmc-assignment-source [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
@@ -124,6 +131,7 @@
     </div>
 
     <div class="col-md-3 pe-0 mb-3 mb-md-0">
+      <div class="d-md-none text-title-custom">Sala auxiliar</div>
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsibleB)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
@@ -140,6 +148,7 @@
     </div>
 
     <div class="col-md-3 mb-3 pe-0 mb-md-0">
+      <div class="d-md-none text-title-custom">Sala principal</div>
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
@@ -161,12 +170,12 @@
   @if (item.assignment.title !== assignmentTitle.CONGREGATION_BIBLE_STUDY) {
   <div class="row px-3 program__tesoros">
     <div class="col-md-9">
-      <div class="row">
-        <div class="col-md-1 width-timeStart ms-2 hover d-none d-xl-inline"
+      <div class="row program-assignment-line">
+        <div class="col-md-1 width-timeStart ms-2 program-time-start hover"
           (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
-        <div class="col-md-11 big-title p-0 m-0 ps-xl-2 hover"
+        <div class="col-md-11 big-title program-assignment-title p-0 m-0 ps-xl-2 hover"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
@@ -174,6 +183,7 @@
           <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
+          <vmc-assignment-source [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
@@ -189,12 +199,12 @@
   } @else {
   <div class="row px-3 program__tesoros">
     <div class="col-md-8">
-      <div class="row">
-        <div class="col-md-1 width-timeStart ms-2 hover d-none d-xl-inline"
+      <div class="row program-assignment-line">
+        <div class="col-md-1 width-timeStart ms-2 program-time-start hover"
           (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
-        <div class="col-md-11 big-title p-0 m-0 ps-xl-2 hover"
+        <div class="col-md-11 big-title program-assignment-title p-0 m-0 ps-xl-2 hover"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
@@ -202,6 +212,7 @@
           <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
+          <vmc-assignment-source [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>

@@ -51,6 +51,23 @@ legend {
   font-size: 13px;
 }
 
+.program-line {
+  align-items: flex-start;
+}
+
+.program-time-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+  margin-right: 8px;
+  color: #455a64;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
 .publisher-warning-previous-week {
   color: var(--bs-primary, #0d6efd);
   // font-weight: 700;
@@ -83,6 +100,32 @@ $icon-size: 42px;
   position: absolute;
   right: 0;
   width: 20px;
+}
+
+@media (max-width: 767.98px) {
+  .program__reunion {
+    font-size: 0.92rem;
+  }
+
+  .program-line > [class*="col-"] {
+    min-width: 0;
+  }
+
+  .program-time-start {
+    min-width: 38px;
+    margin-right: 6px;
+    font-size: 0.74rem;
+    vertical-align: text-top;
+  }
+
+  .text-title-custom {
+    text-align: start;
+  }
+
+  .text-publisher {
+    display: inline-block;
+    margin-bottom: 8px;
+  }
 }
 
 @media (min-width: 1366px) {

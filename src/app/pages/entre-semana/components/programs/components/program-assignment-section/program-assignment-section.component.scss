@@ -63,9 +63,63 @@ legend {
   font-size: 13px;
 }
 
+.program-assignment-line {
+  align-items: flex-start;
+  flex-wrap: nowrap;
+}
+
+.program-time-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 42px;
+  max-width: 42px;
+  margin-right: 8px;
+  color: #455a64;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.program-assignment-title {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
 .publisher-warning-previous-week {
   color: var(--bs-primary, #0d6efd);
   // font-weight: 700;
+}
+
+@media (max-width: 767.98px) {
+  legend {
+    height: auto;
+    min-height: 36px;
+    line-height: 1.2;
+    padding: 9px 36px 9px 10px;
+  }
+
+  .program-time-start {
+    flex-basis: 38px;
+    max-width: 38px;
+    margin: 2px 6px 0 0 !important;
+    font-size: 0.74rem;
+  }
+
+  .program-assignment-title {
+    white-space: normal;
+  }
+
+  .big-title {
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .text-publisher {
+    display: inline-block;
+    margin-bottom: 6px;
+  }
 }
 
 @media (min-width: 1366px) {

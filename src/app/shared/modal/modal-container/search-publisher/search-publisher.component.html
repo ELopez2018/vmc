@@ -16,6 +16,14 @@
                   <div class="col-md-2">Tiempo:</div>
                   <div class="col-md-2">{{ assignment.assignment.time }} {{ assignment.assignment.timeType }}</div>
                 </div>
+                @if (assignment.assignment.sourceHtml || assignment.assignment.sourceText) {
+                <div class="row">
+                  <div class="col-md-2">Fuente:</div>
+                  <div class="col-md-10">
+                    <vmc-assignment-source [assignment]="assignment.assignment"></vmc-assignment-source>
+                  </div>
+                </div>
+                }
                 <div class="row">
                   <div class="col-md-2">Asignado</div>
                   <div class="col-md-5 h6">

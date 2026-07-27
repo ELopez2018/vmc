@@ -11,12 +11,13 @@ import {
 } from "../publisher-warning.util";
 import { ASSIGNMENT_TITLE, MeetingRoom, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
+import { AssignmentSourceComponent } from "src/app/shared/components/assignment-source/assignment-source.component";
 
 @Component({
   selector: "vmc-program-assignment-section",
   templateUrl: "./program-assignment-section.component.html",
   styleUrls: ["./program-assignment-section.component.scss"],
-  imports: [CommonModule, SharedModule, NgbTooltipModule],
+  imports: [CommonModule, SharedModule, NgbTooltipModule, AssignmentSourceComponent],
 })
 export class ProgramAssignmentSectionComponent {
   @Input() public week!: ProgramPdf;

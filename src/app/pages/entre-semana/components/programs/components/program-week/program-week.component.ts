@@ -71,6 +71,7 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
   private publisherSignature = "";
   private viewInitialized = false;
   private tooltipShowTimeout?: ReturnType<typeof setTimeout>;
+  private collapsedSectionKeys = new Set<string>();
 
   public ngAfterViewInit(): void {
     this.viewInitialized = true;
@@ -107,6 +108,19 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
 
   public onAddAssignment(event: { program: ProgramPdf; sectionMeeting: string }): void {
     this.addAssignment.emit(event);
+  }
+
+  public toggleSection(sectionMeeting: string): void {
+    if (this.collapsedSectionKeys.has(sectionMeeting)) {
+      this.collapsedSectionKeys.delete(sectionMeeting);
+      return;
+    }
+
+    this.collapsedSectionKeys.add(sectionMeeting);
+  }
+
+  public isSectionCollapsed(sectionMeeting: string): boolean {
+    return this.collapsedSectionKeys.has(sectionMeeting);
   }
 
   public getPublisherTooltipText(publisher?: Publisher | null, fallbackText = ""): string {

@@ -1,13 +1,22 @@
 @if (renderFieldset) {
 <fieldset class="mb-0">
-  <legend [class]="legendClass + ' my-md-2'">
-    {{ title }}
-    @if (isAdmin) {
-    <mat-icon (click)="onAddAssignment()">edit</mat-icon>
-    }
+  <legend [class]="legendClass + ' program-section-legend my-md-2'">
+    <span class="section-title-text">{{ title }}</span>
+    <span class="section-actions">
+      <button class="section-action-button" type="button" [attr.aria-expanded]="!sectionCollapsed" aria-label="Colapsar seccion" (click)="toggleSection()">
+        <mat-icon>{{ sectionCollapsed ? "expand_more" : "expand_less" }}</mat-icon>
+      </button>
+      @if (isAdmin) {
+      <button class="section-action-button" type="button" aria-label="Editar seccion" (click)="onAddAssignment()">
+        <mat-icon>edit</mat-icon>
+      </button>
+      }
+    </span>
   </legend>
 
+  @if (!sectionCollapsed) {
   <ng-container [ngTemplateOutlet]="sectionRows"></ng-container>
+  }
 </fieldset>
 } @else {
 <ng-container [ngTemplateOutlet]="sectionRows"></ng-container>
@@ -16,7 +25,7 @@
 <ng-template #sectionRows>
   @for (item of sectionItems; track item.id) {
   @if (sectionMeeting == treasuresSection) {
-  <div class="row px-3 program__tesoros">
+  <div class="row px-3 program__tesoros program-assignment-row" [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     @if (item.assignment.number == 1 || item.assignment.number == 2) {
     <div class="col-md-9 mt-1">
       <div class="row program-assignment-line">
@@ -26,6 +35,9 @@
         </div>
         <div class="col-md-11 big-title program-assignment-title p-0 ps-xl-2 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
+          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)" aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
+            <mat-icon>{{ isAssignmentCollapsed(item) ? "expand_more" : "expand_less" }}</mat-icon>
+          </button>
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
@@ -33,11 +45,11 @@
           <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
-          <vmc-assignment-source [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
+          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
-    <div class="col-md-3 mb-3 mb-md-0">
+    <div class="col-md-3 mb-3 mb-md-0 program-assignment-detail">
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
@@ -48,12 +60,15 @@
     } @else {
     <div class="col-md-5 mt-1">
       <div class="row program-assignment-line">
-        <div class="col-md-1 mx-2 width-timeStart program-time-start hover"
+        <div class="col-md-1 ms-2 ms-xl-2 width-timeStart program-time-start hover"
           (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.START_TIME)">
           {{ adapterTime(item.startTime) }}
         </div>
-        <div class="col-md-11 big-title program-assignment-title p-0 m-0"
+        <div class="col-md-11 big-title program-assignment-title p-0 ps-xl-2 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
+          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)" aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
+            <mat-icon>{{ isAssignmentCollapsed(item) ? "expand_more" : "expand_less" }}</mat-icon>
+          </button>
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
@@ -61,12 +76,12 @@
           <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
-          <vmc-assignment-source [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
+          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
 
-    <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom">
+    <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom program-assignment-detail">
       @if (item.assignment.showTips) {
       <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TIPS)">
         {{ item.assignment.tips }}
@@ -74,7 +89,7 @@
       }
     </div>
 
-    <div class="col-md-3 mb-3 mb-md-0">
+    <div class="col-md-3 mb-3 mb-md-0 program-assignment-detail">
       @if (item.assignment.number == 3) {
       <div class="d-md-none text-title-custom">Sala auxiliar</div>
       <span class="hover text-publisher"
@@ -85,7 +100,7 @@
       </span>
       }
     </div>
-    <div class="col-md-2 mb-3 mb-md-0">
+    <div class="col-md-2 mb-3 mb-md-0 program-assignment-detail">
       @if (item.assignment.number == 3) {
       <div class="d-md-none text-title-custom">Sala principal</div>
       }
@@ -101,7 +116,7 @@
   }
 
   @if (sectionMeeting == teachersSection) {
-  <div class="row px-3 program__tesoros">
+  <div class="row px-3 program__tesoros program-assignment-row" [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     <div class="col-md-5 mt-1">
       <div class="row program-assignment-line">
         <div class="col-md-1 mx-2 width-timeStart program-time-start hover"
@@ -111,18 +126,21 @@
 
         <div class="col-md-11 big-title program-assignment-title p-0 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
+          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)" aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
+            <mat-icon>{{ isAssignmentCollapsed(item) ? "expand_more" : "expand_less" }}</mat-icon>
+          </button>
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
           <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
-          <vmc-assignment-source [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
+          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
 
-    <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom">
+    <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom program-assignment-detail">
       @if (item.assignment.showTips) {
       <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TIPS)">
         {{ item.assignment.tips }}
@@ -130,7 +148,7 @@
       }
     </div>
 
-    <div class="col-md-3 pe-0 mb-3 mb-md-0">
+    <div class="col-md-3 pe-0 mb-3 mb-md-0 program-assignment-detail">
       <div class="d-md-none text-title-custom">Sala auxiliar</div>
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsibleB)"
@@ -147,7 +165,7 @@
       }
     </div>
 
-    <div class="col-md-3 mb-3 pe-0 mb-md-0">
+    <div class="col-md-3 mb-3 pe-0 mb-md-0 program-assignment-detail">
       <div class="d-md-none text-title-custom">Sala principal</div>
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
@@ -168,7 +186,7 @@
 
   @if (sectionMeeting == livingSection) {
   @if (item.assignment.title !== assignmentTitle.CONGREGATION_BIBLE_STUDY) {
-  <div class="row px-3 program__tesoros">
+  <div class="row px-3 program__tesoros program-assignment-row" [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     <div class="col-md-9">
       <div class="row program-assignment-line">
         <div class="col-md-1 width-timeStart ms-2 program-time-start hover"
@@ -177,17 +195,20 @@
         </div>
         <div class="col-md-11 big-title program-assignment-title p-0 m-0 ps-xl-2 hover"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
+          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)" aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
+            <mat-icon>{{ isAssignmentCollapsed(item) ? "expand_more" : "expand_less" }}</mat-icon>
+          </button>
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
           <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
-          <vmc-assignment-source [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
+          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
-    <div class="col-md-3 mb-3 mb-md-0">
+    <div class="col-md-3 mb-3 mb-md-0 program-assignment-detail">
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
@@ -197,7 +218,7 @@
     </div>
   </div>
   } @else {
-  <div class="row px-3 program__tesoros">
+  <div class="row px-3 program__tesoros program-assignment-row" [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     <div class="col-md-8">
       <div class="row program-assignment-line">
         <div class="col-md-1 width-timeStart ms-2 program-time-start hover"
@@ -206,24 +227,27 @@
         </div>
         <div class="col-md-11 big-title program-assignment-title p-0 m-0 ps-xl-2 hover"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
+          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)" aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
+            <mat-icon>{{ isAssignmentCollapsed(item) ? "expand_more" : "expand_less" }}</mat-icon>
+          </button>
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
           <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
-          <vmc-assignment-source [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
+          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
-    <div class="col-md-1 mt-0 text-end text-title-custom">
+    <div class="col-md-1 mt-0 text-end text-title-custom program-assignment-detail">
       @if (item.assignment.showTips) {
       <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TIPS)">
         {{ item.assignment.tips }}
       </span>
       }
     </div>
-    <div class="col-md-3 mb-3 mb-md-0">
+    <div class="col-md-3 mb-3 mb-md-0 program-assignment-detail">
       <span class="hover text-publisher"
         [ngClass]="getPublisherTextClasses(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"

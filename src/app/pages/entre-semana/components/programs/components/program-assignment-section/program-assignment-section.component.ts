@@ -39,6 +39,9 @@ export class ProgramAssignmentSectionComponent {
   public readonly livingSection = SectionMeeting.NUESTRA_VIDA_CRISTIANA;
   public readonly publisherTooltipPlacement = "top";
 
+  public sectionCollapsed = false;
+  private collapsedAssignmentKeys = new Set<string>();
+
   public get sectionItems(): WeeklyProgramPdF[] {
     const items = this.week?.weeklyPrograms ?? [];
 
@@ -63,11 +66,34 @@ export class ProgramAssignmentSectionComponent {
     this.weeklyProgramChange.emit({ item, type });
   }
 
+  public toggleSection(): void {
+    this.sectionCollapsed = !this.sectionCollapsed;
+  }
+
+  public toggleAssignment(item: WeeklyProgramPdF): void {
+    const key = this.getAssignmentCollapseKey(item);
+
+    if (this.collapsedAssignmentKeys.has(key)) {
+      this.collapsedAssignmentKeys.delete(key);
+      return;
+    }
+
+    this.collapsedAssignmentKeys.add(key);
+  }
+
+  public isAssignmentCollapsed(item: WeeklyProgramPdF): boolean {
+    return this.collapsedAssignmentKeys.has(this.getAssignmentCollapseKey(item));
+  }
+
   public getPublisherTextClasses(publisher?: Publisher | null): Record<string, boolean> {
     return getPublisherWarningTextClasses(publisher);
   }
 
   public getPublisherTooltipClass(publisher?: Publisher | null): string {
     return getPublisherWarningTooltipClass(publisher);
+  }
+
+  private getAssignmentCollapseKey(item: WeeklyProgramPdF): string {
+    return `${this.sectionMeeting}:${item.id ?? item.assignment?.id ?? item.assignment?.number ?? "unknown"}`;
   }
 }

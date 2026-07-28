@@ -16,7 +16,28 @@
 </head>
 
 <body>
-  <app-root></app-root>
+  <app-root>
+    <div class="app-loading app-loading--boot" role="status" aria-live="polite" aria-label="Cargando la aplicacion">
+      <div class="app-loading__panel">
+        <div class="app-loading__brand">
+          <img src="assets/img/Logo.png" alt="VMC">
+          <div>
+            <span>Vida y Ministerio Cristianos</span>
+            <strong>Cargando la aplicación</strong>
+          </div>
+        </div>
+        <div class="app-loading__progress">
+          <span class="app-loading__ring" aria-hidden="true"></span>
+          <span>Preparando la vista...</span>
+        </div>
+        <div class="app-loading__skeleton" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </app-root>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>

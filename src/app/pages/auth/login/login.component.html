@@ -1,14 +1,19 @@
 <section class="login">
   <div class="login__brand">
-    <div class="login__mark">VMC</div>
     <div>
       <p class="login__eyebrow">Vida y Ministerio Cristianos</p>
-      <h1>Ingresar al sistema</h1>
+      <h1>Bienvenido</h1>
     </div>
+    <img class="login__logo" src="assets/img/Logo.png" alt="VMC">
   </div>
 
   @if (!showSpinner) {
   <form class="login__form" [formGroup]="credential" (ngSubmit)="login()">
+    <div class="login__form-head">
+      <span>Acceso seguro</span>
+      <strong>Ingresa a tu cuenta</strong>
+    </div>
+
     <label class="login__field" for="username">
       <span>Usuario</span>
       <input

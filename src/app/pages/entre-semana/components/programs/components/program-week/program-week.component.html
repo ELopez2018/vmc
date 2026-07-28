@@ -1,10 +1,16 @@
 <div class="container-fluid p-0 program__body pb-4 pt-1 mb-4 shadow-page">
   @if (semana.assembly != null && semana.assembly != "") {
-  <div class="row text-center assembly pt-5 mb-5">
-    <div class="col-md-12 mt-5 p-5">
-      <h2>{{ semana.assembly | uppercase }}</h2>
-      <h4>{{ showDayOfMeeting(semana.meeting.week) }}</h4>
-    </div>
+  <div class="program-event-shell">
+    <article class="program-event-card">
+      <div class="program-event-card__content">
+        <span class="program-event-card__eyebrow">Evento especial</span>
+        <h2>{{ semana.assembly | uppercase }}</h2>
+        <p>
+          <mat-icon aria-hidden="true">event</mat-icon>
+          <span>{{ showDayOfMeeting(semana.meeting.week) }}</span>
+        </p>
+      </div>
+    </article>
   </div>
   }
 
@@ -155,12 +161,20 @@
 
     @if (roomA) {
     <fieldset>
-      <legend class="program__title-vida my-md-2">
-        NUESTRA VIDA CRISTIANA
-        @if (isAdmin) {
-        <mat-icon (click)="addAssignment.emit({ program: semana, sectionMeeting: livingSection })">edit</mat-icon>
-        }
+      <legend class="program__title-vida program-section-legend my-md-2">
+        <span class="section-title-text">NUESTRA VIDA CRISTIANA</span>
+        <span class="section-actions">
+          <button class="section-action-button" type="button" [attr.aria-expanded]="!isSectionCollapsed(livingSection)" aria-label="Colapsar seccion" (click)="toggleSection(livingSection)">
+            <mat-icon>{{ isSectionCollapsed(livingSection) ? "expand_more" : "expand_less" }}</mat-icon>
+          </button>
+          @if (isAdmin) {
+          <button class="section-action-button" type="button" aria-label="Editar seccion" (click)="addAssignment.emit({ program: semana, sectionMeeting: livingSection })">
+            <mat-icon>edit</mat-icon>
+          </button>
+          }
+        </span>
       </legend>
+      @if (!isSectionCollapsed(livingSection)) {
       <div class="row px-3 program-line">
         <div class="col-md-12 mt-1">
           <span class="program-time-start hover" (click)="onProgramChange(programChangeType.START_TIME_INTERMEDIATE_SONG)">
@@ -186,6 +200,7 @@
         [renderFieldset]="false"
         (weeklyProgramChange)="onWeeklyProgramChange($event)"
       ></vmc-program-assignment-section>
+      }
     </fieldset>
     }
 

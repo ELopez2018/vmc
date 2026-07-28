@@ -503,3 +503,309 @@ search-publisher .sub-modal {
   to   { transform: scaleX(0); }
 }
 /* ====== End VMC Toast ====== */
+
+.section-title-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.program-section-legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-actions {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 8px;
+}
+
+.section-action-button,
+.assignment-collapse-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.section-action-button {
+  width: 28px;
+  height: 28px;
+}
+
+.assignment-collapse-button {
+  width: 22px;
+  height: 22px;
+  margin-right: 2px;
+  padding: 0;
+  color: #455a64;
+  vertical-align: middle;
+}
+
+.section-action-button mat-icon,
+.assignment-collapse-button mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.program-assignment-row--collapsed > :first-child {
+  flex: 0 0 100%;
+  max-width: 100%;
+  width: 100%;
+}
+
+.program-assignment-row--collapsed .program-assignment-detail {
+  display: none;
+}
+
+.program-event-shell {
+  padding: clamp(1rem, 4vw, 2rem);
+}
+
+.program-event-card {
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9)),
+    linear-gradient(120deg, #12364a, #d5a333);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 22px 55px rgba(15, 23, 42, 0.14);
+  display: grid;
+  min-height: clamp(220px, 34vw, 360px);
+  overflow: hidden;
+  padding: clamp(1.25rem, 5vw, 3rem);
+  position: relative;
+}
+
+.program-event-card::before {
+  background:
+    linear-gradient(135deg, transparent 0 45%, rgba(18, 54, 74, 0.1) 45% 46%, transparent 46%),
+    radial-gradient(circle at 100% 0, rgba(213, 163, 51, 0.28), transparent 18rem);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.program-event-card__content {
+  margin: 0 auto;
+  max-width: 760px;
+  position: relative;
+  text-align: center;
+}
+
+.program-event-card__eyebrow {
+  background: #12364a;
+  border-radius: 999px;
+  color: #ffffff;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 0.85rem;
+  padding: 0.38rem 0.8rem;
+}
+
+.program-event-card h2 {
+  color: #10243a;
+  font-size: clamp(1.65rem, 5vw, 3.1rem);
+  font-weight: 800;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.program-event-card p {
+  align-items: center;
+  color: #455a64;
+  display: inline-flex;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 700;
+  gap: 0.45rem;
+  margin: 1rem 0 0;
+}
+
+.program-event-card mat-icon {
+  color: #d5a333;
+  height: 22px;
+  width: 22px;
+}
+
+.app-loading {
+  align-items: center;
+  background:
+    linear-gradient(120deg, rgba(7, 27, 45, 0.94), rgba(11, 61, 75, 0.9), rgba(213, 163, 51, 0.82)),
+    #071b2d;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  position: fixed;
+  z-index: 9999;
+}
+
+.app-loading--content {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 56px;
+  z-index: 900;
+}
+
+.app-loading--content .app-loading__panel {
+  max-width: 460px;
+}
+
+.app-loading::before,
+.app-loading::after {
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.app-loading::before {
+  background:
+    linear-gradient(135deg, transparent 0 42%, rgba(255, 255, 255, 0.12) 42% 43%, transparent 43%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 86px);
+}
+
+.app-loading::after {
+  background: radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.24), transparent 20rem);
+}
+
+.app-loading__panel {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  border-radius: 8px;
+  box-shadow: 0 28px 80px rgba(2, 12, 23, 0.35);
+  display: grid;
+  gap: 1.25rem;
+  max-width: 520px;
+  padding: clamp(1.2rem, 5vw, 2rem);
+  position: relative;
+  width: min(92vw, 520px);
+}
+
+.app-loading__brand {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.app-loading__brand img {
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+  flex: 0 0 88px;
+  height: 64px;
+  object-fit: cover;
+  width: 88px;
+}
+
+.app-loading__brand div {
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.app-loading__brand span {
+  color: #0f766e;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.app-loading__brand strong {
+  color: #10243a;
+  font-size: clamp(1.25rem, 4vw, 1.85rem);
+  line-height: 1.1;
+}
+
+.app-loading__progress {
+  align-items: center;
+  color: #455a64;
+  display: flex;
+  font-size: 0.95rem;
+  font-weight: 700;
+  gap: 0.85rem;
+}
+
+.app-loading__ring {
+  animation: appLoadingSpin 850ms linear infinite;
+  border: 4px solid rgba(15, 118, 110, 0.16);
+  border-left-color: #0f766e;
+  border-radius: 50%;
+  flex: 0 0 42px;
+  height: 42px;
+  width: 42px;
+}
+
+.app-loading__skeleton {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.app-loading__skeleton span {
+  animation: appLoadingPulse 1.25s ease-in-out infinite;
+  background: linear-gradient(90deg, #e8eef4, #f8fafc, #e8eef4);
+  background-size: 220% 100%;
+  border-radius: 999px;
+  display: block;
+  height: 14px;
+}
+
+.app-loading__skeleton span:nth-child(2) {
+  width: 82%;
+}
+
+.app-loading__skeleton span:nth-child(3) {
+  width: 58%;
+}
+
+@keyframes appLoadingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes appLoadingPulse {
+  0% {
+    background-position: 120% 0;
+  }
+
+  100% {
+    background-position: -120% 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .app-loading__brand {
+    align-items: flex-start;
+  }
+
+  .app-loading__brand img {
+    flex-basis: 70px;
+    height: 54px;
+    width: 70px;
+  }
+}
+
+@media (min-width: 768px) {
+  .app-loading--content {
+    left: 240px;
+    top: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-loading__ring,
+  .app-loading__skeleton span {
+    animation: none;
+  }
+}

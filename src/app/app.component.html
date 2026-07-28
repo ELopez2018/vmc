@@ -1,8 +1,25 @@
 <router-outlet></router-outlet>
-@if (
-showMatspinner
-) {
-<div class="spinner-container">
-  <mat-spinner></mat-spinner>
+@if (showMatspinner) {
+<div class="app-loading" [class.app-loading--content]="isDashboardRoute" role="status" aria-live="polite" aria-label="Cargando el programa">
+  <div class="app-loading__panel">
+    <div class="app-loading__brand">
+      <img src="assets/img/Logo.png" alt="VMC">
+      <div>
+        <span>Vida y Ministerio Cristianos</span>
+        <strong>Cargando el programa</strong>
+      </div>
+    </div>
+
+    <div class="app-loading__progress">
+      <mat-spinner diameter="42"></mat-spinner>
+      <span>Preparando la información...</span>
+    </div>
+
+    <div class="app-loading__skeleton" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
 </div>
 }

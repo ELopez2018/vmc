@@ -2,6 +2,8 @@ import { ChangeDetectorRef, Component, inject } from "@angular/core";
 import { MediaMatcher } from "@angular/cdk/layout";
 import { DataService } from "./core/services/data/data.service";
 import { LoaderService } from "./core/services/loader/loader.service";
+import { NavigationEnd, Router } from "@angular/router";
+import { filter } from "rxjs/operators";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
@@ -10,6 +12,7 @@ import { LoaderService } from "./core/services/loader/loader.service";
 })
 export class AppComponent {
   showMatspinner = false;
+  isDashboardRoute = false;
   loaderService = inject(LoaderService);
   title = "vmc";
   showFiller = true;
@@ -34,6 +37,7 @@ export class AppComponent {
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
     private dataService: DataService,
+    private router: Router,
   ) {
     this.mobileQuery = media.matchMedia("(max-width: 600px)");
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
@@ -47,6 +51,10 @@ export class AppComponent {
 
     this.loaderService.getShowMatspinner$().subscribe((show) => {
       this.showMatspinner = show;
+    });
+
+    this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe((event) => {
+      this.isDashboardRoute = event.urlAfterRedirects.startsWith("/tablero");
     });
   }
 

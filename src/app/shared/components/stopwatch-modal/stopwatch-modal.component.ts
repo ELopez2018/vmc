@@ -48,13 +48,12 @@ export class StopwatchModalComponent implements OnInit, OnDestroy {
 
   static format(ms: number): string {
     const totalSec = Math.floor(ms / 1000);
+    const cs = Math.floor((ms % 1000) / 10); // centiseconds (2 digits)
     const h = Math.floor(totalSec / 3600);
     const m = Math.floor((totalSec % 3600) / 60);
     const s = totalSec % 60;
-    if (h > 0) {
-      return `${pad(h)}:${pad(m)}:${pad(s)}`;
-    }
-    return `${pad(m)}:${pad(s)}`;
+    const base = h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+    return `${base}.${pad(cs)}`;
   }
 
   toggleStop(): void {

@@ -48,9 +48,9 @@ export class StopwatchService {
     subject.next({ ...state });
 
     const interval = setInterval(() => {
-      state.elapsed += 100;
+      state.elapsed += 10;
       subject.next({ ...state });
-    }, 100);
+    }, 10);
     this.intervals.set(id, interval);
   }
 

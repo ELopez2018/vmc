@@ -13,8 +13,11 @@
 <div class="container-fluid assignment-sheet-printer-shell" [class.viewer-modal]="isModal"
   [class.viewer-page]="!isModal">
   @if(isModal){
-  <div class="modal-close-slot">
-    <vmc-icon-close (click)="onCLose()"></vmc-icon-close>
+  <div class="viewer-titlebar">
+    <span class="viewer-titlebar__title"><i class="pi pi-file-pdf"></i> Hoja de asignación</span>
+    <button class="viewer-titlebar__close" type="button" aria-label="Cerrar" (click)="onCLose()">
+      <i class="pi pi-times"></i>
+    </button>
   </div>
   }
 

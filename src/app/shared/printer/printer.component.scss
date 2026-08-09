@@ -65,15 +65,50 @@ ng2-pdfjs-viewer {
   width: 100% !important;
 }
 
-.modal-close-slot {
+.viewer-titlebar {
   position: absolute;
-  right: 0.75rem;
-  top: 0.75rem;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.4rem;
+  background: #0d6efd;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.75rem;
   z-index: 1060;
-}
+  user-select: none;
 
-vmc-icon-close {
-  cursor: pointer;
+  &__title {
+    font-size: 0.85rem;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__close {
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #e74c3c;
+    }
+  }
 }
 
 .printer-filter-fab {
@@ -100,6 +135,10 @@ vmc-icon-close {
 .container-fluid.viewer-page .printer-filter-fab {
   position: fixed;
   z-index: 2000;
+}
+
+.container-fluid.viewer-modal .pdf-viewer-row {
+  padding-top: 2.4rem;
 }
 
 .container-fluid.viewer-modal .printer-filter-fab {

@@ -1,7 +1,8 @@
-@if (renderFieldset) {
 <vmc-stopwatch-modal *ngIf="activeStopwatchId !== null" [assignmentId]="activeStopwatchId"
   [assignmentTitle]="activeStopwatchTitle" (closed)="closeStopwatch()">
 </vmc-stopwatch-modal>
+
+@if (renderFieldset) {
 <fieldset class="mb-0">
   <legend [class]="legendClass + ' program-section-legend my-md-2'">
     <span class="section-title-text">{{ title }}</span>

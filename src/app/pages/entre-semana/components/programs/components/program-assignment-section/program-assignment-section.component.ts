@@ -67,9 +67,11 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
   /** 1 clic = parar/reanudar · 2 clics = reiniciar */
   public onInlineTimerClick(id: number): void {
     if (this.clickTimers.has(id)) {
+      // Segundo clic → reiniciar desde 0 y reanudar
       clearTimeout(this.clickTimers.get(id));
       this.clickTimers.delete(id);
       this.stopwatchService.reset(id);
+      this.stopwatchService.start(id);
       return;
     }
     const state = this.stopwatchService.getState(id);
@@ -84,11 +86,13 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
 
   public formatElapsed(ms: number): string {
     const totalSec = Math.floor(ms / 1000);
+    const cs = Math.floor((ms % 1000) / 10);
     const h = Math.floor(totalSec / 3600);
     const m = Math.floor((totalSec % 3600) / 60);
     const s = totalSec % 60;
     const pad = (n: number) => n.toString().padStart(2, "0");
-    return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+    const base = h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+    return `${base}.${pad(cs)}`;
   }
 
   public get sectionItems(): WeeklyProgramPdF[] {

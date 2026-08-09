@@ -215,11 +215,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     );
   }
   selected(item: any) {
-    if (item.hasOwnProperty("count")) {
-      this.onClicked.emit(item.user);
-      return;
-    }
-    this.onClicked.emit(item);
+    this.onClicked.emit(this.resolveSelectedPublisher(item));
   }
 
   clean() {
@@ -411,6 +407,20 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
   private getPublisherFromItem(item: any): Publisher | null {
     return item?.userEnt ?? item?.user ?? item ?? null;
+  }
+
+  private resolveSelectedPublisher(item: any): Publisher | null {
+    if (!item) {
+      return null;
+    }
+
+    const normalizedType = (this.type ?? "").toLowerCase();
+
+    if (normalizedType === "assistant") {
+      return item.userEnt ?? item.user ?? item;
+    }
+
+    return item.user ?? item.userEnt ?? item;
   }
 
   private loadPublishersHistory(fecha: string, assignmentTitle: string): void {

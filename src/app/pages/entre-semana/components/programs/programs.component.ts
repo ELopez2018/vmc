@@ -712,7 +712,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
           return;
         }
         this.modalService
-          .assignPublisherWeeklyProgram(itemResponsibleB, this.assignmentType, null, MeetingRoom.AUXILIARY)
+          .assignPublisherWeeklyProgram(itemResponsibleB, this.assignmentType, WeeklyProgramChangeType.RESPONSIBLE, MeetingRoom.AUXILIARY)
           .then((data) => {
             if (data === ModalResult.CLOSE) {
               return;
@@ -757,7 +757,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
           return;
         }
         this.modalService
-          .assignPublisherWeeklyProgram(itemAssistantB, this.assignmentType, null, MeetingRoom.AUXILIARY)
+          .assignPublisherWeeklyProgram(itemAssistantB, this.assignmentType, WeeklyProgramChangeType.ASSISTANT, MeetingRoom.AUXILIARY)
           .then((data: any) => {
             if (data === ModalResult.CLOSE) {
               return;

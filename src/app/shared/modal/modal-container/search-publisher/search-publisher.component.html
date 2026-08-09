@@ -11,19 +11,19 @@
             <fieldset class="fieldset-basic assignment-summary">
               <legend></legend>
 
-              <div class="frequent-summary-grid">
-                <div class="summary-item summary-item--wide">
+              <div class="frequent-summary-row">
+                <div class="summary-chip summary-chip--title">
                   <span class="summary-label">Título</span>
                   <span class="summary-value">{{ assignment.assignment.title }}</span>
                 </div>
 
-                <div class="summary-item">
+                <div class="summary-chip summary-chip--time">
                   <span class="summary-label">Tiempo</span>
                   <span class="summary-value">{{ assignment.assignment.time }} {{ assignment.assignment.timeType
                     }}</span>
                 </div>
 
-                <div class="summary-item summary-item--wide summary-item--inline">
+                <div class="summary-chip summary-chip--assignment summary-chip--inline">
                   <span class="summary-label">Asignado</span>
                   <div class="summary-inline-row">
                     <input class="form-control"
@@ -33,20 +33,20 @@
                   </div>
                 </div>
 
-                <div class="summary-item">
+                <div class="summary-chip summary-chip--role">
                   <span class="summary-label">Asignación</span>
                   <span class="summary-value">{{ type === "responsible" ? "Responsable" : "Asistente" }}</span>
                 </div>
-
-                @if (assignment.assignment.sourceHtml || assignment.assignment.sourceText) {
-                <div class="summary-item summary-item--full">
-                  <span class="summary-label">Fuente</span>
-                  <div class="summary-source">
-                    <vmc-assignment-source [assignment]="assignment.assignment"></vmc-assignment-source>
-                  </div>
-                </div>
-                }
               </div>
+
+              @if (assignment.assignment.sourceHtml || assignment.assignment.sourceText) {
+              <div class="summary-source-wrap">
+                <span class="summary-label">Fuente</span>
+                <div class="summary-source">
+                  <vmc-assignment-source [assignment]="assignment.assignment"></vmc-assignment-source>
+                </div>
+              </div>
+              }
             </fieldset>
             }
 

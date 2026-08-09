@@ -1,0 +1,39 @@
+.inline-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: #f0f0f0;
+  color: #555;
+  font-size: 0.8rem;
+  font-family: "Courier New", monospace;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #e0e0e0;
+  }
+
+  &.inline-timer--running {
+    background: #fff3cd;
+    color: #856404;
+
+    i {
+      animation: pulse 1s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}

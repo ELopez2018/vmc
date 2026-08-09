@@ -1,41 +1,55 @@
 <div class="flex justify-content-center mb-3">
   <!-- <p-selectButton [options]="'Small'" [(ngModel)]="selectedSize" [multiple]="false" optionLabel="name" optionValue="class"></p-selectButton> -->
 </div>
-<p-table [value]="assignment"  [tableStyle]="{ 'min-width': '50rem' }" [scrollable]="true" scrollHeight="650px" [styleClass]="'p-datatable-sm'">
+
+<!-- Modal del cronómetro -->
+<vmc-stopwatch-modal *ngIf="activeStopwatchId !== null" [assignmentId]="activeStopwatchId"
+  [assignmentTitle]="getAssignmentTitle(activeStopwatchId)" (closed)="closeStopwatch()">
+</vmc-stopwatch-modal>
+
+<p-table [value]="assignment" [tableStyle]="{ 'min-width': '50rem' }" [scrollable]="true" scrollHeight="650px"
+  [styleClass]="'p-datatable-sm'">
   <ng-template pTemplate="header">
-      <tr>
-          <th>id</th>
-          <th>Posicion</th>
-          <th>Semana</th>
-          <th>Sección</th>
-          <th>Titulo</th>
-          <th>Fuente</th>
-          <th>Tiempo</th>
-          <th></th>
-      </tr>
+    <tr>
+      <th>id</th>
+      <th>Posicion</th>
+      <th>Semana</th>
+      <th>Sección</th>
+      <th>Titulo</th>
+      <th>Fuente</th>
+      <th>Tiempo</th>
+      <th></th>
+    </tr>
   </ng-template>
   <ng-template pTemplate="body" let-item>
-      <tr>
-          <td>{{ item.id }}</td>
-          <td>{{ item.number }}</td>
-         <td>{{ item.meeting.week | date:'dd-MM-yyyy' }}</td>
-          <td>{{ item.sectionMeeting }}</td>
-          <td>{{ item.title }}</td>
-          <td>
-            <vmc-assignment-source [assignment]="item" [compact]="true"></vmc-assignment-source>
-          </td>
-          <td>{{ item.time }}</td>
-          <td>
-            <!-- <p-button icon="pi pi-check" styleClass="p-button-rounded p-button-text"></p-button>
-            <p-button icon="pi pi-bookmark" styleClass="p-button-rounded p-button-secondary p-button-text"></p-button>
-            <p-button icon="pi pi-search" styleClass="p-button-rounded p-button-success p-button-text"></p-button>
-            <p-button icon="pi pi-user" styleClass="p-button-rounded p-button-info p-button-text"></p-button>
-            <p-button icon="pi pi-bell" styleClass="p-button-rounded p-button-warning p-button-text"></p-button> -->
-            <!-- <p-button icon="pi pi-user-edit" (onClick)="selectedEdit(item)" styleClass="p-button-rounded p-button-help p-button-text"></p-button> -->
-            <p-button icon="pi pi-edit" (onClick)="selectedEdit(item)" styleClass="p-button-rounded p-button-help p-button-text"></p-button>
-            <p-button icon="pi pi-times" (onClick)="toDelete(item)" styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
-
-          </td>
-      </tr>
+    <tr>
+      <td>{{ item.id }}</td>
+      <td>{{ item.number }}</td>
+      <td>{{ item.meeting.week | date:'dd-MM-yyyy' }}</td>
+      <td>{{ item.sectionMeeting }}</td>
+      <td>{{ item.title }}</td>
+      <td>
+        <vmc-assignment-source [assignment]="item" [compact]="true"></vmc-assignment-source>
+      </td>
+      <td>
+        {{ item.time }}
+        <span *ngIf="stopwatchService.getState(item.id).elapsed > 0 || stopwatchService.getState(item.id).running"
+          class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(item.id).running"
+          pTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" tooltipPosition="top"
+          (click)="onInlineTimerClick(item.id)">
+          <i class="pi pi-stopwatch"></i>
+          {{ formatElapsed(stopwatchService.getState(item.id).elapsed) }}
+        </span>
+      </td>
+      <td>
+        <p-button icon="pi pi-stopwatch" pTooltip="Cronómetro" tooltipPosition="top" (onClick)="openStopwatch(item)"
+          styleClass="p-button-rounded p-button-warning p-button-text">
+        </p-button>
+        <p-button icon="pi pi-pencil" (onClick)="selectedEdit(item)"
+          styleClass="p-button-rounded p-button-help p-button-text"></p-button>
+        <p-button icon="pi pi-times" (onClick)="toDelete(item)"
+          styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
+      </td>
+    </tr>
   </ng-template>
 </p-table>

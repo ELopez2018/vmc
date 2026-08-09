@@ -1,9 +1,13 @@
 @if (renderFieldset) {
+<vmc-stopwatch-modal *ngIf="activeStopwatchId !== null" [assignmentId]="activeStopwatchId"
+  [assignmentTitle]="activeStopwatchTitle" (closed)="closeStopwatch()">
+</vmc-stopwatch-modal>
 <fieldset class="mb-0">
   <legend [class]="legendClass + ' program-section-legend my-md-2'">
     <span class="section-title-text">{{ title }}</span>
     <span class="section-actions">
-      <button class="section-action-button" type="button" [attr.aria-expanded]="!sectionCollapsed" aria-label="Colapsar seccion" (click)="toggleSection()">
+      <button class="section-action-button" type="button" [attr.aria-expanded]="!sectionCollapsed"
+        aria-label="Colapsar seccion" (click)="toggleSection()">
         <mat-icon>{{ sectionCollapsed ? "expand_more" : "expand_less" }}</mat-icon>
       </button>
       @if (isAdmin) {
@@ -25,7 +29,8 @@
 <ng-template #sectionRows>
   @for (item of sectionItems; track item.id) {
   @if (sectionMeeting == treasuresSection) {
-  <div class="row px-3 program__tesoros program-assignment-row" [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
+  <div class="row px-3 program__tesoros program-assignment-row"
+    [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     @if (item.assignment.number == 1 || item.assignment.number == 2) {
     <div class="col-md-9 mt-1">
       <div class="row program-assignment-line">
@@ -35,25 +40,38 @@
         </div>
         <div class="col-md-11 big-title program-assignment-title p-0 ps-xl-2 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
-          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)" aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
+          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)"
+            aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
             <mat-icon>{{ isAssignmentCollapsed(item) ? "expand_more" : "expand_less" }}</mat-icon>
           </button>
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
 
-          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
+          <span class="hover program__title-asingment"
+            (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
-          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
+          <button class="assignment-stopwatch-btn" type="button" ngbTooltip="Cronómetro" placement="top"
+            (click)="openStopwatch(item); $event.stopPropagation()">
+            <i class="pi pi-stopwatch"></i>
+          </button>
+          <span *ngIf="stopwatchService.getState(getItemId(item)).elapsed > 0 || stopwatchService.getState(getItemId(item)).running"
+            class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(getItemId(item)).running"
+            ngbTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" placement="top"
+            (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
+            {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
+          </span>
+          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"
+            [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
     <div class="col-md-3 mb-3 mb-md-0 program-assignment-detail">
-      <span class="hover text-publisher"
-        [ngClass]="getPublisherTextClasses(item.responsible)"
-        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsible)">
+      <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.responsible)"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)"
+        [ngbTooltip]="item.responsible?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
+        [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
     </div>
@@ -66,17 +84,30 @@
         </div>
         <div class="col-md-11 big-title program-assignment-title p-0 ps-xl-2 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
-          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)" aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
+          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)"
+            aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
             <mat-icon>{{ isAssignmentCollapsed(item) ? "expand_more" : "expand_less" }}</mat-icon>
           </button>
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
 
-          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
+          <span class="hover program__title-asingment"
+            (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
-          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
+          <button class="assignment-stopwatch-btn" type="button" ngbTooltip="Cronómetro" placement="top"
+            (click)="openStopwatch(item); $event.stopPropagation()">
+            <i class="pi pi-stopwatch"></i>
+          </button>
+          <span *ngIf="stopwatchService.getState(getItemId(item)).elapsed > 0 || stopwatchService.getState(getItemId(item)).running"
+            class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(getItemId(item)).running"
+            ngbTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" placement="top"
+            (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
+            {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
+          </span>
+          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"
+            [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
@@ -92,10 +123,10 @@
     <div class="col-md-3 mb-3 mb-md-0 program-assignment-detail">
       @if (item.assignment.number == 3) {
       <div class="d-md-none text-title-custom">Sala auxiliar</div>
-      <span class="hover text-publisher"
-        [ngClass]="getPublisherTextClasses(item.responsibleB)"
-        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsibleB)">
+      <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.responsibleB)"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)"
+        [ngbTooltip]="item.responsibleB?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
+        [tooltipClass]="getPublisherTooltipClass(item.responsibleB)">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
       </span>
       }
@@ -104,10 +135,10 @@
       @if (item.assignment.number == 3) {
       <div class="d-md-none text-title-custom">Sala principal</div>
       }
-      <span class="hover text-publisher"
-        [ngClass]="getPublisherTextClasses(item.responsible)"
-        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsible)">
+      <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.responsible)"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)"
+        [ngbTooltip]="item.responsible?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
+        [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
     </div>
@@ -116,7 +147,8 @@
   }
 
   @if (sectionMeeting == teachersSection) {
-  <div class="row px-3 program__tesoros program-assignment-row" [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
+  <div class="row px-3 program__tesoros program-assignment-row"
+    [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     <div class="col-md-5 mt-1">
       <div class="row program-assignment-line">
         <div class="col-md-1 mx-2 width-timeStart program-time-start hover"
@@ -126,16 +158,29 @@
 
         <div class="col-md-11 big-title program-assignment-title p-0 m-0"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
-          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)" aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
+          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)"
+            aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
             <mat-icon>{{ isAssignmentCollapsed(item) ? "expand_more" : "expand_less" }}</mat-icon>
           </button>
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
-          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
+          <span class="hover program__title-asingment"
+            (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
-          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
+          <button class="assignment-stopwatch-btn" type="button" ngbTooltip="Cronómetro" placement="top"
+            (click)="openStopwatch(item); $event.stopPropagation()">
+            <i class="pi pi-stopwatch"></i>
+          </button>
+          <span *ngIf="stopwatchService.getState(getItemId(item)).elapsed > 0 || stopwatchService.getState(getItemId(item)).running"
+            class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(getItemId(item)).running"
+            ngbTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" placement="top"
+            (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
+            {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
+          </span>
+          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"
+            [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
@@ -150,16 +195,17 @@
 
     <div class="col-md-3 pe-0 mb-3 mb-md-0 program-assignment-detail">
       <div class="d-md-none text-title-custom">Sala auxiliar</div>
-      <span class="hover text-publisher"
-        [ngClass]="getPublisherTextClasses(item.responsibleB)"
-        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)" [ngbTooltip]="item.responsibleB?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsibleB)">
+      <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.responsibleB)"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)"
+        [ngbTooltip]="item.responsibleB?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
+        [tooltipClass]="getPublisherTooltipClass(item.responsibleB)">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
       </span>
       @if (item.assignment.title !== assignmentTitle.SPEECH) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistantB)"
-        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT_B)" [ngbTooltip]="item.assistantB?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.assistantB)">
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT_B)"
+        [ngbTooltip]="item.assistantB?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
+        [tooltipClass]="getPublisherTooltipClass(item.assistantB)">
         {{ item?.assistantB ? "/" + item.assistantB.fullName : "/" + porAsignar }}
       </span>
       }
@@ -167,16 +213,17 @@
 
     <div class="col-md-3 mb-3 pe-0 mb-md-0 program-assignment-detail">
       <div class="d-md-none text-title-custom">Sala principal</div>
-      <span class="hover text-publisher"
-        [ngClass]="getPublisherTextClasses(item.responsible)"
-        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsible)">
+      <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.responsible)"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)"
+        [ngbTooltip]="item.responsible?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
+        [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
       @if (item.assignment.title !== assignmentTitle.SPEECH) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
-        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)" [ngbTooltip]="item.assistant?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.assistant)">
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)"
+        [ngbTooltip]="item.assistant?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
+        [tooltipClass]="getPublisherTooltipClass(item.assistant)">
         {{ item?.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}
       </span>
       }
@@ -186,7 +233,8 @@
 
   @if (sectionMeeting == livingSection) {
   @if (item.assignment.title !== assignmentTitle.CONGREGATION_BIBLE_STUDY) {
-  <div class="row px-3 program__tesoros program-assignment-row" [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
+  <div class="row px-3 program__tesoros program-assignment-row"
+    [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     <div class="col-md-9">
       <div class="row program-assignment-line">
         <div class="col-md-1 width-timeStart ms-2 program-time-start hover"
@@ -195,30 +243,44 @@
         </div>
         <div class="col-md-11 big-title program-assignment-title p-0 m-0 ps-xl-2 hover"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
-          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)" aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
+          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)"
+            aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
             <mat-icon>{{ isAssignmentCollapsed(item) ? "expand_more" : "expand_less" }}</mat-icon>
           </button>
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
-          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
+          <span class="hover program__title-asingment"
+            (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
-          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
+          <button class="assignment-stopwatch-btn" type="button" ngbTooltip="Cronómetro" placement="top"
+            (click)="openStopwatch(item); $event.stopPropagation()">
+            <i class="pi pi-stopwatch"></i>
+          </button>
+          <span *ngIf="stopwatchService.getState(getItemId(item)).elapsed > 0 || stopwatchService.getState(getItemId(item)).running"
+            class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(getItemId(item)).running"
+            ngbTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" placement="top"
+            (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
+            {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
+          </span>
+          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"
+            [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
     <div class="col-md-3 mb-3 mb-md-0 program-assignment-detail">
-      <span class="hover text-publisher"
-        [ngClass]="getPublisherTextClasses(item.responsible)"
-        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsible)">
+      <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.responsible)"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)"
+        [ngbTooltip]="item.responsible?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
+        [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item.responsible ? item.responsible.fullName : porAsignar }}
       </span>
     </div>
   </div>
   } @else {
-  <div class="row px-3 program__tesoros program-assignment-row" [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
+  <div class="row px-3 program__tesoros program-assignment-row"
+    [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     <div class="col-md-8">
       <div class="row program-assignment-line">
         <div class="col-md-1 width-timeStart ms-2 program-time-start hover"
@@ -227,16 +289,29 @@
         </div>
         <div class="col-md-11 big-title program-assignment-title p-0 m-0 ps-xl-2 hover"
           [title]="item.assignment.title + ' (' + item.assignment.time + item.assignment.timeType + ')'">
-          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)" aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
+          <button class="assignment-collapse-button" type="button" [attr.aria-expanded]="!isAssignmentCollapsed(item)"
+            aria-label="Colapsar asignacion" (click)="toggleAssignment(item); $event.stopPropagation()">
             <mat-icon>{{ isAssignmentCollapsed(item) ? "expand_more" : "expand_less" }}</mat-icon>
           </button>
           <span class="title-number hover" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.NUMBER)">
             {{ item.assignment.number }}.
           </span>
-          <span class="hover program__title-asingment" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
+          <span class="hover program__title-asingment"
+            (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
-          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment" [compact]="true"></vmc-assignment-source>
+          <button class="assignment-stopwatch-btn" type="button" ngbTooltip="Cronómetro" placement="top"
+            (click)="openStopwatch(item); $event.stopPropagation()">
+            <i class="pi pi-stopwatch"></i>
+          </button>
+          <span *ngIf="stopwatchService.getState(getItemId(item)).elapsed > 0 || stopwatchService.getState(getItemId(item)).running"
+            class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(getItemId(item)).running"
+            ngbTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" placement="top"
+            (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
+            {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
+          </span>
+          <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"
+            [compact]="true"></vmc-assignment-source>
         </div>
       </div>
     </div>
@@ -248,15 +323,16 @@
       }
     </div>
     <div class="col-md-3 mb-3 mb-md-0 program-assignment-detail">
-      <span class="hover text-publisher"
-        [ngClass]="getPublisherTextClasses(item.responsible)"
-        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)" [ngbTooltip]="item.responsible?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.responsible)">
+      <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.responsible)"
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)"
+        [ngbTooltip]="item.responsible?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
+        [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item.responsible ? item.responsible.fullName : porAsignar }}
       </span>
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
-        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)" [ngbTooltip]="item.assistant?.publisherTooltipText"
-        [placement]="publisherTooltipPlacement" container="body" [tooltipClass]="getPublisherTooltipClass(item.assistant)">
+        (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)"
+        [ngbTooltip]="item.assistant?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
+        [tooltipClass]="getPublisherTooltipClass(item.assistant)">
         {{ item.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}
       </span>
     </div>

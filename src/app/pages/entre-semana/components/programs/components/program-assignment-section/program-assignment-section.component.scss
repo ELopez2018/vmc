@@ -150,3 +150,52 @@ legend {
     position: relative;
   }
 }
+
+.assignment-stopwatch-btn {
+  background: none;
+  border: none;
+  padding: 0 4px;
+  line-height: 1;
+  vertical-align: middle;
+  cursor: pointer;
+  color: #e67e22;
+  opacity: 0.75;
+  transition: opacity 0.15s, transform 0.15s;
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+
+  i {
+    font-size: 1rem;
+    vertical-align: middle;
+  }
+}
+
+.inline-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 4px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: #f0f0f0;
+  color: #555;
+  font-size: 0.78rem;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #e0e0e0;
+  }
+
+  &.inline-timer--running {
+    background: #fff3cd;
+    color: #856404;
+  }
+}

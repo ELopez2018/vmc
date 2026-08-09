@@ -1,0 +1,24 @@
+<div class="stopwatch-modal-overlay" (click)="onOverlayClick($event)">
+  <div class="stopwatch-modal-panel" (click)="$event.stopPropagation()">
+    <div class="stopwatch-modal-header">
+      <span class="stopwatch-modal-title"><i class="pi pi-stopwatch"></i> Cronómetro</span>
+      <span *ngIf="assignmentTitle" class="stopwatch-modal-subtitle">{{ assignmentTitle }}</span>
+    </div>
+
+    <div class="stopwatch-display">
+      <span class="stopwatch-time">{{ formattedTime }}</span>
+    </div>
+
+    <div class="stopwatch-actions">
+      <button class="btn-stopwatch btn-stop" (click)="toggleStop()" [class.btn-resume]="!running"
+        [disabled]="elapsed === 0 && !running">
+        <i [class]="running ? 'pi pi-pause' : 'pi pi-play'"></i>
+        {{ running ? 'Parar' : 'Reanudar' }}
+      </button>
+      <button class="btn-stopwatch btn-close" (click)="close()">
+        <i class="pi pi-sign-out"></i>
+        Salir
+      </button>
+    </div>
+  </div>
+</div>

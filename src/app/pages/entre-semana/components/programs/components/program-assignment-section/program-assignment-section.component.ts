@@ -1,25 +1,24 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.interface";
 import { Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
-import {
-  getPublisherTextClasses as getPublisherWarningTextClasses,
-  getPublisherTooltipClass as getPublisherWarningTooltipClass,
-} from "../publisher-warning.util";
+import { getPublisherTextClasses as getPublisherWarningTextClasses, getPublisherTooltipClass as getPublisherWarningTooltipClass } from "../publisher-warning.util";
 import { ASSIGNMENT_TITLE, MeetingRoom, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { AssignmentSourceComponent } from "src/app/shared/components/assignment-source/assignment-source.component";
+import { StopwatchService } from "src/app/core/services/stopwatch/stopwatch.service";
+import { StopwatchModalComponent } from "src/app/shared/components/stopwatch-modal/stopwatch-modal.component";
 
 @Component({
   selector: "vmc-program-assignment-section",
   templateUrl: "./program-assignment-section.component.html",
   styleUrls: ["./program-assignment-section.component.scss"],
-  imports: [CommonModule, SharedModule, NgbTooltipModule, AssignmentSourceComponent],
+  imports: [CommonModule, SharedModule, NgbTooltipModule, AssignmentSourceComponent, StopwatchModalComponent],
 })
-export class ProgramAssignmentSectionComponent {
+export class ProgramAssignmentSectionComponent implements OnDestroy {
   @Input() public week!: ProgramPdf;
   @Input() public sectionMeeting = "";
   @Input() public title = "";
@@ -41,6 +40,56 @@ export class ProgramAssignmentSectionComponent {
 
   public sectionCollapsed = false;
   private collapsedAssignmentKeys = new Set<string>();
+
+  public activeStopwatchId: number | null = null;
+  public activeStopwatchTitle = "";
+  private clickTimers = new Map<number, ReturnType<typeof setTimeout>>();
+
+  constructor(public stopwatchService: StopwatchService) {}
+
+  public ngOnDestroy(): void {
+    this.clickTimers.forEach((t) => clearTimeout(t));
+  }
+
+  public getItemId(item: WeeklyProgramPdF): number {
+    return item.id ?? item.assignment?.id ?? 0;
+  }
+
+  public openStopwatch(item: WeeklyProgramPdF): void {
+    this.activeStopwatchId = this.getItemId(item);
+    this.activeStopwatchTitle = item.assignment?.title ?? "";
+  }
+
+  public closeStopwatch(): void {
+    this.activeStopwatchId = null;
+  }
+
+  /** 1 clic = parar/reanudar · 2 clics = reiniciar */
+  public onInlineTimerClick(id: number): void {
+    if (this.clickTimers.has(id)) {
+      clearTimeout(this.clickTimers.get(id));
+      this.clickTimers.delete(id);
+      this.stopwatchService.reset(id);
+      return;
+    }
+    const state = this.stopwatchService.getState(id);
+    if (state.running) {
+      this.stopwatchService.stop(id);
+    } else {
+      this.stopwatchService.start(id);
+    }
+    const timer = setTimeout(() => this.clickTimers.delete(id), 300);
+    this.clickTimers.set(id, timer);
+  }
+
+  public formatElapsed(ms: number): string {
+    const totalSec = Math.floor(ms / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+  }
 
   public get sectionItems(): WeeklyProgramPdF[] {
     const items = this.week?.weeklyPrograms ?? [];

@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+:host-context(.vmc-modal-window--print) {
+  height: 100%;
+  min-height: 0;
+}
+
+:host-context(.vmc-modal-window--print) app-printer,
+:host-context(.vmc-modal-window--print) app-assignment-sheet-printer {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}

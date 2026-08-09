@@ -10,22 +10,15 @@
   </div>
 </ng-template>
 
-<div class="container-fluid printer-shell">
+<div class="container-fluid printer-shell" [class.viewer-modal]="isModal" [class.viewer-page]="!isModal">
   @if (isModal) {
-  <div class="row">
-    <div class="col-md-12 d-flex justify-content-end p-2">
-      <vmc-icon-close (click)="onCLose()"></vmc-icon-close>
-    </div>
+  <div class="modal-close-slot">
+    <vmc-icon-close (click)="onCLose()"></vmc-icon-close>
   </div>
   }
 
-  <button
-    type="button"
-    class="printer-filter-fab"
-    title="Buscar programas"
-    aria-label="Buscar programas por fecha"
-    (click)="openFiltersModal(filtersModal)"
-  >
+  <button type="button" class="printer-filter-fab" title="Buscar programas" aria-label="Buscar programas por fecha"
+    (click)="openFiltersModal(filtersModal)">
     <i class="pi pi-calendar"></i>
     <i class="pi pi-search printer-filter-fab__search"></i>
   </button>

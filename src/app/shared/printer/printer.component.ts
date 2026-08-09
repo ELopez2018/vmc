@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { PrintPdfService } from "../../core/services/pdf/print.service";
 import { MeetingsService } from "../../core/services/meetings/meetings.service";
 import { Meeting, Program } from "src/app/core/interfaces/reuniones.interface";
@@ -19,7 +19,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ["./printer.component.scss"],
   standalone: false,
 })
-export class PrinterComponent implements OnInit {
+export class PrinterComponent implements OnInit, AfterViewInit {
   fechaDesde: any;
   fechaHasta: any;
 
@@ -32,6 +32,7 @@ export class PrinterComponent implements OnInit {
   private filtersModalRef?: NgbModalRef;
   private isFilterSearchActive = false;
   private filterSearchRequestId = 0;
+  private pendingPdfSource: any = null;
   public type: string = "normal";
   public weeks: ProgramPdf[] = [];
   constructor(
@@ -81,8 +82,22 @@ export class PrinterComponent implements OnInit {
       )
       .subscribe((tipo) => {
         this.type = tipo ?? "normal";
-        this.printMeetings(this.weeks);
+        if (this.weeks.length > 0) {
+          this.printMeetings(this.weeks);
+        }
       });
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.pdfViewerAutoLoad) {
+      return;
+    }
+
+    if (this.pendingPdfSource !== null) {
+      this.pdfViewerAutoLoad.pdfSrc = this.pendingPdfSource;
+      this.pendingPdfSource = null;
+      this.pdfViewerAutoLoad.refresh();
+    }
   }
 
   getWeeks() {
@@ -163,7 +178,6 @@ export class PrinterComponent implements OnInit {
 
     this.loaderService.showMatspinner();
     this.weeks = [];
-    this.updatePdfViewer([]);
     this.meetingsService.getProgramsByDateRange(this.fechaDesde, this.fechaHasta, this.congregation.id).subscribe({
       next: (data) => {
         if (requestId !== this.filterSearchRequestId) {
@@ -180,7 +194,6 @@ export class PrinterComponent implements OnInit {
         }
 
         this.loaderService.hideMatspinner();
-        this.updatePdfViewer([]);
         this.modalService.errorHandler("No se han podido obtener los programas", "Error");
       },
     });
@@ -188,6 +201,7 @@ export class PrinterComponent implements OnInit {
 
   private updatePdfViewer(data: any): void {
     if (!this.pdfViewerAutoLoad) {
+      this.pendingPdfSource = data;
       return;
     }
 

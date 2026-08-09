@@ -2,7 +2,8 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Apis, Servers } from "../../constants/servers";
 import { finalize, Observable, tap } from "rxjs";
-import { Publisher, Room } from '../../interfaces/reuniones.interface';
+import { Publisher, Room } from "../../interfaces/reuniones.interface";
+import { PublisherHistoryItem } from "../../interfaces/publishers.interface";
 import { LoaderService } from "../loader/loader.service";
 import { normalizeAssignmentTypeValue } from "../../enums/assignments.enums";
 
@@ -37,15 +38,15 @@ export class UsersService {
     return this.httpClient.post<Publisher>(url, this.convertUserToSaveRequest(publisher)).pipe(tap((data) => console.log(data)));
   }
 
-delete(publisher: Publisher): Observable<any> {
-  const url = `${this.server}${this.api.USERS}`;
+  delete(publisher: Publisher): Observable<any> {
+    const url = `${this.server}${this.api.USERS}`;
 
-  return this.httpClient.delete<Publisher>(url, {
-    body: this.convertUserToSaveRequest(publisher)
-  }).pipe(
-    tap(data => console.log(data))
-  );
-}
+    return this.httpClient
+      .delete<Publisher>(url, {
+        body: this.convertUserToSaveRequest(publisher),
+      })
+      .pipe(tap((data) => console.log(data)));
+  }
 
   getPublihersByAssignment(assignment: string, congregationId: number, fechaCadena: any, room: string, assignmentTitle: string): Observable<any> {
     this.loaderService.setLoaderSearchPublisher(true);
@@ -53,6 +54,20 @@ delete(publisher: Publisher): Observable<any> {
     const url = `${this.server}${this.api.USERS}/by-congregation/by-assignment?assignment=${assignmentType}&congregationId=${congregationId}&dateAssignment=${fechaCadena}&room=${room}&assignmentTitle=${assignmentTitle}`;
     return this.httpClient.get<any>(url).pipe(
       tap((data) => {
+        this.loaderService.setLoaderSearchPublisher(false);
+      }),
+    );
+  }
+
+  getPublishersHistoryByCongregation(congregationId: number, dateAssignment: string, room?: string, assignmentTitle?: string): Observable<PublisherHistoryItem[]> {
+    this.loaderService.setLoaderSearchPublisher(true);
+    const roomParam = encodeURIComponent(room ?? "");
+    const assignmentTitleParam = encodeURIComponent(assignmentTitle ?? "");
+    const dateAssignmentParam = encodeURIComponent(dateAssignment);
+    const url = `${this.server}${this.api.USERS}/by-congregation/publishers-history?congregationId=${congregationId}&dateAssignment=${dateAssignmentParam}&room=${roomParam}&assignmentTitle=${assignmentTitleParam}`;
+
+    return this.httpClient.get<PublisherHistoryItem[]>(url).pipe(
+      finalize(() => {
         this.loaderService.setLoaderSearchPublisher(false);
       }),
     );
@@ -69,24 +84,24 @@ delete(publisher: Publisher): Observable<any> {
   }
 
   convertUserToSaveRequest(user: any): any {
-  return {
-    id: user.id,
-    fullName: user.fullName,
-    firstName: user.firstName,
-    secondName: user.secondName,
-    lastName: user.lastName,
-    surname: user.surname,
-    image: user.image,
-    email: user.email,
-    documentNumber: user.documentNumber,
-    documentType: user.documentType,
-    cellPhone: user.cellPhone,
-    phone: user.phone,
-    gender: user.gender,
-    birthdate: user.birthdate,
-    congregationId: user.congregationId ?? user.myCongregationId ?? user.congregation?.id,
-    assignmentTypePermissions: user.assignmentTypePermissions ?? [],
-  };
-}
+    return {
+      id: user.id,
+      fullName: user.fullName,
+      firstName: user.firstName,
+      secondName: user.secondName,
+      lastName: user.lastName,
+      surname: user.surname,
+      image: user.image,
+      email: user.email,
+      documentNumber: user.documentNumber,
+      documentType: user.documentType,
+      cellPhone: user.cellPhone,
+      phone: user.phone,
+      gender: user.gender,
+      birthdate: user.birthdate,
+      congregationId: user.congregationId ?? user.myCongregationId ?? user.congregation?.id,
+      assignmentTypePermissions: user.assignmentTypePermissions ?? [],
+    };
+  }
 }
 //users/by-congregation/by-assignment?assignment=president&congregationId=2

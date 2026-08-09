@@ -640,17 +640,15 @@ export class PrintPdfLandscapeService {
     return [
       {
         table: {
-          widths: this.sizeBody,
+          widths: ["*"],
           body: [
             [
               {
-                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true),
-                style: "sub_title",
-                border: [false, false, false, false],
-              },
-              {
-                text: "|  " + (week.meeting.weeklyBibleReading || "LECTURA SEMANAL DE LA BIBLIA"),
-                style: "sub_title",
+                text:
+                  Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) +
+                  " | " +
+                  (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
+                style: "assemblyInfo",
                 border: [false, false, false, false],
               },
             ],
@@ -663,12 +661,33 @@ export class PrintPdfLandscapeService {
           body: [
             [
               {
-                text: week.assembly,
-                style: "assembly",
-                border: [false, false, false, false],
+                stack: [
+                  {
+                    text: "EVENTO ESPECIAL",
+                    style: "assemblyTitle",
+                  },
+                  {
+                    text: week.assembly,
+                    style: "assembly",
+                    noWrap: false,
+                  },
+                ],
+                fillColor: "#eef3f8",
+                margin: [8, 28, 8, 28],
               },
             ],
           ],
+        },
+        margin: [0, 0, 14, 0],
+        layout: {
+          hLineColor: () => "#4a6fae",
+          vLineColor: () => "#4a6fae",
+          hLineWidth: () => 1,
+          vLineWidth: () => 1,
+          paddingLeft: () => 10,
+          paddingRight: () => 10,
+          paddingTop: () => 12,
+          paddingBottom: () => 12,
         },
       },
       "\n",
@@ -808,11 +827,28 @@ export class PrintPdfLandscapeService {
         endPage: {
           margin: [0, 0, 0, 0],
         },
-        assembly: {
-          fontSize: 40,
-          italics: true,
+        assemblyInfo: {
+          fontSize: 11,
           alignment: "center",
-          margin: [10, 100, 10, 100],
+          bold: true,
+          color: "#375a8c",
+          margin: [0, 8, 14, 8],
+        },
+        assemblyTitle: {
+          fontSize: 12,
+          bold: true,
+          alignment: "center",
+          color: "#2f4f7e",
+          margin: [0, 0, 0, 6],
+          characterSpacing: 1,
+        },
+        assembly: {
+          fontSize: 27,
+          bold: true,
+          alignment: "center",
+          color: "#1f2f45",
+          margin: [0, 0, 0, 0],
+          lineHeight: 1.2,
         },
       },
     };

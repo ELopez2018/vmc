@@ -1,6 +1,6 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -20,10 +20,15 @@ $vmc-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$vmc-theme: mat.m2-define-light-theme((color: (primary: $vmc-primary,
-        accent: $vmc-accent,
-        warn: $vmc-warn,
-      )));
+$vmc-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $vmc-primary,
+      accent: $vmc-accent,
+      warn: $vmc-warn,
+    ),
+  )
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -41,8 +46,8 @@ fieldset {
   margin-right: 0;
   margin-left: 0;
   // border-width: 1px;
-  border-top-left-radius: .25rem;
-  border-top-right-radius: .25rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
   // border: solid #dee2e6;
 }
 
@@ -123,7 +128,6 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-
 .fieldset {
   border: 2px solid gainsboro;
   padding: 10px;
@@ -179,6 +183,7 @@ body {
 
 .vmc-modal-window--wide {
   .modal-dialog {
+    height: calc(100dvh - 1.5rem);
     max-width: min(96vw, 1120px);
     width: min(96vw, 1120px);
   }
@@ -186,13 +191,33 @@ body {
 
 .vmc-modal-window--print {
   .modal-dialog {
+    height: calc(100dvh - 1.5rem);
     max-width: min(98vw, 1280px);
     width: min(98vw, 1280px);
   }
 
   .modal-content {
-    height: calc(100dvh - 1.5rem);
-    max-height: calc(100dvh - 1.5rem);
+    display: flex;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .modal-content > app-modal {
+    display: block;
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    width: 100%;
+  }
+}
+
+@supports not (height: 100dvh) {
+  .vmc-modal-window--print {
+    .modal-dialog {
+      height: calc(100vh - 1.5rem);
+    }
   }
 }
 
@@ -290,15 +315,15 @@ search-publisher .sub-modal {
 }
 
 .fieldset-base {
-  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+  box-shadow:
+    rgba(9, 30, 66, 0.25) 0px 1px 1px,
+    rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
   padding: 10px;
   margin: 10px;
   width: 100%;
 }
 
-
 @media (min-width: 760px) {
-
 }
 
 @media (min-width: 992px) {
@@ -345,10 +370,11 @@ search-publisher .sub-modal {
   }
 
   .fieldset-base {
-    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+    box-shadow:
+      rgba(9, 30, 66, 0.25) 0px 1px 1px,
+      rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
     padding: 10px;
     margin: 10px;
-
   }
 }
 
@@ -358,7 +384,6 @@ search-publisher .sub-modal {
   font-weight: bold;
   color: red;
 }
-
 
 // Notifications component styles
 /* ====== VMC Toast (MatSnackBar custom) ====== */
@@ -387,10 +412,18 @@ search-publisher .sub-modal {
 }
 
 /* Severidades */
-.vmc-snackbar--success { --vmc-accent: #2ecc71; }
-.vmc-snackbar--info    { --vmc-accent: #6ea8fe; }
-.vmc-snackbar--warning { --vmc-accent: #f1c40f; }
-.vmc-snackbar--error   { --vmc-accent: #ff5d5d; }
+.vmc-snackbar--success {
+  --vmc-accent: #2ecc71;
+}
+.vmc-snackbar--info {
+  --vmc-accent: #6ea8fe;
+}
+.vmc-snackbar--warning {
+  --vmc-accent: #f1c40f;
+}
+.vmc-snackbar--error {
+  --vmc-accent: #ff5d5d;
+}
 
 /* El toast en sí */
 .vmc-snackbar vmc-notification-snackbar,
@@ -419,8 +452,14 @@ search-publisher .sub-modal {
 }
 
 @keyframes vmcToastIn {
-  from { transform: translateY(-8px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .vmc-snackbar .left {
@@ -499,8 +538,12 @@ search-publisher .sub-modal {
 }
 
 @keyframes vmcToastProgress {
-  from { transform: scaleX(1); }
-  to   { transform: scaleX(0); }
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
 }
 /* ====== End VMC Toast ====== */
 
@@ -572,9 +615,7 @@ search-publisher .sub-modal {
 
 .program-event-card {
   align-items: center;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9)),
-    linear-gradient(120deg, #12364a, #d5a333);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9)), linear-gradient(120deg, #12364a, #d5a333);
   border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 8px;
   box-shadow: 0 22px 55px rgba(15, 23, 42, 0.14);
@@ -587,8 +628,7 @@ search-publisher .sub-modal {
 
 .program-event-card::before {
   background:
-    linear-gradient(135deg, transparent 0 45%, rgba(18, 54, 74, 0.1) 45% 46%, transparent 46%),
-    radial-gradient(circle at 100% 0, rgba(213, 163, 51, 0.28), transparent 18rem);
+    linear-gradient(135deg, transparent 0 45%, rgba(18, 54, 74, 0.1) 45% 46%, transparent 46%), radial-gradient(circle at 100% 0, rgba(213, 163, 51, 0.28), transparent 18rem);
   content: "";
   inset: 0;
   pointer-events: none;
@@ -639,9 +679,7 @@ search-publisher .sub-modal {
 
 .app-loading {
   align-items: center;
-  background:
-    linear-gradient(120deg, rgba(7, 27, 45, 0.94), rgba(11, 61, 75, 0.9), rgba(213, 163, 51, 0.82)),
-    #071b2d;
+  background: linear-gradient(120deg, rgba(7, 27, 45, 0.94), rgba(11, 61, 75, 0.9), rgba(213, 163, 51, 0.82)), #071b2d;
   display: flex;
   inset: 0;
   justify-content: center;

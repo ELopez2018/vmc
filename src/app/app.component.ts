@@ -4,6 +4,7 @@ import { DataService } from "./core/services/data/data.service";
 import { LoaderService } from "./core/services/loader/loader.service";
 import { NavigationEnd, Router } from "@angular/router";
 import { filter } from "rxjs/operators";
+import { APP_VERSION } from "../environments/version";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
@@ -11,6 +12,7 @@ import { filter } from "rxjs/operators";
   standalone: false,
 })
 export class AppComponent {
+  appVersion = APP_VERSION;
   showMatspinner = false;
   isDashboardRoute = false;
   loaderService = inject(LoaderService);

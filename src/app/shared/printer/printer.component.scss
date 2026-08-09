@@ -1,22 +1,39 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
 .container-fluid {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100dvh;
+  height: 100%;
   min-height: 0;
+  min-width: 0;
   max-width: none;
   box-sizing: border-box;
   overflow: hidden;
-  padding: 0.75rem;
+  padding: 0;
 }
 
 .printer-shell {
   position: relative;
 }
 
+.container-fluid.viewer-page {
+  height: 100dvh;
+}
+
 ng2-pdfjs-viewer {
   display: block;
   height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
   width: 100%;
 }
 
@@ -25,12 +42,18 @@ ng2-pdfjs-viewer {
   margin-left: 0;
   margin-right: 0;
   min-height: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .pdf-viewer-shell {
+  flex: 1 1 auto;
   height: 100%;
   min-height: 0;
+  min-width: 0;
+  overflow: hidden;
   padding: 0;
+  position: relative;
   width: 100%;
 }
 
@@ -38,7 +61,15 @@ ng2-pdfjs-viewer {
 :host ::ng-deep ng2-pdfjs-viewer .ng2-pdfjs-viewer {
   display: block;
   height: 100% !important;
+  overflow: hidden !important;
   width: 100% !important;
+}
+
+.modal-close-slot {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.75rem;
+  z-index: 1060;
 }
 
 vmc-icon-close {
@@ -50,20 +81,30 @@ vmc-icon-close {
   background: #0d6efd;
   border: 0;
   border-radius: 50%;
-  bottom: 1.25rem;
+  bottom: clamp(0.75rem, 2vh, 1.25rem);
   box-shadow: 0 10px 24px rgba(13, 110, 253, 0.32);
   color: #fff;
   display: inline-flex;
   height: 3.25rem;
   justify-content: center;
   position: absolute;
-  right: 1.5rem;
+  right: clamp(0.75rem, 2vw, 1.5rem);
   transition:
     background-color 160ms ease,
     box-shadow 160ms ease,
     transform 160ms ease;
   width: 3.25rem;
-  z-index: 10;
+  z-index: 1050;
+}
+
+.container-fluid.viewer-page .printer-filter-fab {
+  position: fixed;
+  z-index: 2000;
+}
+
+.container-fluid.viewer-modal .printer-filter-fab {
+  position: absolute;
+  z-index: 1050;
 }
 
 .printer-filter-fab:hover,
@@ -115,11 +156,6 @@ vmc-icon-close {
 }
 
 @media (max-width: 575.98px) {
-  .container-fluid {
-    height: 100dvh;
-    padding: 0.5rem;
-  }
-
   .printer-filter-fab {
     bottom: 1rem;
     right: 1rem;
@@ -127,7 +163,7 @@ vmc-icon-close {
 }
 
 @supports not (height: 100dvh) {
-  .container-fluid {
+  .container-fluid.viewer-page {
     height: 100vh;
   }
 }

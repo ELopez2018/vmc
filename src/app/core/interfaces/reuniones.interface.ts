@@ -17,6 +17,7 @@ export type BackendDateTime = string | number[];
 export interface Publisher {
   id: number;
   fullName: string;
+  lastAssignGlobal?: string | null;
   image?: string | null;
   firstName: string;
   secondName?: string | null;

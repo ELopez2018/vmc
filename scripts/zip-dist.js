@@ -3,12 +3,15 @@ const path = require('path');
 const archiver = require('archiver');
 
 const PROJECT_NAME = 'vmc';
+const packageJsonPath = path.resolve(__dirname, '..', 'package.json');
+const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+const VERSION = packageJson.version;
 
 // 📌 carpeta REAL generada por Angular
 const DIST_PATH = path.resolve(__dirname, '..', 'dist', 'vmc', 'browser');
 
 // 📦 zip de salida
-const ZIP_PATH = path.resolve(__dirname, '..', 'dist', 'vmc', `${PROJECT_NAME}.zip`);
+const ZIP_PATH = path.resolve(__dirname, '..', 'dist', 'vmc', `${PROJECT_NAME}-v${VERSION}.zip`);
 
 if (!fs.existsSync(DIST_PATH)) {
   console.error('❌ No existe la carpeta dist compilada:', DIST_PATH);

@@ -1,6 +1,10 @@
 <router-outlet></router-outlet>
+<div class="app-version-badge" aria-label="Version del sistema">
+  Version {{ appVersion }}
+</div>
 @if (showMatspinner) {
-<div class="app-loading" [class.app-loading--content]="isDashboardRoute" role="status" aria-live="polite" aria-label="Cargando el programa">
+<div class="app-loading" [class.app-loading--content]="isDashboardRoute" role="status" aria-live="polite"
+  aria-label="Cargando el programa">
   <div class="app-loading__panel">
     <div class="app-loading__brand">
       <img src="assets/img/Logo.png" alt="VMC">

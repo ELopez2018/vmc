@@ -1,7 +1,8 @@
 {
   "name": "vmc",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "scripts": {
+    "prebuild": "node scripts/bump-version.js",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",

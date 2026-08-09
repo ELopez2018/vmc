@@ -16,14 +16,7 @@ import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.
 import Swal from "sweetalert2";
 import { ProgramFiltersComponent } from "src/app/shared/components/program-filters/program-filters.component";
 import { ProgramWeekComponent } from "./components/program-week/program-week.component";
-import {
-  ADMIN_EMAIL,
-  ASSIGNMENT_TITLE,
-  MeetingRoom,
-  ModalResult,
-  ProgramChangeType,
-  WeeklyProgramChangeType,
-} from "src/app/core/constants/program.constants";
+import { ADMIN_EMAIL, ASSIGNMENT_TITLE, MeetingRoom, ModalResult, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 
 @Component({
@@ -133,7 +126,9 @@ export class ProgramsComponent implements OnInit, OnChanges {
   }
 
   private padTimeSegment(value: unknown): string {
-    return Number(value ?? 0).toString().padStart(2, "0");
+    return Number(value ?? 0)
+      .toString()
+      .padStart(2, "0");
   }
 
   filter(weeks: Meeting[]) {
@@ -511,7 +506,10 @@ export class ProgramsComponent implements OnInit, OnChanges {
         break;
       default:
         this.assignmentType = this.selectAssignmentTypeByTitle(item.assignment.title);
-        if (type === WeeklyProgramChangeType.ASSISTANT && this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY) {
+
+        if (this.assignmentType === AssignmentType.WHAT_WOULD_YOU_SAY) {
+          this.assignmentType = this.resolveWhatWouldYouSayAssignmentType(type);
+        } else if (type === WeeklyProgramChangeType.ASSISTANT && this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY) {
           this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY_READER;
         } else if (
           (type === WeeklyProgramChangeType.ASSISTANT || type === WeeklyProgramChangeType.ASSISTANT_B) &&
@@ -537,6 +535,9 @@ export class ProgramsComponent implements OnInit, OnChanges {
     if (title.includes(ASSIGNMENT_TITLE.EXPLAINING_YOUR_BELIEFS)) {
       return AssignmentType.EXPLAINING_YOUR_BELIEFS;
     }
+    if (this.isWhatWouldYouSayTitle(title)) {
+      return AssignmentType.WHAT_WOULD_YOU_SAY;
+    }
     if (title.includes(ASSIGNMENT_TITLE.MAKING_DISCIPLES)) {
       return AssignmentType.MAKING_DISCIPLES;
     }
@@ -551,6 +552,21 @@ export class ProgramsComponent implements OnInit, OnChanges {
     }
     return "";
   }
+
+  private isWhatWouldYouSayTitle(title: string): boolean {
+    return title
+      ?.normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .includes("que diria");
+  }
+
+  private resolveWhatWouldYouSayAssignmentType(type: string): AssignmentType {
+    return type === WeeklyProgramChangeType.ASSISTANT || type === WeeklyProgramChangeType.ASSISTANT_B
+      ? AssignmentType.WHAT_WOULD_YOU_SAY_ASSISTANT
+      : AssignmentType.WHAT_WOULD_YOU_SAY;
+  }
+
   changeWeeklyProgram(item: WeeklyProgramPdF, type: string) {
     console.log("changeWeeklyProgram", item);
     if (
@@ -806,9 +822,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
   filterRoom(item: WeeklyProgram, room = MeetingRoom.AUXILIARY) {
     const program = this.semanas.find((week) => week.id === item.program || week.weeklyPrograms.some((weeklyProgram) => weeklyProgram.id === item.id));
 
-    return program?.weeklyPrograms.find(
-      (weeklyProgram) => weeklyProgram.room === room && weeklyProgram.assignment.id === item.assignment.id,
-    );
+    return program?.weeklyPrograms.find((weeklyProgram) => weeklyProgram.room === room && weeklyProgram.assignment.id === item.assignment.id);
   }
 
   filterProgram(item: Program, room = MeetingRoom.AUXILIARY) {

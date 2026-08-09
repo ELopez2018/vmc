@@ -11,3 +11,13 @@ export interface ResponsibleCountDTO {
   lastDate?: number;
   all?: number;
 }
+
+export interface PublisherHistoryItem {
+  user: Publisher;
+  userEnt: Publisher;
+  count: number;
+  lastDate: string | null;
+  all: number;
+  lastAssignByRoom: string | null;
+  lastAssignGlobal: string | null;
+}

@@ -99,9 +99,7 @@ export class EntreSemanaComponent implements OnInit {
   }
 
   private refreshProgramsFromLoadedPages(): void {
-    const loadedPrograms = [...this.loadedPages.entries()]
-      .sort(([currentPage], [nextPage]) => currentPage - nextPage)
-      .flatMap(([, programs]) => programs);
+    const loadedPrograms = [...this.loadedPages.entries()].sort(([currentPage], [nextPage]) => currentPage - nextPage).flatMap(([, programs]) => programs);
 
     this.programList = loadedPrograms;
     this.semanas = [...this.programList];
@@ -310,7 +308,10 @@ export class EntreSemanaComponent implements OnInit {
         break;
       default:
         this.assignmentType = this.selectAssignmentTypeByTitle(item.assignment.title);
-        if (type === WeeklyProgramChangeType.ASSISTANT && this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY) {
+
+        if (this.assignmentType === AssignmentType.WHAT_WOULD_YOU_SAY) {
+          this.assignmentType = this.resolveWhatWouldYouSayAssignmentType(type);
+        } else if (type === WeeklyProgramChangeType.ASSISTANT && this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY) {
           this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY_READER;
         } else if (type === WeeklyProgramChangeType.ASSISTANT && this.assignmentType !== AssignmentType.CONGREGATION_BIBLE_STUDY) {
           this.assignmentType += "Assistant";
@@ -333,6 +334,9 @@ export class EntreSemanaComponent implements OnInit {
     if (title.includes(ASSIGNMENT_TITLE.EXPLAINING_YOUR_BELIEFS)) {
       return AssignmentType.EXPLAINING_YOUR_BELIEFS;
     }
+    if (this.isWhatWouldYouSayTitle(title)) {
+      return AssignmentType.WHAT_WOULD_YOU_SAY;
+    }
     if (title.includes(ASSIGNMENT_TITLE.MAKING_DISCIPLES)) {
       return AssignmentType.MAKING_DISCIPLES;
     }
@@ -344,6 +348,21 @@ export class EntreSemanaComponent implements OnInit {
     }
     return "";
   }
+
+  private isWhatWouldYouSayTitle(title: string): boolean {
+    return title
+      ?.normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .includes("que diria");
+  }
+
+  private resolveWhatWouldYouSayAssignmentType(type: string): AssignmentType {
+    return type === WeeklyProgramChangeType.ASSISTANT || type === WeeklyProgramChangeType.ASSISTANT_B
+      ? AssignmentType.WHAT_WOULD_YOU_SAY_ASSISTANT
+      : AssignmentType.WHAT_WOULD_YOU_SAY;
+  }
+
   changeWeeklyProgram(item: WeeklyProgram, type: string) {
     if (
       item.assignment.sectionMeeting.includes(SectionMeeting.NUESTRA_VIDA_CRISTIANA) &&

@@ -7,6 +7,7 @@ import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
 import { getPublisherTextClasses as getPublisherWarningTextClasses, getPublisherTooltipClass as getPublisherWarningTooltipClass } from "../publisher-warning.util";
 import { ASSIGNMENT_TITLE, MeetingRoom, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { needsOverseerTalkTitle, isSpecialEventWeek } from "src/app/core/utils/program-event.util";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { AssignmentSourceComponent } from "src/app/shared/components/assignment-source/assignment-source.component";
 import { StopwatchService } from "src/app/core/services/stopwatch/stopwatch.service";
@@ -109,6 +110,15 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
 
   public adapterTime(dateTime: any): string {
     return Utils.adapterTime(dateTime);
+  }
+
+  /** En semanas con evento distinto de asamblea el estudio bíblico debe llevar el título del discurso del superintendente. */
+  public needsOverseerTalkTitle(item: WeeklyProgramPdF): boolean {
+    return needsOverseerTalkTitle(this.week?.event, item?.assignment?.title);
+  }
+
+  public get isSpecialEventWeek(): boolean {
+    return isSpecialEventWeek(this.week?.event);
   }
 
   public onAddAssignment(): void {

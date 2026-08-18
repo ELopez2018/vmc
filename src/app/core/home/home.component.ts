@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { LoginComponent } from '../../pages/auth/login/login.component';
+import { DataService } from '../services/data/data.service';
 
 @Component({
     selector: 'vmc-home',
@@ -7,6 +9,15 @@ import { LoginComponent } from '../../pages/auth/login/login.component';
     styleUrls: ['./home.component.scss'],
     imports: [LoginComponent]
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+  constructor(
+    private dataService: DataService,
+    private router: Router,
+  ) {}
 
+  ngOnInit(): void {
+    if (this.dataService.hasValidToken()) {
+      this.router.navigateByUrl('/tablero');
+    }
+  }
 }

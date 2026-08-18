@@ -96,7 +96,32 @@ export interface Program {
   finalPrayer?: Publisher | null;
   congregation: Congregation;
   weeklyPrograms: WeeklyProgram[];
-  assembly: string | null;
+  event: string | null;
+}
+
+export interface ProgramFormValues {
+  meetingId: number;
+  congregationId: number;
+  weekNumber?: number | null;
+  startTimeOpeningSong?: string | null;
+  startTimeIntro?: string | null;
+  startTimeIntermediateSong?: string | null;
+  startTimeConclusionWords?: string | null;
+  startTimeFinalSong?: string | null;
+  event?: string | null;
+  openingPrayerId?: number | null;
+  presidentId?: number | null;
+  assistantAdviserId?: number | null;
+  finalPrayerId?: number | null;
+}
+
+export type ProgramCreateRequest = ProgramFormValues;
+export type ProgramUpdateRequest = ProgramFormValues;
+
+export interface ProgramByWeekFilters {
+  congregationId?: number | null;
+  /** Formato YYYY-MM-DD. El backend lo normaliza al lunes de esa semana. */
+  date?: string | null;
 }
 
 export interface Song {

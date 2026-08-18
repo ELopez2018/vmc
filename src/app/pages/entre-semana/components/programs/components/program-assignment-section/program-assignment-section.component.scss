@@ -151,6 +151,63 @@ legend {
   }
 }
 
+.program-assignment-row--pending-title {
+  position: relative;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #fff2df 0%, #ffe6c6 100%);
+  box-shadow: inset 3px 0 0 #e07a12;
+  animation: pending-title-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pending-title-pulse {
+  0%,
+  100% {
+    box-shadow: inset 3px 0 0 #e07a12;
+  }
+  50% {
+    box-shadow:
+      inset 3px 0 0 #e07a12,
+      0 0 0 3px rgba(224, 122, 18, 0.12);
+  }
+}
+
+.assignment-pending-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border: 1px solid rgba(224, 122, 18, 0.35);
+  border-radius: 10px;
+  background: #fff;
+  color: #b45309;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.5;
+  vertical-align: middle;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  mat-icon {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+  }
+
+  &:hover {
+    background: #fff7ec;
+    color: #92400e;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .program-assignment-row--pending-title {
+    animation: none;
+  }
+}
+
 .assignment-stopwatch-btn {
   background: none;
   border: none;
@@ -160,7 +217,9 @@ legend {
   cursor: pointer;
   color: #e67e22;
   opacity: 0.75;
-  transition: opacity 0.15s, transform 0.15s;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
 
   &:hover {
     opacity: 1;
@@ -183,7 +242,7 @@ legend {
   background: #f0f0f0;
   color: #555;
   font-size: 0.78rem;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-weight: 600;
   cursor: pointer;
   user-select: none;

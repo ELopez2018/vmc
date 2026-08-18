@@ -62,84 +62,46 @@
       (backdropClick)="snav.close()" [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'">
 
       <div class="sidenav-header">
-        <mat-icon color="primary">menu_book</mat-icon>
-        <span class="title">Panel</span>
+        <div class="sidenav-header__mark">
+          <mat-icon>menu_book</mat-icon>
+        </div>
+        <div class="sidenav-header__text">
+          <span class="title">Vida y Ministerio</span>
+          <span class="subtitle">{{ congregation.name || "Panel" }}</span>
+        </div>
       </div>
 
-      <mat-nav-list>
+      <mat-nav-list class="menu-list">
+        @for (group of getVisibleMenuGroups(); track group.label) {
+        <button type="button" class="menu-group__trigger" [class.active]="isMenuGroupActive(group)"
+          [matMenuTriggerFor]="groupMenu">
+          <mat-icon class="menu-group__icon">{{ group.icon }}</mat-icon>
+          <span class="menu-group__label">{{ group.label }}</span>
+          <mat-icon class="menu-group__chevron">chevron_right</mat-icon>
+        </button>
 
-        <a mat-list-item routerLink="entre-semana" (click)="closeMenu()">
-          <mat-icon>event</mat-icon>
-          <span>Programa</span>
-        </a>
-
-        <div class="divider"></div>
-        <span class="section-title">Imprimir</span>
-        <a mat-list-item routerLink="imprimir" [queryParams]="{  tipo: 'normal' }" (click)="closeMenu()">
-         <mat-icon>crop_portrait</mat-icon>
-          <span>Normal</span>
-        </a>
-        <a mat-list-item routerLink="imprimir" [queryParams]="{ tipo: 'landscape' }" (click)="closeMenu()">
-          <mat-icon>crop_landscape</mat-icon>
-          <span>Landscape</span>
-        </a>
-
-
-        <div class="divider"></div>
-
-        <span class="section-title">Publicadores</span>
-
-        <a mat-list-item routerLink="publicador" (click)="closeMenu()">
-          <mat-icon>person_add</mat-icon>
-          <span>Registro</span>
-        </a>
-
-        <a mat-list-item routerLink="publicadores" (click)="closeMenu()">
-          <mat-icon>groups</mat-icon>
-          <span>Lista</span>
-        </a>
-        @if (isAdmin) {
-        <a mat-list-item routerLink="privilegios" (click)="closeMenu()">
-          <mat-icon>vpn_key</mat-icon>
-          <span>Privilegios</span>
-        </a>
-        }
-        <span class="section-title">Asignaciones</span>
-
-        <a mat-list-item routerLink="hojas-asignacion" (click)="goToPrint(); closeMenu()">
-          <mat-icon>assignment_turned_in</mat-icon>
-          <span>Hoja de Asignación</span>
-        </a>
-
-        <a mat-list-item routerLink="notificaciones" (click)="closeMenu()">
-          <mat-icon>notifications</mat-icon>
-          <span>Notificaciones</span>
-        </a>
-
-        @if (isAdmin) {
-        <span class="section-title">Configuraciones</span>
-        <a mat-list-item routerLink="congregaciones" (click)="closeMenu()">
-          <mat-icon>holiday_village</mat-icon>
-          <span>Congregaciones</span>
-        </a>
-
-        <a mat-list-item routerLink="administrador" (click)="closeMenu()">
-          <mat-icon>admin_panel_settings</mat-icon>
-          <span>Administrador</span>
-        </a>
-
+        <mat-menu #groupMenu="matMenu" class="cascade-menu" xPosition="after" yPosition="below"
+          [overlapTrigger]="false">
+          @for (item of group.items; track item.route + item.label) {
+          <button mat-menu-item type="button" class="menu-link" [class.active]="isMenuItemActive(item)"
+            (click)="onMenuItemSelected(item)">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span>{{ item.label }}</span>
+          </button>
+          }
+        </mat-menu>
         }
 
-        <div class="divider"></div>
-
-        <a mat-list-item class="logout" (click)="logout(); closeMenu()">
+        <button mat-list-item type="button" class="logout" (click)="logout(); closeMenu()">
           <mat-icon>logout</mat-icon>
           <span>Salir</span>
-        </a>
+        </button>
         <div class="divider"></div>
 
 
-        <img src="./../../../assets/img/Logo.png" width="200" alt="">
+        <div class="sidenav-footer">
+          <img src="./../../../assets/img/Logo.png" width="120" alt="">
+        </div>
 
 
       </mat-nav-list>

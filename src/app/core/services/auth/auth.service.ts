@@ -71,7 +71,6 @@ export class AuthService {
         this.dataService.setPublisher(publisher);
         localStorage.setItem("publisher", JSON.stringify(publisher));
         this.cookieService.set("publisher", JSON.stringify(publisher), { path: "/", sameSite: "Lax" });
-        this.router.navigateByUrl("/tablero");
       }),
     );
   }

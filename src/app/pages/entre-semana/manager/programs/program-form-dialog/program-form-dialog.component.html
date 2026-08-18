@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>{{ data.program?.id ? "Editar programa" : "Nuevo programa" }}</h2>
+
+<mat-dialog-content>
+  <form class="program-form" [formGroup]="programForm" (ngSubmit)="save()">
+    <div class="program-form__grid program-form__grid--main">
+      <mat-form-field appearance="outline">
+        <mat-label>Congregacion</mat-label>
+        <mat-select formControlName="congregationId">
+          @for (congregation of data.congregations; track congregation.id) {
+          <mat-option [value]="congregation.id">{{ congregation.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Semana</mat-label>
+        <mat-select formControlName="meetingId" (selectionChange)="onMeetingChange($event.value)">
+          @for (meeting of data.meetings; track meeting.id) {
+          <mat-option [value]="meeting.id">{{ getMeetingLabel(meeting) }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Numero de semana</mat-label>
+        <input matInput type="number" formControlName="weekNumber" min="1">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Asamblea</mat-label>
+        <input matInput type="text" formControlName="event" maxlength="255">
+      </mat-form-field>
+    </div>
+
+    @if (getProgramError()) {
+    <p class="program-form__error">{{ getProgramError() }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close [disabled]="saving">Cancelar</button>
+  <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="saving">
+    <mat-icon>save</mat-icon>
+    Guardar
+  </button>
+</mat-dialog-actions>

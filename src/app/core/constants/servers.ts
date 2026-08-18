@@ -11,6 +11,7 @@ export const Apis = {
   CONFIGS: '/configs',
   CONGREGATIONS: '/congregations',
   AUTH: '/auth',
+  PROGRAM: '/program',
   WEEKLYPROGRAM: '/weeklyProgram',
   ASSIGNMENT_TYPES: '/assignment-types',
   USER_ASSIGNMENT_TYPES: '/user-assignment-types',

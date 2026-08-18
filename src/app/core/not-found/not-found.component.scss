@@ -1,0 +1,47 @@
+.not-found {
+  display: grid;
+  min-height: min(560px, calc(100vh - 96px));
+  place-items: center;
+  align-content: center;
+  gap: 14px;
+  padding: 32px 18px;
+  text-align: center;
+  color: #172033;
+}
+
+.not-found__icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  border-radius: 14px;
+  color: #0f4c81;
+  background: #e6f0fa;
+}
+
+.not-found__icon mat-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 750;
+}
+
+p {
+  max-width: 520px;
+  margin: 0;
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}

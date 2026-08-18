@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Utils } from "src/app/shared/Utils";
 import { ProgramPdf, WeeklyProgramPdF } from "../../interfaces/print-pdf.interface";
+import { isAssemblyEvent, isSpecialEventWeek, needsOverseerTalkTitle } from "../../utils/program-event.util";
 import { DataService } from "../data/data.service";
 declare const pdfMake: any;
 
@@ -445,31 +446,38 @@ export class PrintPdfLandscapeService {
     const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
+      const isOverseerTalk = needsOverseerTalkTitle(week.event, asigment.assignment.title);
+      const highlight = isOverseerTalk ? { fillColor: "#ffe3bf" } : {};
       content.push([
         {
           text: Utils.adapterTime(asigment.startTime),
           style: "timeStart",
           border: [false, false, false, false],
+          ...highlight,
         },
         {
           text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`,
           style: "fontLife",
           border: [false, false, false, false],
+          ...highlight,
         },
         {
           text: ``,
           style: "fontLife",
           border: [false, false, false, false],
+          ...highlight,
         },
         {
-          text: asigment.assignment.showTips ? asigment.assignment.tips : null,
+          text: isOverseerTalk ? "Encargado" : asigment.assignment.showTips ? asigment.assignment.tips : null,
           style: "tips_r",
           border: [false, false, false, false],
+          ...highlight,
         },
         {
           text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName,
           style: "tips_l",
           border: [false, false, false, false],
+          ...highlight,
         },
       ]);
     });
@@ -617,9 +625,37 @@ export class PrintPdfLandscapeService {
       return isLastWeek ? pageContent : [...pageContent, { text: "", pageBreak: "after" }];
     });
   }
+  private makeSpecialEventBanner(week: ProgramPdf): any[] {
+    if (!isSpecialEventWeek(week.event)) {
+      return [];
+    }
+
+    return [
+      {
+        table: {
+          widths: ["*"],
+          body: [
+            [
+              {
+                text: [
+                  { text: "SEMANA ESPECIAL   ", style: "specialEventEyebrow" },
+                  { text: (week.event ?? "").toUpperCase(), style: "specialEventTitle" },
+                ],
+                fillColor: "#fdf0dd",
+                border: [false, false, false, false],
+                margin: [10, 6, 10, 6],
+              },
+            ],
+          ],
+        },
+        margin: [0, 0, 0, 6],
+      },
+    ];
+  }
   private buildWeekBlock(week: ProgramPdf): any[] {
-    if (!week.assembly) {
+    if (!isAssemblyEvent(week.event)) {
       return [
+        ...this.makeSpecialEventBanner(week),
         ...this.makeHeaderProgram(week),
         { text: "" },
         ...this.makeHeaderTreasures(),
@@ -667,7 +703,7 @@ export class PrintPdfLandscapeService {
                     style: "assemblyTitle",
                   },
                   {
-                    text: week.assembly,
+                    text: week.event,
                     style: "assembly",
                     noWrap: false,
                   },
@@ -737,6 +773,16 @@ export class PrintPdfLandscapeService {
           bold: true,
           fontSize: 10.5,
           margin: [0, 0, 0, 0],
+        },
+        specialEventEyebrow: {
+          bold: true,
+          fontSize: 8,
+          color: "#b45309",
+        },
+        specialEventTitle: {
+          bold: true,
+          fontSize: 12,
+          color: "#7a4306",
         },
         timeStart: {
           bold: true,

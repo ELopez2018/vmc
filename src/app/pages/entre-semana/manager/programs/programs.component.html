@@ -1,29 +1,91 @@
-<div class="">
-  <table class="table table-sm table-responsive table-hover table-striped table-bordered">
-    <thead>
-      <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Semana</th>
-        <th scope="col">Día</th>
-        <th scope="col">JW</th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (item of programList; track item.id) {
-      <tr>
-        <th scope="row">{{ item.id }}</th>
-        <td>{{item.weekNumber}}</td>
-        <td>{{ {} }}</td>
-        <td><a href="{{ item.url}}">Ir a JW</a></td>
-        <td>
-          <p-button icon="pi pi-user-edit" (onClick)="selectedEdit(item)"
-            styleClass="p-button-rounded p-button-help p-button-text"></p-button>
-          <p-button icon="pi pi-times" styleClass="p-button-rounded p-button-danger p-button-text"></p-button>
+<section class="program-admin">
+  <div class="program-admin__toolbar">
+    <div class="program-admin__filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Congregacion</mat-label>
+        <mat-select [value]="selectedCongregationId" (selectionChange)="onFilterCongregationChange($event.value)">
+          <mat-option [value]="null">Todas las congregaciones</mat-option>
+          @for (congregation of congregations; track congregation.id) {
+          <mat-option [value]="congregation.id">{{ congregation.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
+      <mat-form-field appearance="outline">
+        <mat-label>Semana</mat-label>
+        <mat-select [value]="selectedWeek" (selectionChange)="onWeekChange($event.value)"
+          [disabled]="weekOptions.length === 0">
+          <mat-option [value]="null">Semana actual</mat-option>
+          @for (week of weekOptions; track week.week) {
+          <mat-option [value]="week.week">{{ week.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="program-admin__commands">
+      <button mat-stroked-button color="primary" type="button" (click)="loadPrograms()" [disabled]="loading">
+        <mat-icon>refresh</mat-icon>
+        Actualizar
+      </button>
+
+      <button mat-flat-button color="primary" type="button" (click)="openCreateDialog()"
+        [disabled]="!selectedCongregationId">
+        <mat-icon>add</mat-icon>
+        Nuevo
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+
+  <div class="program-admin__table">
+    <table mat-table [dataSource]="programList">
+      <ng-container matColumnDef="weekNumber">
+        <th mat-header-cell *matHeaderCellDef>No</th>
+        <td mat-cell *matCellDef="let program">{{ program.weekNumber }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="week">
+        <th mat-header-cell *matHeaderCellDef>Semana</th>
+        <td mat-cell *matCellDef="let program">{{ getProgramWeekLabel(program) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="congregation">
+        <th mat-header-cell *matHeaderCellDef>Congregacion</th>
+        <td mat-cell *matCellDef="let program">{{ getProgramCongregationLabel(program) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="weeklyPrograms">
+        <th mat-header-cell *matHeaderCellDef>Partes</th>
+        <td mat-cell *matCellDef="let program">{{ program.weeklyPrograms?.length ?? 0 }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="event">
+        <th mat-header-cell *matHeaderCellDef>Evento</th>
+        <td mat-cell *matCellDef="let program" class="program-admin__event">{{ getEventLabel(program) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let program" class="program-admin__row-actions">
+          <button mat-icon-button color="primary" type="button" (click)="selectedEdit(program)" matTooltip="Editar">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" type="button" (click)="toDelete(program)" matTooltip="Eliminar">
+            <mat-icon>delete</mat-icon>
+          </button>
         </td>
-      </tr>
-      }
-    </tbody>
-  </table>
-</div>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    @if (!loading && programList.length === 0) {
+    <div class="program-admin__empty">No hay datos para la semana seleccionada.</div>
+    }
+  </div>
+</section>

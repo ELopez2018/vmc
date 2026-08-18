@@ -8,9 +8,11 @@ import { PublisherPrivilegesComponent } from "../publisher-privileges/publisher-
 import { DashboardComponent } from "./dashboard.component";
 import { ManagerComponent } from "../entre-semana/manager/manager.component";
 import { LoginGuard } from "src/app/core/guards/login.guard";
+import { AdminGuard } from "src/app/core/guards/admin.guard";
 import { CongregationsListComponent } from "../congregations/congregations-list/congregations-list.component";
 import { AssignmentSheetPrinterComponent } from "src/app/shared/assignment-sheet-printer/assignment-sheet-printer.component";
 import { NotificationsComponent } from "../notifications/notifications.component";
+import { NotFoundComponent } from "src/app/core/not-found/not-found.component";
 
 const routes: Routes = [
   {
@@ -55,17 +57,17 @@ const routes: Routes = [
       {
         path: "privilegios",
         component: PublisherPrivilegesComponent,
-        canActivate: [LoginGuard],
+        canActivate: [LoginGuard, AdminGuard],
       },
       {
         path: "administrador",
         component: ManagerComponent,
-        canActivate: [LoginGuard],
+        canActivate: [LoginGuard, AdminGuard],
       },
       {
         path: "congregaciones",
         component: CongregationsListComponent,
-        canActivate: [LoginGuard],
+        canActivate: [LoginGuard, AdminGuard],
       },
       {
         path: "hojas-asignacion",
@@ -76,6 +78,10 @@ const routes: Routes = [
         path: "notificaciones",
         loadComponent: () => import("../notifications/notifications.component").then((m) => m.NotificationsComponent),
         canActivate: [LoginGuard],
+      },
+      {
+        path: "**",
+        component: NotFoundComponent,
       },
     ],
   },

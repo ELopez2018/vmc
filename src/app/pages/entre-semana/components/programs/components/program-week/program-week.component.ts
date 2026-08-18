@@ -13,6 +13,7 @@ import {
   PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT,
 } from "../publisher-warning.util";
 import { ASSIGNMENT_TITLE, MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { isAssemblyEvent, isSpecialEventWeek } from "src/app/core/utils/program-event.util";
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 
@@ -92,6 +93,14 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
 
   public showDayOfMeeting(fechaSemana: any): string {
     return Utils.showDayOfMeeting(fechaSemana, this.meetingDay);
+  }
+
+  public get isAssemblyWeek(): boolean {
+    return isAssemblyEvent(this.semana?.event);
+  }
+
+  public get isSpecialEventWeek(): boolean {
+    return isSpecialEventWeek(this.semana?.event);
   }
 
   public adapterTime(dateTime: any): string {

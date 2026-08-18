@@ -6,6 +6,7 @@ import { CommonModule } from "@angular/common";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatInputModule } from "@angular/material/input";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
+import { ActivatedRoute, Router } from "@angular/router";
 @Component({
   selector: "vmc-login",
   templateUrl: "./login.component.html",
@@ -20,6 +21,8 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {
     this.credential = this.fb.group({
       username: new FormControl("", Validators.required),
@@ -43,6 +46,8 @@ export class LoginComponent {
     this.authService.login(this.credential.getRawValue()).subscribe({
       next: (data) => {
         this.loaderService.hideMatspinner();
+        const returnUrl = this.getSafeReturnUrl();
+        this.router.navigateByUrl(returnUrl ?? "/tablero");
       },
       error: (error) => {
         this.loaderService.hideMatspinner();
@@ -67,5 +72,15 @@ export class LoginComponent {
     }
 
     return "No pudimos completar el ingreso. Intenta nuevamente o contacta al administrador.";
+  }
+
+  private getSafeReturnUrl(): string | null {
+    const returnUrl = this.route.snapshot.queryParamMap.get("returnUrl");
+
+    if (!returnUrl || !returnUrl.startsWith("/tablero")) {
+      return null;
+    }
+
+    return returnUrl;
   }
 }

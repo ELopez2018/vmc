@@ -17,6 +17,7 @@ export const LoginGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  router.navigate(["/inicio"], { replaceUrl: true });
-  return false;
+  return router.createUrlTree(["/inicio"], {
+    queryParams: { returnUrl: state.url },
+  });
 };

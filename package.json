@@ -1,6 +1,6 @@
 {
   "name": "vmc",
-  "version": "0.0.15",
+  "version": "0.0.37",
   "scripts": {
     "prebuild": "node scripts/bump-version.js",
     "ng": "ng",

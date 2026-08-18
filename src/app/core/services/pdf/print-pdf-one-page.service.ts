@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Utils } from "src/app/shared/Utils";
 import { ProgramPdf, WeeklyProgramPdF } from "../../interfaces/print-pdf.interface";
+import { isAssemblyEvent, isSpecialEventWeek, needsOverseerTalkTitle } from "../../utils/program-event.util";
 import { DataService } from "../data/data.service";
 
 declare const pdfMake: any;
@@ -428,40 +429,71 @@ export class PrintPdfOnePageService {
       },
     ];
   }
+  private makeSpecialEventBanner(week: ProgramPdf): any[] {
+    if (!isSpecialEventWeek(week.event)) {
+      return [];
+    }
+
+    return [
+      {
+        table: {
+          widths: ["*"],
+          body: [
+            [
+              {
+                text: [
+                  { text: "SEMANA ESPECIAL   ", style: "specialEventEyebrow" },
+                  { text: (week.event ?? "").toUpperCase(), style: "specialEventTitle" },
+                ],
+                fillColor: "#fdf0dd",
+                border: [false, false, false, false],
+                margin: [8, 5, 8, 5],
+              },
+            ],
+          ],
+        },
+        margin: [0, 0, 0, 4],
+      },
+    ];
+  }
   private makeContentLife(week: ProgramPdf) {
     const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
-      // if (asigment.assignment.title !== "Estudio bíblico de la congregación") {
-      if (true) {
-        content.push([
-          {
-            text: Utils.adapterTime(asigment.startTime),
-            style: "titles",
-            border: [false, false, false, false],
-          },
-          {
-            text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`,
-            style: "fontLife",
-            border: [false, false, false, false],
-          },
-          {
-            text: "",
-            style: "tips_r",
-            border: [false, false, false, false],
-          },
-          {
-            text: ``,
-            style: "fontLife",
-            border: [false, false, false, false],
-          },
-          {
-            text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(),
-            style: "tips_l",
-            border: [false, false, false, false],
-          },
-        ]);
-      }
+      const isOverseerTalk = needsOverseerTalkTitle(week.event, asigment.assignment.title);
+      const highlight = isOverseerTalk ? { fillColor: "#ffe3bf" } : {};
+      content.push([
+        {
+          text: Utils.adapterTime(asigment.startTime),
+          style: "titles",
+          border: [false, false, false, false],
+          ...highlight,
+        },
+        {
+          text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`,
+          style: "fontLife",
+          border: [false, false, false, false],
+          ...highlight,
+        },
+        {
+          text: isOverseerTalk ? "Encargado" : "",
+          style: "tips_r",
+          border: [false, false, false, false],
+          ...highlight,
+        },
+        {
+          text: ``,
+          style: "fontLife",
+          border: [false, false, false, false],
+          ...highlight,
+        },
+        {
+          text: asigment.assistant ? asigment.responsible?.fullName.trim() + " / " + asigment.assistant.fullName.trim() : asigment.responsible?.fullName.trim(),
+          style: "tips_l",
+          border: [false, false, false, false],
+          ...highlight,
+        },
+      ]);
     });
     return [
       {
@@ -648,8 +680,9 @@ export class PrintPdfOnePageService {
     weeks.forEach((week) => {
       count++;
       pageCount++;
-      if (week.assembly == null) {
+      if (!isAssemblyEvent(week.event)) {
         contenido.push(
+          ...this.makeSpecialEventBanner(week),
           ...this.makeHeaderProgram(week),
           ...this.makeHeaderTreasures(),
           ...this.makeContentTreasures(week),
@@ -689,7 +722,7 @@ export class PrintPdfOnePageService {
               body: [
                 [
                   {
-                    text: week.assembly,
+                    text: week.event,
                     style: "assembly",
                     border: [true, true, true, true],
                   },
@@ -757,6 +790,16 @@ export class PrintPdfOnePageService {
           alignment: "left",
           color: "#b6b4b4",
           margin: [0, 4, 0, 0],
+        },
+        specialEventEyebrow: {
+          bold: true,
+          fontSize: 7,
+          color: "#b45309",
+        },
+        specialEventTitle: {
+          bold: true,
+          fontSize: 10,
+          color: "#7a4306",
         },
         titles: {
           bold: true,

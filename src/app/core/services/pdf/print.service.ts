@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Utils } from "src/app/shared/Utils";
 import { ProgramPdf, WeeklyProgramPdF } from "../../interfaces/print-pdf.interface";
+import { isAssemblyEvent, isSpecialEventWeek, needsOverseerTalkTitle } from "../../utils/program-event.util";
 import { DataService } from "../data/data.service";
 declare const pdfMake: any;
 
@@ -10,7 +11,7 @@ declare const pdfMake: any;
 export class PrintPdfService {
   private congregation = "ALBORADA";
   private colorFontPublisher = "#ea002e";
-  
+
   private sizeHeader = [10, "auto", "*", 20];
   private sizeBody = [200, "*", 150, 126];
   private sizeSongs = [16, 244, 150, "*"];
@@ -441,31 +442,38 @@ export class PrintPdfService {
     const treasures = week.weeklyPrograms.filter((data: WeeklyProgramPdF) => data.assignment.sectionMeeting == "NUESTRA VIDA CRISTIANA");
     const content: any = [];
     treasures.forEach((asigment: WeeklyProgramPdF) => {
+      const isOverseerTalk = needsOverseerTalkTitle(week.event, asigment.assignment.title);
+      const highlight = isOverseerTalk ? { fillColor: "#ffe3bf" } : {};
       content.push([
         {
           text: Utils.adapterTime(asigment.startTime),
           style: "titles",
           border: [false, false, false, false],
+          ...highlight,
         },
         {
           text: `${asigment.assignment.number}. ${asigment.assignment.title} (${asigment.assignment.time} ${asigment.assignment.timeType})`,
           style: "fontLife",
           border: [false, false, false, false],
+          ...highlight,
         },
         {
           text: ``,
           style: "fontLife",
           border: [false, false, false, false],
+          ...highlight,
         },
         {
-          text: asigment.assignment.showTips ? asigment.assignment.tips : null,
+          text: isOverseerTalk ? "Encargado" : asigment.assignment.showTips ? asigment.assignment.tips : null,
           style: "tips_r",
           border: [false, false, false, false],
+          ...highlight,
         },
         {
           text: asigment.assistant ? asigment.responsible?.fullName + " / " + asigment.assistant.fullName : asigment.responsible?.fullName,
           style: "tips_l",
           border: [false, false, false, false],
+          ...highlight,
         },
       ]);
     });
@@ -614,9 +622,37 @@ export class PrintPdfService {
       ...this.styles(),
     };
   }
+  private makeSpecialEventBanner(week: ProgramPdf): any[] {
+    if (!isSpecialEventWeek(week.event)) {
+      return [];
+    }
+
+    return [
+      {
+        table: {
+          widths: ["*"],
+          body: [
+            [
+              {
+                text: [
+                  { text: "SEMANA ESPECIAL   ", style: "specialEventEyebrow" },
+                  { text: (week.event ?? "").toUpperCase(), style: "specialEventTitle" },
+                ],
+                fillColor: "#fdf0dd",
+                border: [false, false, false, false],
+                margin: [8, 5, 8, 5],
+              },
+            ],
+          ],
+        },
+        margin: [0, 0, 0, 4],
+      },
+    ];
+  }
   private buildWeekBlock(week: ProgramPdf): any[] {
-    if (!week.assembly) {
+    if (!isAssemblyEvent(week.event)) {
       return [
+        ...this.makeSpecialEventBanner(week),
         ...this.makeHeaderProgram(week),
         ...this.makeHeaderTreasures(),
         ...this.makeContentTreasures(week),
@@ -657,7 +693,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: week.assembly,
+                text: week.event,
                 style: "assembly",
                 border: [false, false, false, false],
               },
@@ -718,6 +754,16 @@ export class PrintPdfService {
           bold: true,
           fontSize: 8,
           margin: [0, 0, 0, 0],
+        },
+        specialEventEyebrow: {
+          bold: true,
+          fontSize: 7,
+          color: "#b45309",
+        },
+        specialEventTitle: {
+          bold: true,
+          fontSize: 10,
+          color: "#7a4306",
         },
 
         treasures: {

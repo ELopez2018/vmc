@@ -285,7 +285,8 @@
   </div>
   } @else {
   <div class="row px-3 program__tesoros program-assignment-row"
-    [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
+    [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)"
+    [class.program-assignment-row--pending-title]="needsOverseerTalkTitle(item)">
     <div class="col-md-8">
       <div class="row program-assignment-line">
         <div class="col-md-1 width-timeStart ms-2 program-time-start hover"
@@ -305,6 +306,14 @@
             (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE)">
             {{ item.assignment.title + " (" + item.assignment.time + " " + item.assignment.timeType + ")" }}
           </span>
+          @if (needsOverseerTalkTitle(item)) {
+          <button class="assignment-pending-badge" type="button"
+            ngbTooltip="Cambia el título por el discurso del superintendente" placement="top"
+            (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TITLE); $event.stopPropagation()">
+            <mat-icon>campaign</mat-icon>
+            <span>Falta el título del discurso</span>
+          </button>
+          }
           <button class="assignment-stopwatch-btn" type="button" ngbTooltip="Cronómetro" placement="top"
             (click)="openStopwatch(item); $event.stopPropagation()">
             <i class="pi pi-stopwatch"></i>
@@ -316,13 +325,17 @@
             (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
             {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
           </span>
+          @if (!isSpecialEventWeek) {
           <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"
             [compact]="true"></vmc-assignment-source>
+          }
         </div>
       </div>
     </div>
     <div class="col-md-1 mt-0 text-end text-title-custom program-assignment-detail">
-      @if (item.assignment.showTips) {
+      @if (isSpecialEventWeek) {
+      <span class="d-none d-xl-inline">Encargado</span>
+      } @else if (item.assignment.showTips) {
       <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TIPS)">
         {{ item.assignment.tips }}
       </span>
@@ -335,12 +348,14 @@
         [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item.responsible ? item.responsible.fullName : porAsignar }}
       </span>
+      @if (!isSpecialEventWeek) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)"
         [ngbTooltip]="item.assistant?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
         [tooltipClass]="getPublisherTooltipClass(item.assistant)">
         {{ item.assistant ? "/" + item.assistant.fullName : "/" + porAsignar }}
       </span>
+      }
     </div>
   </div>
   }

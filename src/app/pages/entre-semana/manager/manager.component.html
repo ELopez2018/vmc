@@ -5,33 +5,9 @@
     </div>
   </div>
   <div class="row">
-    @if (meetings && meetings.length > 0) {
     <div class="col-md-12">
       <mat-tab-group animationDuration="0ms">
-        <mat-tab label="Semanas">
-          <vmc-assignment></vmc-assignment>
-        </mat-tab>
         <mat-tab label="Programas" class="p-4">
-          <div class="p-4">
-            <div class="row">
-              <div class="col-md-4 my-4">
-                <select name="option" class="form-control" id="meetings">
-                  <option>Selecciona la semana</option>
-                </select>
-              </div>
-              <div class="col-md-4 my-4">
-                <select name="option" class="form-control" id="meetings">
-                  <option>Selecciona la Congregacion</option>
-                </select>
-              </div>
-              <div class="col-md-4 my-4">
-                <select name="option" class="form-control" id="meetings">
-                  <option>Selecciona la Sala</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
           <div class="p-4">
             <div class="row">
               <div class="col-md-12 my-4">
@@ -39,12 +15,11 @@
               </div>
             </div>
           </div>
-
-
         </mat-tab>
-        <mat-tab label="Third"> Content 3 </mat-tab>
+        <mat-tab label="Semanas">
+          <vmc-assignment></vmc-assignment>
+        </mat-tab>
       </mat-tab-group>
     </div>
-    }
   </div>
 </div>

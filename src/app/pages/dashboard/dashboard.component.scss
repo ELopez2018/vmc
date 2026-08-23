@@ -1,22 +1,22 @@
-$sidenav-ink: #0f172a;
-$sidenav-muted: #8a94a6;
-$sidenav-accent: #0f4c81;
-$sidenav-hover: rgba(15, 23, 42, 0.04);
-$sidenav-line: rgba(15, 23, 42, 0.07);
+$sidenav-ink: #10243a;
+$sidenav-muted: #667a90;
+$sidenav-accent: #0b55a6;
+$sidenav-hover: #e8f2ff;
+$sidenav-line: #d7e3f1;
 
 .sidenav-container {
   height: 95vh;
-  background-color: #f6f8fb;
+  background-color: var(--vmc-page);
 }
 
 .sidenav {
   width: 268px;
-  background: #ffffff;
+  background: var(--vmc-surface);
   border-right: 1px solid $sidenav-line;
   padding: 18px 14px 12px;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: #dfe4ec transparent;
+  scrollbar-color: var(--vmc-line) transparent;
 }
 
 .sidenav-header {
@@ -81,7 +81,7 @@ $sidenav-line: rgba(15, 23, 42, 0.07);
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: #4b5563;
+  color: var(--vmc-muted);
   font-size: 0.86rem;
   font-weight: 500;
   text-align: left;
@@ -108,7 +108,7 @@ $sidenav-line: rgba(15, 23, 42, 0.07);
 .menu-group__icon,
 .menu-group__chevron {
   flex: 0 0 auto;
-  color: #9aa3b2;
+  color: var(--vmc-muted);
   font-size: 18px;
   width: 18px;
   height: 18px;
@@ -142,7 +142,7 @@ $sidenav-line: rgba(15, 23, 42, 0.07);
   padding: 4px;
   border: 1px solid $sidenav-line;
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--vmc-surface);
   box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
 }
 
@@ -154,7 +154,7 @@ $sidenav-line: rgba(15, 23, 42, 0.07);
   position: relative;
   min-height: 36px;
   border-radius: 8px;
-  color: #4b5563;
+  color: var(--vmc-muted);
   font-size: 0.86rem;
   font-weight: 500;
   transition:
@@ -164,7 +164,7 @@ $sidenav-line: rgba(15, 23, 42, 0.07);
 
 ::ng-deep .cascade-menu .menu-link mat-icon {
   margin-right: 10px;
-  color: #9aa3b2;
+  color: var(--vmc-muted);
   font-size: 18px;
   width: 18px;
   height: 18px;
@@ -181,7 +181,7 @@ $sidenav-line: rgba(15, 23, 42, 0.07);
 
 ::ng-deep .cascade-menu .menu-link.active,
 ::ng-deep .cascade-menu .menu-link.active span {
-  background-color: rgba(15, 76, 129, 0.06);
+  background-color: var(--vmc-primary-soft);
   color: $sidenav-accent;
   font-weight: 600;
 }
@@ -202,7 +202,7 @@ $sidenav-line: rgba(15, 23, 42, 0.07);
 }
 
 .logout {
-  color: #64748b;
+  color: var(--vmc-muted);
   border-radius: 8px;
   margin: 12px 2px 2px;
   min-height: 38px;
@@ -217,7 +217,7 @@ $sidenav-line: rgba(15, 23, 42, 0.07);
 
 .logout mat-icon {
   margin-right: 10px;
-  color: #9aa3b2;
+  color: var(--vmc-muted);
   font-size: 18px;
   width: 18px;
   height: 18px;
@@ -238,18 +238,18 @@ $sidenav-line: rgba(15, 23, 42, 0.07);
 
 .content {
   padding: 0px;
-  background-color: #f6f8fb;
+  background-color: var(--vmc-page);
 }
 
 @media (min-width: 1366px) {
   .content {
     padding: 0;
-    background-color: #f6f8fb;
+    background-color: var(--vmc-page);
   }
 
   .sidenav-container {
     height: 93vh;
-    background-color: #f6f8fb;
+    background-color: var(--vmc-page);
   }
 
   .sidenav {

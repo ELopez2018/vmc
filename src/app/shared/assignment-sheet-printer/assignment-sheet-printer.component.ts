@@ -18,7 +18,7 @@ import { ProgramFiltersComponent } from "../components/program-filters/program-f
   templateUrl: "./assignment-sheet-printer.component.html",
   styleUrls: ["./assignment-sheet-printer.component.scss"],
   standalone: true,
-  imports: [IconCloseComponent, PdfJsViewerModule, ProgramFiltersComponent],
+  imports: [PdfJsViewerModule, ProgramFiltersComponent],
 })
 export class AssignmentSheetPrinterComponent implements OnInit {
   loaderService = inject(LoaderService);

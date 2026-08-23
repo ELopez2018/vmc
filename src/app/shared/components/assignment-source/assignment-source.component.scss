@@ -1,9 +1,14 @@
 :host {
   display: block;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .assignment-source {
+  box-sizing: border-box;
   margin-top: 6px;
+  max-width: 100%;
+  overflow: hidden;
   padding: 8px 10px;
   border-left: 3px solid #799fcc;
   border-radius: 4px;
@@ -12,6 +17,8 @@
   font-size: 0.82rem;
   line-height: 1.35;
   white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .assignment-source--compact {
@@ -23,6 +30,7 @@
 
 .assignment-source__content,
 .assignment-source__text {
+  max-width: 100%;
   margin: 0;
 }
 
@@ -37,6 +45,15 @@
 .assignment-source__content ul,
 .assignment-source__content ol {
   padding-left: 1rem;
+}
+
+.assignment-source__content :where(img, video, iframe, table) {
+  max-width: 100%;
+}
+
+.assignment-source__content :where(pre, code) {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .assignment-source__content a {

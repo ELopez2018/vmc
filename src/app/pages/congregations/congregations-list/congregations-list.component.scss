@@ -10,7 +10,7 @@
 	bottom: -6px;
 	font-size: 20px;
 	color: #fff200;
-	background: #2563eb;
+	background: var(--vmc-primary);
 	border-radius: 50%;
 	box-shadow: 0 1px 4px 0 rgba(30, 64, 175, 0.18);
 }
@@ -31,7 +31,7 @@
 
 .add-btn {
 	box-shadow: 0 2px 8px 0 rgba(30, 64, 175, 0.12);
-	background: #2563eb !important;
+	background: var(--vmc-primary) !important;
 }
 
 .add-btn mat-icon {
@@ -52,14 +52,14 @@
 .congregations-table-container {
 	max-width: 900px;
 	margin: 40px auto;
-	background: #f7faff;
+	background: var(--vmc-accent-soft);
 	border-radius: 18px;
 	box-shadow: 0 2px 16px 0 rgba(30, 64, 175, 0.08);
 	padding: 32px 24px 24px 24px;
 }
 
 .table-title {
-	color: #2563eb;
+	color: var(--vmc-primary-800);
 	font-weight: 700;
 	margin-bottom: 24px;
 	font-size: 2rem;
@@ -74,11 +74,11 @@
 }
 
 th.mat-header-cell {
-	background: #2563eb;
+	background: var(--vmc-primary);
 	color: #fff;
 	font-weight: 600;
 	font-size: 1rem;
-	border-bottom: 2px solid #1e40af;
+	border-bottom: 2px solid var(--vmc-primary-900);
 }
 
 td.mat-cell {

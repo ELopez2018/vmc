@@ -144,11 +144,13 @@ export class ProgramFormDialogComponent implements OnInit {
     }
 
     if (Array.isArray(value)) {
-      const [hours = 0, minutes = 0, seconds = 0] = value;
-      return [hours, minutes, seconds].map((item) => item.toString().padStart(2, "0")).join(":");
+      const [hours = 0, minutes = 0, seconds] = value;
+      const normalizedTime = [hours, minutes].map((item) => item.toString().padStart(2, "0")).join(":");
+
+      return seconds === undefined ? normalizedTime : `${normalizedTime}:${seconds.toString().padStart(2, "0")}`;
     }
 
-    return value.length === 5 ? `${value}:00` : value;
+    return value;
   }
 
   private notify(message: string): void {

@@ -17,8 +17,8 @@
 .login__brand {
   align-content: space-between;
   background:
-    linear-gradient(180deg, rgba(6, 31, 54, 0.78), rgba(6, 31, 54, 0.94)),
-    linear-gradient(135deg, #103d54, #0a2540);
+    linear-gradient(180deg, rgba(6, 39, 86, 0.78), rgba(6, 39, 86, 0.95)),
+    linear-gradient(135deg, var(--vmc-primary-800), var(--vmc-primary-950));
   color: #ffffff;
   display: grid;
   min-height: 430px;
@@ -62,13 +62,13 @@
 }
 
 .login__form-head span {
-  color: #0d6efd;
+  color: var(--vmc-primary-800);
   font-size: 0.82rem;
   font-weight: 700;
 }
 
 .login__form-head strong {
-  color: #10243a;
+  color: var(--vmc-ink);
   font-size: clamp(1.35rem, 3vw, 1.8rem);
   line-height: 1.15;
 }
@@ -91,8 +91,8 @@
 
 .login__field .form-control:focus {
   background: #ffffff;
-  border-color: #0f766e;
-  box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.16);
+  border-color: var(--vmc-primary);
+  box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.16);
 }
 
 .login__error {
@@ -106,7 +106,7 @@
 }
 
 .login__button {
-  background: linear-gradient(135deg, #0f766e, #0d6efd);
+  background: linear-gradient(135deg, var(--vmc-primary-800), var(--vmc-primary));
   border: 0;
   border-radius: 8px;
   font-weight: 600;

@@ -12,8 +12,8 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$vmc-primary: mat.m2-define-palette(mat.$m2-indigo-palette);
-$vmc-accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+$vmc-primary: mat.m2-define-palette(mat.$m2-blue-palette, 700, 500, 900);
+$vmc-accent: mat.m2-define-palette(mat.$m2-light-blue-palette, 600, 300, 900);
 
 // The warn palette is optional (defaults to red).
 $vmc-warn: mat.m2-define-palette(mat.$m2-red-palette);
@@ -37,8 +37,65 @@ $vmc-theme: mat.m2-define-light-theme(
 @import "primeicons/primeicons.css";
 /* You can add global styles to this file, and also import other style files */
 :root {
+  /* Paleta tomada del logotipo: azul marino, azul institucional y celeste. */
+  --vmc-primary-950: #062756;
+  --vmc-primary-900: #073b83;
+  --vmc-primary-800: #0b55a6;
+  --vmc-primary: #1976d2;
+  --vmc-primary-hover: #125ea9;
+  --vmc-primary-soft: #e8f2ff;
+  --vmc-accent: #75b9f5;
+  --vmc-accent-soft: #eef7ff;
+  --vmc-ink: #10243a;
+  --vmc-muted: #52657a;
+  --vmc-surface: #ffffff;
+  --vmc-page: #f4f8fd;
+  --vmc-line: #d7e3f1;
+
+  --bs-primary: var(--vmc-primary);
+  --bs-primary-rgb: 25, 118, 210;
+  --bs-link-color: var(--vmc-primary-800);
+  --bs-link-hover-color: var(--vmc-primary-950);
+  --primary-color: var(--vmc-primary);
+  --primary-color-text: #ffffff;
+  --primary-50: #f2f8ff;
+  --primary-100: #e2f0ff;
+  --primary-200: #c5e2ff;
+  --primary-300: #9fd0fb;
+  --primary-400: #75b9f5;
+  --primary-500: var(--vmc-primary);
+  --primary-600: var(--vmc-primary-hover);
+  --primary-700: var(--vmc-primary-800);
+  --primary-800: var(--vmc-primary-900);
+  --primary-900: var(--vmc-primary-950);
   --vmc-publisher-tooltip-bg: #dc3545;
   --vmc-publisher-tooltip-color: #ffffff;
+}
+
+body {
+  background: var(--vmc-page);
+  color: var(--vmc-ink);
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--vmc-primary);
+  --bs-btn-border-color: var(--vmc-primary);
+  --bs-btn-hover-bg: var(--vmc-primary-hover);
+  --bs-btn-hover-border-color: var(--vmc-primary-hover);
+  --bs-btn-active-bg: var(--vmc-primary-800);
+  --bs-btn-active-border-color: var(--vmc-primary-800);
+  --bs-btn-disabled-bg: var(--vmc-primary);
+  --bs-btn-disabled-border-color: var(--vmc-primary);
+}
+
+.p-button.p-button-primary {
+  background: var(--vmc-primary) !important;
+  border-color: var(--vmc-primary) !important;
+}
+
+.p-button.p-button-primary:not(:disabled):hover {
+  background: var(--vmc-primary-hover) !important;
+  border-color: var(--vmc-primary-hover) !important;
 }
 
 fieldset {
@@ -52,31 +109,31 @@ fieldset {
 }
 
 .tooltip-custom {
-  --bs-tooltip-bg: #003366;
+  --bs-tooltip-bg: var(--vmc-primary-900);
   --bs-tooltip-color: #ffffff;
   --bs-tooltip-font-size: 13px;
 }
 
 .tooltip-custom .tooltip-inner {
-  background-color: #003366;
+  background-color: var(--vmc-primary-900);
   color: #ffffff;
   font-size: 13px;
 }
 
 .tooltip-custom.bs-tooltip-end .tooltip-arrow::before {
-  border-right-color: #003366;
+  border-right-color: var(--vmc-primary-900);
 }
 
 .tooltip-custom.bs-tooltip-start .tooltip-arrow::before {
-  border-left-color: #003366;
+  border-left-color: var(--vmc-primary-900);
 }
 
 .tooltip-custom.bs-tooltip-top .tooltip-arrow::before {
-  border-top-color: #003366;
+  border-top-color: var(--vmc-primary-900);
 }
 
 .tooltip-custom.bs-tooltip-bottom .tooltip-arrow::before {
-  border-bottom-color: #003366;
+  border-bottom-color: var(--vmc-primary-900);
 }
 
 .tooltip-publisher-warning {
@@ -615,7 +672,7 @@ search-publisher .sub-modal {
 
 .program-event-card {
   align-items: center;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.9)), linear-gradient(120deg, #12364a, #d5a333);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(244, 248, 253, 0.9)), linear-gradient(120deg, var(--vmc-primary-950), var(--vmc-accent));
   border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 8px;
   box-shadow: 0 22px 55px rgba(15, 23, 42, 0.14);
@@ -628,7 +685,7 @@ search-publisher .sub-modal {
 
 .program-event-card::before {
   background:
-    linear-gradient(135deg, transparent 0 45%, rgba(18, 54, 74, 0.1) 45% 46%, transparent 46%), radial-gradient(circle at 100% 0, rgba(213, 163, 51, 0.28), transparent 18rem);
+    linear-gradient(135deg, transparent 0 45%, rgba(7, 59, 131, 0.1) 45% 46%, transparent 46%), radial-gradient(circle at 100% 0, rgba(117, 185, 245, 0.32), transparent 18rem);
   content: "";
   inset: 0;
   pointer-events: none;
@@ -643,7 +700,7 @@ search-publisher .sub-modal {
 }
 
 .program-event-card__eyebrow {
-  background: #12364a;
+  background: var(--vmc-primary-900);
   border-radius: 999px;
   color: #ffffff;
   display: inline-flex;
@@ -654,7 +711,7 @@ search-publisher .sub-modal {
 }
 
 .program-event-card h2 {
-  color: #10243a;
+  color: var(--vmc-ink);
   font-size: clamp(1.65rem, 5vw, 3.1rem);
   font-weight: 800;
   line-height: 1.05;
@@ -663,7 +720,7 @@ search-publisher .sub-modal {
 
 .program-event-card p {
   align-items: center;
-  color: #455a64;
+  color: var(--vmc-muted);
   display: inline-flex;
   font-size: clamp(1rem, 2vw, 1.25rem);
   font-weight: 700;
@@ -672,14 +729,14 @@ search-publisher .sub-modal {
 }
 
 .program-event-card mat-icon {
-  color: #d5a333;
+  color: var(--vmc-primary);
   height: 22px;
   width: 22px;
 }
 
 .app-loading {
   align-items: center;
-  background: linear-gradient(120deg, rgba(7, 27, 45, 0.94), rgba(11, 61, 75, 0.9), rgba(213, 163, 51, 0.82)), #071b2d;
+  background: linear-gradient(120deg, rgba(6, 39, 86, 0.96), rgba(11, 85, 166, 0.9), rgba(117, 185, 245, 0.82)), var(--vmc-primary-950);
   display: flex;
   inset: 0;
   justify-content: center;
@@ -754,20 +811,20 @@ search-publisher .sub-modal {
 }
 
 .app-loading__brand span {
-  color: #0f766e;
+  color: var(--vmc-primary-800);
   font-size: 0.82rem;
   font-weight: 700;
 }
 
 .app-loading__brand strong {
-  color: #10243a;
+  color: var(--vmc-ink);
   font-size: clamp(1.25rem, 4vw, 1.85rem);
   line-height: 1.1;
 }
 
 .app-loading__progress {
   align-items: center;
-  color: #455a64;
+  color: var(--vmc-muted);
   display: flex;
   font-size: 0.95rem;
   font-weight: 700;
@@ -776,8 +833,8 @@ search-publisher .sub-modal {
 
 .app-loading__ring {
   animation: appLoadingSpin 850ms linear infinite;
-  border: 4px solid rgba(15, 118, 110, 0.16);
-  border-left-color: #0f766e;
+  border: 4px solid rgba(25, 118, 210, 0.16);
+  border-left-color: var(--vmc-primary);
   border-radius: 50%;
   flex: 0 0 42px;
   height: 42px;
@@ -791,7 +848,7 @@ search-publisher .sub-modal {
 
 .app-loading__skeleton span {
   animation: appLoadingPulse 1.25s ease-in-out infinite;
-  background: linear-gradient(90deg, #e8eef4, #f8fafc, #e8eef4);
+  background: linear-gradient(90deg, #e5effa, #f8fbff, #e5effa);
   background-size: 220% 100%;
   border-radius: 999px;
   display: block;

@@ -57,6 +57,14 @@ legend {
 .program-assignment-line {
   align-items: flex-start;
   flex-wrap: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+.program-assignment-row > [class*="col-"],
+.program-assignment-line > [class*="col-"] {
+  min-width: 0;
 }
 
 .program-time-start {
@@ -75,8 +83,10 @@ legend {
 }
 
 .program-assignment-title {
+  flex: 1 1 0;
+  max-width: calc(100% - 50px);
   min-width: 0;
-  flex: 1 1 auto;
+  width: auto;
 }
 
 .publisher-warning-previous-week {

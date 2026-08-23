@@ -530,6 +530,17 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     return this.assignmentType !== AssignmentType.PRESIDENT && this.assignmentType !== AssignmentType.OPENING_PRAYER && this.assignmentType !== AssignmentType.FINAL_PRAYER;
   }
 
+  get frequentTableColumns(): string[] {
+    const columns = ["fullName", "count", "lastAssignmentDate"];
+
+    if (this.assignmentType === AssignmentType.FINAL_PRAYER) {
+      columns.push("lastAssignGlobal");
+    }
+
+    columns.push("more");
+    return columns;
+  }
+
   get compactHeaderText(): string {
     return this.abbreviateAssignmentHeader(this.headerText);
   }

@@ -6,8 +6,8 @@
   display: flex;
   flex-direction: column;
   padding: 32px;
-  color: #172033;
-  background: linear-gradient(180deg, #eef6f7, #f7fafc 42%, #eef2f6);
+  color: var(--vmc-ink);
+  background: linear-gradient(180deg, var(--vmc-accent-soft), #f8fbff 42%, var(--vmc-primary-soft));
 }
 
 .publisher-list-page > * {
@@ -23,7 +23,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #0f766e;
+  color: var(--vmc-primary-800);
   font-weight: 700;
   margin-bottom: 10px;
   font-size: 13px;
@@ -31,7 +31,7 @@
 
 .publisher-header h1 {
   margin: 0;
-  color: #101828;
+  color: var(--vmc-ink);
   font-size: 38px;
   font-weight: 800;
 }
@@ -47,7 +47,7 @@
 
 .metric-card,
 .directory-panel {
-  border: 1px solid #dce4ec;
+  border: 1px solid var(--vmc-line);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 14px 34px rgba(16, 24, 40, 0.08);
@@ -61,7 +61,7 @@
 }
 
 .metric-card {
-  --accent: #2563eb;
+  --accent: var(--vmc-primary);
   display: flex;
   align-items: center;
   gap: 14px;
@@ -69,11 +69,11 @@
 }
 
 .metric-card--email {
-  --accent: #0f766e;
+  --accent: var(--vmc-primary-800);
 }
 
 .metric-card--phone {
-  --accent: #7c3aed;
+  --accent: var(--vmc-accent);
 }
 
 .metric-card__icon {
@@ -111,7 +111,7 @@
 .directory-panel__header {
   padding: 20px 24px;
   border-bottom: 1px solid #e5edf4;
-  background: linear-gradient(90deg, #fff, #f4fbfa);
+  background: linear-gradient(90deg, #fff, var(--vmc-accent-soft));
 }
 
 .directory-panel__header h2,
@@ -139,7 +139,7 @@
 .state-panel mat-icon {
   width: 46px;
   height: 46px;
-  color: #0f766e;
+  color: var(--vmc-primary-800);
   font-size: 46px;
 }
 

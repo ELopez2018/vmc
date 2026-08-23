@@ -1,6 +1,6 @@
 .home {
   align-items: center;
-  background: linear-gradient(120deg, #071b2d 0%, #0b3d4b 48%, #d5a333 100%);
+  background: linear-gradient(120deg, var(--vmc-primary-950) 0%, var(--vmc-primary-800) 48%, var(--vmc-accent) 100%);
   display: flex;
   justify-content: center;
   isolation: isolate;
@@ -30,7 +30,7 @@
 .home::after {
   background:
     linear-gradient(160deg, transparent 0 56%, rgba(255, 255, 255, 0.78) 56% 72%, transparent 72%),
-    linear-gradient(20deg, transparent 0 63%, rgba(4, 27, 44, 0.28) 63% 100%);
+    linear-gradient(20deg, transparent 0 63%, rgba(6, 39, 86, 0.32) 63% 100%);
   opacity: 0.55;
 }
 

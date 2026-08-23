@@ -2,7 +2,13 @@ import { Injectable } from "@angular/core";
 import { map, Observable, tap } from "rxjs";
 import { Servers } from "../../constants/servers";
 import { HttpClient } from "@angular/common/http";
-import { Meeting, Program, WeeklyProgram } from "../../interfaces/reuniones.interface";
+import {
+  BackendTime,
+  Meeting,
+  Program,
+  ProgramUpdateRequest,
+  WeeklyProgram,
+} from "../../interfaces/reuniones.interface";
 import { OtherAssignment } from "../../enums/meetings.enums";
 import { DataService } from "../data/data.service";
 
@@ -47,12 +53,7 @@ export class MeetingsService {
         if (!data) {
           return []; // Devuelve un array vacío si data es null o undefined
         }
-        data.forEach((program) => {
-          if (program.weeklyPrograms) {
-            program.weeklyPrograms.sort((a, b) => a.assignment.number - b.assignment.number);
-          }
-        });
-        return data ?? []; // Devuelve los datos transformados
+        return this.sortProgramsByAssignmentNumber(data);
       }),
     );
   }
@@ -81,8 +82,41 @@ export class MeetingsService {
     return this.httpClient.post<WeeklyProgram>(url, weeklyProgram);
   }
   saveOrUpdateProgram(program: Program) {
-    const url = `${this.server}/program`;
-    return this.httpClient.put<Program>(url, program);
+    const url = `${this.server}/program/${program.id}`;
+    const request: ProgramUpdateRequest = {
+      meetingId: program.meeting.id,
+      congregationId: program.congregation.id,
+      weekNumber: program.weekNumber,
+      startTimeOpeningSong: this.toApiTime(program.startTimeOpeningSong),
+      startTimeIntro: this.toApiTime(program.startTimeIntro),
+      startTimeIntermediateSong: this.toApiTime(program.startTimeIntermediateSong),
+      startTimeConclusionWords: this.toApiTime(program.startTimeConclusionWords),
+      startTimeFinalSong: this.toApiTime(program.startTimeFinalSong),
+      event: program.event,
+      openingPrayerId: program.openingPrayer?.id ?? null,
+      presidentId: program.president?.id ?? null,
+      assistantAdviserId: program.assistantAdviser?.id ?? null,
+      finalPrayerId: program.finalPrayer?.id ?? null,
+    };
+
+    return this.httpClient.put<Program>(url, request).pipe(
+      tap((updatedProgram) => Object.assign(program, updatedProgram)),
+    );
+  }
+
+  private toApiTime(value: BackendTime | null | undefined): string | null {
+    if (!value) {
+      return null;
+    }
+
+    if (!Array.isArray(value)) {
+      return value;
+    }
+
+    const [hours = 0, minutes = 0, seconds] = value;
+    const normalizedTime = [hours, minutes].map((item) => item.toString().padStart(2, "0")).join(":");
+
+    return seconds === undefined ? normalizedTime : `${normalizedTime}:${seconds.toString().padStart(2, "0")}`;
   }
 
   getProgramsByDateRange(fechaDesde: any, fechaHasta: any, congregationId: number): Observable<Program[]> {
@@ -92,7 +126,28 @@ export class MeetingsService {
     fechaHasta = fechaHasta.toISOString().split("T")[0];
 
     const url = `${this.server}/meetings/get-programs-by-date-range?congregationId=${congregationId}&startDate=${fechaDesde}&endDate=${fechaHasta}`;
-    return this.httpClient.get<Program[]>(url);
+    return this.httpClient.get<Program[]>(url).pipe(
+      map((programs) => this.sortProgramsByAssignmentNumber(programs)),
+    );
+  }
+
+  /**
+   * El API no garantiza el orden de las partes. Mantiene cada programa en el
+   * orden ascendente de `assignment.number` para todas las pantallas y filtros.
+   */
+  private sortProgramsByAssignmentNumber(programs: Program[] | null | undefined): Program[] {
+    return (programs ?? []).map((program) => ({
+      ...program,
+      weeklyPrograms: [...(program.weeklyPrograms ?? [])].sort(
+        (current, next) => this.assignmentNumber(current) - this.assignmentNumber(next),
+      ),
+    }));
+  }
+
+  private assignmentNumber(weeklyProgram: WeeklyProgram): number {
+    const number = weeklyProgram?.assignment?.number;
+
+    return typeof number === "number" && Number.isFinite(number) ? number : Number.MAX_SAFE_INTEGER;
   }
 
   

@@ -12,7 +12,12 @@ import {
   AssignmentTypePermission,
   AssignmentType as AssignmentTypeModel,
 } from "src/app/core/interfaces/reuniones.interface";
-import { PublisherDto, PublisherHistoryItem, ResponsibleCountDTO } from "src/app/core/interfaces/publishers.interface";
+import {
+  AssignmentCandidateViewModel,
+  PublisherDto,
+  PublisherHistoryItem,
+  toAssignmentCandidate,
+} from "src/app/core/interfaces/publishers.interface";
 import { OtherAssignment } from "src/app/core/enums/meetings.enums";
 import { MeetingsService } from "src/app/core/services/meetings/meetings.service";
 import { DataService } from "src/app/core/services/data/data.service";
@@ -61,13 +66,12 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   public frequentPublishers!: PublisherDto[];
   public showSpinner = true;
   public congregation!: Congregation;
-  public usedPublishersList: any[] = [];
+  public usedPublishersList: AssignmentCandidateViewModel[] = [];
   public female: any[] = [];
   public male: any[] = [];
   public headerText = "Asignacion";
-  public usedPublishersListAll: any[] = [];
-  public usedPublishersListAllByAssig: ResponsibleCountDTO[] = [];
-  public assignmentTypeEnums = AssignmentType;
+  public usedPublishersListAll: AssignmentCandidateViewModel[] = [];
+  public usedPublishersListAllByAssig: AssignmentCandidateViewModel[] = [];
   private readonly assignmentHeaderAbbreviations: Record<string, string> = {
     "estudio biblico de la congregacion": "EBC",
     "discurso tesoros de la biblia": "DTB",
@@ -77,8 +81,8 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   private subs = new Subscription();
 
   // Frecuentes
-  public usedPublishersDataSource = new MatTableDataSource<any>([]);
-  public usedPublishersAllByAssigDataSource = new MatTableDataSource<ResponsibleCountDTO>([]);
+  public usedPublishersDataSource = new MatTableDataSource<AssignmentCandidateViewModel>([]);
+  public usedPublishersAllByAssigDataSource = new MatTableDataSource<AssignmentCandidateViewModel>([]);
   // hermanos
   public maleDataSource = new MatTableDataSource<any>([]);
   // hermanas
@@ -86,7 +90,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   // todos
   public publishersAllDataSource = new MatTableDataSource<Publisher>([]);
 
-  public filteredResponsibles: ResponsibleCountDTO[] = [];
+  public filteredResponsibles: AssignmentCandidateViewModel[] = [];
 
   public allProgram = signal<any[]>([]);
   public valuesComboParticipantes: Combobox[] = [];
@@ -228,28 +232,31 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     const timestamp = this.assignment?.assignment?.meeting?.week;
     const fecha = new Date(timestamp).toISOString().split("T")[0];
     const title = this.assignment?.assignment?.title || "";
+    const sectionMeeting = this.assignment?.assignment?.sectionMeeting;
+    const assignmentNumber = this.assignment?.assignment?.number ?? null;
     this.showSpinner = true;
     this.loadPublishersHistory(fecha, title);
-    this.usersService.getPublihersByAssignment(this.assignmentType, this.congregation.id, fecha, this.room, title).subscribe((data) => {
-      const publishersEnabledForAssignment = this.filterPublishersByAssignmentPermission<ResponsibleCountDTO>(data ?? []);
+    this.usersService.getPublishersByAssignment(this.assignmentType, this.congregation.id, fecha, this.room, title, sectionMeeting, assignmentNumber).subscribe((data) => {
+      const candidates = (data ?? []).map(toAssignmentCandidate);
+      const publishersEnabledForAssignment = this.filterPublishersByAssignmentPermission(candidates);
       this.usedPublishersListAll = publishersEnabledForAssignment;
       this.usedPublishersListAllByAssig = publishersEnabledForAssignment;
       switch (this.assignmentType) {
         case AssignmentType.PRESIDENT:
           this.headerText = "Presidencia";
-          this.usedPublishersList = this.usedPublishersListAll.filter((i) => i.presidentCount > 0);
+          this.usedPublishersList = this.usedPublishersListAll;
           this.checkFrecuentEspecial();
           this.updateDataSources();
           break;
         case AssignmentType.OPENING_PRAYER:
           this.headerText = "Oración Inicial";
-          this.usedPublishersList = this.usedPublishersListAll.filter((i) => i.openingPrayerCount > 0);
+          this.usedPublishersList = this.usedPublishersListAll;
           this.checkFrecuentEspecial();
           this.updateDataSources();
           break;
         case AssignmentType.FINAL_PRAYER:
           this.headerText = "Oración Final";
-          this.usedPublishersList = [...this.usedPublishersListAll.filter((i) => i.finalPrayerCount > 0)];
+          this.usedPublishersList = this.usedPublishersListAll;
           this.checkFrecuentEspecial();
           this.updateDataSources();
           break;
@@ -360,6 +367,12 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
           break;
       }
       this.showSpinner = false;
+    }, () => {
+      this.usedPublishersList = [];
+      this.usedPublishersListAll = [];
+      this.usedPublishersListAllByAssig = [];
+      this.updateDataSources();
+      this.showSpinner = false;
     });
   }
 
@@ -380,7 +393,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     if (!this.usedPublishersList || this.usedPublishersList.length <= 0) {
       return;
     }
-    const publisherIds = new Set(this.usedPublishersList.map((pub) => pub.id));
+    const publisherIds = new Set(this.usedPublishersList.map((item) => item.user.id));
     this.male.forEach((pub) => {
       pub.participate = publisherIds.has(pub.id);
     });
@@ -406,7 +419,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   }
 
   private getPublisherFromItem(item: any): Publisher | null {
-    return item?.userEnt ?? item?.user ?? item ?? null;
+    return item?.user ?? item ?? null;
   }
 
   private resolveSelectedPublisher(item: any): Publisher | null {
@@ -417,10 +430,10 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     const normalizedType = (this.type ?? "").toLowerCase();
 
     if (normalizedType === "assistant") {
-      return item.userEnt ?? item.user ?? item;
+      return item.user ?? item;
     }
 
-    return item.user ?? item.userEnt ?? item;
+    return item.user ?? item;
   }
 
   private loadPublishersHistory(fecha: string, assignmentTitle: string): void {
@@ -531,33 +544,15 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   }
 
   get frequentTableColumns(): string[] {
-    const columns = ["fullName", "count", "lastAssignmentDate"];
-
-    if (this.assignmentType === AssignmentType.FINAL_PRAYER) {
-      columns.push("lastAssignGlobal");
-    }
-
-    columns.push("more");
-    return columns;
+    return ["fullName", "allAssignments", "lastAssignment", "dateLastAssignment", "more"];
   }
 
   get compactHeaderText(): string {
     return this.abbreviateAssignmentHeader(this.headerText);
   }
 
-  get shouldShowRoomColumn(): boolean {
-    return this.normalizeText(this.assignment?.assignment?.sectionMeeting ?? "") === this.normalizeText("SEAMOS MEJORES MAESTROS");
-  }
-
   get historyTableColumns(): string[] {
-    const columns = ["fullName", "count", "all"];
-
-    if (this.shouldShowRoomColumn) {
-      columns.push("lastAssignByRoom");
-    }
-
-    columns.push("lastDate", "lastAssignGlobal", "more");
-    return columns;
+    return ["fullName", "allAssignments", "lastAssignment", "dateLastAssignment", "more"];
   }
 
   public getEmptyStateMessage(section: EmptyStateSection): string {
@@ -656,33 +651,21 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     switch (key) {
       case "fullName":
         return item?.user?.fullName ?? item?.fullName ?? "";
-      case "count":
-        return this.getCountValue(item);
+      case "allAssignments":
+        return item?.allAssignments ?? 0;
       case "estado":
         return item?.participate ? 1 : 0;
       case "date":
         return item?.date ?? 0;
+      case "lastAssignment":
+        return item?.lastAssignment ?? "";
+      case "dateLastAssignment":
+        return item?.dateLastAssignment ?? "";
       case "lastAssignGlobal":
         return item?.lastAssignGlobal ?? "";
       default:
         return item?.[key] ?? "";
     }
-  }
-
-  private getCountValue(item: any): number {
-    if (typeof item?.count === "number") {
-      return item.count;
-    }
-
-    if (this.assignmentType === AssignmentType.PRESIDENT) {
-      return item?.presidentCount ?? 0;
-    }
-
-    if (this.assignmentType === AssignmentType.OPENING_PRAYER) {
-      return item?.openingPrayerCount ?? 0;
-    }
-
-    return item?.finalPrayerCount ?? 0;
   }
 
   private compareValues(current: unknown, next: unknown): number {
@@ -702,7 +685,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
       return;
     }
     if (type === "usedPublishersDataSource") {
-      this.usedPublishersDataSource.data = this.usedPublishersList.filter((item) => item.fullName.toLowerCase().startsWith(value));
+      this.usedPublishersDataSource.data = this.usedPublishersList.filter((item) => item.user.fullName.toLowerCase().startsWith(value));
     } else if (type === "usedPublishersAllByAssigDataSource") {
       this.usedPublishersAllByAssigDataSource.data = this.usedPublishersListAllByAssig.filter((item) => item.user.fullName.toLowerCase().startsWith(value));
     }

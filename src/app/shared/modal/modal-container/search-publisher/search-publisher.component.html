@@ -70,57 +70,46 @@
                         <mat-icon>{{ getSortIcon("usedPublishersDataSource", "fullName") }}</mat-icon>
                       </button>
                     </th>
-                    <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
+                    <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
                   </ng-container>
 
-                  <ng-container matColumnDef="count">
+                  <ng-container matColumnDef="allAssignments">
                     <th mat-header-cell *matHeaderCellDef>
                       <button type="button" class="sort-header"
-                        (click)="sortDataSource('usedPublishersDataSource', 'count')">
-                        <span>{{ headerText }}</span>
-                        <mat-icon>{{ getSortIcon("usedPublishersDataSource", "count") }}</mat-icon>
+                        (click)="sortDataSource('usedPublishersDataSource', 'allAssignments')">
+                        <span>Total global</span>
+                        <mat-icon>{{ getSortIcon("usedPublishersDataSource", "allAssignments") }}</mat-icon>
+                      </button>
+                    </th>
+                    <td mat-cell *matCellDef="let item">{{ item.allAssignments }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="lastAssignment">
+                    <th mat-header-cell *matHeaderCellDef>
+                      <button type="button" class="sort-header"
+                        (click)="sortDataSource('usedPublishersDataSource', 'lastAssignment')">
+                        <span>Por asignación</span>
+                        <mat-icon>{{ getSortIcon("usedPublishersDataSource", "lastAssignment") }}</mat-icon>
                       </button>
                     </th>
                     <td mat-cell *matCellDef="let item">
-                      {{
-                      assignmentType === assignmentTypeEnums.PRESIDENT
-                      ? item.presidentCount
-                      : assignmentType === assignmentTypeEnums.OPENING_PRAYER
-                      ? item.openingPrayerCount
-                      : item.finalPrayerCount
-                      }}
+                      {{ parseDate(item.lastAssignment) || "Sin historial" }}
                     </td>
                   </ng-container>
 
-                  <ng-container matColumnDef="lastAssignmentDate">
-                    <th mat-header-cell *matHeaderCellDef>
-                      <button type="button" class="sort-header"
-                        (click)="sortDataSource('usedPublishersDataSource', 'lastAssignmentDate')">
-                        <span>Última Asignación</span>
-                        <mat-icon>{{ getSortIcon("usedPublishersDataSource", "lastAssignmentDate") }}</mat-icon>
-                      </button>
-                    </th>
-                    <td mat-cell *matCellDef="let item">
-                      {{ parseDate(item.lastAssignmentDate) }}
-                    </td>
-                  </ng-container>
-
-                  @if (assignmentType === assignmentTypeEnums.FINAL_PRAYER) {
-                  <ng-container matColumnDef="lastAssignGlobal">
+                  <ng-container matColumnDef="dateLastAssignment">
                     <th mat-header-cell *matHeaderCellDef class="global-column">
                       <button type="button" class="sort-header"
-                        (click)="sortDataSource('usedPublishersDataSource', 'lastAssignGlobal')">
+                        (click)="sortDataSource('usedPublishersDataSource', 'dateLastAssignment')">
                         <span>Global</span>
-                        <mat-icon>{{ getSortIcon("usedPublishersDataSource", "lastAssignGlobal") }}</mat-icon>
+                        <mat-icon>{{ getSortIcon("usedPublishersDataSource", "dateLastAssignment") }}</mat-icon>
                       </button>
                     </th>
                     <td mat-cell *matCellDef="let item" class="global-column">
-                      {{ parseDate(item.lastAssignGlobal) }}
+                      {{ parseDate(item.dateLastAssignment) || "Sin historial" }}
                     </td>
                   </ng-container>
-                  }
 
-                  <!-- NUEVA COLUMNA -->
                   <ng-container matColumnDef="more">
                     <th mat-header-cell *matHeaderCellDef>Más</th>
                     <td mat-cell *matCellDef="let item">
@@ -155,70 +144,43 @@
                     <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
                   </ng-container>
 
-                  <ng-container matColumnDef="count">
+                  <ng-container matColumnDef="allAssignments">
                     <th mat-header-cell *matHeaderCellDef>
                       <button type="button" class="sort-header"
-                        (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'count')">
-                        <span>{{ compactHeaderText }}</span>
-                        <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "count") }}</mat-icon>
+                        (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'allAssignments')">
+                        <span>Total global</span>
+                        <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "allAssignments") }}</mat-icon>
                       </button>
                     </th>
-                    <td mat-cell *matCellDef="let item">{{ item.count }}</td>
+                    <td mat-cell *matCellDef="let item">{{ item.allAssignments }}</td>
                   </ng-container>
 
-                  <ng-container matColumnDef="all">
+                  <ng-container matColumnDef="lastAssignment">
                     <th mat-header-cell *matHeaderCellDef>
                       <button type="button" class="sort-header"
-                        (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'all')">
-                        <span>Global</span>
-                        <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "all") }}</mat-icon>
-                      </button>
-                    </th>
-                    <td mat-cell *matCellDef="let item">{{ item.all }}</td>
-                  </ng-container>
-
-                  @if (shouldShowRoomColumn) {
-                  <ng-container matColumnDef="lastAssignByRoom">
-                    <th mat-header-cell *matHeaderCellDef>
-                      <button type="button" class="sort-header"
-                        (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'lastAssignByRoom')">
-                        <span>En sala {{ room == "B" ? "Auxiliar" : "Principal" }}</span>
-                        <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "lastAssignByRoom") }}</mat-icon>
+                        (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'lastAssignment')">
+                        <span>Por asignación</span>
+                        <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "lastAssignment") }}</mat-icon>
                       </button>
                     </th>
                     <td mat-cell *matCellDef="let item">
-                      {{ parseDate(item.lastAssignByRoom) }}
+                      {{ parseDate(item.lastAssignment) || "Sin historial" }}
                     </td>
                   </ng-container>
-                  }
 
-                  <ng-container matColumnDef="lastDate">
+                  <ng-container matColumnDef="dateLastAssignment">
                     <th mat-header-cell *matHeaderCellDef>
                       <button type="button" class="sort-header"
-                        (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'lastDate')">
-                        <span>Por Asignación</span>
-                        <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "lastDate") }}</mat-icon>
+                        (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'dateLastAssignment')">
+                        <span>Global</span>
+                        <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "dateLastAssignment") }}</mat-icon>
                       </button>
                     </th>
                     <td mat-cell *matCellDef="let item">
-                      {{ parseDate(item.lastDate) }}
+                      {{ parseDate(item.dateLastAssignment) || "Sin historial" }}
                     </td>
                   </ng-container>
 
-                  <ng-container matColumnDef="lastAssignGlobal">
-                    <th mat-header-cell *matHeaderCellDef class="global-column">
-                      <button type="button" class="sort-header"
-                        (click)="sortDataSource('usedPublishersAllByAssigDataSource', 'lastAssignGlobal')">
-                        <span>Global</span>
-                        <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "lastAssignGlobal") }}</mat-icon>
-                      </button>
-                    </th>
-                    <td mat-cell *matCellDef="let item" class="global-column">
-                      {{ parseDate(item.lastAssignGlobal) }}
-                    </td>
-                  </ng-container>
-
-                  <!-- NUEVA -->
                   <ng-container matColumnDef="more">
                     <th mat-header-cell *matHeaderCellDef>Más</th>
                     <td mat-cell *matCellDef="let item">

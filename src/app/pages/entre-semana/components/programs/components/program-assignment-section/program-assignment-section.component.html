@@ -205,7 +205,7 @@
         [tooltipClass]="getPublisherTooltipClass(item.responsibleB)">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
       </span>
-      @if (item.assignment.title !== assignmentTitle.SPEECH) {
+      @if (!isSpeech(item)) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistantB)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT_B)"
         [ngbTooltip]="item.assistantB?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
@@ -223,7 +223,7 @@
         [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
-      @if (item.assignment.title !== assignmentTitle.SPEECH) {
+      @if (!isSpeech(item)) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)"
         [ngbTooltip]="item.assistant?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
@@ -236,7 +236,7 @@
   }
 
   @if (sectionMeeting == livingSection) {
-  @if (item.assignment.title !== assignmentTitle.CONGREGATION_BIBLE_STUDY) {
+  @if (!isCongregationBibleStudy(item)) {
   <div class="row px-3 program__tesoros program-assignment-row"
     [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     <div class="col-md-9">

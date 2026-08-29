@@ -15,4 +15,5 @@ export const Apis = {
   WEEKLYPROGRAM: '/weeklyProgram',
   ASSIGNMENT_TYPES: '/assignment-types',
   USER_ASSIGNMENT_TYPES: '/user-assignment-types',
+  MEETING_PARTS: '/meeting-parts',
 }

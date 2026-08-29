@@ -44,6 +44,7 @@ export class AuthService {
         ),
       ),
       map(({ loginResponse }) => loginResponse),
+      tap(() => this.dataService.loadMeetingParts()),
     );
   }
 

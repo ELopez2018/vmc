@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, filter, Observable } from "rxjs";
-import { Meeting, Program, Publisher, Congregation, Room } from "../../interfaces/reuniones.interface";
+import { Meeting, Program, Publisher, Congregation, Room, WeeklyProgram } from "../../interfaces/reuniones.interface";
+import { MeetingPart } from "../../interfaces/meeting-parts.interface";
 import { UsersService } from "../users/users.service";
 import { ConfigsService } from "../configs/configs.service";
 import { Generic } from "../../interfaces/configs.interface";
@@ -11,6 +12,8 @@ import { ProgramPdf, WeeklyProgramPdF } from "../../interfaces/print-pdf.interfa
 import { CongregationsService } from "../congregations/congregations.service";
 import { AuthService } from "../auth/auth.service";
 import { CookieService } from "ngx-cookie-service";
+import { MeetingPartsService } from "../meeting-parts/meeting-parts.service";
+import { MeetingRoom, setMeetingPartTitles } from "../../constants/program.constants";
 
 @Injectable({
   providedIn: "root",
@@ -30,6 +33,10 @@ export class DataService {
   private publisher$: BehaviorSubject<Publisher | null> = new BehaviorSubject<Publisher | null>(null);
   private designations$: BehaviorSubject<Generic[]> = new BehaviorSubject<Generic[]>([]);
   private rooms$: BehaviorSubject<Room[]> = new BehaviorSubject<Room[]>([]);
+  private meetingParts$: BehaviorSubject<MeetingPart[]> = new BehaviorSubject<MeetingPart[]>([]);
+  public meetingParts: MeetingPart[] = [];
+  private meetingPartsLoaded = false;
+  private meetingPartsLoading = false;
   jwtUtils!: JwtHelperService;
   private isAdmin$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   constructor(
@@ -37,6 +44,7 @@ export class DataService {
     private usersService: UsersService,
     private configsService: ConfigsService,
     private roomsService: RoomsService,
+    private meetingPartsService: MeetingPartsService,
   ) {
     this.jwtUtils = new JwtHelperService();
   }
@@ -72,23 +80,28 @@ export class DataService {
   }
   makePDfVersion(meetings: Program[]): ProgramPdf[] {
     const meetingsPdf: ProgramPdf[] = meetings.map((week) => {
-      const weeklyProgramPdf: WeeklyProgramPdF[] = [];
-      const arrayTem: any[] = [];
+      const programsByAssignment = new Map<string, WeeklyProgram[]>();
 
-      week.weeklyPrograms.forEach((assig: any) => {
-        if (!weeklyProgramPdf.some((i) => i.assignment.id === assig.assignment.id) && assig.room === "A") {
-          weeklyProgramPdf.push({ ...assig });
-        } else {
-          arrayTem.push(assig);
-        }
+      (week.weeklyPrograms ?? []).forEach((weeklyProgram) => {
+        const key = this.getWeeklyProgramAssignmentKey(weeklyProgram);
+        const programs = programsByAssignment.get(key) ?? [];
+        programs.push(weeklyProgram);
+        programsByAssignment.set(key, programs);
       });
 
-      weeklyProgramPdf.forEach((b) => {
-        const upd = arrayTem.find((f) => f.assignment.id === b.assignment.id);
-        if (upd) {
-          b.assistantB = upd.assistant ?? null;
-          b.responsibleB = upd.responsible ?? null;
-        }
+      const weeklyProgramPdf: WeeklyProgramPdF[] = Array.from(programsByAssignment.values()).map((programs) => {
+        const mainRoom = programs.find((weeklyProgram) => weeklyProgram.room?.toUpperCase() === MeetingRoom.MAIN);
+        const auxiliaryRoom = programs.find((weeklyProgram) => weeklyProgram.room?.toUpperCase() === MeetingRoom.AUXILIARY);
+        const base = mainRoom ?? auxiliaryRoom ?? programs[0];
+
+        return {
+          ...base,
+          room: MeetingRoom.MAIN,
+          responsible: mainRoom?.responsible ?? null,
+          assistant: mainRoom?.assistant ?? null,
+          responsibleB: auxiliaryRoom?.responsible ?? null,
+          assistantB: auxiliaryRoom?.assistant ?? null,
+        };
       });
 
       return { ...week, weeklyPrograms: weeklyProgramPdf };
@@ -96,6 +109,23 @@ export class DataService {
 
     this.meetingsPDF$.next(meetingsPdf);
     return meetingsPdf;
+  }
+
+  private getWeeklyProgramAssignmentKey(weeklyProgram: WeeklyProgram): string {
+    const assignment = weeklyProgram.assignment;
+
+    return [assignment?.number ?? "", assignment?.sectionMeeting ?? "", assignment?.title ?? ""]
+      .map((value) => this.normalizeAssignmentKeyPart(value))
+      .join("|");
+  }
+
+  private normalizeAssignmentKeyPart(value: unknown): string {
+    return String(value ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
   }
 
   public setPubliherList(publisherList: Publisher[]) {
@@ -131,11 +161,42 @@ export class DataService {
     return this.congregation$.asObservable();
   }
 
+  public setMeetingParts(meetingParts: MeetingPart[]): void {
+    this.meetingParts = [...(meetingParts ?? [])];
+    setMeetingPartTitles(this.meetingParts);
+    this.meetingParts$.next(this.meetingParts);
+  }
+
+  public getMeetingParts$(): Observable<MeetingPart[]> {
+    return this.meetingParts$.asObservable();
+  }
+
+  public loadMeetingParts(): void {
+    if (!this.hasValidToken() || this.meetingPartsLoaded || this.meetingPartsLoading) {
+      return;
+    }
+
+    this.meetingPartsLoading = true;
+    this.meetingPartsService.findAll().subscribe({
+      next: (meetingParts) => {
+        this.setMeetingParts(meetingParts);
+        this.meetingPartsLoaded = true;
+        this.meetingPartsLoading = false;
+      },
+      error: () => {
+        this.setMeetingParts([]);
+        this.meetingPartsLoading = false;
+      },
+    });
+  }
+
   public getConfigs() {
     if (!this.hasValidToken()) {
       this.setCongregation(<Congregation>{});
       return;
     }
+
+    this.loadMeetingParts();
 
     this.configsService.getAllDesignations().subscribe((data) => {
       if (data) {
@@ -190,6 +251,9 @@ export class DataService {
     this.isAdmin$.next(false);
     this.publisherList.next([]);
     this.rooms$.next([]);
+    this.meetingPartsLoaded = false;
+    this.meetingPartsLoading = false;
+    this.setMeetingParts([]);
   }
 
   logout() {

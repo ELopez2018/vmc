@@ -6,12 +6,13 @@ import { Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
 import { getPublisherTextClasses as getPublisherWarningTextClasses, getPublisherTooltipClass as getPublisherWarningTooltipClass } from "../publisher-warning.util";
-import { ASSIGNMENT_TITLE, MeetingRoom, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { MeetingRoom, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { needsOverseerTalkTitle, isSpecialEventWeek } from "src/app/core/utils/program-event.util";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { AssignmentSourceComponent } from "src/app/shared/components/assignment-source/assignment-source.component";
 import { StopwatchService } from "src/app/core/services/stopwatch/stopwatch.service";
 import { StopwatchModalComponent } from "src/app/shared/components/stopwatch-modal/stopwatch-modal.component";
+import { isCongregationBibleStudyAssignment, isSpeechAssignment } from "../../program-assignment.util";
 
 @Component({
   selector: "vmc-program-assignment-section",
@@ -32,7 +33,6 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
   @Output() public addAssignment = new EventEmitter<{ program: ProgramPdf; sectionMeeting: string }>();
   @Output() public weeklyProgramChange = new EventEmitter<{ item: WeeklyProgramPdF; type: string }>();
 
-  public readonly assignmentTitle = ASSIGNMENT_TITLE;
   public readonly weeklyProgramChangeType = WeeklyProgramChangeType;
   public readonly treasuresSection = SectionMeeting.TESOROS_DE_LA_BIBLIA;
   public readonly teachersSection = SectionMeeting.SEAMOS_MEJORES_MAESTROS;
@@ -154,6 +154,14 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
 
   public getPublisherTooltipClass(publisher?: Publisher | null): string {
     return getPublisherWarningTooltipClass(publisher);
+  }
+
+  public isSpeech(item: WeeklyProgramPdF): boolean {
+    return isSpeechAssignment(item.assignment);
+  }
+
+  public isCongregationBibleStudy(item: WeeklyProgramPdF): boolean {
+    return isCongregationBibleStudyAssignment(item.assignment);
   }
 
   private getAssignmentCollapseKey(item: WeeklyProgramPdF): string {

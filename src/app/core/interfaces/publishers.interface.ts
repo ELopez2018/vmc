@@ -12,6 +12,33 @@ export interface ResponsibleCountDTO {
   all?: number;
 }
 
+export interface UserAssignmentHistory {
+  lastAssignment: string | null;
+  allAssignments: number;
+  dateLastAssignment: string | null;
+}
+
+export interface UserByTypeResponse {
+  user: Publisher;
+  history: UserAssignmentHistory;
+}
+
+export interface AssignmentCandidateViewModel {
+  user: Publisher;
+  lastAssignment: string | null;
+  allAssignments: number;
+  dateLastAssignment: string | null;
+}
+
+export function toAssignmentCandidate(item: UserByTypeResponse): AssignmentCandidateViewModel {
+  return {
+    user: item.user,
+    lastAssignment: item.history.lastAssignment,
+    allAssignments: item.history.allAssignments,
+    dateLastAssignment: item.history.dateLastAssignment,
+  };
+}
+
 export interface PublisherHistoryItem {
   user: Publisher;
   userEnt: Publisher;

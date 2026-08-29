@@ -13,7 +13,7 @@ import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { SectionMeeting } from "../../core/enums/meetings.enums";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
 import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
-import { ASSIGNMENT_TITLE, MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { MEETING_PARTS, MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
@@ -319,42 +319,41 @@ export class EntreSemanaComponent implements OnInit {
     }
   }
   selectAssignmentTypeByTitle(title: string) {
-    if (title.includes(ASSIGNMENT_TITLE.WHAT_HE_DID)) {
+    if (title.includes(MEETING_PARTS.WHAT_HE_DID)) {
       return AssignmentType.WHAT_HE_DID;
     }
-    if (title.includes(ASSIGNMENT_TITLE.IMITATE)) {
+    if (title.includes(MEETING_PARTS.IMITATE)) {
       return AssignmentType.IMITATE;
     }
-    if (title.includes(ASSIGNMENT_TITLE.STARTING_A_CONVERSATION)) {
+    if (title.includes(MEETING_PARTS.STARTING_A_CONVERSATION)) {
       return AssignmentType.STARTING_A_CONVERSATION;
     }
-    if (title.includes(ASSIGNMENT_TITLE.FOLLOWING_UP)) {
+    if (title.includes(MEETING_PARTS.FOLLOWING_UP)) {
       return AssignmentType.FOLLOWING_UP;
     }
-    if (title.includes(ASSIGNMENT_TITLE.EXPLAINING_YOUR_BELIEFS)) {
+    if (title.includes(MEETING_PARTS.EXPLAINING_YOUR_BELIEFS)) {
       return AssignmentType.EXPLAINING_YOUR_BELIEFS;
     }
     if (this.isWhatWouldYouSayTitle(title)) {
       return AssignmentType.WHAT_WOULD_YOU_SAY;
     }
-    if (title.includes(ASSIGNMENT_TITLE.MAKING_DISCIPLES)) {
+    if (title.includes(MEETING_PARTS.MAKING_DISCIPLES)) {
       return AssignmentType.MAKING_DISCIPLES;
     }
-    if (title.includes(ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY)) {
+    if (title.includes(MEETING_PARTS.CONGREGATION_BIBLE_STUDY)) {
       return AssignmentType.CONGREGATION_BIBLE_STUDY;
     }
-    if (title.includes(ASSIGNMENT_TITLE.LOCAL_NEEDS)) {
+    if (title.includes(MEETING_PARTS.LOCAL_NEEDS)) {
       return AssignmentType.LOCAL_NEEDS;
     }
     return "";
   }
 
   private isWhatWouldYouSayTitle(title: string): boolean {
-    return title
-      ?.normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .includes("que diria");
+    const normalizedTitle = title?.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const normalizedPartTitle = MEETING_PARTS.WHAT_WOULD_YOU_SAY.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+    return normalizedTitle.includes(normalizedPartTitle);
   }
 
   private resolveWhatWouldYouSayAssignmentType(type: string): AssignmentType {
@@ -366,8 +365,8 @@ export class EntreSemanaComponent implements OnInit {
   changeWeeklyProgram(item: WeeklyProgram, type: string) {
     if (
       item.assignment.sectionMeeting.includes(SectionMeeting.NUESTRA_VIDA_CRISTIANA) &&
-      !item.assignment.title.includes(ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY) &&
-      !item.assignment.title.includes(ASSIGNMENT_TITLE.LOCAL_NEEDS)
+      !item.assignment.title.includes(MEETING_PARTS.CONGREGATION_BIBLE_STUDY) &&
+      !item.assignment.title.includes(MEETING_PARTS.LOCAL_NEEDS)
     ) {
       this.assignmentType = AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS;
     } else {

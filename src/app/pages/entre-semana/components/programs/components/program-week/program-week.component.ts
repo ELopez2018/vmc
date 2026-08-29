@@ -12,10 +12,11 @@ import {
   PUBLISHER_REPEATED_CURRENT_WEEK_TEXT,
   PUBLISHER_REPEATED_PREVIOUS_WEEK_TEXT,
 } from "../publisher-warning.util";
-import { ASSIGNMENT_TITLE, MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { MEETING_PARTS, MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { isAssemblyEvent, isSpecialEventWeek } from "src/app/core/utils/program-event.util";
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
+import { isCongregationBibleStudyAssignment, isSpeechAssignment } from "../../program-assignment.util";
 
 type ProgramPublisherField = AssignmentType.PRESIDENT | AssignmentType.ASSISTANT_ADVISER | AssignmentType.OPENING_PRAYER | AssignmentType.FINAL_PRAYER;
 type WeeklyPublisherField = WeeklyProgramChangeType.RESPONSIBLE | WeeklyProgramChangeType.ASSISTANT | WeeklyProgramChangeType.RESPONSIBLE_B | WeeklyProgramChangeType.ASSISTANT_B;
@@ -265,7 +266,6 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
 
   private getRenderedWeeklyFields(weeklyProgram: WeeklyProgramPdF): WeeklyPublisherField[] {
     const section = weeklyProgram.assignment?.sectionMeeting;
-    const title = weeklyProgram.assignment?.title ?? "";
     const number = weeklyProgram.assignment?.number;
 
     if (section === SectionMeeting.TESOROS_DE_LA_BIBLIA) {
@@ -273,14 +273,16 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
     }
 
     if (section === SectionMeeting.SEAMOS_MEJORES_MAESTROS) {
-      if (title === ASSIGNMENT_TITLE.SPEECH) {
+      if (isSpeechAssignment(weeklyProgram.assignment)) {
         return [WeeklyProgramChangeType.RESPONSIBLE, WeeklyProgramChangeType.RESPONSIBLE_B];
       }
       return [WeeklyProgramChangeType.RESPONSIBLE, WeeklyProgramChangeType.ASSISTANT, WeeklyProgramChangeType.RESPONSIBLE_B, WeeklyProgramChangeType.ASSISTANT_B];
     }
 
     if (section === SectionMeeting.NUESTRA_VIDA_CRISTIANA) {
-      return title === ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY ? [WeeklyProgramChangeType.RESPONSIBLE, WeeklyProgramChangeType.ASSISTANT] : [WeeklyProgramChangeType.RESPONSIBLE];
+      return isCongregationBibleStudyAssignment(weeklyProgram.assignment)
+        ? [WeeklyProgramChangeType.RESPONSIBLE, WeeklyProgramChangeType.ASSISTANT]
+        : [WeeklyProgramChangeType.RESPONSIBLE];
     }
 
     return [];
@@ -360,13 +362,13 @@ export class ProgramWeekComponent implements AfterViewInit, OnChanges, DoCheck, 
 
     switch (slot.field) {
       case AssignmentType.PRESIDENT:
-        return "Presidencia";
+        return MEETING_PARTS.PRESIDENT;
       case AssignmentType.ASSISTANT_ADVISER:
-        return "Consejero auxiliar";
+        return MEETING_PARTS.ASSISTANT_ADVISER;
       case AssignmentType.OPENING_PRAYER:
-        return "Oración inicial";
+        return MEETING_PARTS.OPENING_PRAYER;
       case AssignmentType.FINAL_PRAYER:
-        return "Oración final";
+        return MEETING_PARTS.FINAL_PRAYER;
       default:
         return "";
     }

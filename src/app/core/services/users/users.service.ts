@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Apis, Servers } from "../../constants/servers";
 import { finalize, Observable, tap } from "rxjs";
 import { Publisher, Room } from "../../interfaces/reuniones.interface";
-import { PublisherHistoryItem } from "../../interfaces/publishers.interface";
+import { PublisherHistoryItem, UserByTypeResponse } from "../../interfaces/publishers.interface";
 import { LoaderService } from "../loader/loader.service";
 import { normalizeAssignmentTypeValue } from "../../enums/assignments.enums";
 
@@ -48,15 +48,52 @@ export class UsersService {
       .pipe(tap((data) => console.log(data)));
   }
 
-  getPublihersByAssignment(assignment: string, congregationId: number, fechaCadena: any, room: string, assignmentTitle: string): Observable<any> {
+  getPublishersByAssignment(
+    assignment: string,
+    congregationId: number,
+    dateAssignment: string,
+    room: string,
+    assignmentTitle: string,
+    sectionMeeting?: string,
+    assignmentNumber?: number | null,
+  ): Observable<UserByTypeResponse[]> {
     this.loaderService.setLoaderSearchPublisher(true);
     const assignmentType = normalizeAssignmentTypeValue(assignment);
-    const url = `${this.server}${this.api.USERS}/by-congregation/by-assignment?assignment=${assignmentType}&congregationId=${congregationId}&dateAssignment=${fechaCadena}&room=${room}&assignmentTitle=${assignmentTitle}`;
-    return this.httpClient.get<any>(url).pipe(
-      tap((data) => {
+    let params = new HttpParams()
+      .set("assignment", assignmentType)
+      .set("congregationId", String(congregationId))
+      .set("dateAssignment", dateAssignment)
+      .set("room", room ?? "")
+      .set("assignmentTitle", assignmentTitle ?? "");
+
+    if (sectionMeeting?.trim()) {
+      params = params.set("sectionMeeting", sectionMeeting.trim());
+    }
+
+    if (assignmentNumber != null) {
+      params = params.set("assignmentNumber", String(assignmentNumber));
+    }
+
+    const url = `${this.server}${this.api.USERS}/by-congregation/by-assignment`;
+
+    return this.httpClient.get<UserByTypeResponse[]>(url, { params }).pipe(
+      finalize(() => {
         this.loaderService.setLoaderSearchPublisher(false);
       }),
     );
+  }
+
+  /** @deprecated Usa getPublishersByAssignment. */
+  getPublihersByAssignment(
+    assignment: string,
+    congregationId: number,
+    dateAssignment: string,
+    room: string,
+    assignmentTitle: string,
+    sectionMeeting?: string,
+    assignmentNumber?: number | null,
+  ): Observable<UserByTypeResponse[]> {
+    return this.getPublishersByAssignment(assignment, congregationId, dateAssignment, room, assignmentTitle, sectionMeeting, assignmentNumber);
   }
 
   getPublishersHistoryByCongregation(congregationId: number, dateAssignment: string, room?: string, assignmentTitle?: string): Observable<PublisherHistoryItem[]> {

@@ -656,14 +656,8 @@ search-publisher .sub-modal {
   line-height: 20px;
 }
 
-.program-assignment-row--collapsed > :first-child {
-  flex: 0 0 100%;
-  max-width: 100%;
-  width: 100%;
-}
-
-.program-assignment-row--collapsed .program-assignment-detail {
-  display: none;
+.program-assignment-row--collapsed vmc-assignment-source {
+  display: none !important;
 }
 
 .program-event-shell {

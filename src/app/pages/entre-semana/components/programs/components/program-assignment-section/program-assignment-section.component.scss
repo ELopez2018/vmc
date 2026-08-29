@@ -89,6 +89,22 @@ legend {
   width: auto;
 }
 
+/*
+ * La fuente forma parte del detalle de la asignación, no de las columnas de
+ * responsables. En filas que ocupan 9 columnas Bootstrap, limitarla mantiene
+ * una medida de lectura y evita que parezca invadir el resto del programa.
+ */
+.program-assignment-title > vmc-assignment-source {
+  display: block;
+  max-width: 42rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.program-assignment-row--collapsed .program-assignment-title > vmc-assignment-source {
+  display: none !important;
+}
+
 .publisher-warning-previous-week {
   color: var(--bs-primary, #0d6efd);
 }
@@ -219,9 +235,14 @@ legend {
 }
 
 .assignment-stopwatch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  min-height: 26px;
   background: none;
   border: none;
-  padding: 0 4px;
+  padding: 0 5px;
   line-height: 1;
   vertical-align: middle;
   cursor: pointer;
@@ -237,7 +258,7 @@ legend {
   }
 
   i {
-    font-size: 1rem;
+    font-size: 1.25rem;
     vertical-align: middle;
   }
 }
@@ -247,11 +268,12 @@ legend {
   align-items: center;
   gap: 3px;
   margin-left: 4px;
-  padding: 1px 7px;
+  min-height: 24px;
+  padding: 2px 8px;
   border-radius: 10px;
   background: #f0f0f0;
   color: #555;
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-family: "Courier New", monospace;
   font-weight: 600;
   cursor: pointer;

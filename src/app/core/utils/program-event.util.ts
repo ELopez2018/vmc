@@ -1,4 +1,4 @@
-import { ASSIGNMENT_TITLE } from "../constants/program.constants";
+import { MEETING_PARTS } from "../constants/program.constants";
 
 const ASSEMBLY_KEYWORD = "asamblea";
 
@@ -25,7 +25,7 @@ export function isSpecialEventWeek(event?: string | null): boolean {
 
 /** El estudio bíblico todavía no fue renombrado con el título del discurso del superintendente. */
 export function isPendingOverseerTalkTitle(title?: string | null): boolean {
-  return normalize(title) === normalize(ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY);
+  return normalize(title) === normalize(MEETING_PARTS.CONGREGATION_BIBLE_STUDY);
 }
 
 export function needsOverseerTalkTitle(event?: string | null, title?: string | null): boolean {

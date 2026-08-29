@@ -16,8 +16,20 @@ import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.
 import Swal from "sweetalert2";
 import { ProgramFiltersComponent } from "src/app/shared/components/program-filters/program-filters.component";
 import { ProgramWeekComponent } from "./components/program-week/program-week.component";
-import { ADMIN_EMAIL, ASSIGNMENT_TITLE, MeetingRoom, ModalResult, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { ADMIN_EMAIL, MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
+import { includesMeetingPartTitle, isCongregationBibleStudyAssignment, isSpeechAssignment, normalizeProgramTitle } from "./program-assignment.util";
+import { map, Observable, of } from "rxjs";
+
+type WeeklyPublisherField = "responsible" | "assistant";
+type PdfPublisherField = WeeklyPublisherField | "responsibleB" | "assistantB";
+
+interface WeeklyPublisherTarget {
+  room: MeetingRoom;
+  field: WeeklyPublisherField;
+  viewField: PdfPublisherField;
+  modalType: WeeklyProgramChangeType;
+}
 
 @Component({
   selector: "vmc-programs",
@@ -494,71 +506,77 @@ export class ProgramsComponent implements OnInit, OnChanges {
   }
 
   selectAssignmentType(item: WeeklyProgram, type: string) {
-    switch (item.assignment.number) {
-      case 1:
-        this.assignmentType = AssignmentType.ASSIGNMENT_1;
-        break;
-      case 2:
-        this.assignmentType = AssignmentType.ASSIGNMENT_2;
-        break;
-      case 3:
-        this.assignmentType = AssignmentType.ASSIGNMENT_3;
-        break;
-      default:
-        this.assignmentType = this.selectAssignmentTypeByTitle(item.assignment.title);
+    if (isSpeechAssignment(item.assignment)) {
+      this.assignmentType = AssignmentType.SPEECH;
+      return;
+    }
 
-        if (this.assignmentType === AssignmentType.WHAT_WOULD_YOU_SAY) {
-          this.assignmentType = this.resolveWhatWouldYouSayAssignmentType(type);
-        } else if (type === WeeklyProgramChangeType.ASSISTANT && this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY) {
-          this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY_READER;
-        } else if (
-          (type === WeeklyProgramChangeType.ASSISTANT || type === WeeklyProgramChangeType.ASSISTANT_B) &&
-          this.assignmentType !== AssignmentType.CONGREGATION_BIBLE_STUDY
-        ) {
-          this.assignmentType += "Assistant";
-        }
+    if (isCongregationBibleStudyAssignment(item.assignment)) {
+      this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY;
+    } else {
+      switch (item.assignment.number) {
+        case 1:
+          this.assignmentType = AssignmentType.ASSIGNMENT_1;
+          break;
+        case 2:
+          this.assignmentType = AssignmentType.ASSIGNMENT_2;
+          break;
+        case 3:
+          this.assignmentType = AssignmentType.ASSIGNMENT_3;
+          break;
+        default:
+          this.assignmentType = this.selectAssignmentTypeByTitle(item.assignment.title);
+      }
+    }
+
+    if (this.assignmentType === AssignmentType.WHAT_WOULD_YOU_SAY) {
+      this.assignmentType = this.resolveWhatWouldYouSayAssignmentType(type);
+    } else if (this.isAssistantChange(type) && this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY) {
+      this.assignmentType = AssignmentType.CONGREGATION_BIBLE_STUDY_READER;
+    } else if (this.isAssistantChange(type) && this.assignmentType !== AssignmentType.CONGREGATION_BIBLE_STUDY) {
+      this.assignmentType += "Assistant";
     }
   }
+
+  private isAssistantChange(type: string): boolean {
+    return type === WeeklyProgramChangeType.ASSISTANT || type === WeeklyProgramChangeType.ASSISTANT_B;
+  }
   selectAssignmentTypeByTitle(title: string) {
-    if (title.includes(ASSIGNMENT_TITLE.WHAT_HE_DID)) {
+    if (includesMeetingPartTitle(title, MEETING_PARTS.WHAT_HE_DID)) {
       return AssignmentType.WHAT_HE_DID;
     }
-    if (title.includes(ASSIGNMENT_TITLE.IMITATE)) {
+    if (includesMeetingPartTitle(title, MEETING_PARTS.IMITATE)) {
       return AssignmentType.IMITATE;
     }
-    if (title.includes(ASSIGNMENT_TITLE.STARTING_A_CONVERSATION)) {
+    if (includesMeetingPartTitle(title, MEETING_PARTS.STARTING_A_CONVERSATION)) {
       return AssignmentType.STARTING_A_CONVERSATION;
     }
-    if (title.includes(ASSIGNMENT_TITLE.FOLLOWING_UP)) {
+    if (includesMeetingPartTitle(title, MEETING_PARTS.FOLLOWING_UP)) {
       return AssignmentType.FOLLOWING_UP;
     }
-    if (title.includes(ASSIGNMENT_TITLE.EXPLAINING_YOUR_BELIEFS)) {
+    if (includesMeetingPartTitle(title, MEETING_PARTS.EXPLAINING_YOUR_BELIEFS)) {
       return AssignmentType.EXPLAINING_YOUR_BELIEFS;
     }
     if (this.isWhatWouldYouSayTitle(title)) {
       return AssignmentType.WHAT_WOULD_YOU_SAY;
     }
-    if (title.includes(ASSIGNMENT_TITLE.MAKING_DISCIPLES)) {
+    if (includesMeetingPartTitle(title, MEETING_PARTS.MAKING_DISCIPLES)) {
       return AssignmentType.MAKING_DISCIPLES;
     }
-    if (title.includes(ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY)) {
+    if (includesMeetingPartTitle(title, MEETING_PARTS.CONGREGATION_BIBLE_STUDY)) {
       return AssignmentType.CONGREGATION_BIBLE_STUDY;
     }
-    if (title.includes(ASSIGNMENT_TITLE.LOCAL_NEEDS)) {
+    if (includesMeetingPartTitle(title, MEETING_PARTS.LOCAL_NEEDS)) {
       return AssignmentType.LOCAL_NEEDS;
     }
-    if (title.includes(ASSIGNMENT_TITLE.SPEECH)) {
+    if (includesMeetingPartTitle(title, MEETING_PARTS.SPEECH)) {
       return AssignmentType.SPEECH;
     }
     return "";
   }
 
   private isWhatWouldYouSayTitle(title: string): boolean {
-    return title
-      ?.normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .includes("que diria");
+    return includesMeetingPartTitle(title, MEETING_PARTS.WHAT_WOULD_YOU_SAY);
   }
 
   private resolveWhatWouldYouSayAssignmentType(type: string): AssignmentType {
@@ -568,110 +586,28 @@ export class ProgramsComponent implements OnInit, OnChanges {
   }
 
   changeWeeklyProgram(item: WeeklyProgramPdF, type: string) {
-    console.log("changeWeeklyProgram", item);
-    if (
-      item.assignment.sectionMeeting.includes(SectionMeeting.NUESTRA_VIDA_CRISTIANA) &&
-      !item.assignment.title.includes(ASSIGNMENT_TITLE.CONGREGATION_BIBLE_STUDY) &&
-      !item.assignment.title.includes(ASSIGNMENT_TITLE.LOCAL_NEEDS)
-    ) {
-      this.assignmentType = AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS;
-    } else {
-      this.selectAssignmentType(item, type);
+    const target = this.getWeeklyPublisherTarget(type);
+
+    if (target) {
+      this.resolveAssignmentType(item, type);
+      this.getOrCreateWeeklyProgramForRoom(item, target.room).subscribe({
+        next: (weeklyProgram) => {
+          if (!weeklyProgram) {
+            console.error("No se encontró el programa semanal para la sala", target.room);
+            return;
+          }
+
+          this.modalService
+            .assignPublisherWeeklyProgram(weeklyProgram, this.assignmentType, target.modalType, target.room)
+            .then((data: unknown) => this.handlePublisherSelection(item, target, weeklyProgram, data))
+            .catch((error) => console.error("No se pudo abrir el selector de publicadores", error));
+        },
+        error: (error) => console.error("No se pudo preparar la asignación para la sala", target.room, error),
+      });
+      return;
     }
-    let itemA: WeeklyProgram;
+
     switch (type) {
-      case WeeklyProgramChangeType.RESPONSIBLE:
-        itemA = this.filterRoom(item, MeetingRoom.MAIN) ?? <WeeklyProgram>{};
-        this.modalService
-          .assignPublisherWeeklyProgram(itemA, this.assignmentType, type)
-          .then((data) => {
-            if (data === ModalResult.CLOSE) {
-              return;
-            }
-            if (data) {
-              item.responsible = data;
-              itemA.responsible = data;
-              this.updateWeeklyProgram(itemA).subscribe((data) => {
-                console.info("saved responsible", data);
-              });
-              return;
-            }
-            if (data == null) {
-              Swal.fire({
-                title: "¿Estás seguro?",
-                text: `Esta a punto de borrar el responsable de la asignación`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, bórralo!",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  item.responsible = data;
-                  itemA.responsible = data;
-                  this.updateWeeklyProgram(itemA).subscribe((data) => {
-                    console.info("saved responsible", data);
-                  });
-                }
-              });
-            }
-          })
-          .catch((data) => {
-            console.error(data);
-          });
-        break;
-      case WeeklyProgramChangeType.ASSISTANT:
-        itemA = this.filterRoom(item, MeetingRoom.MAIN) ?? <WeeklyProgram>{};
-        this.modalService
-          .assignPublisherWeeklyProgram(itemA, this.assignmentType, type)
-          .then((data: any) => {
-            if (data === ModalResult.CLOSE) {
-              return;
-            }
-            if (data) {
-              item.assistant = <Publisher>data;
-              if (item.assistant.designations?.find((i) => i.description)) {
-              }
-              itemA.assistant = <Publisher>data;
-
-              this.updateWeeklyProgram(itemA).subscribe((data) => {
-                console.info("saved assistant", data);
-              });
-
-              if (this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY_READER) {
-                this.modalService.info(
-                  "Recordatorio",
-                  "Los hermanos deben ser lectores aprobados por el cuerpo de  Ancianos (sfl 1:2.8). Si ya fué aprobado vaya al modulo PRIVILEGIOS.",
-                  ModalTitleEnums.INFORMACION,
-                  ModalTypeEnums.INFO,
-                );
-              }
-              return;
-            }
-            if (data == null) {
-              Swal.fire({
-                title: "¿Estás seguro?",
-                text: `Esta a punto de borrar el ayudante de la asignación`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, bórralo!",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  item.assistant = <Publisher>data;
-                  itemA.assistant = <Publisher>data;
-                  this.updateWeeklyProgram(itemA).subscribe((data) => {
-                    console.info("saved assistant", data);
-                  });
-                }
-              });
-            }
-          })
-          .catch((data) => {
-            console.info(data);
-          });
-        break;
       case WeeklyProgramChangeType.START_TIME:
         this.modalService
           .selectedHour()
@@ -704,108 +640,188 @@ export class ProgramsComponent implements OnInit, OnChanges {
             console.info(data);
           });
         break;
-      case WeeklyProgramChangeType.RESPONSIBLE_B:
-        console.log("responsibleB", item);
-        const itemResponsibleB = this.filterRoom(item);
-        if (!itemResponsibleB) {
-          console.error("No se encontro el item.");
-          return;
-        }
-        this.modalService
-          .assignPublisherWeeklyProgram(itemResponsibleB, this.assignmentType, WeeklyProgramChangeType.RESPONSIBLE, MeetingRoom.AUXILIARY)
-          .then((data) => {
-            if (data === ModalResult.CLOSE) {
-              return;
-            }
-            if (data) {
-              item.responsibleB = data;
-              itemResponsibleB.responsible = data;
-              this.updateWeeklyProgram(itemResponsibleB).subscribe((data) => {
-                console.info("saved responsible", data);
-              });
-              return;
-            }
-            if (data == null) {
-              Swal.fire({
-                title: "¿Estás seguro?",
-                text: `Esta a punto de borrar el responsable B de la asignación`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, bórralo!",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  item.responsibleB = data;
-                  itemResponsibleB.responsible = data;
-                  this.updateWeeklyProgram(itemResponsibleB).subscribe((data) => {
-                    console.info("saved responsible", data);
-                  });
-                }
-              });
-            }
-          })
-          .catch((data) => {
-            console.error(data);
-          });
-        break;
-      case WeeklyProgramChangeType.ASSISTANT_B:
-        console.log("assistantB", item);
-        const itemAssistantB = this.filterRoom(item);
-        if (!itemAssistantB) {
-          console.error("No se encontro el item.");
-          return;
-        }
-        this.modalService
-          .assignPublisherWeeklyProgram(itemAssistantB, this.assignmentType, WeeklyProgramChangeType.ASSISTANT, MeetingRoom.AUXILIARY)
-          .then((data: any) => {
-            if (data === ModalResult.CLOSE) {
-              return;
-            }
-            if (data) {
-              item.assistantB = <Publisher>data;
-              itemAssistantB.assistant = <Publisher>data;
-              this.updateWeeklyProgram(itemAssistantB).subscribe((data) => {
-                console.info("saved assistantB", data);
-              });
-
-              if (this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY_READER) {
-                this.modalService.info(
-                  "Recordatorio",
-                  "Los hermanos deben ser lectores aprobados por el cuerpo de  Ancianos (sfl 1:2.8). Si ya fué aprobado vaya al modulo PRIVILEGIOS.",
-                  ModalTitleEnums.INFORMACION,
-                  ModalTypeEnums.INFO,
-                );
-              }
-              return;
-            }
-            if (data == null) {
-              Swal.fire({
-                title: "¿Estás seguro?",
-                text: `Esta a punto de borrar el ayudante B de la asignación`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, bórralo!",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  item.assistantB = <Publisher>data;
-                  itemAssistantB.assistant = <Publisher>data;
-                  this.updateWeeklyProgram(itemAssistantB).subscribe((data) => {
-                    console.info("saved assistantB", data);
-                  });
-                }
-              });
-            }
-          })
-          .catch((data) => {
-            console.info(data);
-          });
-        break;
       default:
         break;
     }
+  }
+
+  private resolveAssignmentType(item: WeeklyProgram, type: string): string {
+    if (
+      item.assignment.sectionMeeting.includes(SectionMeeting.NUESTRA_VIDA_CRISTIANA) &&
+      !isCongregationBibleStudyAssignment(item.assignment) &&
+      !includesMeetingPartTitle(item.assignment.title, MEETING_PARTS.LOCAL_NEEDS)
+    ) {
+      this.assignmentType = AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS;
+    } else {
+      this.selectAssignmentType(item, type);
+    }
+
+    return this.assignmentType;
+  }
+
+  private getWeeklyPublisherTarget(type: string): WeeklyPublisherTarget | null {
+    switch (type) {
+      case WeeklyProgramChangeType.RESPONSIBLE:
+        return {
+          room: MeetingRoom.MAIN,
+          field: "responsible",
+          viewField: "responsible",
+          modalType: WeeklyProgramChangeType.RESPONSIBLE,
+        };
+      case WeeklyProgramChangeType.ASSISTANT:
+        return {
+          room: MeetingRoom.MAIN,
+          field: "assistant",
+          viewField: "assistant",
+          modalType: WeeklyProgramChangeType.ASSISTANT,
+        };
+      case WeeklyProgramChangeType.RESPONSIBLE_B:
+        return {
+          room: MeetingRoom.AUXILIARY,
+          field: "responsible",
+          viewField: "responsibleB",
+          modalType: WeeklyProgramChangeType.RESPONSIBLE,
+        };
+      case WeeklyProgramChangeType.ASSISTANT_B:
+        return {
+          room: MeetingRoom.AUXILIARY,
+          field: "assistant",
+          viewField: "assistantB",
+          modalType: WeeklyProgramChangeType.ASSISTANT,
+        };
+      default:
+        return null;
+    }
+  }
+
+  private getOrCreateWeeklyProgramForRoom(item: WeeklyProgramPdF, room: MeetingRoom): Observable<WeeklyProgram | null> {
+    const existing = this.filterRoom(item, room);
+    if (existing) {
+      return of(existing);
+    }
+
+    const program = this.findProgramForItem(item);
+    if (!program) {
+      return of(null);
+    }
+
+    const weeklyProgram: WeeklyProgram = {
+      assignment: item.assignment,
+      congregation: item.congregation,
+      program: item.program,
+      startTime: item.startTime,
+      room,
+      responsible: null,
+      assistant: null,
+    };
+
+    return this.weeklyProgramService.save([weeklyProgram]).pipe(
+      map((savedPrograms) => {
+        const saved = savedPrograms.find((candidate) => this.matchesWeeklyProgram(candidate, item, room));
+        if (!saved) {
+          return null;
+        }
+
+        const stored = program.weeklyPrograms.find((candidate) => candidate.id === saved.id);
+        if (stored) {
+          Object.assign(stored, saved);
+          return stored;
+        }
+
+        program.weeklyPrograms = [...program.weeklyPrograms, saved];
+        return saved;
+      }),
+    );
+  }
+
+  private handlePublisherSelection(
+    item: WeeklyProgramPdF,
+    target: WeeklyPublisherTarget,
+    weeklyProgram: WeeklyProgram,
+    data: unknown,
+  ): void {
+    if (data === ModalResult.CLOSE) {
+      return;
+    }
+
+    if (data) {
+      this.persistPublisherAssignment(item, target, weeklyProgram, data as Publisher);
+      return;
+    }
+
+    if (data == null) {
+      const role = target.field === "responsible" ? "responsable" : "ayudante";
+      const roomSuffix = target.room === MeetingRoom.AUXILIARY ? " B" : "";
+
+      Swal.fire({
+        title: "¿Estás seguro?",
+        text: `Esta a punto de borrar el ${role}${roomSuffix} de la asignación`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, bórralo!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.persistPublisherAssignment(item, target, weeklyProgram, null);
+        }
+      });
+    }
+  }
+
+  private persistPublisherAssignment(
+    item: WeeklyProgramPdF,
+    target: WeeklyPublisherTarget,
+    weeklyProgram: WeeklyProgram,
+    publisher: Publisher | null,
+  ): void {
+    const request = { ...weeklyProgram, [target.field]: publisher } as WeeklyProgram;
+
+    this.updateWeeklyProgram(request).subscribe({
+      next: (saved) => {
+        Object.assign(weeklyProgram, saved);
+        this.setPdfPublisher(item, target.viewField, publisher);
+
+        if (publisher && target.field === "assistant" && this.assignmentType === AssignmentType.CONGREGATION_BIBLE_STUDY_READER) {
+          this.modalService.info(
+            "Recordatorio",
+            "Los hermanos deben ser lectores aprobados por el cuerpo de Ancianos (sfl 1:2.8). Si ya fue aprobado vaya al modulo PRIVILEGIOS.",
+            ModalTitleEnums.INFORMACION,
+            ModalTypeEnums.INFO,
+          );
+        }
+      },
+      error: (error) => console.error("No se pudo guardar la asignación", error),
+    });
+  }
+
+  private setPdfPublisher(item: WeeklyProgramPdF, field: PdfPublisherField, publisher: Publisher | null): void {
+    item[field] = publisher;
+  }
+
+  private findProgramForItem(item: WeeklyProgram): Program | undefined {
+    return (
+      this.semanas.find((week) => week.id === item.program) ??
+      this.semanas.find((week) => week.weeklyPrograms.some((weeklyProgram) => weeklyProgram.id === item.id))
+    );
+  }
+
+  private matchesWeeklyProgram(candidate: WeeklyProgram, item: WeeklyProgram, room: MeetingRoom): boolean {
+    return candidate.room?.toUpperCase() === room && this.matchesAssignment(candidate.assignment, item.assignment);
+  }
+
+  private matchesAssignment(left: WeeklyProgram["assignment"], right: WeeklyProgram["assignment"]): boolean {
+    if (left?.id != null && right?.id != null) {
+      if (left.id === right.id) {
+        return true;
+      }
+    }
+
+    return (
+      left?.sectionMeeting === right?.sectionMeeting &&
+      left?.number === right?.number &&
+      normalizeProgramTitle(left?.title) === normalizeProgramTitle(right?.title)
+    );
   }
   addAssign(item: Program, sectionMeeting: string) {
     this.modalService.AddAssignment(item, sectionMeeting);
@@ -819,10 +835,12 @@ export class ProgramsComponent implements OnInit, OnChanges {
     this.dataService.setMeeting([week]);
     this.modalService.printerAssig();
   }
-  filterRoom(item: WeeklyProgram, room = MeetingRoom.AUXILIARY) {
-    const program = this.semanas.find((week) => week.id === item.program || week.weeklyPrograms.some((weeklyProgram) => weeklyProgram.id === item.id));
+  filterRoom(item: WeeklyProgram, room = MeetingRoom.AUXILIARY): WeeklyProgram | undefined {
+    const program = this.findProgramForItem(item);
 
-    return program?.weeklyPrograms.find((weeklyProgram) => weeklyProgram.room === room && weeklyProgram.assignment.id === item.assignment.id);
+    return program?.weeklyPrograms.find(
+      (weeklyProgram) => weeklyProgram.room?.toUpperCase() === room && this.matchesAssignment(weeklyProgram.assignment, item.assignment),
+    );
   }
 
   filterProgram(item: Program, room = MeetingRoom.AUXILIARY) {

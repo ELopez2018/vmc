@@ -27,9 +27,19 @@ export function isSpeechAssignment(assignment?: Pick<Assignment, "title" | "numb
     return false;
   }
 
+  const isNamedStudentAssignment = [
+    MEETING_PARTS.STARTING_A_CONVERSATION,
+    MEETING_PARTS.FOLLOWING_UP,
+    MEETING_PARTS.EXPLAINING_YOUR_BELIEFS,
+    MEETING_PARTS.WHAT_WOULD_YOU_SAY,
+    MEETING_PARTS.MAKING_DISCIPLES,
+  ].some((meetingPartTitle) => includesMeetingPartTitle(assignment.title, meetingPartTitle));
+
   return (
     includesMeetingPartTitle(assignment.title, MEETING_PARTS.SPEECH) ||
-    (assignment.sectionMeeting === SectionMeeting.SEAMOS_MEJORES_MAESTROS && [7, 8].includes(assignment.number))
+    (assignment.sectionMeeting === SectionMeeting.SEAMOS_MEJORES_MAESTROS &&
+      [7, 8].includes(assignment.number) &&
+      !isNamedStudentAssignment)
   );
 }
 

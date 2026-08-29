@@ -19,6 +19,7 @@ import { ProgramWeekComponent } from "./components/program-week/program-week.com
 import { ADMIN_EMAIL, MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { includesMeetingPartTitle, isCongregationBibleStudyAssignment, isSpeechAssignment, normalizeProgramTitle } from "./program-assignment.util";
+import { isExplainingBeliefsSpeechAssignment } from "src/app/core/utils/assignment-eligibility.util";
 import { map, Observable, of } from "rxjs";
 
 type WeeklyPublisherField = "responsible" | "assistant";
@@ -587,8 +588,14 @@ export class ProgramsComponent implements OnInit, OnChanges {
 
   changeWeeklyProgram(item: WeeklyProgramPdF, type: string) {
     const target = this.getWeeklyPublisherTarget(type);
+    const isRestrictedExplainingBeliefsSpeech = isExplainingBeliefsSpeechAssignment(item.assignment);
 
     if (target) {
+      if (target.field === "assistant" && isRestrictedExplainingBeliefsSpeech) {
+        this.showNoAssistantRestriction();
+        return;
+      }
+
       this.resolveAssignmentType(item, type);
       this.getOrCreateWeeklyProgramForRoom(item, target.room).subscribe({
         next: (weeklyProgram) => {
@@ -598,7 +605,13 @@ export class ProgramsComponent implements OnInit, OnChanges {
           }
 
           this.modalService
-            .assignPublisherWeeklyProgram(weeklyProgram, this.assignmentType, target.modalType, target.room)
+            .assignPublisherWeeklyProgram(
+              weeklyProgram,
+              this.assignmentType,
+              target.modalType,
+              target.room,
+              isRestrictedExplainingBeliefsSpeech,
+            )
             .then((data: unknown) => this.handlePublisherSelection(item, target, weeklyProgram, data))
             .catch((error) => console.error("No se pudo abrir el selector de publicadores", error));
         },
@@ -643,6 +656,17 @@ export class ProgramsComponent implements OnInit, OnChanges {
       default:
         break;
     }
+  }
+
+  private showNoAssistantRestriction(): void {
+    this.modalService
+      .info(
+        "Asignación sin ayudante",
+        "La fuente identifica esta parte como un discurso. Solo se puede asignar a hermanos y no lleva ayudante en ninguna sala.",
+        ModalTitleEnums.INFORMACION,
+        ModalTypeEnums.INFO,
+      )
+      .catch((): void => undefined);
   }
 
   private resolveAssignmentType(item: WeeklyProgram, type: string): string {

@@ -31,6 +31,7 @@
   @for (item of sectionItems; track item.id) {
   @if (sectionMeeting == treasuresSection) {
   <div class="row px-3 program__tesoros program-assignment-row"
+    [class.program-assignment-row--treasures-assignment-3]="item.assignment.number == 3"
     [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     @if (item.assignment.number == 1 || item.assignment.number == 2) {
     <div class="col-md-9 mt-1">
@@ -150,7 +151,7 @@
   }
 
   @if (sectionMeeting == teachersSection) {
-  <div class="row px-3 program__tesoros program-assignment-row"
+  <div class="row px-3 program__tesoros program-assignment-row program-assignment-row--teachers"
     [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     <div class="col-md-5 mt-1">
       <div class="row program-assignment-line">
@@ -205,7 +206,7 @@
         [tooltipClass]="getPublisherTooltipClass(item.responsibleB)">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
       </span>
-      @if (!isSpeech(item)) {
+      @if (!isSpeech(item) && !isExplainingBeliefsSpeech(item)) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistantB)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT_B)"
         [ngbTooltip]="item.assistantB?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"
@@ -223,7 +224,7 @@
         [tooltipClass]="getPublisherTooltipClass(item.responsible)">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
-      @if (!isSpeech(item)) {
+      @if (!isSpeech(item) && !isExplainingBeliefsSpeech(item)) {
       <span class="hover text-publisher" [ngClass]="getPublisherTextClasses(item.assistant)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)"
         [ngbTooltip]="item.assistant?.publisherTooltipText" [placement]="publisherTooltipPlacement" container="body"

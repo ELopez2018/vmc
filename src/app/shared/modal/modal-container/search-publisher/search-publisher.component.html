@@ -11,23 +11,26 @@
             <fieldset class="fieldset-basic assignment-summary">
               <legend></legend>
 
-              <div class="frequent-summary-row">
+              <div class="frequent-summary-row" [class.frequent-summary-row--program]="programSelection">
                 <div class="summary-chip summary-chip--title">
                   <span class="summary-label">Título</span>
-                  <span class="summary-value">{{ assignment.assignment.title }}</span>
+                  <span class="summary-value">{{ selectedAssignmentTitle }}</span>
                 </div>
 
+                @if (!programSelection) {
                 <div class="summary-chip summary-chip--time">
                   <span class="summary-label">Tiempo</span>
                   <span class="summary-value">{{ assignment.assignment.time }} {{ assignment.assignment.timeType
                     }}</span>
                 </div>
+                }
 
                 <div class="summary-chip summary-chip--assignment summary-chip--inline">
                   <span class="summary-label">Asignado</span>
                   <div class="summary-inline-row">
                     <input class="form-control"
-                      [value]="type === 'responsible' ? (assignment.responsible?.fullName ?? 'Por asignar') : (assignment.assistant?.fullName ?? 'Por asignar')"
+                      [value]="selectedAssignmentPublisher?.fullName ?? 'Por asignar'"
+                      [attr.title]="selectedAssignmentPublisher?.fullName ?? 'Por asignar'"
                       readonly />
                     <button class="btn btn-sm btn-danger" type="button" (click)="clean()">Borrar</button>
                   </div>
@@ -39,7 +42,14 @@
                 </div>
               </div>
 
-              @if (assignment.assignment.sourceHtml || assignment.assignment.sourceText) {
+              @if (brothersOnly) {
+              <div class="assignment-restriction" role="status">
+                <mat-icon>info</mat-icon>
+                <span>La fuente identifica esta parte como un discurso: solo se puede asignar a hermanos y no lleva ayudante en ninguna sala.</span>
+              </div>
+              }
+
+              @if (!programSelection && (assignment.assignment.sourceHtml || assignment.assignment.sourceText)) {
               <div class="summary-source-wrap">
                 <span class="summary-label">Fuente</span>
                 <div class="summary-source">
@@ -224,8 +234,9 @@
                       </button>
                     </th>
                     <td mat-cell *matCellDef="let item">
-                      <span [class.text-danger]="!item.participate" [class.text-success]="item.participate">
-                        {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
+                      <span [class.text-danger]="item.participate === false" [class.text-success]="item.participate === true"
+                        [class.text-muted]="item.participate == null">
+                        {{ getParticipationStatusLabel(item.participate) }}
                       </span>
                     </td>
                   </ng-container>
@@ -262,6 +273,7 @@
             </fieldset>
           </mat-tab>
 
+          @if (!brothersOnly) {
           <!-- HERMANAS -->
           <mat-tab label="Hermanas">
             <fieldset class="fieldset-basic table-container">
@@ -287,8 +299,9 @@
                       </button>
                     </th>
                     <td mat-cell *matCellDef="let item">
-                      <span [class.text-danger]="!item.participate" [class.text-success]="item.participate">
-                        {{ item.participate ? "PARTICIPA" : "NO PARTICIPA" }}
+                      <span [class.text-danger]="item.participate === false" [class.text-success]="item.participate === true"
+                        [class.text-muted]="item.participate == null">
+                        {{ getParticipationStatusLabel(item.participate) }}
                       </span>
                     </td>
                   </ng-container>
@@ -324,6 +337,7 @@
               </div>
             </fieldset>
           </mat-tab>
+          }
 
           <!-- TODOS -->
           <mat-tab label="Todos">

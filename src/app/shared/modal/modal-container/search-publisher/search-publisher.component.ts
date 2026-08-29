@@ -61,6 +61,10 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   @Input() public assignmentType: string = "";
   @Input() public type: string = "responsible";
   @Input() public room: string = "A";
+  @Input() public programSelection = false;
+  @Input() public brothersOnly = false;
+  @Input() public selectionTitle?: string;
+  @Input() public currentPublisher?: Publisher | null;
   @Output() onClicked: EventEmitter<Publisher> = new EventEmitter();
   @Output() onClose: EventEmitter<boolean> = new EventEmitter();
   public frequentPublishers!: PublisherDto[];
@@ -101,6 +105,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   private assignmentTypes: AssignmentTypeModel[] = [];
   private publishersHistorySource: PublisherHistoryItem[] = [];
   private publishersSource: Publisher[] = [];
+  private participatingPublisherIds: Set<number> | null = null;
   private sortStates: Partial<Record<SortableDataSourceName, SortState>> = {};
   private readonly assignmentTypeMatchers: Partial<Record<AssignmentType, AssignmentTypeMatcher>> = {
     [AssignmentType.ASSIGNMENT_1]: this.assignmentTypeMatcher("Tesoros - Discurso", "Encargado", "TESOROS DE LA BIBLIA"),
@@ -219,43 +224,63 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     );
   }
   selected(item: any) {
-    this.onClicked.emit(this.resolveSelectedPublisher(item));
+    const publisher = this.resolveSelectedPublisher(item);
+
+    if (this.brothersOnly && publisher?.gender !== "Masculino") {
+      return;
+    }
+
+    this.onClicked.emit(publisher);
   }
 
   clean() {
     this.onClicked.emit(null);
   }
 
+  public get selectedAssignmentTitle(): string {
+    return this.selectionTitle ?? this.assignment?.assignment?.title ?? "";
+  }
+
+  public get selectedAssignmentPublisher(): Publisher | null {
+    if (this.programSelection) {
+      return this.currentPublisher ?? null;
+    }
+
+    return this.type === "assistant" ? this.assignment?.assistant ?? null : this.assignment?.responsible ?? null;
+  }
+
   getPublihersByAssignment() {
     this.usedPublishersListAll = [];
     this.usedPublishersListAllByAssig = [];
+    this.setParticipationCandidates(null);
+    this.updateDataSources();
     const timestamp = this.assignment?.assignment?.meeting?.week;
     const fecha = new Date(timestamp).toISOString().split("T")[0];
-    const title = this.assignment?.assignment?.title || "";
-    const sectionMeeting = this.assignment?.assignment?.sectionMeeting;
-    const assignmentNumber = this.assignment?.assignment?.number ?? null;
+    const title = this.selectedAssignmentTitle;
+    const sectionMeeting = this.programSelection ? undefined : this.assignment?.assignment?.sectionMeeting;
+    const assignmentNumber = this.programSelection ? null : this.assignment?.assignment?.number ?? null;
     this.showSpinner = true;
     this.loadPublishersHistory(fecha, title);
     this.usersService.getPublishersByAssignment(this.assignmentType, this.congregation.id, fecha, this.room, title, sectionMeeting, assignmentNumber).subscribe((data) => {
       const candidates = (data ?? []).map(toAssignmentCandidate);
-      const publishersEnabledForAssignment = this.filterPublishersByAssignmentPermission(candidates);
+      const publishersEnabledForAssignment = this.filterBrothersOnly(this.filterPublishersByAssignmentPermission(candidates));
       this.usedPublishersListAll = publishersEnabledForAssignment;
       this.usedPublishersListAllByAssig = publishersEnabledForAssignment;
       switch (this.assignmentType) {
         case AssignmentType.PRESIDENT:
-          this.headerText = "Presidencia";
+          this.headerText = this.selectedAssignmentTitle;
           this.usedPublishersList = this.usedPublishersListAll;
           this.checkFrecuentEspecial();
           this.updateDataSources();
           break;
         case AssignmentType.OPENING_PRAYER:
-          this.headerText = "Oración Inicial";
+          this.headerText = this.selectedAssignmentTitle;
           this.usedPublishersList = this.usedPublishersListAll;
           this.checkFrecuentEspecial();
           this.updateDataSources();
           break;
         case AssignmentType.FINAL_PRAYER:
-          this.headerText = "Oración Final";
+          this.headerText = this.selectedAssignmentTitle;
           this.usedPublishersList = this.usedPublishersListAll;
           this.checkFrecuentEspecial();
           this.updateDataSources();
@@ -351,7 +376,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
           this.updateDataSources();
           break;
         case AssignmentType.ASSISTANT_ADVISER:
-          this.headerText = "Consejero de la sala auxiliar";
+          this.headerText = this.selectedAssignmentTitle;
           this.checkIfYouParticipate1();
           this.updateDataSources();
           break;
@@ -377,25 +402,33 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   }
 
   checkIfYouParticipate1(): void {
-    if (!this.usedPublishersListAllByAssig?.length || this.usedPublishersListAllByAssig?.length <= 0) {
-      return;
-    }
-
-    const publisherIds = new Set(this.usedPublishersListAllByAssig.map((pub) => pub.user.id));
-
-    [...this.male, ...this.female].forEach((pub) => {
-      pub.participate = publisherIds.has(pub.id);
-    });
+    this.setParticipationCandidates(this.usedPublishersListAllByAssig);
   }
 
   checkFrecuentEspecial() {
-    //oraciones y presidencias
-    if (!this.usedPublishersList || this.usedPublishersList.length <= 0) {
-      return;
+    this.setParticipationCandidates(this.usedPublishersList);
+  }
+
+  public getParticipationStatusLabel(participate?: boolean | null): string {
+    if (participate === true) {
+      return "Participa";
     }
-    const publisherIds = new Set(this.usedPublishersList.map((item) => item.user.id));
-    this.male.forEach((pub) => {
-      pub.participate = publisherIds.has(pub.id);
+
+    if (participate === false) {
+      return "No participa";
+    }
+
+    return "No definido";
+  }
+
+  private setParticipationCandidates(candidates: AssignmentCandidateViewModel[] | null): void {
+    this.participatingPublisherIds = candidates === null ? null : new Set(candidates.map((candidate) => candidate.user.id));
+    this.applyParticipationStatus();
+  }
+
+  private applyParticipationStatus(): void {
+    [...this.male, ...this.female].forEach((publisher) => {
+      publisher.participate = this.participatingPublisherIds?.has(publisher.id) ?? null;
     });
   }
 
@@ -409,6 +442,14 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     const assignmentTypePermissionId = this.assignmentTypes.find((assignmentType) => this.matchesAssignmentType(assignmentType, matcher))?.id;
 
     return assignmentTypePermissionId ? items.filter((item) => this.hasAssignmentTypePermission(item, assignmentTypePermissionId)) : [];
+  }
+
+  private filterBrothersOnly<T>(items: T[]): T[] {
+    if (!this.brothersOnly) {
+      return items;
+    }
+
+    return items.filter((item) => this.getPublisherFromItem(item)?.gender === "Masculino");
   }
 
   private hasAssignmentTypePermission(item: unknown, assignmentTypePermissionId: number): boolean {
@@ -467,9 +508,10 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   private applyPublisherPermissionFilter(): void {
     const sourcePublishers = this.publishersHistorySource.length ? this.publishersHistorySource.map((item) => this.toPublisherWithHistory(item)) : this.publishersSource;
 
-    this.publishersAll = this.filterPublishersByAssignmentPermission(sourcePublishers);
+    this.publishersAll = this.filterBrothersOnly(this.filterPublishersByAssignmentPermission(sourcePublishers));
     this.female = this.publishersAll.filter((publisher) => publisher.gender === "Femenino");
     this.male = this.publishersAll.filter((publisher) => publisher.gender === "Masculino");
+    this.applyParticipationStatus();
     this.updateDataSources();
   }
 
@@ -654,7 +696,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
       case "allAssignments":
         return item?.allAssignments ?? 0;
       case "estado":
-        return item?.participate ? 1 : 0;
+        return item?.participate === true ? 2 : item?.participate === false ? 1 : 0;
       case "date":
         return item?.date ?? 0;
       case "lastAssignment":

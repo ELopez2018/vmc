@@ -13,6 +13,7 @@ import { AssignmentSourceComponent } from "src/app/shared/components/assignment-
 import { StopwatchService } from "src/app/core/services/stopwatch/stopwatch.service";
 import { StopwatchModalComponent } from "src/app/shared/components/stopwatch-modal/stopwatch-modal.component";
 import { isCongregationBibleStudyAssignment, isSpeechAssignment } from "../../program-assignment.util";
+import { isExplainingBeliefsSpeechAssignment } from "src/app/core/utils/assignment-eligibility.util";
 
 @Component({
   selector: "vmc-program-assignment-section",
@@ -162,6 +163,10 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
 
   public isCongregationBibleStudy(item: WeeklyProgramPdF): boolean {
     return isCongregationBibleStudyAssignment(item.assignment);
+  }
+
+  public isExplainingBeliefsSpeech(item: WeeklyProgramPdF): boolean {
+    return isExplainingBeliefsSpeechAssignment(item.assignment);
   }
 
   private getAssignmentCollapseKey(item: WeeklyProgramPdF): string {

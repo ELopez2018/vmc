@@ -240,7 +240,7 @@ export class EntreSemanaComponent implements OnInit {
         break;
       case AssignmentType.ASSISTANT_ADVISER:
         this.modalService
-          .assignPublisherProgram(item)
+          .assignPublisherProgram(item, AssignmentType.ASSISTANT_ADVISER)
           .then((data) => {
             item.assistantAdviser = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {

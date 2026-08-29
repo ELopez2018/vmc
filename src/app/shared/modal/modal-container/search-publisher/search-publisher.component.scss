@@ -68,9 +68,13 @@ mat-spinner {
 
 .frequent-summary-row {
   display: grid;
-  grid-template-columns: minmax(260px, 2fr) minmax(120px, 0.7fr) minmax(320px, 1.8fr) minmax(140px, 0.8fr);
+  grid-template-columns: minmax(240px, 1.5fr) minmax(110px, 0.6fr) minmax(400px, 2.4fr) minmax(130px, 0.7fr);
   gap: 10px 14px;
   align-items: stretch;
+}
+
+.frequent-summary-row--program {
+  grid-template-columns: minmax(220px, 1fr) minmax(480px, 3fr) minmax(130px, 0.7fr);
 }
 
 .summary-chip {
@@ -116,6 +120,24 @@ mat-spinner {
 
 .summary-source-wrap {
   margin-top: 12px;
+}
+
+.assignment-restriction {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #f3c969;
+  border-radius: 8px;
+  background: #fff8e6;
+  color: #76520b;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  mat-icon {
+    flex: 0 0 auto;
+  }
 }
 
 .summary-source {

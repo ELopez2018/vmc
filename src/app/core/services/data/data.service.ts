@@ -14,6 +14,7 @@ import { AuthService } from "../auth/auth.service";
 import { CookieService } from "ngx-cookie-service";
 import { MeetingPartsService } from "../meeting-parts/meeting-parts.service";
 import { MeetingRoom, setMeetingPartTitles } from "../../constants/program.constants";
+import { isExplainingBeliefsSpeechAssignment } from "../../utils/assignment-eligibility.util";
 
 @Injectable({
   providedIn: "root",
@@ -93,14 +94,15 @@ export class DataService {
         const mainRoom = programs.find((weeklyProgram) => weeklyProgram.room?.toUpperCase() === MeetingRoom.MAIN);
         const auxiliaryRoom = programs.find((weeklyProgram) => weeklyProgram.room?.toUpperCase() === MeetingRoom.AUXILIARY);
         const base = mainRoom ?? auxiliaryRoom ?? programs[0];
+        const noAssistantAllowed = isExplainingBeliefsSpeechAssignment(base.assignment);
 
         return {
           ...base,
           room: MeetingRoom.MAIN,
           responsible: mainRoom?.responsible ?? null,
-          assistant: mainRoom?.assistant ?? null,
+          assistant: noAssistantAllowed ? null : mainRoom?.assistant ?? null,
           responsibleB: auxiliaryRoom?.responsible ?? null,
-          assistantB: auxiliaryRoom?.assistant ?? null,
+          assistantB: noAssistantAllowed ? null : auxiliaryRoom?.assistant ?? null,
         };
       });
 

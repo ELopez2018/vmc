@@ -29,6 +29,10 @@ export class ModalContainerComponent implements OnInit {
   @Input() title!: string;
   @Input() subTitle!: string;
   @Input() assignmentType!: string;
+  @Input() programSelection: boolean = false;
+  @Input() brothersOnly: boolean = false;
+  @Input() selectionTitle?: string;
+  @Input() currentPublisher?: Publisher | null;
   @Input() sectionMeeting!: string;
   @Input() isModal: boolean = true;
   @Input() type: string = 'responsible' ;

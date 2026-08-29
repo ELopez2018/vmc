@@ -139,6 +139,33 @@ legend {
   }
 }
 
+/* iPad 9.ª generación: 810×1080 px en vertical y 1080×810 px en horizontal. */
+@media (min-width: 768px) and (max-width: 1180px) {
+  .program__title-asingment {
+    font-size: calc(1em - 2px);
+  }
+}
+
+/* iPad 9.ª generación en vertical (810×1080 px). */
+@media (min-width: 800px) and (max-width: 820px) and (orientation: portrait) {
+  .program-assignment-row--teachers {
+    > .col-md-5 {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
+
+    > .col-md-3 {
+      flex: 0 0 20.833333%;
+      max-width: 20.833333%;
+    }
+  }
+
+  .program-assignment-row--treasures-assignment-3 > .col-md-5 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
 @media (min-width: 1366px) {
   .width-timeStart {
     width: 36px;

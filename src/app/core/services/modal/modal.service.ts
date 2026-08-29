@@ -2,8 +2,9 @@ import { Injectable } from "@angular/core";
 import { NgbModal, NgbModalOptions, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ModalContainerComponent } from "src/app/shared/modal/modal-container/modal-container.component";
 import { ModalTitleEnums, ModalIconEnums, ModalResponseEnums, ModalTypeEnums } from "../../enums/modal.enums";
-import { Assignment, Program, WeeklyProgram } from "../../interfaces/reuniones.interface";
-import { normalizeAssignmentTypeValue } from "../../enums/assignments.enums";
+import { Assignment, Program, Publisher, WeeklyProgram } from "../../interfaces/reuniones.interface";
+import { AssignmentType, normalizeAssignmentTypeValue } from "../../enums/assignments.enums";
+import { MEETING_PARTS } from "../../constants/program.constants";
 
 @Injectable({
   providedIn: "root",
@@ -52,22 +53,57 @@ export class ModalService {
     return this.modalRef.result;
   }
 
-  public assignPublisherWeeklyProgram(assignment?: WeeklyProgram, assignmentType?: string, type?: string, room: string = "A") {
+  public assignPublisherWeeklyProgram(assignment?: WeeklyProgram, assignmentType?: string, type?: string, room: string = "A", brothersOnly = false) {
     this.modalRef = this.openWideModal();
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
     this.modalRef.componentInstance.assignment = assignment;
     this.modalRef.componentInstance.assignmentType = normalizeAssignmentTypeValue(assignmentType);
     this.modalRef.componentInstance.type = type;
     this.modalRef.componentInstance.room = room;
+    this.modalRef.componentInstance.brothersOnly = brothersOnly;
     return this.modalRef.result;
   }
 
   public assignPublisherProgram(program: Program, assignmentType?: string) {
     this.modalRef = this.openWideModal();
+    const normalizedAssignmentType = normalizeAssignmentTypeValue(assignmentType);
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
     this.modalRef.componentInstance.assignment = program.weeklyPrograms[0];
-    this.modalRef.componentInstance.assignmentType = normalizeAssignmentTypeValue(assignmentType);
+    this.modalRef.componentInstance.assignmentType = normalizedAssignmentType;
+    this.modalRef.componentInstance.programSelection = true;
+    this.modalRef.componentInstance.selectionTitle = this.getProgramSelectionTitle(normalizedAssignmentType);
+    this.modalRef.componentInstance.currentPublisher = this.getProgramSelectionPublisher(program, normalizedAssignmentType);
     return this.modalRef.result;
+  }
+
+  private getProgramSelectionTitle(assignmentType: string): string {
+    switch (assignmentType) {
+      case AssignmentType.PRESIDENT:
+        return MEETING_PARTS.PRESIDENT;
+      case AssignmentType.OPENING_PRAYER:
+        return MEETING_PARTS.OPENING_PRAYER;
+      case AssignmentType.FINAL_PRAYER:
+        return MEETING_PARTS.FINAL_PRAYER;
+      case AssignmentType.ASSISTANT_ADVISER:
+        return MEETING_PARTS.ASSISTANT_ADVISER;
+      default:
+        return "Asignación";
+    }
+  }
+
+  private getProgramSelectionPublisher(program: Program, assignmentType: string): Publisher | null {
+    switch (assignmentType) {
+      case AssignmentType.PRESIDENT:
+        return program.president ?? null;
+      case AssignmentType.OPENING_PRAYER:
+        return program.openingPrayer ?? null;
+      case AssignmentType.FINAL_PRAYER:
+        return program.finalPrayer ?? null;
+      case AssignmentType.ASSISTANT_ADVISER:
+        return program.assistantAdviser ?? null;
+      default:
+        return null;
+    }
   }
 
   public changeSong(program: Program, song: string) {

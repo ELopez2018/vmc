@@ -1,4 +1,4 @@
 <div class="select-hour-modal">
-  <input class="form-control" #hora type="time" name="date" id="date">
+  <input class="form-control" #hora type="time" name="date" id="date" [value]="value">
   <button class="btn btn-primary" type="button" (click)="onSelect(hora.value)">Aceptar</button>
 </div>

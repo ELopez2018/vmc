@@ -22,7 +22,7 @@ export class ProgramFiltersComponent {
 
   public onChange(): void {
     if (!this.fechaHasta || this.fechaHasta < this.fechaDesde) {
-      this.fechaHasta = this.fechaDesde;
+      this.fechaHasta = new Date(this.fechaDesde.getFullYear(), this.fechaDesde.getMonth() + 1, 0);
     }
   }
 }

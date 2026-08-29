@@ -1,3 +1,7 @@
+@if (hasCloseControl()) {
+  <button type="button" class="modal-container__close btn-close" aria-label="Cerrar" (click)="close()"></button>
+}
+
 @switch (modalType) {
   @case (typeOfModals.ASSIGN_PUB) {
     @if (assignment) {
@@ -16,7 +20,7 @@
     }
   }
   @case (typeOfModals.SELECT_HOUR) {
-    <select-hour (onSelected)="onClicked($event)"></select-hour>
+    <select-hour [hour]="hour" (onSelected)="onClicked($event)"></select-hour>
   }
   @case (typeOfModals.PRINTER) {
     <app-printer [isModal]="true" (onClosed)="close()"></app-printer>

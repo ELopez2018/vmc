@@ -1,5 +1,13 @@
 :host {
   display: block;
+  position: relative;
+}
+
+.modal-container__close {
+  position: absolute;
+  right: 0.85rem;
+  top: 0.85rem;
+  z-index: 2;
 }
 
 :host-context(.vmc-modal-window--print) {

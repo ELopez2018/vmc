@@ -157,7 +157,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
     switch (type) {
       case ProgramChangeType.START_TIME_OPENING_SONG:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTimeOpeningSong)
           .then((data) => {
             if (data === ModalResult.CLOSE) {
               return;
@@ -172,7 +172,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
         break;
       case ProgramChangeType.START_TIME_INTRO:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTimeIntro)
           .then((data) => {
             if (data === ModalResult.CLOSE) {
               return;
@@ -189,7 +189,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
         break;
       case ProgramChangeType.START_TIME_INTERMEDIATE_SONG:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTimeIntermediateSong)
           .then((data) => {
             if (data === ModalResult.CLOSE) {
               return;
@@ -206,7 +206,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
         break;
       case ProgramChangeType.START_TIME_CONCLUSION_WORDS:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTimeConclusionWords)
           .then((data) => {
             if (data === ModalResult.CLOSE) {
               return;
@@ -223,7 +223,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
         break;
       case ProgramChangeType.START_TIME_FINAL_SONG:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTimeFinalSong)
           .then((data) => {
             if (data === ModalResult.CLOSE) {
               return;
@@ -623,7 +623,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
     switch (type) {
       case WeeklyProgramChangeType.START_TIME:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTime)
           .then((data) => {
             if (data === ModalResult.CLOSE) {
               return;

@@ -114,9 +114,10 @@ export class ModalService {
     return this.modalRef.result;
   }
 
-  public selectedHour() {
-    this.modalRef = this.openModal("vmc-modal-window--compact");
+  public selectedHour(hour?: unknown) {
+    this.modalRef = this.openModal("vmc-modal-window--hour");
     this.modalRef.componentInstance.modalType = ModalTypeEnums.SELECT_HOUR;
+    this.modalRef.componentInstance.hour = hour;
     return this.modalRef.result;
   }
   public setTitleAndTime(item: WeeklyProgram) {

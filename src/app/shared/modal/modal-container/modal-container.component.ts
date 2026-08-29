@@ -23,6 +23,7 @@ export class ModalContainerComponent implements OnInit {
   @Input() assignment!: WeeklyProgram;
   @Input() program!: Program;
   @Input() song!: string;
+  @Input() hour?: unknown;
   @Input() errorMessage!: string;
   @Input() errorTitle!: string;
   @Input() errorType!: string;
@@ -51,10 +52,22 @@ export class ModalContainerComponent implements OnInit {
     this.activeModal.close(opcion);
   }
 
+  hasCloseControl(): boolean {
+    return [
+      ModalTypeEnums.SELECT_HOUR,
+      ModalTypeEnums.TITLE_AND_TIME,
+      ModalTypeEnums.CHANGE_SONGS,
+      ModalTypeEnums.ERROR,
+      ModalTypeEnums.SUCCESS,
+      ModalTypeEnums.LOADER,
+      ModalTypeEnums.INFO,
+    ].includes(this.modalType as ModalTypeEnums);
+  }
+
   close() {
     this.activeModal.close('close');
   }
-  onClicked(item: Publisher) {
+  onClicked(item: unknown) {
     this.activeModal.close(item);
   }
 

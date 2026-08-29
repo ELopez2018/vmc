@@ -231,6 +231,13 @@ body {
   }
 }
 
+.vmc-modal-window--hour {
+  .modal-dialog {
+    max-width: min(92vw, 320px);
+    width: min(92vw, 320px);
+  }
+}
+
 .vmc-modal-window--form {
   .modal-dialog {
     max-width: min(92vw, 640px);

@@ -13,7 +13,7 @@ import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { SectionMeeting } from "../../core/enums/meetings.enums";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
 import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
-import { MEETING_PARTS, MeetingRoom, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
+import { MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
@@ -142,8 +142,11 @@ export class EntreSemanaComponent implements OnInit {
     switch (type) {
       case ProgramChangeType.START_TIME_OPENING_SONG:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTimeOpeningSong)
           .then((data) => {
+            if (data === ModalResult.CLOSE) {
+              return;
+            }
             item.startTimeOpeningSong = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {
               console.info(data);
@@ -155,8 +158,11 @@ export class EntreSemanaComponent implements OnInit {
         break;
       case ProgramChangeType.START_TIME_INTRO:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTimeIntro)
           .then((data) => {
+            if (data === ModalResult.CLOSE) {
+              return;
+            }
             item.startTimeIntro = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {
               console.info(data);
@@ -168,8 +174,11 @@ export class EntreSemanaComponent implements OnInit {
         break;
       case ProgramChangeType.START_TIME_INTERMEDIATE_SONG:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTimeIntermediateSong)
           .then((data) => {
+            if (data === ModalResult.CLOSE) {
+              return;
+            }
             item.startTimeIntermediateSong = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {
               console.info(data);
@@ -181,8 +190,11 @@ export class EntreSemanaComponent implements OnInit {
         break;
       case ProgramChangeType.START_TIME_CONCLUSION_WORDS:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTimeConclusionWords)
           .then((data) => {
+            if (data === ModalResult.CLOSE) {
+              return;
+            }
             item.startTimeConclusionWords = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {
               console.info(data);
@@ -194,8 +206,11 @@ export class EntreSemanaComponent implements OnInit {
         break;
       case ProgramChangeType.START_TIME_FINAL_SONG:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTimeFinalSong)
           .then((data) => {
+            if (data === ModalResult.CLOSE) {
+              return;
+            }
             item.startTimeFinalSong = data;
             this.meetingsService.saveOrUpdateProgram(item).subscribe((data) => {});
           })
@@ -402,8 +417,11 @@ export class EntreSemanaComponent implements OnInit {
         break;
       case WeeklyProgramChangeType.START_TIME:
         this.modalService
-          .selectedHour()
+          .selectedHour(item.startTime)
           .then((data) => {
+            if (data === ModalResult.CLOSE) {
+              return;
+            }
             console.log("startTime", data);
             item.startTime = data;
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe((data) => {

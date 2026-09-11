@@ -17,6 +17,11 @@ import { MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType, WeeklyProgr
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
+interface StoredDateFilter {
+  fechaDesde: string;
+  fechaHasta: string;
+}
+
 @Component({
   selector: "vmc-entre-semana",
   templateUrl: "./entre-semana.component.html",
@@ -24,6 +29,7 @@ import { takeUntil } from "rxjs/operators";
   standalone: false,
 })
 export class EntreSemanaComponent implements OnInit {
+  private readonly dateFilterStorageKey = "vmc.weeks.date-filter";
   private readonly destroyRef = inject(DestroyRef);
   private readonly pageSize = 2;
   private readonly initialForegroundPages = 2;
@@ -42,6 +48,7 @@ export class EntreSemanaComponent implements OnInit {
   public showSpinner = false;
   private meetingDay = 1;
   public semanasAllRooms: ProgramPdf[] = [];
+  public hasStoredDateFilter = false;
   loaderService = inject(LoaderService);
   constructor(
     private meetingsService: MeetingsService,
@@ -66,6 +73,14 @@ export class EntreSemanaComponent implements OnInit {
     this.requestedPages.clear();
     this.loadedPages.clear();
     this.loaderService.showMatspinner();
+    const storedDateFilter = this.readStoredDateFilter();
+    this.hasStoredDateFilter = storedDateFilter !== null;
+
+    if (storedDateFilter) {
+      this.consultar(storedDateFilter, false);
+      return;
+    }
+
     this.getPrograms();
   }
 
@@ -482,7 +497,18 @@ export class EntreSemanaComponent implements OnInit {
     this.dataService.setMeeting([...weeks]);
   }
 
-  consultar($event: { fechaDesde: any; fechaHasta: any }) {
+  consultar($event: { fechaDesde: any; fechaHasta: any }, persistFilter = true) {
+    const dateFilter = this.normalizeDateFilter($event);
+
+    if (!dateFilter) {
+      this.modalService.errorHandler("Selecciona una fecha inicial y una fecha final validas.", "Filtro de fechas");
+      return;
+    }
+
+    if (persistFilter) {
+      this.storeDateFilter(dateFilter);
+    }
+
     this.cancelInitialProgramLoad$.next();
     const requestId = ++this.searchRequestId;
 
@@ -496,7 +522,7 @@ export class EntreSemanaComponent implements OnInit {
     this.dataService.setMeeting([]);
 
     this.meetingsService
-      .getProgramsByDateRange($event.fechaDesde, $event.fechaHasta, this.congregation.id)
+      .getProgramsByDateRange(dateFilter.fechaDesde, dateFilter.fechaHasta, this.congregation.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
@@ -521,5 +547,75 @@ export class EntreSemanaComponent implements OnInit {
           this.modalService.errorHandler("No se han podido obtener los programas", "Error");
         },
       });
+  }
+
+  clearDateFilter(): void {
+    localStorage.removeItem(this.dateFilterStorageKey);
+    this.hasStoredDateFilter = false;
+    this.cancelInitialProgramLoad$.next();
+    this.searchRequestId++;
+    this.requestedPages.clear();
+    this.loadedPages.clear();
+    this.programList = [];
+    this.semanas = [];
+    this.semanasSalaAuxiliar = [];
+    this.semanasAllRooms = [];
+    this.dataService.setMeeting([]);
+    this.loaderService.showMatspinner();
+    this.getPrograms();
+  }
+
+  private storeDateFilter(dateFilter: StoredDateFilter): void {
+    localStorage.setItem(this.dateFilterStorageKey, JSON.stringify(dateFilter));
+    this.hasStoredDateFilter = true;
+  }
+
+  private readStoredDateFilter(): StoredDateFilter | null {
+    const storedValue = localStorage.getItem(this.dateFilterStorageKey);
+
+    if (!storedValue) {
+      return null;
+    }
+
+    try {
+      const dateFilter = this.normalizeDateFilter(JSON.parse(storedValue));
+
+      if (!dateFilter) {
+        localStorage.removeItem(this.dateFilterStorageKey);
+      }
+
+      return dateFilter;
+    } catch {
+      localStorage.removeItem(this.dateFilterStorageKey);
+      return null;
+    }
+  }
+
+  private normalizeDateFilter(filter: { fechaDesde: unknown; fechaHasta: unknown } | null | undefined): StoredDateFilter | null {
+    const fechaDesde = this.normalizeDateValue(filter?.fechaDesde);
+    const fechaHasta = this.normalizeDateValue(filter?.fechaHasta);
+
+    if (!fechaDesde || !fechaHasta || fechaHasta < fechaDesde) {
+      return null;
+    }
+
+    return { fechaDesde, fechaHasta };
+  }
+
+  private normalizeDateValue(value: unknown): string | null {
+    if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return Number.isFinite(new Date(`${value}T00:00:00`).getTime()) ? value : null;
+    }
+
+    const date = value instanceof Date ? value : new Date(value as string | number);
+
+    if (!Number.isFinite(date.getTime())) {
+      return null;
+    }
+
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
   }
 }

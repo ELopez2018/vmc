@@ -2,4 +2,17 @@
   <vmc-programs [semanas]="semanas" [semanasAllRooms]="semanasAllRooms" [RoomA]="true" [room]="meetingRoom.MAIN"
     (filtrar)="consultar($event)"
   ></vmc-programs>
+
+  @if (hasStoredDateFilter) {
+    <button
+      mat-fab
+      type="button"
+      class="entre-semana__clear-filter"
+      aria-label="Eliminar filtro de fechas"
+      matTooltip="Eliminar filtro de fechas"
+      (click)="clearDateFilter()"
+    >
+      <mat-icon>filter_alt_off</mat-icon>
+    </button>
+  }
 </div>

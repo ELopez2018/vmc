@@ -65,10 +65,12 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   @Input() public brothersOnly = false;
   @Input() public selectionTitle?: string;
   @Input() public currentPublisher?: Publisher | null;
+  @Input() public week?: string | number | null;
   @Output() onClicked: EventEmitter<Publisher> = new EventEmitter();
   @Output() onClose: EventEmitter<boolean> = new EventEmitter();
   public frequentPublishers!: PublisherDto[];
   public showSpinner = true;
+  public loadError = "";
   public congregation!: Congregation;
   public usedPublishersList: AssignmentCandidateViewModel[] = [];
   public female: any[] = [];
@@ -250,12 +252,19 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   }
 
   getPublihersByAssignment() {
+    this.loadError = "";
     this.usedPublishersListAll = [];
     this.usedPublishersListAllByAssig = [];
     this.setParticipationCandidates(null);
     this.updateDataSources();
-    const timestamp = this.assignment?.assignment?.meeting?.week;
-    const fecha = new Date(timestamp).toISOString().split("T")[0];
+    const timestamp = this.week ?? this.assignment?.assignment?.meeting?.week;
+    const date = new Date(timestamp ?? "");
+    if (timestamp == null || !Number.isFinite(date.getTime())) {
+      this.showSpinner = false;
+      this.loadError = "No se pudo determinar la semana de esta asignación. Cierra el selector y vuelve a cargar el programa.";
+      return;
+    }
+    const fecha = date.toISOString().split("T")[0];
     const title = this.selectedAssignmentTitle;
     const sectionMeeting = this.programSelection ? undefined : this.assignment?.assignment?.sectionMeeting;
     const assignmentNumber = this.programSelection ? null : this.assignment?.assignment?.number ?? null;
@@ -393,6 +402,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
       }
       this.showSpinner = false;
     }, () => {
+      this.loadError = "No se pudieron cargar las personas. Cierra el selector e inténtalo de nuevo.";
       this.usedPublishersList = [];
       this.usedPublishersListAll = [];
       this.usedPublishersListAllByAssig = [];
@@ -441,7 +451,14 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
     const assignmentTypePermissionId = this.assignmentTypes.find((assignmentType) => this.matchesAssignmentType(assignmentType, matcher))?.id;
 
-    return assignmentTypePermissionId ? items.filter((item) => this.hasAssignmentTypePermission(item, assignmentTypePermissionId)) : [];
+    // /users/by-congregation/by-assignment ya devuelve candidatos elegibles.
+    // No vaciar el modal si /assignment-types aún no cargó o si el catálogo
+    // cambió una descripción: hacerlo ocultaba candidatos válidos hasta F5.
+    if (!assignmentTypePermissionId) {
+      return items;
+    }
+
+    return items.filter((item) => this.hasAssignmentTypePermission(item, assignmentTypePermissionId));
   }
 
   private filterBrothersOnly<T>(items: T[]): T[] {

@@ -24,6 +24,9 @@ export class LoginComponent {
     private route: ActivatedRoute,
     private router: Router,
   ) {
+    if (this.route.snapshot.queryParamMap.get("sessionExpired") === "true") {
+      this.errorMessage = "Tu sesión venció. Por favor ingresa nuevamente.";
+    }
     this.credential = this.fb.group({
       username: new FormControl("", Validators.required),
       password: new FormControl("", Validators.required),

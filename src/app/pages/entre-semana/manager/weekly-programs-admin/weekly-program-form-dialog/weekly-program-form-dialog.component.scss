@@ -1,0 +1,5 @@
+.weekly-program-form { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; }
+.weekly-program-form__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+.weekly-program-form__wide { width: 100%; }
+.weekly-program-form__notice { margin: 0 0 16px; color: #9a3412; }
+@media (max-width: 620px) { .weekly-program-form__grid { grid-template-columns: 1fr; } }

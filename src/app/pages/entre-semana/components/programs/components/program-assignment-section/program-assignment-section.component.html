@@ -116,9 +116,9 @@
       </div>
     </div>
 
-    <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom program-assignment-detail">
+    <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom program-assignment-detail d-none d-xl-block">
       @if (item.assignment.showTips) {
-      <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TIPS)">
+      <span class="hover  d-xl-inline" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TIPS)">
         {{ item.assignment.tips }}
       </span>
       }
@@ -192,7 +192,7 @@
       </div>
     </div>
 
-    <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom program-assignment-detail">
+    <div class="col-md-1 mt-0 md:mt-1 text-end text-title-custom program-assignment-detail d-none d-xl-block">
       @if (item.assignment.showTips) {
       <span class="hover d-none d-xl-inline" (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.TIPS)">
         {{ item.assignment.tips }}
@@ -335,7 +335,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-1 mt-0 text-end text-title-custom program-assignment-detail">
+    <div class="col-md-1 mt-0 text-end text-title-custom program-assignment-detail d-none d-xl-block">
       @if (isSpecialEventWeek) {
       <span class="d-none d-xl-inline">Encargado</span>
       } @else if (item.assignment.showTips) {

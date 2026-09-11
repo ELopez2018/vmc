@@ -24,20 +24,20 @@
     </div>
 
     <div class="program-admin__commands">
-      <button mat-stroked-button color="primary" type="button" (click)="loadPrograms()" [disabled]="loading">
+      <button mat-stroked-button color="primary" type="button" (click)="loadPrograms()" [disabled]="isLoading">
         <mat-icon>refresh</mat-icon>
         Actualizar
       </button>
 
       <button mat-flat-button color="primary" type="button" (click)="openCreateDialog()"
-        [disabled]="!selectedCongregationId">
+        [disabled]="!selectedCongregationId || isLoading">
         <mat-icon>add</mat-icon>
         Nuevo
       </button>
     </div>
   </div>
 
-  @if (loading) {
+  @if (isLoading) {
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   }
 
@@ -84,7 +84,14 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
 
-    @if (!loading && programList.length === 0) {
+    @if (isLoading) {
+    <div class="program-admin__loading" role="status" aria-live="polite">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span>Cargando programas…</span>
+    </div>
+    }
+
+    @if (!isLoading && programList.length === 0) {
     <div class="program-admin__empty">No hay datos para la semana seleccionada.</div>
     }
   </div>

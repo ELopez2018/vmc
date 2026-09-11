@@ -5,6 +5,7 @@ import { LoaderService } from "./core/services/loader/loader.service";
 import { NavigationEnd, Router } from "@angular/router";
 import { filter } from "rxjs/operators";
 import { APP_VERSION } from "../environments/version";
+import { SessionExpirationService } from "./core/services/session/session-expiration.service";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
@@ -40,7 +41,9 @@ export class AppComponent {
     media: MediaMatcher,
     private dataService: DataService,
     private router: Router,
+    private sessionExpirationService: SessionExpirationService,
   ) {
+    this.sessionExpirationService.startMonitoring();
     this.mobileQuery = media.matchMedia("(max-width: 600px)");
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);

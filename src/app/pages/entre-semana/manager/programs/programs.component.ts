@@ -34,6 +34,7 @@ export class ProgramsComponent implements OnInit {
   displayedColumns = ["weekNumber", "week", "congregation", "weeklyPrograms", "event", "actions"];
   selectedCongregationId: number | null = null;
   selectedWeek: string | null = null;
+  catalogLoading = true;
   loading = false;
 
   constructor(
@@ -49,11 +50,17 @@ export class ProgramsComponent implements OnInit {
   }
 
   loadCatalogs(): void {
+    this.catalogLoading = true;
     forkJoin({
       congregations: this.congregationsService.getAllCongregations().pipe(catchError(() => of([] as Congregation[]))),
       meetings: this.meetingsService.getAllMeetings().pipe(catchError(() => of([] as Meeting[]))),
     })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        finalize(() => {
+          this.catalogLoading = false;
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe(({ congregations, meetings }) => {
         this.congregations = this.normalizeArray<Congregation>(congregations);
         this.meetings = this.normalizeArray<Meeting>(meetings);
@@ -62,6 +69,10 @@ export class ProgramsComponent implements OnInit {
         this.selectedCongregationId = this.resolveDefaultCongregationId();
         this.loadPrograms();
       });
+  }
+
+  get isLoading(): boolean {
+    return this.catalogLoading || this.loading;
   }
 
   loadPrograms(): void {

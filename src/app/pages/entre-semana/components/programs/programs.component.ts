@@ -21,6 +21,7 @@ import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { includesMeetingPartTitle, isCongregationBibleStudyAssignment, isSpeechAssignment, normalizeProgramTitle } from "./program-assignment.util";
 import { isExplainingBeliefsSpeechAssignment } from "src/app/core/utils/assignment-eligibility.util";
 import { map, Observable, of } from "rxjs";
+import { WeeklyProgramUpdateRequest } from "src/app/core/interfaces/weekly-programs.interface";
 
 type WeeklyPublisherField = "responsible" | "assistant";
 type PdfPublisherField = WeeklyPublisherField | "responsibleB" | "assistantB";
@@ -96,8 +97,39 @@ export class ProgramsComponent implements OnInit, OnChanges {
     return this.weeklyProgramService.upsertByTitle(this.mapWeeklyProgramUpsertByTitleRequest(weeklyProgram));
   }
 
-  private updateWeeklyProgram(weeklyProgram: WeeklyProgram) {
-    return this.weeklyProgramService.update(weeklyProgram);
+  private updateWeeklyProgram(weeklyProgram: WeeklyProgram): Observable<WeeklyProgram> {
+    if (weeklyProgram.id == null || weeklyProgram.assignment?.id == null) {
+      throw new Error("La asignación semanal no tiene id o assignmentId.");
+    }
+
+    const request: WeeklyProgramUpdateRequest = {
+      id: weeklyProgram.id,
+      assignmentId: weeklyProgram.assignment.id,
+      responsibleId: weeklyProgram.responsible?.id ?? null,
+      assistantId: weeklyProgram.assistant?.id ?? null,
+      congregationId: weeklyProgram.congregation?.id ?? null,
+      programId: weeklyProgram.program,
+      startTime: this.mapTimeToSaveRequest(weeklyProgram.startTime),
+      room: weeklyProgram.room?.trim().toUpperCase() || null,
+      notificationSentAt: this.mapNotificationDateTime(weeklyProgram.notificationSentAt),
+    };
+
+    return this.weeklyProgramService.updateById(weeklyProgram.id, request).pipe(
+      map((saved) => ({
+        ...weeklyProgram,
+        id: saved.id,
+        // El DTO resumido no incluye meeting ni showTips: conservar el contexto
+        // necesario para volver a abrir el selector tras guardar al responsable.
+        assignment: saved.assignment ? { ...weeklyProgram.assignment, ...saved.assignment } : weeklyProgram.assignment,
+        responsible: saved.responsible,
+        assistant: saved.assistant,
+        congregation: saved.congregation ? { ...weeklyProgram.congregation, ...saved.congregation } : weeklyProgram.congregation,
+        program: saved.programId,
+        startTime: saved.startTime,
+        room: saved.room ?? "",
+        notificationSentAt: saved.notificationSentAt,
+      }) as WeeklyProgram),
+    );
   }
 
   private mapWeeklyProgramUpsertByTitleRequest(weeklyProgram: WeeklyProgram): WeeklyProgramUpsertByTitleRequest {
@@ -537,6 +569,10 @@ export class ProgramsComponent implements OnInit, OnChanges {
     } else if (this.isAssistantChange(type) && this.assignmentType !== AssignmentType.CONGREGATION_BIBLE_STUDY) {
       this.assignmentType += "Assistant";
     }
+  }
+
+  private mapNotificationDateTime(value: string | number[] | null | undefined): string | null {
+    return typeof value === "string" ? value : null;
   }
 
   private isAssistantChange(type: string): boolean {

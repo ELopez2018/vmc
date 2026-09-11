@@ -18,6 +18,13 @@ export interface UsersCreateOrUpdateDialogData {
   publisherId?: number;
 }
 
+type ConfigurablePermissionProfile = "elder" | "ministerialServant";
+
+interface StoredPermissionProfiles {
+  elder: number[];
+  ministerialServant: number[];
+}
+
 @Component({
   selector: "users-create-or-update",
   templateUrl: "./users-create-or-update.component.html",
@@ -25,6 +32,7 @@ export interface UsersCreateOrUpdateDialogData {
   imports: [SharedModule, FormsModule, ReactiveFormsModule, CommonModule],
 })
 export class UsersCreateOrUpdateComponent implements OnInit {
+  private readonly permissionProfilesStorageKey = "vmc.assignment-permission-profiles";
   public congregationSelected!: Congregation;
   public formulario!: FormGroup;
   public allCongregations: Congregation[] = [];
@@ -34,6 +42,10 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   public isLoadingAssignmentTypes = false;
   public assignmentTypesLoadFailed = false;
   public isDialog = false;
+  public configuredPermissionProfiles: StoredPermissionProfiles = {
+    elder: [],
+    ministerialServant: [],
+  };
 
   private currentPublisher?: Publisher;
   private userId: number | null = null;
@@ -58,6 +70,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.configuredPermissionProfiles = this.readPermissionProfiles();
     this.makeForm();
     this.loadCurrentCongregation();
     this.loadAdminState();
@@ -222,6 +235,56 @@ export class UsersCreateOrUpdateComponent implements OnInit {
     this.formulario.get("assignmentTypePermissions")?.markAsDirty();
   }
 
+  setAllPermissions(enabled: boolean): void {
+    this.setEnabledAssignmentTypes(enabled ? this.assignmentTypes : []);
+  }
+
+  applyBrotherPermissions(): void {
+    this.setEnabledAssignmentTypes(
+      this.assignmentTypes.filter((assignmentType) => this.isStudentAssignment(assignmentType) || this.isBibleReadingAssignment(assignmentType)),
+    );
+  }
+
+  applySisterPermissions(): void {
+    this.setEnabledAssignmentTypes(
+      this.assignmentTypes.filter((assignmentType) => this.isStudentAssignment(assignmentType) && !this.isStudentTalkAssignment(assignmentType)),
+    );
+  }
+
+  applyConfiguredPermissionProfile(profile: ConfigurablePermissionProfile): void {
+    const assignmentTypeIds = this.configuredPermissionProfiles[profile];
+
+    if (assignmentTypeIds.length === 0) {
+      this.notify.warning(`Primero configura el perfil ${this.getPermissionProfileLabel(profile)}.`, "Perfil sin configurar");
+      return;
+    }
+
+    const enabledIds = new Set(assignmentTypeIds);
+    this.setEnabledAssignmentTypes(this.assignmentTypes.filter((assignmentType) => enabledIds.has(assignmentType.id)));
+  }
+
+  saveConfiguredPermissionProfile(profile: ConfigurablePermissionProfile): void {
+    const enabledAssignmentTypeIds = this.assignmentTypes
+      .filter((assignmentType) => this.isPermissionEnabled(assignmentType))
+      .map((assignmentType) => assignmentType.id);
+
+    if (enabledAssignmentTypeIds.length === 0) {
+      this.notify.warning("Activa al menos un permiso antes de guardar el perfil.", "Perfil vacío");
+      return;
+    }
+
+    this.configuredPermissionProfiles = {
+      ...this.configuredPermissionProfiles,
+      [profile]: enabledAssignmentTypeIds,
+    };
+    localStorage.setItem(this.permissionProfilesStorageKey, JSON.stringify(this.configuredPermissionProfiles));
+    this.notify.success(`Perfil ${this.getPermissionProfileLabel(profile)} guardado en este dispositivo.`, "Perfil guardado");
+  }
+
+  isPermissionProfileConfigured(profile: ConfigurablePermissionProfile): boolean {
+    return this.configuredPermissionProfiles[profile].length > 0;
+  }
+
   private loadCurrentCongregation(): void {
     this.dataService.getCongregation$().subscribe((data) => {
       if (!data?.id) {
@@ -365,6 +428,85 @@ export class UsersCreateOrUpdateComponent implements OnInit {
     }
 
     return [...this.permissions, enabledPermission].sort((a, b) => (a.assignmentTypeNumber ?? 0) - (b.assignmentTypeNumber ?? 0));
+  }
+
+  private setEnabledAssignmentTypes(assignmentTypes: AssignmentType[]): void {
+    const permissions = assignmentTypes.map((assignmentType) => this.toEnabledPermission(assignmentType));
+    const control = this.formulario.get("assignmentTypePermissions");
+    control?.setValue(permissions);
+    control?.markAsDirty();
+    control?.updateValueAndValidity();
+  }
+
+  private toEnabledPermission(assignmentType: AssignmentType): AssignmentTypePermission {
+    return {
+      userId: this.userId ?? this.currentPublisher?.id ?? null,
+      assignmentTypeId: assignmentType.id,
+      assignmentTypeDescription: assignmentType.description,
+      assignmentTypeNumber: assignmentType.number,
+      enabled: true,
+    };
+  }
+
+  private isStudentAssignment(assignmentType: AssignmentType): boolean {
+    const type = this.normalizeCatalogValue(assignmentType.type);
+    return type === "estudiante" || type === "ayudante";
+  }
+
+  private isBibleReadingAssignment(assignmentType: AssignmentType): boolean {
+    return (
+      assignmentType.number === 3 &&
+      this.normalizeCatalogValue(assignmentType.type) === "encargado" &&
+      this.normalizeCatalogValue(assignmentType.sectionMeetingTitle) === "tesoros de la biblia"
+    );
+  }
+
+  private isStudentTalkAssignment(assignmentType: AssignmentType): boolean {
+    return (
+      this.normalizeCatalogValue(assignmentType.description) === "discurso" &&
+      this.normalizeCatalogValue(assignmentType.type) === "estudiante" &&
+      this.normalizeCatalogValue(assignmentType.sectionMeetingTitle) === "seamos mejores maestros"
+    );
+  }
+
+  private normalizeCatalogValue(value: string | null | undefined): string {
+    return (value ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLowerCase();
+  }
+
+  private getPermissionProfileLabel(profile: ConfigurablePermissionProfile): string {
+    return profile === "elder" ? "Anciano" : "Siervo ministerial";
+  }
+
+  private readPermissionProfiles(): StoredPermissionProfiles {
+    const emptyProfiles: StoredPermissionProfiles = { elder: [], ministerialServant: [] };
+    const storedValue = localStorage.getItem(this.permissionProfilesStorageKey);
+
+    if (!storedValue) {
+      return emptyProfiles;
+    }
+
+    try {
+      const storedProfiles = JSON.parse(storedValue) as Partial<StoredPermissionProfiles>;
+      return {
+        elder: this.normalizeStoredAssignmentTypeIds(storedProfiles.elder),
+        ministerialServant: this.normalizeStoredAssignmentTypeIds(storedProfiles.ministerialServant),
+      };
+    } catch {
+      localStorage.removeItem(this.permissionProfilesStorageKey);
+      return emptyProfiles;
+    }
+  }
+
+  private normalizeStoredAssignmentTypeIds(value: unknown): number[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return [...new Set(value.filter((item): item is number => typeof item === "number" && Number.isInteger(item) && item > 0))];
   }
 
   private assignmentTypePermissionsValidator(control: AbstractControl): ValidationErrors | null {

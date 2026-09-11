@@ -150,6 +150,71 @@
     }
 
     @if (!isLoadingAssignmentTypes && !assignmentTypesLoadFailed && assignmentTypes.length > 0) {
+    <div class="permission-actions" aria-label="Acciones rápidas de permisos">
+      <div class="permission-actions__group">
+        <span class="permission-actions__label">Selección</span>
+        <button mat-stroked-button type="button" (click)="setAllPermissions(true)">
+          <mat-icon>done_all</mat-icon>
+          Activar todas
+        </button>
+        <button mat-stroked-button type="button" (click)="setAllPermissions(false)">
+          <mat-icon>remove_done</mat-icon>
+          Desactivar todas
+        </button>
+      </div>
+
+      <div class="permission-actions__group">
+        <span class="permission-actions__label">Perfiles</span>
+        <button mat-stroked-button type="button" (click)="applyBrotherPermissions()">
+          <mat-icon>man</mat-icon>
+          Hermano
+        </button>
+        <button mat-stroked-button type="button" (click)="applySisterPermissions()">
+          <mat-icon>woman</mat-icon>
+          Hermana
+        </button>
+      </div>
+
+      <div class="permission-actions__group permission-actions__group--configurable">
+        <span class="permission-actions__label">Perfiles configurables</span>
+        <div class="permission-profile-action">
+          <button mat-stroked-button type="button" (click)="applyConfiguredPermissionProfile('elder')">
+            <mat-icon>{{ isPermissionProfileConfigured('elder') ? 'verified' : 'person' }}</mat-icon>
+            Anciano
+          </button>
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Guardar selección como perfil Anciano"
+            matTooltip="Guardar la selección actual como perfil Anciano"
+            (click)="saveConfiguredPermissionProfile('elder')"
+          >
+            <mat-icon>save</mat-icon>
+          </button>
+        </div>
+
+        <div class="permission-profile-action">
+          <button mat-stroked-button type="button" (click)="applyConfiguredPermissionProfile('ministerialServant')">
+            <mat-icon>{{ isPermissionProfileConfigured('ministerialServant') ? 'verified' : 'person' }}</mat-icon>
+            Siervo ministerial
+          </button>
+          <button
+            mat-icon-button
+            type="button"
+            aria-label="Guardar selección como perfil Siervo ministerial"
+            matTooltip="Guardar la selección actual como perfil Siervo ministerial"
+            (click)="saveConfiguredPermissionProfile('ministerialServant')"
+          >
+            <mat-icon>save</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <p class="permission-actions__hint">
+      Para configurar Anciano o Siervo ministerial, marca los permisos deseados y pulsa el icono de guardar junto al perfil.
+    </p>
+
     <div class="permission-grid">
       @for (assignmentType of assignmentTypes; track assignmentType.id) {
       <div class="permission-item">

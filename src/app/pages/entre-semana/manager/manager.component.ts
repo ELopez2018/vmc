@@ -7,10 +7,10 @@ import { MeetingsService } from 'src/app/core/services/meetings/meetings.service
 import { Utils } from '../../../shared/Utils';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ProgramsComponent } from './programs/programs.component';
-import { AssignmentComponent } from "../../assignment/assignment.component";
+import { WeeklyProgramsAdminComponent } from "./weekly-programs-admin/weekly-programs-admin.component";
 @Component({
     selector: 'vmc-manager',
-    imports: [CommonModule, MatTabsModule,  ProgramsComponent, AssignmentComponent],
+    imports: [CommonModule, MatTabsModule, ProgramsComponent, WeeklyProgramsAdminComponent],
     templateUrl: './manager.component.html',
     styleUrls: ['./manager.component.scss']
 })

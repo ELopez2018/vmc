@@ -3,6 +3,9 @@
     <vmc-icon-close (click)="closeModal()"></vmc-icon-close>
   </div>
   <div class="container">
+    @if (loadError) {
+    <div class="alert alert-danger" role="alert">{{ loadError }}</div>
+    }
     <div class="row">
       <div class="col-md-12">
         <mat-tab-group animationDuration="0ms">

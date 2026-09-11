@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>{{ data.row ? 'Editar parte semanal' : 'Nueva parte semanal' }}</h2>
+<mat-dialog-content>
+  <form class="weekly-program-form" [formGroup]="form" (ngSubmit)="save()">
+    @if (!assignments.length) { <p class="weekly-program-form__notice">No hay asignaciones disponibles en este programa. Importe o cree la asignación desde el flujo de reuniones antes de añadir una parte.</p> }
+    <mat-form-field appearance="outline" class="weekly-program-form__wide"><mat-label>Asignación</mat-label><mat-select formControlName="assignmentId">@for (assignment of assignments; track assignment.id) { <mat-option [value]="assignment.id">{{ assignmentLabel(assignment) }}</mat-option> }</mat-select><mat-error>Selecciona una asignación.</mat-error></mat-form-field>
+    <div class="weekly-program-form__grid">
+      <mat-form-field appearance="outline"><mat-label>Sala</mat-label><input matInput formControlName="room" maxlength="1" autocomplete="off"><mat-hint>Una letra; se guardará en mayúscula.</mat-hint></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Hora</mat-label><input matInput type="time" formControlName="startTime"></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Responsable</mat-label><mat-select formControlName="responsibleId"><mat-option [value]="null">Sin asignar</mat-option>@for (user of users; track user.id) { <mat-option [value]="user.id">{{ user.fullName }}</mat-option> }</mat-select></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Ayudante</mat-label><mat-select formControlName="assistantId"><mat-option [value]="null">Sin asignar</mat-option>@for (user of users; track user.id) { <mat-option [value]="user.id">{{ user.fullName }}</mat-option> }</mat-select></mat-form-field>
+      <mat-form-field appearance="outline" class="weekly-program-form__wide"><mat-label>Notificación enviada</mat-label><input matInput type="datetime-local" formControlName="notificationSentAt"><mat-hint>Déjalo vacío si sigue pendiente.</mat-hint></mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end"><button mat-button type="button" mat-dialog-close [disabled]="saving">Cancelar</button><button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="saving || !assignments.length"><mat-icon>save</mat-icon>Guardar</button></mat-dialog-actions>

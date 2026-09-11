@@ -80,6 +80,56 @@
   gap:12px;
 }
 
+.permission-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+  margin-bottom:8px;
+}
+
+.permission-actions__group{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:12px;
+  border:1px solid #d6dbe6;
+  border-radius:10px;
+  background:#f8fafc;
+}
+
+.permission-actions__group--configurable{
+  flex:1 1 420px;
+}
+
+.permission-actions__label{
+  flex-basis:100%;
+  color:#475569;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+.permission-profile-action{
+  display:inline-flex;
+  align-items:center;
+  gap:2px;
+}
+
+.permission-profile-action button[mat-icon-button]{
+  flex:0 0 40px;
+  height:40px;
+  padding:0;
+  width:40px;
+}
+
+.permission-actions__hint{
+  margin:0 0 16px;
+  color:#64748b;
+  font-size:13px;
+}
+
 .permission-item{
   display:flex;
   align-items:center;
@@ -141,4 +191,28 @@ button{
 
 .type-encargado {
   color: blue;
+}
+
+@media (max-width: 575.98px) {
+  .page-container{
+    padding:16px;
+  }
+
+  .section-card{
+    padding:18px;
+  }
+
+  .permission-actions__group,
+  .permission-profile-action,
+  .permission-actions__group button:not([mat-icon-button]){
+    width:100%;
+  }
+
+  .permission-profile-action button:not([mat-icon-button]){
+    flex:1;
+  }
+
+  .permission-grid{
+    grid-template-columns:1fr;
+  }
 }

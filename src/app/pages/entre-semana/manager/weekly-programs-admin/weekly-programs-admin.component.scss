@@ -1,0 +1,11 @@
+:host { display: block; }
+.weekly-admin { display: flex; flex-direction: column; gap: 18px; }
+.weekly-admin__toolbar, .weekly-admin__filters, .weekly-admin__commands { display: flex; align-items: center; gap: 12px; }
+.weekly-admin__toolbar { justify-content: space-between; }
+.weekly-admin__filters mat-form-field { width: min(42vw, 420px); min-width: 280px; }
+.weekly-admin__table { position: relative; overflow-x: auto; border: 1px solid #d7dde8; border-radius: 8px; background: #fff; }
+table { width: 100%; min-width: 1050px; }
+.weekly-admin__actions { white-space: nowrap; }
+.weekly-admin__empty { padding: 28px; text-align: center; color: #64748b; }
+.weekly-admin__loading { position: absolute; inset: 0; z-index: 1; display: flex; min-height: 190px; align-items: center; justify-content: center; gap: 12px; color: #334155; background: rgb(255 255 255 / 82%); }
+@media (max-width: 900px) { .weekly-admin__toolbar, .weekly-admin__filters, .weekly-admin__commands { align-items: stretch; flex-direction: column; } .weekly-admin__filters mat-form-field { width: 100%; min-width: 0; } }

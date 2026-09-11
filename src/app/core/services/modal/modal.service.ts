@@ -61,6 +61,7 @@ export class ModalService {
     this.modalRef.componentInstance.type = type;
     this.modalRef.componentInstance.room = room;
     this.modalRef.componentInstance.brothersOnly = brothersOnly;
+    this.modalRef.componentInstance.week = assignment?.assignment?.meeting?.week ?? null;
     return this.modalRef.result;
   }
 
@@ -73,6 +74,7 @@ export class ModalService {
     this.modalRef.componentInstance.programSelection = true;
     this.modalRef.componentInstance.selectionTitle = this.getProgramSelectionTitle(normalizedAssignmentType);
     this.modalRef.componentInstance.currentPublisher = this.getProgramSelectionPublisher(program, normalizedAssignmentType);
+    this.modalRef.componentInstance.week = program.meeting?.week ?? null;
     return this.modalRef.result;
   }
 

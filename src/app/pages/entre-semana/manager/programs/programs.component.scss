@@ -28,10 +28,24 @@
 }
 
 .program-admin__table {
+  position: relative;
   overflow-x: auto;
   border: 1px solid #d7dde8;
   border-radius: 8px;
   background: #fff;
+}
+
+.program-admin__loading {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  min-height: 190px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #334155;
+  background: rgb(255 255 255 / 82%);
 }
 
 table {

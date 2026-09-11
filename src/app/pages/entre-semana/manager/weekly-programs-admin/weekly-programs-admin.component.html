@@ -1,0 +1,22 @@
+<section class="weekly-admin">
+  <div class="weekly-admin__toolbar">
+    <div class="weekly-admin__filters">
+      <mat-form-field appearance="outline"><mat-label>Congregación</mat-label><mat-select [value]="selectedCongregationId" (selectionChange)="onCongregationChange($event.value)">@for (congregation of congregations; track congregation.id) { <mat-option [value]="congregation.id">{{ congregation.name }}</mat-option> }</mat-select></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Semana</mat-label><mat-select [value]="selectedWeek" (selectionChange)="onWeekChange($event.value)" [disabled]="!weekOptions.length">@for (week of weekOptions; track week.week) { <mat-option [value]="week.week">{{ week.label }}</mat-option> }</mat-select></mat-form-field>
+    </div>
+    <div class="weekly-admin__commands"><button mat-stroked-button color="primary" type="button" (click)="loadWeek()" [disabled]="isLoading"><mat-icon>refresh</mat-icon>Actualizar</button><button mat-flat-button color="primary" type="button" (click)="create()" [disabled]="isLoading"><mat-icon>add</mat-icon>Nueva parte</button></div>
+  </div>
+  @if (isLoading) { <mat-progress-bar mode="indeterminate"></mat-progress-bar> }
+  <div class="weekly-admin__table"><table mat-table [dataSource]="rows">
+    <ng-container matColumnDef="room"><th mat-header-cell *matHeaderCellDef>Sala</th><td mat-cell *matCellDef="let row">{{ row.room || '—' }}</td></ng-container>
+    <ng-container matColumnDef="startTime"><th mat-header-cell *matHeaderCellDef>Hora</th><td mat-cell *matCellDef="let row">{{ row.startTime || '—' }}</td></ng-container>
+    <ng-container matColumnDef="number"><th mat-header-cell *matHeaderCellDef>No.</th><td mat-cell *matCellDef="let row">{{ row.assignment?.number ?? '—' }}</td></ng-container>
+    <ng-container matColumnDef="section"><th mat-header-cell *matHeaderCellDef>Sección</th><td mat-cell *matCellDef="let row">{{ row.assignment?.sectionMeeting || '—' }}</td></ng-container>
+    <ng-container matColumnDef="title"><th mat-header-cell *matHeaderCellDef>Título</th><td mat-cell *matCellDef="let row">{{ row.assignment?.title || '—' }}</td></ng-container>
+    <ng-container matColumnDef="responsible"><th mat-header-cell *matHeaderCellDef>Responsable</th><td mat-cell *matCellDef="let row">{{ personName(row.responsible) }}</td></ng-container>
+    <ng-container matColumnDef="assistant"><th mat-header-cell *matHeaderCellDef>Ayudante</th><td mat-cell *matCellDef="let row">{{ personName(row.assistant) }}</td></ng-container>
+    <ng-container matColumnDef="notification"><th mat-header-cell *matHeaderCellDef>Notificación</th><td mat-cell *matCellDef="let row">{{ notificationLabel(row) }}</td></ng-container>
+    <ng-container matColumnDef="actions"><th mat-header-cell *matHeaderCellDef></th><td mat-cell *matCellDef="let row" class="weekly-admin__actions"><button mat-icon-button color="primary" (click)="edit(row)" matTooltip="Editar"><mat-icon>edit</mat-icon></button><button mat-icon-button color="warn" (click)="remove(row)" matTooltip="Eliminar"><mat-icon>delete</mat-icon></button></td></ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr><tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>@if (isLoading) { <div class="weekly-admin__loading" role="status" aria-live="polite"><mat-spinner diameter="40"></mat-spinner><span>Cargando partes semanales…</span></div> } @if (!isLoading && !rows.length) { <div class="weekly-admin__empty">No hay partes para la congregación y semana seleccionadas.</div> }</div>
+</section>

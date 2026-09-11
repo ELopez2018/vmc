@@ -9,6 +9,7 @@ import { DataService } from "../data/data.service";
 import { LoaderService } from "../loader/loader.service";
 import { Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
+import { SessionExpirationService } from "../session/session-expiration.service";
 
 @Injectable({
   providedIn: "root",
@@ -19,7 +20,7 @@ export class AuthService {
   private congregacion!: Congregation;
   private server = Servers.URL;
   private api = Apis;
-  constructor(private cookieService: CookieService, private router: Router, private httpClient: HttpClient, private dataService: DataService, private loaderService: LoaderService) {
+  constructor(private cookieService: CookieService, private router: Router, private httpClient: HttpClient, private dataService: DataService, private loaderService: LoaderService, private sessionExpirationService: SessionExpirationService) {
     this.jwtUtils = new JwtHelperService();
   }
 
@@ -29,6 +30,7 @@ export class AuthService {
       tap((data) => {
         localStorage.setItem("token", JSON.stringify(data));
         this.token = this.jwtUtils.decodeToken(data.token) ?? "";
+        this.sessionExpirationService.startMonitoring();
       }),
       switchMap((loginResponse) =>
         this.getByCongregationId(this.token.congregationId).pipe(

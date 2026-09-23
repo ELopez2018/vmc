@@ -13,12 +13,10 @@
 <div class="program">
   <div class="container-wrapper p-0 p-md-1">
     <div class="wrapper">
-      @for (semana of semanasAllRooms; track semana.id; let first = $first) {
+      @for (semana of semanasAllRooms; track semana.id) {
       <vmc-program-week
         [semana]="semana"
-        [weeks]="semanasAllRooms"
         [roomA]="RoomA"
-        [showPresidentTooltip]="first"
         [room]="room"
         [isAdmin]="isAdmin"
         [porAsignar]="porAsignar"

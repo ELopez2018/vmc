@@ -71,9 +71,6 @@
               @if (!isAssigment) {
               <div class="table-responsive">
                 @if (usedPublishersDataSource.data.length > 0) {
-                <input class="form-control mb-3" placeholder="busqueda1"
-                  (keyup)="onSearch($event, 'usedPublishersDataSource')" />
-
                 <table mat-table [dataSource]="usedPublishersDataSource" class="mat-elevation-z8">
                   <ng-container matColumnDef="fullName">
                     <th mat-header-cell *matHeaderCellDef>
@@ -142,9 +139,6 @@
               @if (isAssigment) {
               <div class="table-responsive">
                 @if (usedPublishersAllByAssigDataSource.data.length > 0) {
-                <input class="form-control mb-3" placeholder="busqueda"
-                  (keyup)="onSearch($event, 'usedPublishersAllByAssigDataSource')" />
-
                 <table mat-table [dataSource]="usedPublishersAllByAssigDataSource" class="mat-elevation-z8">
                   <ng-container matColumnDef="fullName">
                     <th mat-header-cell *matHeaderCellDef>
@@ -226,7 +220,7 @@
                         <mat-icon>{{ getSortIcon("maleDataSource", "fullName") }}</mat-icon>
                       </button>
                     </th>
-                    <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
+                    <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
                   </ng-container>
 
                   <ng-container matColumnDef="estado">
@@ -247,13 +241,13 @@
                   <ng-container matColumnDef="lastAssignGlobal">
                     <th mat-header-cell *matHeaderCellDef>
                       <button type="button" class="sort-header"
-                        (click)="sortDataSource('maleDataSource', 'lastAssignGlobal')">
+                        (click)="sortDataSource('maleDataSource', 'lastAssignment')">
                         <span>Última intervención</span>
-                        <mat-icon>{{ getSortIcon("maleDataSource", "lastAssignGlobal") }}</mat-icon>
+                        <mat-icon>{{ getSortIcon("maleDataSource", "lastAssignment") }}</mat-icon>
                       </button>
                     </th>
                     <td mat-cell *matCellDef="let item">
-                      {{ parseDate(item.lastAssignGlobal) || "Sin historial" }}
+                      {{ parseDate(item.lastAssignment) || "Sin historial" }}
                     </td>
                   </ng-container>
 
@@ -291,7 +285,7 @@
                         <mat-icon>{{ getSortIcon("femaleDataSource", "fullName") }}</mat-icon>
                       </button>
                     </th>
-                    <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
+                    <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
                   </ng-container>
 
                   <ng-container matColumnDef="estado">
@@ -312,13 +306,13 @@
                   <ng-container matColumnDef="lastAssignGlobal">
                     <th mat-header-cell *matHeaderCellDef>
                       <button type="button" class="sort-header"
-                        (click)="sortDataSource('femaleDataSource', 'lastAssignGlobal')">
+                        (click)="sortDataSource('femaleDataSource', 'lastAssignment')">
                         <span>Última intervención</span>
-                        <mat-icon>{{ getSortIcon("femaleDataSource", "lastAssignGlobal") }}</mat-icon>
+                        <mat-icon>{{ getSortIcon("femaleDataSource", "lastAssignment") }}</mat-icon>
                       </button>
                     </th>
                     <td mat-cell *matCellDef="let item">
-                      {{ parseDate(item.lastAssignGlobal) || "Sin historial" }}
+                      {{ parseDate(item.lastAssignment) || "Sin historial" }}
                     </td>
                   </ng-container>
 
@@ -342,51 +336,6 @@
           </mat-tab>
           }
 
-          <!-- TODOS -->
-          <mat-tab label="Todos">
-            <fieldset class="fieldset-basic table-container">
-              <div class="table-responsive">
-                @if (publishersAllDataSource.data.length > 0) {
-                <table mat-table [dataSource]="publishersAllDataSource">
-                  <ng-container matColumnDef="fullName">
-                    <th mat-header-cell *matHeaderCellDef>
-                      <button type="button" class="sort-header"
-                        (click)="sortDataSource('publishersAllDataSource', 'fullName')">
-                        <span>Publicador</span>
-                        <mat-icon>{{ getSortIcon("publishersAllDataSource", "fullName") }}</mat-icon>
-                      </button>
-                    </th>
-                    <td mat-cell *matCellDef="let item">{{ item.fullName }}</td>
-                  </ng-container>
-
-                  <ng-container matColumnDef="lastAssignGlobal">
-                    <th mat-header-cell *matHeaderCellDef>
-                      <button type="button" class="sort-header"
-                        (click)="sortDataSource('publishersAllDataSource', 'lastAssignGlobal')">
-                        <span>Última intervención</span>
-                        <mat-icon>{{ getSortIcon("publishersAllDataSource", "lastAssignGlobal") }}</mat-icon>
-                      </button>
-                    </th>
-                    <td mat-cell *matCellDef="let item">{{ parseDate(item.lastAssignGlobal) || "Sin historial" }}</td>
-                  </ng-container>
-
-                  <ng-container matColumnDef="more">
-                    <th mat-header-cell *matHeaderCellDef>Más</th>
-                    <td mat-cell *matCellDef="let item">
-                      <button class="btn btn-sm btn-primary" (click)="more(item, $event)">Más..</button>
-                    </td>
-                  </ng-container>
-
-                  <tr mat-header-row *matHeaderRowDef="['fullName', 'lastAssignGlobal', 'more']"></tr>
-                  <tr mat-row *matRowDef="let row; columns: ['fullName', 'lastAssignGlobal', 'more']"
-                    (click)="selected(row)"></tr>
-                </table>
-                } @else {
-                <div class="empty-state-notification">{{ getEmptyStateMessage("all") }}</div>
-                }
-              </div>
-            </fieldset>
-          </mat-tab>
         </mat-tab-group>
       </div>
     </div>

@@ -12,10 +12,12 @@ export interface ResponsibleCountDTO {
   all?: number;
 }
 
+export type AssignmentDate = string | number | [number, number, number] | null;
+
 export interface UserAssignmentHistory {
-  lastAssignment: string | null;
+  lastAssignment: AssignmentDate;
   allAssignments: number;
-  dateLastAssignment: string | null;
+  dateLastAssignment: AssignmentDate;
 }
 
 export interface UserByTypeResponse {
@@ -25,9 +27,16 @@ export interface UserByTypeResponse {
 
 export interface AssignmentCandidateViewModel {
   user: Publisher;
-  lastAssignment: string | null;
+  lastAssignment: AssignmentDate;
   allAssignments: number;
-  dateLastAssignment: string | null;
+  dateLastAssignment: AssignmentDate;
+  participate?: boolean;
+}
+
+export interface AssignmentCandidatesResponse {
+  frequent: UserByTypeResponse[];
+  brothers: UserByTypeResponse[];
+  sisters: UserByTypeResponse[];
 }
 
 export function toAssignmentCandidate(item: UserByTypeResponse): AssignmentCandidateViewModel {

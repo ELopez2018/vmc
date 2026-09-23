@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Apis, Servers } from "../../constants/servers";
 import { finalize, Observable, tap } from "rxjs";
 import { Publisher, Room } from "../../interfaces/reuniones.interface";
-import { PublisherHistoryItem, UserByTypeResponse } from "../../interfaces/publishers.interface";
+import { AssignmentCandidatesResponse, PublisherHistoryItem } from "../../interfaces/publishers.interface";
 import { LoaderService } from "../loader/loader.service";
 import { normalizeAssignmentTypeValue } from "../../enums/assignments.enums";
 
@@ -56,7 +56,7 @@ export class UsersService {
     assignmentTitle: string,
     sectionMeeting?: string,
     assignmentNumber?: number | null,
-  ): Observable<UserByTypeResponse[]> {
+  ): Observable<AssignmentCandidatesResponse> {
     this.loaderService.setLoaderSearchPublisher(true);
     const assignmentType = normalizeAssignmentTypeValue(assignment);
     let params = new HttpParams()
@@ -74,9 +74,9 @@ export class UsersService {
       params = params.set("assignmentNumber", String(assignmentNumber));
     }
 
-    const url = `${this.server}${this.api.USERS}/by-congregation/by-assignment`;
+    const url = `${this.server}${this.api.USERS}/by-congregation/participated-and-authorized-by-assignment`;
 
-    return this.httpClient.get<UserByTypeResponse[]>(url, { params }).pipe(
+    return this.httpClient.get<AssignmentCandidatesResponse>(url, { params }).pipe(
       finalize(() => {
         this.loaderService.setLoaderSearchPublisher(false);
       }),
@@ -92,7 +92,7 @@ export class UsersService {
     assignmentTitle: string,
     sectionMeeting?: string,
     assignmentNumber?: number | null,
-  ): Observable<UserByTypeResponse[]> {
+  ): Observable<AssignmentCandidatesResponse> {
     return this.getPublishersByAssignment(assignment, congregationId, dateAssignment, room, assignmentTitle, sectionMeeting, assignmentNumber);
   }
 

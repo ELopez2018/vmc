@@ -148,11 +148,10 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.assignmentType = normalizeAssignmentTypeValue(this.assignmentType);
-    this.loadAssignmentTypes();
-    // new
     this.dataService.getMeeting().subscribe((data) => {
       this.allProgram.set(this.parseProgram(data));
     });
+    this.getPublihersByAssignment();
   }
   parseProgram(program: Program[]): any {
     let users: any[] = [];
@@ -210,16 +209,6 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
       }),
     );
     this.subs.add(
-      this.dataService.getPubliherList$().subscribe((data) => {
-        this.female = [];
-        this.male = [];
-        if (data) {
-          this.publishersSource = data;
-          this.applyPublisherPermissionFilter();
-        }
-      }),
-    );
-    this.subs.add(
       this.loaderService.getLoaderSearchPublisher$().subscribe((data) => {
         this.showSpinner = data;
       }),
@@ -253,9 +242,11 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
   getPublihersByAssignment() {
     this.loadError = "";
+    this.usedPublishersList = [];
     this.usedPublishersListAll = [];
     this.usedPublishersListAllByAssig = [];
-    this.setParticipationCandidates(null);
+    this.male = [];
+    this.female = [];
     this.updateDataSources();
     const timestamp = this.week ?? this.assignment?.assignment?.meeting?.week;
     const date = new Date(timestamp ?? "");
@@ -269,143 +260,24 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     const sectionMeeting = this.programSelection ? undefined : this.assignment?.assignment?.sectionMeeting;
     const assignmentNumber = this.programSelection ? null : this.assignment?.assignment?.number ?? null;
     this.showSpinner = true;
-    this.loadPublishersHistory(fecha, title);
     this.usersService.getPublishersByAssignment(this.assignmentType, this.congregation.id, fecha, this.room, title, sectionMeeting, assignmentNumber).subscribe((data) => {
-      const candidates = (data ?? []).map(toAssignmentCandidate);
-      const publishersEnabledForAssignment = this.filterBrothersOnly(this.filterPublishersByAssignmentPermission(candidates));
-      this.usedPublishersListAll = publishersEnabledForAssignment;
-      this.usedPublishersListAllByAssig = publishersEnabledForAssignment;
-      switch (this.assignmentType) {
-        case AssignmentType.PRESIDENT:
-          this.headerText = this.selectedAssignmentTitle;
-          this.usedPublishersList = this.usedPublishersListAll;
-          this.checkFrecuentEspecial();
-          this.updateDataSources();
-          break;
-        case AssignmentType.OPENING_PRAYER:
-          this.headerText = this.selectedAssignmentTitle;
-          this.usedPublishersList = this.usedPublishersListAll;
-          this.checkFrecuentEspecial();
-          this.updateDataSources();
-          break;
-        case AssignmentType.FINAL_PRAYER:
-          this.headerText = this.selectedAssignmentTitle;
-          this.usedPublishersList = this.usedPublishersListAll;
-          this.checkFrecuentEspecial();
-          this.updateDataSources();
-          break;
-        case AssignmentType.ASSIGNMENT_1:
-          this.headerText = "Discurso Tesoros de la Bíblia";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.ASSIGNMENT_2:
-          this.headerText = "Perlas Escondidas";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.ASSIGNMENT_3:
-          this.headerText = "Lectura de la Bíblia";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.STARTING_A_CONVERSATION:
-          this.headerText = "Empiece Conversaciones (Estudiante)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.EXPLAINING_YOUR_BELIEFS:
-          this.headerText = "Explique sus creencias";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.FOLLOWING_UP:
-          this.headerText = "Haga revisitas (Estudiante)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.WHAT_WOULD_YOU_SAY:
-          this.headerText = "¿Qué diría? (Estudiante)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.IMITATE:
-          this.headerText = "Imite a...";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.WHAT_HE_DID:
-          this.headerText = "Lo que hizo...";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.MAKING_DISCIPLES:
-          this.headerText = "Haga discípulos (Estudiante)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.LOCAL_NEEDS:
-          this.headerText = "Necesidades de la congregación";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.CONGREGATION_BIBLE_STUDY:
-          this.headerText = "Estudio bíblico de la congregación (Conductor)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.STARTING_A_CONVERSATION_ASSISTANT:
-          this.headerText = "Empiece Conversaciones (Ayudante)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.EXPLAINING_YOUR_BELIEFS_ASSISTANT:
-          this.headerText = "Explique sus creencias (Ayudante)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.FOLLOWING_UP_ASSISTANT:
-          this.headerText = "Haga revisitas (Ayudante)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.WHAT_WOULD_YOU_SAY_ASSISTANT:
-          this.headerText = "¿Qué diría? (Ayudante)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.MAKING_DISCIPLES_ASSISTANT:
-          this.headerText = "Haga discípulos (Ayudante)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.CONGREGATION_BIBLE_STUDY_READER:
-          this.headerText = "Estudio bíblico de la congregación (Lector)";
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.ASSISTANT_ADVISER:
-          this.headerText = this.selectedAssignmentTitle;
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS:
-          this.headerText = this.assignment.assignment.title;
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-        case AssignmentType.SPEECH:
-          this.headerText = this.assignment.assignment.title;
-          this.checkIfYouParticipate1();
-          this.updateDataSources();
-          break;
-      }
+      // El backend ya entrega las categorías, autorización y orden inicial.
+      // No se filtra ni ordena nada hasta que el usuario pulse una cabecera.
+      this.usedPublishersList = this.toCandidates(data?.frequent);
+      this.usedPublishersListAll = this.usedPublishersList;
+      this.usedPublishersListAllByAssig = this.usedPublishersList;
+      this.male = this.toCandidates(data?.brothers);
+      this.female = this.toCandidates(data?.sisters);
+      this.publishersAll = [];
+      this.updateDataSources();
       this.showSpinner = false;
     }, () => {
       this.loadError = "No se pudieron cargar las personas. Cierra el selector e inténtalo de nuevo.";
       this.usedPublishersList = [];
       this.usedPublishersListAll = [];
       this.usedPublishersListAllByAssig = [];
+      this.male = [];
+      this.female = [];
       this.updateDataSources();
       this.showSpinner = false;
     });
@@ -413,6 +285,14 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
   checkIfYouParticipate1(): void {
     this.setParticipationCandidates(this.usedPublishersListAllByAssig);
+  }
+
+  private toCandidates(items: any[] | undefined): AssignmentCandidateViewModel[] {
+    return (items ?? []).map(toAssignmentCandidate).map((candidate) => ({
+      ...candidate,
+      // Una fecha en la última asignación indica que participa.
+      participate: candidate.lastAssignment != null,
+    }));
   }
 
   checkFrecuentEspecial() {
@@ -642,19 +522,18 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   closeModal() {
     this.onClose.emit(true);
   }
-  parseDate(value?: number | string | null): string {
+  parseDate(value?: number | string | [number, number, number] | null): string {
     if (!value) {
       return "";
     }
 
-    const date = new Date(value);
+    const date = Array.isArray(value)
+      ? new Date(value[0], value[1] - 1, value[2])
+      : new Date(value);
 
     if (Number.isNaN(date.getTime())) {
       return "";
     }
-
-    // Sumar 4 días
-    date.setDate(date.getDate() + this.congregation.day - 1);
 
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses van de 0 a 11

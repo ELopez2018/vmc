@@ -31,8 +31,7 @@ interface StoredDateFilter {
 export class EntreSemanaComponent implements OnInit {
   private readonly dateFilterStorageKey = "vmc.weeks.date-filter";
   private readonly destroyRef = inject(DestroyRef);
-  private readonly pageSize = 2;
-  private readonly initialForegroundPages = 2;
+  private readonly pageSize = 4;
   private readonly requestedPages = new Set<number>();
   private readonly loadedPages = new Map<number, Program[]>();
   private readonly cancelInitialProgramLoad$ = new Subject<void>();
@@ -108,7 +107,9 @@ export class EntreSemanaComponent implements OnInit {
       this.filterByWeekNumber(parseInt(localStorage.getItem("week") ?? ""));
     }
 
-    if (data.length === this.pageSize) {
+    // El nuevo endpoint puede devolver más registros que el `size` solicitado.
+    // Mientras haya una página completa (o mayor) se continúa precargando.
+    if (data.length >= this.pageSize) {
       this.getPrograms(page + 1);
     }
   }
@@ -124,10 +125,10 @@ export class EntreSemanaComponent implements OnInit {
   }
 
   private hideInitialLoaderIfReady(page: number, data: Program[]): void {
-    const firstPagesLoaded = page >= this.initialForegroundPages - 1;
-    const noMorePages = data.length < this.pageSize;
-
-    if (firstPagesLoaded || noMorePages) {
+    // La primera respuesta ya permite pintar la pantalla. No se debe mantener
+    // el modal esperando una segunda página, pues el contrato nuevo puede
+    // devolver un tamaño distinto al solicitado.
+    if (page === 0 || data.length < this.pageSize) {
       this.loaderService.hideMatspinner();
     }
   }

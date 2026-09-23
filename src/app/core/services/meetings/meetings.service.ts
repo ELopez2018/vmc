@@ -12,6 +12,67 @@ import {
 import { OtherAssignment } from "../../enums/meetings.enums";
 import { DataService } from "../data/data.service";
 
+/**
+ * Contrato de lectura de `GET /meetings/programs/{congregationId}`.
+ *
+ * El endpoint entrega una proyección plana, mientras que la aplicación usa
+ * `Program` con `meeting` y `weeklyPrograms` anidados. Se conserva esa
+ * diferencia únicamente en este borde de la API.
+ */
+interface ProgramOverviewResponse {
+  /** Identificadores explícitos recomendados para operaciones de escritura. */
+  programId?: number;
+  meetingId?: number;
+  id: number;
+  week: number[] | string;
+  weekNumber: number;
+  weeklyBibleReading: string;
+  meetingUrl?: string | null;
+  openingSong?: string | null;
+  intermediateSong?: string | null;
+  finalSong?: string | null;
+  startTimeOpeningSong?: BackendTime | null;
+  startTimeIntro?: BackendTime | null;
+  startTimeIntermediateSong?: BackendTime | null;
+  startTimeFinalSong?: BackendTime | null;
+  startTimeConclusionWords?: BackendTime | null;
+  event?: string | null;
+  openingPrayer?: Program["openingPrayer"];
+  president?: Program["president"];
+  assistantAdviser?: Program["assistantAdviser"];
+  finalPrayer?: Program["finalPrayer"];
+  assignments?: ProgramAssignmentOverviewResponse[];
+}
+
+interface ProgramAssignmentOverviewResponse {
+  weeklyProgramId?: number;
+  assignmentId?: number;
+  id: number;
+  number: number;
+  title: string;
+  section: string;
+  duration?: number | null;
+  durationUnit?: string | null;
+  sourceText?: string | null;
+  sourceHtml?: string | null;
+  sourceLinks?: string | null;
+  sourceUrl?: string | null;
+  responsible?: WeeklyProgram["responsible"];
+  assistant?: WeeklyProgram["assistant"];
+  startTime?: BackendTime | null;
+  room?: string | null;
+}
+
+/** Respuesta paginada de Spring Data del endpoint de programas. */
+interface ProgramOverviewPageResponse {
+  content?: ProgramOverviewResponse[];
+  last?: boolean;
+  totalPages?: number;
+  totalElements?: number;
+  number?: number;
+  size?: number;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -45,33 +106,13 @@ export class MeetingsService {
     const url = `${this.server}/meetings/search-publisher${params}`;
     return this.httpClient.get<any[]>(url);
   }
-  ///meetings/weekly-program/2?page=0&size=4
-  getWeeksValids(congregationId: Number, page: number = 0, size: number = 4): Observable<any> {
-    const url = `${this.server}/meetings/current-weeks/${congregationId}?page=${page}&size=${size}`;
-    return this.httpClient.get<Program[]>(url).pipe(
-      map((data) => {
-        if (!data) {
-          return []; // Devuelve un array vacío si data es null o undefined
-        }
-        return this.sortProgramsByAssignmentNumber(data);
-      }),
+  getWeeksValids(congregationId: number, page: number = 0, size: number = 4): Observable<Program[]> {
+    const url = `${this.server}/meetings/programs/${congregationId}?page=${page}&size=${size}`;
+
+    return this.httpClient.get<ProgramOverviewPageResponse>(url).pipe(
+      map((data) => this.sortProgramsByAssignmentNumber((data?.content ?? []).map((program) => this.toProgram(program, congregationId)))),
     );
   }
-  /**
-   *   getWeeksValids(congregationId: Number): Observable<any> {
-    const url = `${this.server}/meetings/current-weeks/${congregationId}`;
-    return this.httpClient.get<Program[]>(url).pipe(
-      map((data) => {
-        data.forEach((program) => {
-          if (program.weeklyProgram) {
-            program.weeklyProgram.sort((a, b) => a.assignment.number - b.assignment.number);
-          }
-        });
-        return data ?? []; // Devuelve los datos transformados
-      }),
-    );
-  }
-   */
 
   getUpdateWeeksFromJW(): Observable<any> {
     const url = `${this.server}/meetings/automatic`;
@@ -148,6 +189,73 @@ export class MeetingsService {
     const number = weeklyProgram?.assignment?.number;
 
     return typeof number === "number" && Number.isFinite(number) ? number : Number.MAX_SAFE_INTEGER;
+  }
+
+  private toProgram(response: ProgramOverviewResponse, congregationId: number): Program {
+    const programId = response.programId ?? response.id;
+    const meetingId = response.meetingId ?? response.id;
+    const meeting = {
+      id: meetingId,
+      week: this.toIsoDate(response.week),
+      weekNumber: response.weekNumber,
+      openingSong: response.openingSong ?? "",
+      intermediateSong: response.intermediateSong ?? "",
+      finalSong: response.finalSong ?? "",
+      weeklyBibleReading: response.weeklyBibleReading ?? "",
+      url: response.meetingUrl ?? "",
+      introTime: 0,
+      timeType: "",
+    };
+    const congregation = { id: congregationId, name: "", number: "", hour: "", day: 0 };
+
+    return {
+      id: programId,
+      meeting,
+      weekNumber: response.weekNumber,
+      startTimeOpeningSong: response.startTimeOpeningSong ?? [0, 0],
+      startTimeIntro: response.startTimeIntro ?? [0, 0],
+      startTimeIntermediateSong: response.startTimeIntermediateSong ?? [0, 0],
+      startTimeFinalSong: response.startTimeFinalSong ?? [0, 0],
+      startTimeConclusionWords: response.startTimeConclusionWords ?? [0, 0],
+      openingPrayer: response.openingPrayer ?? null,
+      president: response.president ?? null,
+      assistantAdviser: response.assistantAdviser ?? null,
+      finalPrayer: response.finalPrayer ?? null,
+      congregation,
+      event: response.event ?? null,
+      weeklyPrograms: (response.assignments ?? []).map((assignment) => ({
+        id: assignment.weeklyProgramId ?? assignment.id,
+        assignment: {
+          id: assignment.assignmentId,
+          title: assignment.title,
+          number: assignment.number,
+          sectionMeeting: assignment.section,
+          time: assignment.duration ?? undefined,
+          timeType: assignment.durationUnit ?? "",
+          showTips: false,
+          sourceText: assignment.sourceText,
+          sourceHtml: assignment.sourceHtml,
+          sourceLinks: assignment.sourceLinks,
+          sourceUrl: assignment.sourceUrl,
+          meeting,
+        },
+        responsible: assignment.responsible ?? null,
+        assistant: assignment.assistant ?? null,
+        congregation,
+        program: programId,
+        startTime: assignment.startTime ?? null,
+        room: assignment.room ?? "A",
+      })),
+    };
+  }
+
+  private toIsoDate(value: number[] | string): number {
+    if (typeof value === "string") {
+      return new Date(`${value}T00:00:00`).getTime();
+    }
+
+    const [year, month, day] = value;
+    return Date.UTC(year, month - 1, day);
   }
 
   

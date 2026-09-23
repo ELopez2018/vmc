@@ -44,7 +44,13 @@ export interface Publisher {
   username?: string | null;
   myCongregationId?: number;
   congregationId?: number;
-  publisherTooltipText?: string;
+  alerts?: PublisherAlerts | null;
+}
+
+export interface PublisherAlerts {
+  info?: string[] | null;
+  /** Color CSS entregado por el backend, por ejemplo `#FF0000`. */
+  severity?: string | null;
 }
 
 export interface Designation {

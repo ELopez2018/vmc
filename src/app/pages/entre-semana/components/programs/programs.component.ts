@@ -20,7 +20,7 @@ import { ADMIN_EMAIL, MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { includesMeetingPartTitle, isCongregationBibleStudyAssignment, isSpeechAssignment, normalizeProgramTitle } from "./program-assignment.util";
 import { isExplainingBeliefsSpeechAssignment } from "src/app/core/utils/assignment-eligibility.util";
-import { map, Observable, of } from "rxjs";
+import { map, Observable, of, switchMap } from "rxjs";
 import { WeeklyProgramUpdateRequest } from "src/app/core/interfaces/weekly-programs.interface";
 
 type WeeklyPublisherField = "responsible" | "assistant";
@@ -98,13 +98,33 @@ export class ProgramsComponent implements OnInit, OnChanges {
   }
 
   private updateWeeklyProgram(weeklyProgram: WeeklyProgram): Observable<WeeklyProgram> {
-    if (weeklyProgram.id == null || weeklyProgram.assignment?.id == null) {
-      throw new Error("La asignación semanal no tiene id o assignmentId.");
+    if (weeklyProgram.id == null) {
+      throw new Error("La asignación semanal no tiene id.");
     }
 
+    const assignmentId$ = weeklyProgram.assignment?.id != null
+      ? of(weeklyProgram.assignment.id)
+      : this.weeklyProgramService.findById(weeklyProgram.id).pipe(
+          map((stored) => {
+            const assignmentId = stored.assignment?.id;
+
+            if (assignmentId == null) {
+              throw new Error("No se pudo obtener el assignmentId de la asignación semanal.");
+            }
+
+            return assignmentId;
+          }),
+        );
+
+    return assignmentId$.pipe(
+      switchMap((assignmentId) => this.saveWeeklyProgramUpdate(weeklyProgram, assignmentId)),
+    );
+  }
+
+  private saveWeeklyProgramUpdate(weeklyProgram: WeeklyProgram, assignmentId: number): Observable<WeeklyProgram> {
     const request: WeeklyProgramUpdateRequest = {
       id: weeklyProgram.id,
-      assignmentId: weeklyProgram.assignment.id,
+      assignmentId,
       responsibleId: weeklyProgram.responsible?.id ?? null,
       assistantId: weeklyProgram.assistant?.id ?? null,
       congregationId: weeklyProgram.congregation?.id ?? null,
@@ -114,7 +134,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
       notificationSentAt: this.mapNotificationDateTime(weeklyProgram.notificationSentAt),
     };
 
-    return this.weeklyProgramService.updateById(weeklyProgram.id, request).pipe(
+    return this.weeklyProgramService.updateById(weeklyProgram.id!, request).pipe(
       map((saved) => ({
         ...weeklyProgram,
         id: saved.id,

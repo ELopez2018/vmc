@@ -5,7 +5,7 @@ import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.
 import { Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
-import { getPublisherTextClasses as getPublisherWarningTextClasses, getPublisherTooltipClass as getPublisherWarningTooltipClass } from "../publisher-warning.util";
+import { getPublisherAlertStyle, getPublisherAlertText } from "../publisher-warning.util";
 import { MeetingRoom, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { needsOverseerTalkTitle, isSpecialEventWeek } from "src/app/core/utils/program-event.util";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
@@ -149,12 +149,12 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
     return this.collapsedAssignmentKeys.has(this.getAssignmentCollapseKey(item));
   }
 
-  public getPublisherTextClasses(publisher?: Publisher | null): Record<string, boolean> {
-    return getPublisherWarningTextClasses(publisher);
+  public getPublisherAlertText(publisher?: Publisher | null): string {
+    return getPublisherAlertText(publisher);
   }
 
-  public getPublisherTooltipClass(publisher?: Publisher | null): string {
-    return getPublisherWarningTooltipClass(publisher);
+  public getPublisherAlertStyle(publisher?: Publisher | null): Record<string, string> {
+    return getPublisherAlertStyle(publisher);
   }
 
   public isSpeech(item: WeeklyProgramPdF): boolean {

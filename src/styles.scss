@@ -175,6 +175,16 @@ fieldset {
   border-bottom-color: var(--bs-tooltip-bg);
 }
 
+.tooltip-publisher-alert {
+  --bs-tooltip-bg: #ff0000;
+  --bs-tooltip-color: #ffffff;
+  --bs-tooltip-font-size: 13px;
+}
+
+.tooltip-publisher-alert .tooltip-inner {
+  white-space: pre-line;
+}
+
 html,
 body {
   height: 100%;

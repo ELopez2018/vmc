@@ -907,9 +907,9 @@ export class ProgramsComponent implements OnInit, OnChanges {
     this.modalService.AddAssignment(item, sectionMeeting);
   }
 
-  print(week: Program) {
+  print(week: Program, orientation: "normal" | "landscape") {
     this.dataService.setMeeting([week]);
-    this.modalService.printer();
+    this.modalService.printer(orientation);
   }
   printAssig(week: Program) {
     this.dataService.setMeeting([week]);

@@ -46,9 +46,24 @@
         <a class="me-2" (click)="printAssignments.emit(semana)">
           <mat-icon class="icon-lg hover">assignment_turned_in</mat-icon>
         </a>
-        <a (click)="print.emit(semana)">
+        <button
+          type="button"
+          class="program-print-trigger"
+          [matMenuTriggerFor]="printOptions"
+          aria-label="Imprimir programa"
+        >
           <mat-icon class="icon-lg hover">printer_outline</mat-icon>
-        </a>
+        </button>
+        <mat-menu #printOptions="matMenu">
+          <button mat-menu-item type="button" (click)="print.emit({ program: semana, orientation: 'normal' })">
+            <mat-icon>crop_portrait</mat-icon>
+            <span>Normal</span>
+          </button>
+          <button mat-menu-item type="button" (click)="print.emit({ program: semana, orientation: 'landscape' })">
+            <mat-icon>crop_landscape</mat-icon>
+            <span>Landscape</span>
+          </button>
+        </mat-menu>
       </div>
     </div>
   </div>

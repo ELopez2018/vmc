@@ -24,7 +24,8 @@
           </svg>
         </a>
 
-        <a routerLink="/tablero/imprimir" (click)="goToPrint()" class="me-5">
+        <button type="button" class="dashboard-print-trigger me-5" [matMenuTriggerFor]="printOptions"
+          aria-label="Imprimir programas">
           <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
             width="32px" height="32px" viewBox="0 0 64.00 64.00" enable-background="new 0 0 64 64" xml:space="preserve"
             fill="#ffffff" stroke="#ffffff">
@@ -50,7 +51,19 @@
               </g>
             </g>
           </svg>
-        </a>
+        </button>
+        <mat-menu #printOptions="matMenu">
+          <button mat-menu-item type="button" routerLink="/tablero/imprimir" [queryParams]="{ tipo: 'normal' }"
+            (click)="goToPrint()">
+            <mat-icon>crop_portrait</mat-icon>
+            <span>Normal</span>
+          </button>
+          <button mat-menu-item type="button" routerLink="/tablero/imprimir" [queryParams]="{ tipo: 'landscape' }"
+            (click)="goToPrint()">
+            <mat-icon>crop_landscape</mat-icon>
+            <span>Landscape</span>
+          </button>
+        </mat-menu>
 
       </div>
     </div>

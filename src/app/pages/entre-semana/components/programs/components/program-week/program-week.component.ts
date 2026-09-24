@@ -30,7 +30,7 @@ export class ProgramWeekComponent {
   @Input() public porAsignar = "por asignar";
   @Input() public meetingDay = 1;
 
-  @Output() public print = new EventEmitter<ProgramPdf>();
+  @Output() public print = new EventEmitter<{ program: ProgramPdf; orientation: "normal" | "landscape" }>();
   @Output() public printAssignments = new EventEmitter<ProgramPdf>();
   @Output() public openFilters = new EventEmitter<void>();
   @Output() public programChange = new EventEmitter<{ program: ProgramPdf; type: string }>();

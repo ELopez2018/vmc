@@ -128,10 +128,11 @@ export class ModalService {
     this.modalRef.componentInstance.assignment = item;
     return this.modalRef.result;
   }
-  public printer() {
+  public printer(orientation: "normal" | "landscape" = "normal") {
     this.modalRef = this.openPrintModal();
     this.modalRef.componentInstance.modalType = ModalTypeEnums.PRINTER;
     this.modalRef.componentInstance.isModal = true;
+    this.modalRef.componentInstance.printOrientation = orientation;
     return this.modalRef.result;
   }
 

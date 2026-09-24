@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { PrintPdfService } from "../../core/services/pdf/print.service";
 import { MeetingsService } from "../../core/services/meetings/meetings.service";
 import { Meeting, Program } from "src/app/core/interfaces/reuniones.interface";
@@ -19,7 +19,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ["./printer.component.scss"],
   standalone: false,
 })
-export class PrinterComponent implements OnInit, AfterViewInit {
+export class PrinterComponent implements OnInit, AfterViewInit, OnDestroy {
   fechaDesde: any;
   fechaHasta: any;
 
@@ -27,11 +27,13 @@ export class PrinterComponent implements OnInit, AfterViewInit {
   @ViewChild("pdfViewerAutoLoad") pdfViewerAutoLoad: any;
   @Output() onClosed = new EventEmitter();
   @Input() public isModal: boolean = false;
+  @Input() public printOrientation: "normal" | "landscape" = "normal";
   private congregation!: Congregation;
   private subs: Subscription = new Subscription();
   private filtersModalRef?: NgbModalRef;
   private isFilterSearchActive = false;
   private filterSearchRequestId = 0;
+  private pdfGenerationRequestId = 0;
   private pendingPdfSource: any = null;
   public type: string = "normal";
   public weeks: ProgramPdf[] = [];
@@ -45,8 +47,32 @@ export class PrinterComponent implements OnInit, AfterViewInit {
     private loaderService: LoaderService,
     private route: ActivatedRoute,
     private ngbModal: NgbModal,
-  ) {
-    this.modalService.loading();
+  ) {}
+
+  ngOnInit(): void {
+    if (this.isModal) {
+      this.type = this.printOrientation;
+      this.initializePrintData();
+      return;
+    }
+
+    this.subs.add(
+      this.route.queryParamMap
+        .pipe(
+          map((params) => params.get("tipo")),
+          distinctUntilChanged(),
+        )
+        .subscribe((tipo) => {
+          this.type = tipo === "landscape" ? "landscape" : "normal";
+          if (this.weeks.length > 0) {
+            this.printMeetings(this.weeks);
+          }
+        }),
+    );
+    this.initializePrintData();
+  }
+
+  private initializePrintData(): void {
     this.subs.add(
       this.dataService.getCongregation$().subscribe((data) => {
         this.congregation = data;
@@ -55,13 +81,11 @@ export class PrinterComponent implements OnInit, AfterViewInit {
     this.subs.add(
       this.dataService.getMeetingsPDF$().subscribe(
         (data) => {
-          console.log({data});
           if (this.isFilterSearchActive) {
             return;
           }
 
           if (data && data.length > 0) {
-            this.modalService.close();
             this.weeks = data;
             this.printMeetings(this.weeks);
           } else {
@@ -73,20 +97,6 @@ export class PrinterComponent implements OnInit, AfterViewInit {
         },
       ),
     );
-  }
-
-  ngOnInit(): void {
-    this.route.queryParamMap
-      .pipe(
-        map((params) => params.get("tipo")),
-        distinctUntilChanged(),
-      )
-      .subscribe((tipo) => {
-        this.type = tipo ?? "normal";
-        if (this.weeks.length > 0) {
-          this.printMeetings(this.weeks);
-        }
-      });
   }
 
   ngAfterViewInit(): void {
@@ -101,6 +111,13 @@ export class PrinterComponent implements OnInit, AfterViewInit {
     }
   }
 
+  ngOnDestroy(): void {
+    // Evita que visores ya cerrados regeneren el PDF cuando se imprime de nuevo.
+    this.pdfGenerationRequestId++;
+    this.subs.unsubscribe();
+    this.filtersModalRef?.dismiss();
+  }
+
   getWeeks() {
     if (this.congregation) {
       this.meetingsService.getWeeksValids(this.congregation.id).subscribe(
@@ -109,11 +126,9 @@ export class PrinterComponent implements OnInit, AfterViewInit {
             return;
           }
 
-          this.modalService.close();
           this.dataService.setMeeting(data);
         },
         (error) => {
-          this.modalService.close();
           this.modalService.errorHandler("No se han podido obtener las semanas", "Error");
         },
       );
@@ -121,39 +136,24 @@ export class PrinterComponent implements OnInit, AfterViewInit {
   }
 
   printMeetings(weeks: ProgramPdf[]) {
-    this.modalService.close();
-    if (this.hasAssistantBOrResponsibleB(weeks)) {
-      switch (this.type) {
-        case "landscape":
-          this.printPDFLandScapeService
-            .getBlob(weeks)
-            .then((data) => {
-              this.updatePdfViewer(data);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-          break;
-        default:
-          this.printService
-            .getBlob(weeks)
-            .then((data) => {
-              this.updatePdfViewer(data);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-      }
-    } else {
-      this.printPdfOnePageService
-        .getBlob(weeks)
-        .then((data) => {
+    const requestId = ++this.pdfGenerationRequestId;
+    const pdf = this.type === "landscape"
+      ? this.printPDFLandScapeService.getBlob(weeks)
+      : this.hasAssistantBOrResponsibleB(weeks)
+        ? this.printService.getBlob(weeks)
+        : this.printPdfOnePageService.getBlob(weeks);
+
+    pdf
+      .then((data) => {
+        if (requestId === this.pdfGenerationRequestId) {
           this.updatePdfViewer(data);
-        })
-        .catch((error) => {
+        }
+      })
+      .catch((error) => {
+        if (requestId === this.pdfGenerationRequestId) {
           console.error(error);
-        });
-    }
+        }
+      });
   }
 
   hasAssistantBOrResponsibleB(data: ProgramPdf[]): boolean {

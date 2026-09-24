@@ -24,7 +24,7 @@
     <select-hour [hour]="hour" (onSelected)="onClicked($event)"></select-hour>
   }
   @case (typeOfModals.PRINTER) {
-    <app-printer [isModal]="true" (onClosed)="close()"></app-printer>
+    <app-printer [isModal]="true" [printOrientation]="printOrientation" (onClosed)="close()"></app-printer>
   }
   @case (typeOfModals.TITLE_AND_TIME) {
     <title-and-time (onClicked)="onClicked($event)" [assignment]="assignment"></title-and-time>

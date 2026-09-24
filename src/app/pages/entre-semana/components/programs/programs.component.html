@@ -21,7 +21,7 @@
         [isAdmin]="isAdmin"
         [porAsignar]="porAsignar"
         [meetingDay]="meetingDay"
-        (print)="print($event)"
+        (print)="print($event.program, $event.orientation)"
         (printAssignments)="printAssig($event)"
         (openFilters)="openFiltersModal(filtersModal)"
         (programChange)="changeProgram($event.program, $event.type)"

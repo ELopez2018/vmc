@@ -2,6 +2,15 @@
   display: block;
 }
 
+.program-print-trigger {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
 .program__body {
   background-color: white;
 }

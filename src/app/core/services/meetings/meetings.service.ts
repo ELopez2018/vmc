@@ -4,6 +4,7 @@ import { Servers } from "../../constants/servers";
 import { HttpClient } from "@angular/common/http";
 import {
   BackendTime,
+  Congregation,
   Meeting,
   Program,
   ProgramUpdateRequest,
@@ -30,6 +31,7 @@ interface ProgramOverviewResponse {
   meetingUrl?: string | null;
   openingSong?: string | null;
   intermediateSong?: string | null;
+  congregation?: Congregation | null;
   finalSong?: string | null;
   startTimeOpeningSong?: BackendTime | null;
   startTimeIntro?: BackendTime | null;
@@ -194,6 +196,9 @@ export class MeetingsService {
   private toProgram(response: ProgramOverviewResponse, congregationId: number): Program {
     const programId = response.programId ?? response.id;
     const meetingId = response.meetingId ?? response.id;
+    // La proyección del API puede omitir la congregación; la ruta solicitada
+    // sigue aportando su identificador y permite conservar el modelo anidado.
+    const congregation = response.congregation ?? ({ id: congregationId } as Congregation);
     const meeting = {
       id: meetingId,
       week: this.toIsoDate(response.week),
@@ -206,7 +211,6 @@ export class MeetingsService {
       introTime: 0,
       timeType: "",
     };
-    const congregation = { id: congregationId, name: "", number: "", hour: "", day: 0 };
 
     return {
       id: programId,

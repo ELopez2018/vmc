@@ -9,10 +9,8 @@ declare const pdfMake: any;
   providedIn: "root",
 })
 export class PrintPdfLandscapeService {
-  private congregation = "ALBORADA";
+  private congregation = "";
   private colorFontPublisher = "#ea002e";
-
-  private sizeHeader = [10, "auto", "*", 20];
 
   private sizeBody = [250, 200, 90, 170];
 
@@ -44,15 +42,9 @@ export class PrintPdfLandscapeService {
     return [
       {
         table: {
-          heights: [0],
-          widths: this.sizeHeader,
+          widths: ["auto", "*"],
           body: [
             [
-              {
-                text: "",
-                style: "header_a",
-                border: [false, false, false, false],
-              },
               {
                 text: this.congregation,
                 style: "header_a",
@@ -62,11 +54,6 @@ export class PrintPdfLandscapeService {
                 text: "Programa para la reunión de entre semana",
                 style: "header_b",
                 border: [false, false, false, true],
-              },
-              {
-                text: "",
-                style: "header_a",
-                border: [false, false, false, false],
               },
             ],
           ],
@@ -85,7 +72,7 @@ export class PrintPdfLandscapeService {
         [
           {
             text:
-              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) +
+              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true, week.event) +
               " | " +
               (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
             style: "sub_title",
@@ -135,7 +122,7 @@ export class PrintPdfLandscapeService {
         [
           {
             text:
-              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) +
+              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true, week.event) +
               " | " +
               (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
             style: "sub_title",
@@ -596,7 +583,6 @@ export class PrintPdfLandscapeService {
   }
 
   public async getBlob(weeks: ProgramPdf[]): Promise<Blob> {
-    this.congregation = weeks[0].congregation.name;
     return new Promise<Blob>((resolve, reject) => {
       const pdf = pdfMake.createPdf(this.makeDocument(weeks));
       pdf.getBlob((data: Blob) => {
@@ -608,6 +594,7 @@ export class PrintPdfLandscapeService {
     });
   }
   private makeDocument(weeks: ProgramPdf[]): any {
+    this.setCongregationFromWeeks(weeks);
     return {
       header: () => this.makeHeader(false),
       pageSize: "LETTER",
@@ -616,6 +603,14 @@ export class PrintPdfLandscapeService {
       content: this.buildOneWeekPages(weeks),
       ...this.styles(),
     };
+  }
+
+  private setCongregationFromWeeks(weeks: ProgramPdf[]): void {
+    const congregationName = weeks.find((week) => week?.congregation?.name?.trim())?.congregation.name.trim();
+    console.log(weeks);
+    if (congregationName) {
+      this.congregation = congregationName;
+    }
   }
   private buildOneWeekPages(weeks: ProgramPdf[]): any[] {
     return weeks.flatMap((week, index) => {
@@ -681,7 +676,7 @@ export class PrintPdfLandscapeService {
             [
               {
                 text:
-                  Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) +
+                  Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true, week.event) +
                   " | " +
                   (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
                 style: "assemblyInfo",

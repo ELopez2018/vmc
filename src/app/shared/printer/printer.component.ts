@@ -55,6 +55,7 @@ export class PrinterComponent implements OnInit, AfterViewInit {
     this.subs.add(
       this.dataService.getMeetingsPDF$().subscribe(
         (data) => {
+          console.log({data});
           if (this.isFilterSearchActive) {
             return;
           }

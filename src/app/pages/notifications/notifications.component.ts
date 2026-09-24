@@ -33,6 +33,7 @@ export interface AssignmentRow {
   assignmentType: string;
   user: UserLite;
   assignment: Assignment;
+  event?: string | null;
   notificationSentAt?: string;
 }
 
@@ -156,6 +157,7 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
             user: wp.assistant,
             assignmentType: "Ayudante",
             assignment: wp.assignment,
+            event: item.event,
             notificationSentAt: wp.notificationSentAt,
             number: wp.assignment?.number,
           });
@@ -167,6 +169,7 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
             user: wp.responsible,
             assignmentType: "Responsable",
             assignment: wp.assignment,
+            event: item.event,
             notificationSentAt: wp.notificationSentAt,
             number: wp.assignment?.number,
           });
@@ -182,7 +185,7 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
   }
 
   fitroComboSemanas(program: Program[]) {
-    this.valuesComboSemanas = program.map((p) => ({ value: p.meeting.week, label: Utils.showDayOfMeeting(p.meeting.week, 3) }));
+    this.valuesComboSemanas = program.map((p) => ({ value: p.meeting.week, label: Utils.showDayOfMeeting(p.meeting.week, 3, false, p.event) }));
   }
 
   fitroComboSeccion(program: Program[]) {
@@ -247,8 +250,8 @@ export class NotificationsComponent implements OnChanges, AfterViewInit {
   }
 
   trackByUserId = (_: number, item: AssignmentRow) => item.user?.id ?? item.programId;
-  parceDate(dateStr: string): string {
-    return Utils.showDayOfMeeting(dateStr, 3); // TODO: revisar asignar dinamicamente el dia
+  parceDate(dateStr: string, event?: string | null): string {
+    return Utils.showDayOfMeeting(dateStr, 3, false, event); // TODO: revisar asignar dinamicamente el dia
   }
 
   sendNotifications(body: SendNotidicationReques): any {

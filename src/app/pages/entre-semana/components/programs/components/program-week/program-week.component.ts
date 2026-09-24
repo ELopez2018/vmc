@@ -47,7 +47,7 @@ export class ProgramWeekComponent {
   private collapsedSectionKeys = new Set<string>();
 
   public showDayOfMeeting(fechaSemana: any): string {
-    return Utils.showDayOfMeeting(fechaSemana, this.meetingDay);
+    return Utils.showDayOfMeeting(fechaSemana, this.meetingDay, false, this.semana?.event);
   }
 
   public get isAssemblyWeek(): boolean {

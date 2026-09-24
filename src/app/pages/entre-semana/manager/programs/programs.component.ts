@@ -150,7 +150,7 @@ export class ProgramsComponent implements OnInit {
       return "Sin fecha";
     }
 
-    return Utils.showDayOfMeeting(week, program.congregation?.day ?? this.getSelectedCongregationDay());
+    return Utils.showDayOfMeeting(week, program.congregation?.day ?? this.getSelectedCongregationDay(), false, program.event);
   }
 
   getEventLabel(program: Program): string {

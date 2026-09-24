@@ -67,7 +67,7 @@ export class PrintS89FromProgramService {
     const out: S89InternalForm[] = [];
 
     programs?.forEach((program) => {
-      const date = this.formatDate(Utils.showDayOfMeeting(program.meeting?.week, this.dayMeet));
+      const date = this.formatDate(Utils.showDayOfMeeting(program.meeting?.week, this.dayMeet, false, program.event));
       (program.weeklyPrograms || []).forEach((wp: WeeklyProgramPdF) => {
         if (!this.isS89Candidate(wp)) {
           return;

@@ -10,9 +10,8 @@ declare const pdfMake: any;
   providedIn: "root",
 })
 export class PrintPdfOnePageService {
-  private congregation = "ALBORADA";
+  private congregation = "";
   private colorFontPublisher = "#ea002e";
-  private sizeHeader = [0, "auto", "*", 20];
   private sizeBody = [70, 185, 80, 10, "*"];
   private sizeSongs = [20, 235, 80, 10, "*"];
   private sizeHeaderSections = [350, 10, "*"];
@@ -80,15 +79,9 @@ export class PrintPdfOnePageService {
     return [
       {
         table: {
-          heights: [0],
-          widths: this.sizeHeader,
+          widths: ["auto", "*"],
           body: [
             [
-              {
-                text: "",
-                style: "header_a",
-                border: [false, false, false, false],
-              },
               {
                 text: this.congregation,
                 style: "header_a",
@@ -98,11 +91,6 @@ export class PrintPdfOnePageService {
                 text: "Programa para la reunión de entre semana",
                 style: "header_b",
                 border: [false, false, false, true],
-              },
-              {
-                text: "",
-                style: "header_a",
-                border: [false, false, false, false],
               },
             ],
           ],
@@ -118,7 +106,7 @@ export class PrintPdfOnePageService {
           body: [
             [
               {
-                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + " |",
+                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, false, week.event) + " |",
                 style: "sub_title",
                 border: [false, false, false, false],
               },
@@ -659,7 +647,6 @@ export class PrintPdfOnePageService {
   }
 
   public async getBlob(weeks: ProgramPdf[]): Promise<Blob> {
-    this.congregation = weeks[0].congregation.name;
     return new Promise<Blob>((resolve, reject) => {
       const pdf = pdfMake.createPdf(this.makeDocumet(weeks));
       pdf.getBlob((data: Blob) => {
@@ -671,6 +658,7 @@ export class PrintPdfOnePageService {
     });
   }
   private makeDocumet(weeks: any[]): any {
+    this.setCongregationFromWeeks(weeks);
     const contenido: any[] = [];
     let pageBreak = false;
     let count = 0;
@@ -703,7 +691,7 @@ export class PrintPdfOnePageService {
               body: [
                 [
                   {
-                    text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet) + " |",
+                    text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, false, week.event) + " |",
                     style: "sub_title",
                     border: [false, false, false, false],
                   },
@@ -751,6 +739,14 @@ export class PrintPdfOnePageService {
       content: [...contenido],
       ...this.styles(),
     };
+  }
+
+  private setCongregationFromWeeks(weeks: ProgramPdf[]): void {
+    const congregationName = weeks.find((week) => week?.congregation?.name?.trim())?.congregation.name.trim();
+
+    if (congregationName) {
+      this.congregation = congregationName;
+    }
   }
   private styles() {
     return {

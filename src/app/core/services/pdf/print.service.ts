@@ -9,10 +9,9 @@ declare const pdfMake: any;
   providedIn: "root",
 })
 export class PrintPdfService {
-  private congregation = "ALBORADA";
+  private congregation = "";
   private colorFontPublisher = "#ea002e";
 
-  private sizeHeader = [10, "auto", "*", 20];
   private sizeBody = [200, "*", 150, 126];
   private sizeSongs = [16, 244, 150, "*"];
   private sizeHeaderSections = [275, 143, "*"];
@@ -40,15 +39,9 @@ export class PrintPdfService {
     return [
       {
         table: {
-          heights: [0],
-          widths: this.sizeHeader,
+          widths: ["auto", "*"],
           body: [
             [
-              {
-                text: "",
-                style: "header_a",
-                border: [false, false, false, false],
-              },
               {
                 text: this.congregation,
                 style: "header_a",
@@ -58,11 +51,6 @@ export class PrintPdfService {
                 text: "Programa para la reunión de entre semana",
                 style: "header_b",
                 border: [false, false, false, true],
-              },
-              {
-                text: "",
-                style: "header_a",
-                border: [false, false, false, false],
               },
             ],
           ],
@@ -81,7 +69,7 @@ export class PrintPdfService {
         [
           {
             text:
-              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) +
+              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true, week.event) +
               " | " +
               (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
             style: "sub_title",
@@ -131,7 +119,7 @@ export class PrintPdfService {
         [
           {
             text:
-              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) +
+              Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true, week.event) +
               " | " +
               (week.meeting.weeklyBibleReading ? week.meeting.weeklyBibleReading : "LECTURA SEMANAL DE LA BIBLIA"),
             style: "sub_title",
@@ -592,7 +580,6 @@ export class PrintPdfService {
   }
 
   public async getBlob(weeks: ProgramPdf[]): Promise<Blob> {
-    this.congregation = weeks[0].congregation.name;
     return new Promise<Blob>((resolve, reject) => {
       const pdf = pdfMake.createPdf(this.makeDocument(weeks));
       pdf.getBlob((data: Blob) => {
@@ -604,6 +591,7 @@ export class PrintPdfService {
     });
   }
   private makeDocument(weeks: ProgramPdf[]): any {
+    this.setCongregationFromWeeks(weeks);
     const contenido: any[] = [];
 
     weeks.forEach((week, index) => {
@@ -621,6 +609,14 @@ export class PrintPdfService {
       content: contenido,
       ...this.styles(),
     };
+  }
+
+  private setCongregationFromWeeks(weeks: ProgramPdf[]): void {
+    const congregationName = weeks.find((week) => week?.congregation?.name?.trim())?.congregation.name.trim();
+
+    if (congregationName) {
+      this.congregation = congregationName;
+    }
   }
   private makeSpecialEventBanner(week: ProgramPdf): any[] {
     if (!isSpecialEventWeek(week.event)) {
@@ -674,7 +670,7 @@ export class PrintPdfService {
           body: [
             [
               {
-                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true) + " | ",
+                text: Utils.showDayOfMeeting(week.meeting.week, this.dayMeet, true, week.event) + " | ",
                 style: "sub_title",
                 border: [false, false, false, false],
               },

@@ -75,6 +75,7 @@ export class WeeklyProgramsAdminComponent implements OnInit {
       .subscribe({
         next: programs => {
           this.programs = programs ?? [];
+          this.weekOptions = this.buildWeekOptions();
           const selected = this.selectedCongregationId == null ? this.programs : this.programs.filter(p => p.congregation?.id === this.selectedCongregationId);
           this.rows = selected.flatMap(program => (program.weeklyPrograms ?? []).map(row => this.toResponse(row, program)));
           this.rows.sort((a, b) => (a.room ?? "").localeCompare(b.room ?? "") || (a.assignment?.number ?? 9999) - (b.assignment?.number ?? 9999));
@@ -127,7 +128,10 @@ export class WeeklyProgramsAdminComponent implements OnInit {
     });
   }
 
-  weekLabel(meeting: Meeting): string { return `Semana ${meeting.weekNumber ?? ""}${meeting.week ? " - " + Utils.showDayOfMeeting(meeting.week, this.selectedCongregation()?.day ?? 1) : ""}`; }
+  weekLabel(meeting: Meeting): string {
+    const event = this.programs.find(program => program.meeting?.id === meeting.id && program.congregation?.id === this.selectedCongregationId)?.event;
+    return `Semana ${meeting.weekNumber ?? ""}${meeting.week ? " - " + Utils.showDayOfMeeting(meeting.week, this.selectedCongregation()?.day ?? 1, false, event) : ""}`;
+  }
   personName(person: { fullName: string | null } | null): string { return person?.fullName?.trim() || "—"; }
   notificationLabel(row: WeeklyProgramResponse): string { return row.notificationSentAt ? "Enviada" : "Pendiente"; }
 

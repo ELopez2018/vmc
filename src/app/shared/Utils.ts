@@ -1,10 +1,12 @@
 import { Meeting } from "../core/interfaces/reuniones.interface";
+import { isCircuitOverseerVisit } from "../core/utils/program-event.util";
 export class Utils {
-  public static showDayOfMeeting(fechaSemana: any, meetingDay: number, onlyMonth: boolean = false) {
+  public static showDayOfMeeting(fechaSemana: any, meetingDay: number, onlyMonth: boolean = false, event?: string | null) {
     const fecha = new Date(fechaSemana);
+    const effectiveMeetingDay = isCircuitOverseerVisit(event) ? 2 : meetingDay;
 
-    // Ajusta la fecha según el día de reunión
-    fecha.setDate(fecha.getDate() + meetingDay );
+    // La visita del superintendente de circuito siempre se celebra el martes.
+    fecha.setDate(fecha.getDate() + effectiveMeetingDay);
 
     const dia = fecha.getDate().toString().padStart(2, "0");
     const mesIndex = fecha.getMonth(); // 0 - 11

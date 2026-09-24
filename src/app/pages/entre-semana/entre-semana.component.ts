@@ -7,7 +7,6 @@ import { Utils } from "src/app/shared/Utils";
 import { ModalService } from "src/app/core/services/modal/modal.service";
 import { DataService } from "../../core/services/data/data.service";
 import { Congregation } from "../../core/interfaces/reuniones.interface";
-import { CongregationMock } from "./mocks/congregation.mock";
 import { AssignmentService } from "src/app/core/services/assignment/assignment.service";
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { SectionMeeting } from "../../core/enums/meetings.enums";
@@ -36,12 +35,14 @@ export class EntreSemanaComponent implements OnInit {
   private readonly loadedPages = new Map<number, Program[]>();
   private readonly cancelInitialProgramLoad$ = new Subject<void>();
   private searchRequestId = 0;
+  private initialized = false;
+  private loadedCongregationId: number | null = null;
   public readonly meetingRoom = MeetingRoom;
   private programList: Program[] = [];
   public semanas: Program[] = [];
   public semanasSalaAuxiliar: Program[] = [];
   public porAsignar = "por asignar";
-  public congregation: Congregation = CongregationMock;
+  public congregation = {} as Congregation;
   public assignmentType: string = "";
   public superintendente!: Publisher;
   public showSpinner = false;
@@ -61,11 +62,29 @@ export class EntreSemanaComponent implements OnInit {
     });
 
     this.dataService.getCongregation$().subscribe((data) => {
+      if (!this.isValidCongregation(data)) {
+        return;
+      }
+
       this.congregation = data;
       this.meetingDay = data.day;
+
+      if (this.initialized) {
+        this.initializeProgramsForCongregation();
+      }
     });
   }
   ngOnInit(): void {
+    this.initialized = true;
+    this.initializeProgramsForCongregation();
+  }
+
+  private initializeProgramsForCongregation(): void {
+    if (!this.isValidCongregation(this.congregation) || this.loadedCongregationId === this.congregation.id) {
+      return;
+    }
+
+    this.loadedCongregationId = this.congregation.id;
     this.semanas = [];
     this.semanasAllRooms = [];
     this.programList = [];
@@ -84,6 +103,11 @@ export class EntreSemanaComponent implements OnInit {
   }
 
   getPrograms(page = 0): void {
+    if (!this.isValidCongregation(this.congregation)) {
+      this.loaderService.hideMatspinner();
+      return;
+    }
+
     if (this.requestedPages.has(page)) {
       return;
     }
@@ -499,6 +523,10 @@ export class EntreSemanaComponent implements OnInit {
   }
 
   consultar($event: { fechaDesde: any; fechaHasta: any }, persistFilter = true) {
+    if (!this.isValidCongregation(this.congregation)) {
+      return;
+    }
+
     const dateFilter = this.normalizeDateFilter($event);
 
     if (!dateFilter) {
@@ -601,6 +629,10 @@ export class EntreSemanaComponent implements OnInit {
     }
 
     return { fechaDesde, fechaHasta };
+  }
+
+  private isValidCongregation(congregation: Congregation | null | undefined): congregation is Congregation {
+    return typeof congregation?.id === "number" && Number.isInteger(congregation.id) && congregation.id > 0;
   }
 
   private normalizeDateValue(value: unknown): string | null {

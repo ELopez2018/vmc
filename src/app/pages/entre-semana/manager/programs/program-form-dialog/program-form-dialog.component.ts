@@ -82,7 +82,10 @@ export class ProgramFormDialogComponent implements OnInit {
       return "Sin reunion";
     }
 
-    return `Semana ${meeting.weekNumber ?? ""}${meeting.week ? " - " + Utils.showDayOfMeeting(meeting.week, this.getSelectedCongregationDay()) : ""}`;
+    const selectedMeetingId = this.programForm.get("meetingId")?.value;
+    const event = selectedMeetingId === meeting.id ? this.programForm.get("event")?.value : null;
+
+    return `Semana ${meeting.weekNumber ?? ""}${meeting.week ? " - " + Utils.showDayOfMeeting(meeting.week, this.getSelectedCongregationDay(), false, event) : ""}`;
   }
 
   getProgramError(): string | null {

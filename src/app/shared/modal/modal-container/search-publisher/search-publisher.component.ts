@@ -601,6 +601,8 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
         return item?.dateLastAssignment ?? "";
       case "lastAssignGlobal":
         return item?.lastAssignGlobal ?? "";
+      case "daysSinceLastIntervention":
+        return item?.daysSinceLastIntervention ?? Number.MAX_SAFE_INTEGER;
       default:
         return item?.[key] ?? "";
     }

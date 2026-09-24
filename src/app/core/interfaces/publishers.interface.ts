@@ -18,6 +18,7 @@ export interface UserAssignmentHistory {
   lastAssignment: AssignmentDate;
   allAssignments: number;
   dateLastAssignment: AssignmentDate;
+  daysSinceLastIntervention: number | null;
 }
 
 export interface UserByTypeResponse {
@@ -30,6 +31,7 @@ export interface AssignmentCandidateViewModel {
   lastAssignment: AssignmentDate;
   allAssignments: number;
   dateLastAssignment: AssignmentDate;
+  daysSinceLastIntervention: number | null;
   participate?: boolean;
 }
 
@@ -45,6 +47,7 @@ export function toAssignmentCandidate(item: UserByTypeResponse): AssignmentCandi
     lastAssignment: item.history.lastAssignment,
     allAssignments: item.history.allAssignments,
     dateLastAssignment: item.history.dateLastAssignment,
+    daysSinceLastIntervention: item.history.daysSinceLastIntervention,
   };
 }
 

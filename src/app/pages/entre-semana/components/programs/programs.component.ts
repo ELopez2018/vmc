@@ -908,7 +908,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
   }
 
   print(week: Program, orientation: "normal" | "landscape") {
-    this.dataService.setMeeting([week]);
+    // `week` proviene de la vista PDF, que fusiona las salas A y B. Para
+    // imprimir una sola semana sin perder la sala auxiliar, se envía el
+    // programa original, igual que en la opción Imprimir del menú.
+    const program = this.semanas.find((candidate) => candidate.id === week.id) ?? week;
+    this.dataService.setMeeting([program]);
     this.modalService.printer(orientation);
   }
   printAssig(week: Program) {

@@ -72,7 +72,7 @@ export class AssignmentSheetPrinterComponent implements OnInit {
   ngOnInit(): void {}
 
   getWeeks() {
-    if (this.congregation) {
+    if (this.dataService.hasValidCongregation(this.congregation)) {
       this.meetingsService.getWeeksValids(this.congregation.id).subscribe(
         (data) => {
           if (this.isFilterSearchActive) {

@@ -21,6 +21,7 @@ import { isExplainingBeliefsSpeechAssignment } from "../../utils/assignment-elig
 })
 export class DataService {
   private readonly tokenStorageKey = "token";
+  private readonly tokenCookieKey = "token";
   private readonly publisherStorageKey = "publisher";
   private readonly publisherCookieKey = "publisher";
   private readonly congregationCookieKey = "congregation";
@@ -100,9 +101,9 @@ export class DataService {
           ...base,
           room: MeetingRoom.MAIN,
           responsible: mainRoom?.responsible ?? null,
-          assistant: noAssistantAllowed ? null : mainRoom?.assistant ?? null,
+          assistant: noAssistantAllowed ? null : (mainRoom?.assistant ?? null),
           responsibleB: auxiliaryRoom?.responsible ?? null,
-          assistantB: noAssistantAllowed ? null : auxiliaryRoom?.assistant ?? null,
+          assistantB: noAssistantAllowed ? null : (auxiliaryRoom?.assistant ?? null),
         };
       });
 
@@ -116,9 +117,7 @@ export class DataService {
   private getWeeklyProgramAssignmentKey(weeklyProgram: WeeklyProgram): string {
     const assignment = weeklyProgram.assignment;
 
-    return [assignment?.number ?? "", assignment?.sectionMeeting ?? "", assignment?.title ?? ""]
-      .map((value) => this.normalizeAssignmentKeyPart(value))
-      .join("|");
+    return [assignment?.number ?? "", assignment?.sectionMeeting ?? "", assignment?.title ?? ""].map((value) => this.normalizeAssignmentKeyPart(value)).join("|");
   }
 
   private normalizeAssignmentKeyPart(value: unknown): string {
@@ -153,11 +152,20 @@ export class DataService {
     });
   }
   public setCongregation(congregation: Congregation) {
-    this.congregation = congregation;
-    if (this.congregation) {
-      this.roomsService.getAllRoomsByCongregation(this.congregation.id).subscribe((data) => this.rooms$.next(data));
+    if (!this.hasValidCongregation(congregation)) {
+      this.congregation = <Congregation>{};
+      this.rooms$.next([]);
+      this.congregation$.next(this.congregation);
+      return;
     }
+
+    this.congregation = congregation;
+    this.roomsService.getAllRoomsByCongregation(this.congregation.id).subscribe((data) => this.rooms$.next(data));
     this.congregation$.next(congregation);
+  }
+
+  public hasValidCongregation(congregation: Congregation | null | undefined): congregation is Congregation {
+    return typeof congregation?.id === "number" && Number.isInteger(congregation.id) && congregation.id > 0;
   }
   public getCongregation$(): Observable<Congregation> {
     return this.congregation$.asObservable();
@@ -198,6 +206,11 @@ export class DataService {
       return;
     }
 
+    const congregation =
+      this.readStorageObject<Congregation>(this.congregationCookieKey) ??
+      this.readCookieObject<Congregation>(this.congregationCookieKey);
+    this.setCongregation(congregation ?? <Congregation>{});
+
     this.loadMeetingParts();
 
     this.configsService.getAllDesignations().subscribe((data) => {
@@ -210,11 +223,10 @@ export class DataService {
     if (publisher?.id) {
       this.setPublisher(publisher);
     }
-    this.setCongregation(this.readCookieObject<Congregation>(this.congregationCookieKey) ?? <Congregation>{});
   }
 
   public getAccessToken(): string | null {
-    const tokenStorage = localStorage.getItem(this.tokenStorageKey);
+    const tokenStorage = localStorage.getItem(this.tokenStorageKey) ?? this.cookieService.get(this.tokenCookieKey);
 
     if (!tokenStorage) {
       return null;
@@ -246,6 +258,8 @@ export class DataService {
     localStorage.clear();
     this.cookieService.delete(this.publisherCookieKey);
     this.cookieService.delete(this.publisherCookieKey, "/");
+    this.cookieService.delete(this.tokenCookieKey);
+    this.cookieService.delete(this.tokenCookieKey, "/");
     this.cookieService.delete(this.congregationCookieKey);
     this.cookieService.delete(this.congregationCookieKey, "/");
     this.publisher$.next(null);

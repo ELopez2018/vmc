@@ -11,44 +11,22 @@
 
   </header>
 
-  <section class="metrics-grid" aria-label="Resumen de publicadores">
-    <article class="metric-card metric-card--total">
-      <div class="metric-card__icon">
-        <mat-icon>badge</mat-icon>
-      </div>
-      <div>
-        <span>Total</span>
-        <strong>{{ publisherList.length }}</strong>
-      </div>
-    </article>
-
-    <article class="metric-card metric-card--email">
-      <div class="metric-card__icon">
-        <mat-icon>alternate_email</mat-icon>
-      </div>
-      <div>
-        <span>Con correo</span>
-        <strong>{{ publishersWithEmail }}</strong>
-      </div>
-    </article>
-
-    <article class="metric-card metric-card--phone">
-      <div class="metric-card__icon">
-        <mat-icon>phone_iphone</mat-icon>
-      </div>
-      <div>
-        <span>Con teléfono</span>
-        <strong>{{ publishersWithPhone }}</strong>
-      </div>
-    </article>
-  </section>
-
   <section class="directory-panel">
     <div class="directory-panel__header">
       <div>
         <h2>Lista de publicadores</h2>
-        <span>{{ publisherList.length }} registros</span>
+        <span>{{ filteredPublisherList.length }} de {{ publisherList.length }} registros</span>
       </div>
+      <label class="publisher-search">
+        <mat-icon>search</mat-icon>
+        <input
+          type="search"
+          [value]="searchTerm"
+          (input)="searchTerm = $any($event.target).value"
+          placeholder="Buscar por nombre"
+          aria-label="Buscar publicadores por nombre"
+        />
+      </label>
     </div>
 
     @if (showSpinner) {
@@ -65,14 +43,13 @@
     } @else {
     <div class="table-shell">
       <vmc-table-primeng
-        [publisherList]="publisherList"
-        scrollHeight="calc(100vh - 430px)"
+        [publisherList]="filteredPublisherList"
+        scrollHeight="calc(100vh - 300px)"
         (onSelected)="edit($event)"
         (onDelete)="delete($event)"
       ></vmc-table-primeng>
     </div>
 
-    <mat-paginator [pageSizeOptions]="[20, 30, 40]" showFirstLastButtons aria-label="Elija la pagina de Publicadores"></mat-paginator>
     }
   </section>
 </main>

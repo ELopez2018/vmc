@@ -29,6 +29,7 @@ export class AuthService {
     return this.httpClient.post<LoginResponse>(url, credential).pipe(
       tap((data) => {
         localStorage.setItem("token", JSON.stringify(data));
+        this.cookieService.set("token", JSON.stringify(data), { path: "/", sameSite: "Lax" });
         this.token = this.jwtUtils.decodeToken(data.token) ?? "";
         this.setCongregation(data.congregation);
         this.sessionExpirationService.startMonitoring();

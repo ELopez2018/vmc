@@ -16,8 +16,8 @@
       <td class="publisher-cell">
         <div class="publisher-info">
 
-          <div class="avatar">
-            {{ item.fullName[0] }}
+          <div class="avatar" [class.avatar--female]="isFemale(item.gender)">
+            {{ item.fullName?.charAt(0) || "?" }}
           </div>
 
           <div class="publisher-text">

@@ -9,7 +9,7 @@ import { CongregationMock } from "../entre-semana/mocks/congregation.mock";
 import { MatSidenav } from "@angular/material/sidenav";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
 import { combineLatest, of } from "rxjs";
-import { catchError, switchMap, tap } from "rxjs/operators";
+import { catchError, filter, switchMap, tap } from "rxjs/operators";
 import { isAdminEmail } from "src/app/core/constants/admin.constants";
 
 interface DashboardMenuItem {
@@ -123,6 +123,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .getCongregation$()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
+        filter((congregation): congregation is Congregation => this.dataService.hasValidCongregation(congregation)),
         tap((congregation) => {
           this.congregation = congregation;
         }),

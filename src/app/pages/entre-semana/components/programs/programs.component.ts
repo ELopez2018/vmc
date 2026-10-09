@@ -915,8 +915,13 @@ export class ProgramsComponent implements OnInit, OnChanges {
     this.dataService.setMeeting([program]);
     this.modalService.printer(orientation);
   }
-  printAssig(week: Program) {
-    this.dataService.setMeeting([week]);
+  printAssig(week: ProgramPdf) {
+    // La vista recibe un ProgramPdf para mostrar juntas las salas A y B, pero
+    // sus filas se fusionan y la sala principal queda como base. La hoja S-89
+    // necesita el programa original para conservar cada asignación de todas
+    // las salas de esta semana.
+    const program = this.semanas.find((candidate) => candidate.id === week.id) ?? week;
+    this.dataService.setMeeting([program]);
     this.modalService.printerAssig();
   }
   filterRoom(item: WeeklyProgram, room = MeetingRoom.AUXILIARY): WeeklyProgram | undefined {

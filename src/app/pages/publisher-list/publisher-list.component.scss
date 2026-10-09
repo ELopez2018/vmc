@@ -16,7 +16,7 @@
 }
 
 .publisher-header {
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 
 .publisher-header__eyebrow {
@@ -45,61 +45,11 @@
   font-size: 15px;
 }
 
-.metric-card,
 .directory-panel {
   border: 1px solid var(--vmc-line);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 14px 34px rgba(16, 24, 40, 0.08);
-}
-
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.metric-card {
-  --accent: var(--vmc-primary);
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 20px;
-}
-
-.metric-card--email {
-  --accent: var(--vmc-primary-800);
-}
-
-.metric-card--phone {
-  --accent: var(--vmc-accent);
-}
-
-.metric-card__icon {
-  display: grid;
-  place-items: center;
-  flex: 0 0 48px;
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
-  color: #fff;
-  background: var(--accent);
-}
-
-.metric-card span {
-  color: #667085;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.metric-card strong {
-  display: block;
-  color: #101828;
-  font-size: 30px;
-  font-weight: 800;
-  line-height: 1;
 }
 
 .directory-panel {
@@ -109,9 +59,45 @@
 }
 
 .directory-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
   padding: 20px 24px;
   border-bottom: 1px solid #e5edf4;
   background: linear-gradient(90deg, #fff, var(--vmc-accent-soft));
+}
+
+.publisher-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(100%, 330px);
+  padding: 9px 12px;
+  border: 1px solid #d0dce8;
+  border-radius: 8px;
+  color: #667085;
+  background: #fff;
+}
+
+.publisher-search:focus-within {
+  border-color: var(--vmc-primary);
+  box-shadow: 0 0 0 3px rgba(58, 110, 165, 0.14);
+}
+
+.publisher-search mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+.publisher-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: var(--vmc-ink);
+  font: inherit;
+  background: transparent;
 }
 
 .directory-panel__header h2,
@@ -148,7 +134,13 @@
     padding: 22px;
   }
 
-  .metrics-grid {
-    grid-template-columns: 1fr;
+  .directory-panel__header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .publisher-search {
+    width: 100%;
   }
 }

@@ -119,7 +119,7 @@ export class PrinterComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getWeeks() {
-    if (this.congregation) {
+    if (this.dataService.hasValidCongregation(this.congregation)) {
       this.meetingsService.getWeeksValids(this.congregation.id).subscribe(
         (data) => {
           if (this.isFilterSearchActive) {

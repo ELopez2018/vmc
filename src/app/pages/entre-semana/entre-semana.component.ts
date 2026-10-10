@@ -15,6 +15,7 @@ import { ProgramPdf } from "src/app/core/interfaces/print-pdf.interface";
 import { MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { environment } from "src/environments/environment";
 
 interface StoredDateFilter {
   fechaDesde: string;
@@ -30,7 +31,7 @@ interface StoredDateFilter {
 export class EntreSemanaComponent implements OnInit {
   private readonly dateFilterStorageKey = "vmc.weeks.date-filter";
   private readonly destroyRef = inject(DestroyRef);
-  private readonly pageSize = 4;
+  private readonly pageSize = environment.pagination.programsPageSize;
   private readonly requestedPages = new Set<number>();
   private readonly loadedPages = new Map<number, Program[]>();
   private readonly cancelInitialProgramLoad$ = new Subject<void>();
@@ -102,7 +103,7 @@ export class EntreSemanaComponent implements OnInit {
     this.getPrograms();
   }
 
-  getPrograms(page = 0): void {
+  getPrograms(page = environment.pagination.initialPage): void {
     if (!this.isValidCongregation(this.congregation)) {
       this.loaderService.hideMatspinner();
       return;
@@ -152,7 +153,7 @@ export class EntreSemanaComponent implements OnInit {
     // La primera respuesta ya permite pintar la pantalla. No se debe mantener
     // el modal esperando una segunda página, pues el contrato nuevo puede
     // devolver un tamaño distinto al solicitado.
-    if (page === 0 || data.length < this.pageSize) {
+    if (page === environment.pagination.initialPage || data.length < this.pageSize) {
       this.loaderService.hideMatspinner();
     }
   }

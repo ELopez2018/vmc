@@ -13,9 +13,19 @@ export function normalizeProgramTitle(value?: string | null): string {
 
 export function includesMeetingPartTitle(title: string | null | undefined, meetingPartTitle: string): boolean {
   const normalizedTitle = normalizeProgramTitle(title);
-  const normalizedMeetingPartTitle = normalizeProgramTitle(meetingPartTitle);
+  // Reconocer los títulos anteriores y actuales de la fuente tanto al seleccionar
+  // el tipo de asignación como al distinguir las partes estudiantiles de discursos.
+  const titleVariants = [
+    [MEETING_PARTS.STARTING_A_CONVERSATION, "Empiece conversaciones", "Empecemos conversaciones"],
+    [MEETING_PARTS.FOLLOWING_UP, "Haga revisitas", "Hagamos revisitas"],
+    [MEETING_PARTS.MAKING_DISCIPLES, "Haga discípulos", "Hagamos discípulos"],
+  ];
+  const meetingPartTitles = titleVariants.find(([catalogTitle]) => catalogTitle === meetingPartTitle) ?? [meetingPartTitle];
 
-  return normalizedTitle.length > 0 && normalizedMeetingPartTitle.length > 0 && normalizedTitle.includes(normalizedMeetingPartTitle);
+  return normalizedTitle.length > 0 && meetingPartTitles.some((candidate) => {
+    const normalizedCandidate = normalizeProgramTitle(candidate);
+    return normalizedCandidate.length > 0 && normalizedTitle.includes(normalizedCandidate);
+  });
 }
 
 /**
@@ -23,7 +33,7 @@ export function includesMeetingPartTitle(title: string | null | undefined, meeti
  * En ese caso el número y la sección siguen identificando la parte.
  */
 export function isSpeechAssignment(assignment?: Pick<Assignment, "title" | "number" | "sectionMeeting" | "tips"> | null): boolean {
-  if (!assignment) {
+  if (!assignment || assignment.sectionMeeting !== SectionMeeting.SEAMOS_MEJORES_MAESTROS) {
     return false;
   }
 

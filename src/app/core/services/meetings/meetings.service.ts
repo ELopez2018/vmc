@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { map, Observable, tap } from "rxjs";
+import { EMPTY, expand, forkJoin, map, Observable, reduce, tap } from "rxjs";
 import { Servers } from "../../constants/servers";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import {
   BackendTime,
   Congregation,
@@ -11,7 +11,11 @@ import {
   WeeklyProgram,
 } from "../../interfaces/reuniones.interface";
 import { OtherAssignment } from "../../enums/meetings.enums";
-import { DataService } from "../data/data.service";
+import { PersonValidation } from "../../interfaces/program-validations.interface";
+import { ProgramValidationsService } from "../program/program-validations.service";
+import { PaginatedResponse } from "../../interfaces/general.interfaces";
+import { buildPaginationParams } from "../../utils/pagination.util";
+import { environment } from "src/environments/environment";
 
 /**
  * Contrato de lectura de `GET /meetings/programs/{congregationId}`.
@@ -44,6 +48,7 @@ interface ProgramOverviewResponse {
   assistantAdviser?: Program["assistantAdviser"];
   finalPrayer?: Program["finalPrayer"];
   assignments?: ProgramAssignmentOverviewResponse[];
+  validations?: PersonValidation[];
 }
 
 interface ProgramAssignmentOverviewResponse {
@@ -66,21 +71,14 @@ interface ProgramAssignmentOverviewResponse {
 }
 
 /** Respuesta paginada de Spring Data del endpoint de programas. */
-interface ProgramOverviewPageResponse {
-  content?: ProgramOverviewResponse[];
-  last?: boolean;
-  totalPages?: number;
-  totalElements?: number;
-  number?: number;
-  size?: number;
-}
+type ProgramOverviewPageResponse = PaginatedResponse<ProgramOverviewResponse>;
 
 @Injectable({
   providedIn: "root",
 })
 export class MeetingsService {
   private server = Servers.URL;
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private programValidations: ProgramValidationsService) {}
   getAllPrograms(): Observable<any> {
     const url = `${this.server}/meetings/all-program`;
     return this.httpClient.get(url);
@@ -108,10 +106,15 @@ export class MeetingsService {
     const url = `${this.server}/meetings/search-publisher${params}`;
     return this.httpClient.get<any[]>(url);
   }
-  getWeeksValids(congregationId: number, page: number = 0, size: number = 4): Observable<Program[]> {
-    const url = `${this.server}/meetings/programs/${congregationId}?page=${page}&size=${size}`;
+  getWeeksValids(
+    congregationId: number,
+    page: number = environment.pagination.initialPage,
+    size: number = environment.pagination.programsPageSize,
+  ): Observable<Program[]> {
+    const url = `${this.server}/meetings/programs/${congregationId}`;
+    const params = buildPaginationParams({ page, size });
 
-    return this.httpClient.get<ProgramOverviewPageResponse>(url).pipe(
+    return this.httpClient.get<ProgramOverviewPageResponse>(url, { params }).pipe(
       map((data) => this.sortProgramsByAssignmentNumber((data?.content ?? []).map((program) => this.toProgram(program, congregationId)))),
     );
   }
@@ -122,7 +125,9 @@ export class MeetingsService {
   }
   saveOrUpdateWeeklyProgram(weeklyProgram: WeeklyProgram) {
     const url = `${this.server}/meetings/weekly-program`;
-    return this.httpClient.post<WeeklyProgram>(url, weeklyProgram);
+    return this.httpClient.post<WeeklyProgram>(url, weeklyProgram).pipe(
+      tap((response) => this.programValidations.applyValidations(response.validations)),
+    );
   }
   saveOrUpdateProgram(program: Program) {
     const url = `${this.server}/program/${program.id}`;
@@ -143,6 +148,7 @@ export class MeetingsService {
     };
 
     return this.httpClient.put<Program>(url, request).pipe(
+      tap((response) => this.programValidations.applyValidations(response.validations)),
       tap((updatedProgram) => Object.assign(program, updatedProgram)),
     );
   }
@@ -169,8 +175,27 @@ export class MeetingsService {
     fechaHasta = fechaHasta.toISOString().split("T")[0];
 
     const url = `${this.server}/meetings/get-programs-by-date-range?congregationId=${congregationId}&startDate=${fechaDesde}&endDate=${fechaHasta}`;
-    return this.httpClient.get<Program[]>(url).pipe(
-      map((programs) => this.sortProgramsByAssignmentNumber(programs)),
+    // El GET legado conserva los detalles de las canciones y asignaciones, pero
+    // omite validations. Consultar la proyección del mismo rango para hidratarlas.
+    const overviewUrl = `${this.server}/meetings/programs/${congregationId}`;
+    const filters = new HttpParams().set("startDate", fechaDesde).set("endDate", fechaHasta);
+    const page = (number: number) => this.httpClient.get<ProgramOverviewPageResponse>(overviewUrl, {
+      params: buildPaginationParams({ page: number, size: environment.pagination.batchSize }, filters),
+    });
+    const validations$ = page(environment.pagination.initialPage).pipe(
+      expand((response, index) => {
+        const nextPage = (response.number ?? environment.pagination.initialPage + index) + 1;
+        return response.last === false || nextPage < (response.totalPages ?? 1) ? page(nextPage) : EMPTY;
+      }),
+      reduce((programs, response) => [...programs, ...(response.content ?? [])], [] as ProgramOverviewResponse[]),
+    );
+    return forkJoin({ programs: this.httpClient.get<Program[]>(url), overviews: validations$ }).pipe(
+      tap(({ overviews }) => {
+        for (const overview of overviews) {
+          this.programValidations.setProgramValidations(overview.programId ?? overview.id, overview.validations ?? []);
+        }
+      }),
+      map(({ programs }) => this.sortProgramsByAssignmentNumber(programs)),
     );
   }
 
@@ -195,6 +220,7 @@ export class MeetingsService {
 
   private toProgram(response: ProgramOverviewResponse, congregationId: number): Program {
     const programId = response.programId ?? response.id;
+    this.programValidations.setProgramValidations(programId, response.validations ?? []);
     const meetingId = response.meetingId ?? response.id;
     // La proyección del API puede omitir la congregación; la ruta solicitada
     // sigue aportando su identificador y permite conservar el modelo anidado.

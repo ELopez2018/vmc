@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from "@angular/core";
+import { HttpErrorResponse } from "@angular/common/http";
 import { MatTableDataSource } from "@angular/material/table";
 import { AssignmentService } from "../../../../core/services/assignment/assignment.service";
 import { UsersService } from "src/app/core/services/users/users.service";
@@ -271,8 +272,10 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
       this.publishersAll = [];
       this.updateDataSources();
       this.showSpinner = false;
-    }, () => {
-      this.loadError = "No se pudieron cargar las personas. Cierra el selector e inténtalo de nuevo.";
+    }, (error: HttpErrorResponse) => {
+      const message = typeof error.error?.message === "string" ? error.error.message.trim() : "";
+      const status = error.status > 0 ? ` (HTTP ${error.status})` : "";
+      this.loadError = `No se pudieron cargar las personas${status}. ${message || "Cierra el selector e inténtalo de nuevo."}`;
       this.usedPublishersList = [];
       this.usedPublishersListAll = [];
       this.usedPublishersListAllByAssig = [];

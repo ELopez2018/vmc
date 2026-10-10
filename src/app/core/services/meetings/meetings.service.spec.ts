@@ -3,6 +3,8 @@ import { HttpTestingController, provideHttpClientTesting } from "@angular/common
 import { TestBed } from "@angular/core/testing";
 import { Program } from "../../interfaces/reuniones.interface";
 import { MeetingsService } from "./meetings.service";
+import { ProgramValidationsService } from "../program/program-validations.service";
+import { environment } from "src/environments/environment";
 
 describe('MeetingsService', () => {
   let service: MeetingsService;
@@ -75,7 +77,8 @@ describe('MeetingsService', () => {
 
     service.getWeeksValids(2, 0, 4).subscribe((data) => (programs = data));
 
-    const request = httpTesting.expectOne((candidate) => candidate.url.endsWith("/meetings/programs/2?page=0&size=4"));
+    const request = httpTesting.expectOne((candidate) => candidate.url.endsWith("/meetings/programs/2") &&
+      candidate.params.get("page") === "0" && candidate.params.get("size") === "4");
     expect(request.request.method).toBe("GET");
     request.flush({
       content: [{
@@ -92,6 +95,10 @@ describe('MeetingsService', () => {
         startTimeIntermediateSong: [19, 16],
         startTimeFinalSong: [20, 9],
         startTimeConclusionWords: [20, 6],
+        validations: [{
+          userId: 131, fullName: "Participante", severity: "ERROR",
+          items: [{ code: "MULTIPLE_ASSIGNMENTS_SAME_WEEK", severity: "ERROR", message: "Tiene más de una asignación esta semana.", related: [] }],
+        }],
         assignments: [
           {
             id: 5778,
@@ -103,7 +110,6 @@ describe('MeetingsService', () => {
             responsible: {
               id: 131,
               fullName: "Leonardo Sánchez",
-              alerts: { info: ["Tiene más de una asignación esta semana."], severity: "#FF0000" },
             },
             startTime: [18, 36],
             room: "A",
@@ -127,6 +133,28 @@ describe('MeetingsService', () => {
     expect(programs[0].weeklyPrograms[0].assignment).toEqual(
       jasmine.objectContaining({ number: 1, sectionMeeting: "TESOROS DE LA BIBLIA", time: 10 }),
     );
-    expect(programs[0].weeklyPrograms[0].responsible?.alerts?.severity).toBe("#FF0000");
+    expect(TestBed.inject(ProgramValidationsService).validationsFor(731, 131)?.severity).toBe("ERROR");
+  });
+
+  it("uses the environment configuration when pagination is omitted", () => {
+    const previousSize = environment.pagination.programsPageSize;
+    environment.pagination.programsPageSize = 7;
+    try {
+      service.getWeeksValids(2).subscribe();
+      const request = httpTesting.expectOne((candidate) => candidate.url.endsWith("/meetings/programs/2"));
+      expect(request.request.params.get("page")).toBe(String(environment.pagination.initialPage));
+      expect(request.request.params.get("size")).toBe("7");
+      request.flush({ content: [], last: true });
+    } finally {
+      environment.pagination.programsPageSize = previousSize;
+    }
+  });
+
+  it("allows a query to override the global page and size", () => {
+    service.getWeeksValids(2, 3, 25).subscribe();
+    const request = httpTesting.expectOne((candidate) => candidate.url.endsWith("/meetings/programs/2"));
+    expect(request.request.params.get("page")).toBe("3");
+    expect(request.request.params.get("size")).toBe("25");
+    request.flush({ content: [], last: true });
   });
 });

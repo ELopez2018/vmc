@@ -33,12 +33,16 @@
       </td>
       <td>
         {{ item.time }}
-        <span *ngIf="stopwatchService.getState(item.id).elapsed > 0 || stopwatchService.getState(item.id).running"
+        <span *ngIf="stopwatchService.hasRecord(item.id)"
           class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(item.id).running"
-          pTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" tooltipPosition="top"
+          pTooltip="1 clic: parar/reanudar · 2 clics: poner a cero y detener" tooltipPosition="top"
           (click)="onInlineTimerClick(item.id)">
           <i class="pi pi-stopwatch"></i>
           {{ formatElapsed(stopwatchService.getState(item.id).elapsed) }}
+          <button type="button" class="inline-timer-remove" aria-label="Eliminar registro del cronómetro"
+            title="Eliminar registro del cronómetro" (click)="$event.stopPropagation(); removeStopwatch(item.id)">
+            &times;
+          </button>
         </span>
       </td>
       <td>

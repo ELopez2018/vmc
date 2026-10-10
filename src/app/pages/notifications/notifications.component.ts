@@ -12,6 +12,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { distinctUntilChanged, Subject, takeUntil } from "rxjs";
 import { NotificationService } from "src/app/core/services/nofitications/notification.service";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { environment } from "src/environments/environment";
 export interface Designation {
   id: number;
   description: string;
@@ -49,8 +50,8 @@ export interface Combobox {
 })
 export class NotificationsComponent implements OnChanges, AfterViewInit {
   @Input() rows: AssignmentRow[] = [];
-  @Input() pageSize = 10;
-  @Input() pageSizeOptions: number[] = [5, 10, 25, 50];
+  @Input() pageSize = environment.pagination.pageSize;
+  @Input() pageSizeOptions: number[] = [...environment.pagination.pageSizeOptions];
   @Output() sendEmail = new EventEmitter<AssignmentRow>();
   @Output() sendReminder = new EventEmitter<AssignmentRow>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;

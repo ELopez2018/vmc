@@ -319,6 +319,27 @@ legend {
   }
 }
 
+.inline-timer-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: #dc3545;
+    color: #fff;
+  }
+}
+
 .inline-timer {
   display: inline-flex;
   align-items: center;

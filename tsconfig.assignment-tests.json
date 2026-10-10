@@ -1,4 +1,8 @@
 {
   "extends": "./tsconfig.spec.json",
-  "include": ["src/app/pages/entre-semana/components/programs/programs-migration.spec.ts", "src/**/*.d.ts"]
+  "include": [
+    "src/app/pages/entre-semana/components/programs/programs-migration.spec.ts",
+    "src/app/pages/entre-semana/components/programs/programs-assignment-selection.spec.ts",
+    "src/**/*.d.ts"
+  ]
 }

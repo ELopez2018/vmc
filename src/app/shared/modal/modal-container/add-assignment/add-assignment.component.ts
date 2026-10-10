@@ -68,22 +68,18 @@ export class AddAssignmentComponent implements OnInit {
 
   addAssigment(assignment: Assignment) {
     const values = this.formG.getRawValue();
-    this.week.weeklyPrograms;
     const weeklyProgram: WeeklyProgram = {
       assignment: assignment,
-      congregation: this.week.weeklyPrograms[0].congregation,
-      program: this.week.weeklyPrograms[0].program,
+      congregation: this.week.congregation,
+      program: this.week.id,
       startTime: values.start,
-      room: this.week.weeklyPrograms[0].room,
+      room: this.week.weeklyPrograms[0]?.room ?? "A",
       responsible: null,
       assistant: null,
     };
 
-    this.week.weeklyPrograms.push(weeklyProgram);
-    console.log(this.week.weeklyPrograms);
-    this.weeklyProgramService.save(this.week.weeklyPrograms).subscribe((data) => {
-      console.log("Revcibida week.weeklyProgram", data);
-      this.week.weeklyPrograms = data;
+    this.weeklyProgramService.save([weeklyProgram]).subscribe((data) => {
+      this.week.weeklyPrograms = [...this.week.weeklyPrograms, ...data];
     });
   }
 }

@@ -1,8 +1,9 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.interface";
 import { Publisher } from "src/app/core/interfaces/reuniones.interface";
+import { ProgramValidationsService } from "src/app/core/services/program/program-validations.service";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
 import { ProgramAssignmentSectionComponent } from "../program-assignment-section/program-assignment-section.component";
@@ -23,6 +24,7 @@ import { isCongregationBibleStudyAssignment, isSpeechAssignment } from "../../pr
   imports: [CommonModule, SharedModule, NgbTooltipModule, ProgramAssignmentSectionComponent],
 })
 export class ProgramWeekComponent {
+  private readonly programValidations = inject(ProgramValidationsService);
   @Input() public semana!: ProgramPdf;
   @Input() public roomA = false;
   @Input() public room = MeetingRoom.MAIN;
@@ -88,10 +90,10 @@ export class ProgramWeekComponent {
   }
 
   public getPublisherAlertText(publisher?: Publisher | null): string {
-    return getPublisherAlertText(publisher);
+    return getPublisherAlertText(this.programValidations.validationsFor(this.semana.id, publisher?.id));
   }
 
   public getPublisherAlertStyle(publisher?: Publisher | null): Record<string, string> {
-    return getPublisherAlertStyle(publisher);
+    return getPublisherAlertStyle(publisher, this.programValidations.validationsFor(this.semana.id, publisher?.id));
   }
 }

@@ -1,8 +1,9 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, Output, inject } from "@angular/core";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.interface";
 import { Publisher } from "src/app/core/interfaces/reuniones.interface";
+import { ProgramValidationsService } from "src/app/core/services/program/program-validations.service";
 import { SharedModule } from "src/app/shared/shared.module";
 import { Utils } from "src/app/shared/Utils";
 import { getPublisherAlertStyle, getPublisherAlertText } from "../publisher-warning.util";
@@ -22,6 +23,7 @@ import { isExplainingBeliefsSpeechAssignment } from "src/app/core/utils/assignme
   imports: [CommonModule, SharedModule, NgbTooltipModule, AssignmentSourceComponent, StopwatchModalComponent],
 })
 export class ProgramAssignmentSectionComponent implements OnDestroy {
+  private readonly programValidations = inject(ProgramValidationsService);
   @Input() public week!: ProgramPdf;
   @Input() public sectionMeeting = "";
   @Input() public title = "";
@@ -66,14 +68,13 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
     this.activeStopwatchId = null;
   }
 
-  /** 1 clic = parar/reanudar · 2 clics = reiniciar */
+  /** 1 clic = parar/reanudar · 2 clics = poner a cero y detener */
   public onInlineTimerClick(id: number): void {
     if (this.clickTimers.has(id)) {
-      // Segundo clic → reiniciar desde 0 y reanudar
+      // Segundo clic → poner a cero y dejar detenido.
       clearTimeout(this.clickTimers.get(id));
       this.clickTimers.delete(id);
       this.stopwatchService.reset(id);
-      this.stopwatchService.start(id);
       return;
     }
     const state = this.stopwatchService.getState(id);
@@ -84,6 +85,13 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
     }
     const timer = setTimeout(() => this.clickTimers.delete(id), 300);
     this.clickTimers.set(id, timer);
+  }
+
+  public removeStopwatch(id: number): void {
+    clearTimeout(this.clickTimers.get(id));
+    this.clickTimers.delete(id);
+    this.stopwatchService.remove(id);
+    if (this.activeStopwatchId === id) this.closeStopwatch();
   }
 
   public formatElapsed(ms: number): string {
@@ -150,11 +158,11 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
   }
 
   public getPublisherAlertText(publisher?: Publisher | null): string {
-    return getPublisherAlertText(publisher);
+    return getPublisherAlertText(this.programValidations.validationsFor(this.week.id, publisher?.id));
   }
 
   public getPublisherAlertStyle(publisher?: Publisher | null): Record<string, string> {
-    return getPublisherAlertStyle(publisher);
+    return getPublisherAlertStyle(publisher, this.programValidations.validationsFor(this.week.id, publisher?.id));
   }
 
   public isSpeech(item: WeeklyProgramPdF): boolean {

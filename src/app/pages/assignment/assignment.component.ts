@@ -47,14 +47,13 @@ export class AssignmentComponent implements OnDestroy {
     this.activeStopwatchId = null;
   }
 
-  /** 1 clic = parar/reanudar · 2 clics = reiniciar */
+  /** 1 clic = parar/reanudar · 2 clics = poner a cero y detener */
   onInlineTimerClick(id: number): void {
     if (this.clickTimers.has(id)) {
-      // Segundo clic → reiniciar desde 0 y reanudar
+      // Segundo clic → poner a cero y dejar detenido.
       clearTimeout(this.clickTimers.get(id));
       this.clickTimers.delete(id);
       this.stopwatchService.reset(id);
-      this.stopwatchService.start(id);
       return;
     }
     // Primer clic → parar/reanudar (espera 300 ms por si hay segundo clic)
@@ -66,6 +65,13 @@ export class AssignmentComponent implements OnDestroy {
     }
     const timer = setTimeout(() => this.clickTimers.delete(id), 300);
     this.clickTimers.set(id, timer);
+  }
+
+  removeStopwatch(id: number): void {
+    clearTimeout(this.clickTimers.get(id));
+    this.clickTimers.delete(id);
+    this.stopwatchService.remove(id);
+    if (this.activeStopwatchId === id) this.closeStopwatch();
   }
 
   formatElapsed(ms: number): string {

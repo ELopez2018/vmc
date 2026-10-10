@@ -59,11 +59,15 @@
             <i class="pi pi-stopwatch"></i>
           </button>
           <span
-            *ngIf="stopwatchService.getState(getItemId(item)).elapsed > 0 || stopwatchService.getState(getItemId(item)).running"
+            *ngIf="stopwatchService.hasRecord(getItemId(item))"
             class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(getItemId(item)).running"
-            ngbTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" placement="top"
+            ngbTooltip="1 clic: parar/reanudar · 2 clics: poner a cero y detener" placement="top"
             (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
             {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
+            <button type="button" class="inline-timer-remove" aria-label="Eliminar registro del cronómetro"
+              title="Eliminar registro del cronómetro" (click)="$event.stopPropagation(); removeStopwatch(getItemId(item))">
+              &times;
+            </button>
           </span>
           <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"
             [compact]="true"></vmc-assignment-source>
@@ -104,11 +108,15 @@
             <i class="pi pi-stopwatch"></i>
           </button>
           <span
-            *ngIf="stopwatchService.getState(getItemId(item)).elapsed > 0 || stopwatchService.getState(getItemId(item)).running"
+            *ngIf="stopwatchService.hasRecord(getItemId(item))"
             class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(getItemId(item)).running"
-            ngbTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" placement="top"
+            ngbTooltip="1 clic: parar/reanudar · 2 clics: poner a cero y detener" placement="top"
             (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
             {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
+            <button type="button" class="inline-timer-remove" aria-label="Eliminar registro del cronómetro"
+              title="Eliminar registro del cronómetro" (click)="$event.stopPropagation(); removeStopwatch(getItemId(item))">
+              &times;
+            </button>
           </span>
           <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"
             [compact]="true"></vmc-assignment-source>
@@ -179,11 +187,15 @@
               <i class="pi pi-stopwatch"></i>
             </button>
             <span
-              *ngIf="stopwatchService.getState(getItemId(item)).elapsed > 0 || stopwatchService.getState(getItemId(item)).running"
+              *ngIf="stopwatchService.hasRecord(getItemId(item))"
               class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(getItemId(item)).running"
-              ngbTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" placement="top"
+              ngbTooltip="1 clic: parar/reanudar · 2 clics: poner a cero y detener" placement="top"
               (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
               {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
+              <button type="button" class="inline-timer-remove" aria-label="Eliminar registro del cronómetro"
+                title="Eliminar registro del cronómetro" (click)="$event.stopPropagation(); removeStopwatch(getItemId(item))">
+                &times;
+              </button>
             </span>
           </span>
           <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"
@@ -266,11 +278,15 @@
             <i class="pi pi-stopwatch"></i>
           </button>
           <span
-            *ngIf="stopwatchService.getState(getItemId(item)).elapsed > 0 || stopwatchService.getState(getItemId(item)).running"
+            *ngIf="stopwatchService.hasRecord(getItemId(item))"
             class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(getItemId(item)).running"
-            ngbTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" placement="top"
+            ngbTooltip="1 clic: parar/reanudar · 2 clics: poner a cero y detener" placement="top"
             (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
             {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
+            <button type="button" class="inline-timer-remove" aria-label="Eliminar registro del cronómetro"
+              title="Eliminar registro del cronómetro" (click)="$event.stopPropagation(); removeStopwatch(getItemId(item))">
+              &times;
+            </button>
           </span>
           <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"
             [compact]="true"></vmc-assignment-source>
@@ -322,11 +338,15 @@
             <i class="pi pi-stopwatch"></i>
           </button>
           <span
-            *ngIf="stopwatchService.getState(getItemId(item)).elapsed > 0 || stopwatchService.getState(getItemId(item)).running"
+            *ngIf="stopwatchService.hasRecord(getItemId(item))"
             class="inline-timer" [class.inline-timer--running]="stopwatchService.getState(getItemId(item)).running"
-            ngbTooltip="1 clic: parar/reanudar · 2 clics: reiniciar" placement="top"
+            ngbTooltip="1 clic: parar/reanudar · 2 clics: poner a cero y detener" placement="top"
             (click)="onInlineTimerClick(getItemId(item)); $event.stopPropagation()">
             {{ formatElapsed(stopwatchService.getState(getItemId(item)).elapsed) }}
+            <button type="button" class="inline-timer-remove" aria-label="Eliminar registro del cronómetro"
+              title="Eliminar registro del cronómetro" (click)="$event.stopPropagation(); removeStopwatch(getItemId(item))">
+              &times;
+            </button>
           </span>
           @if (!isSpecialEventWeek) {
           <vmc-assignment-source class="program-assignment-detail" [assignment]="item.assignment"

@@ -27,8 +27,8 @@ export class StopwatchModalComponent implements OnInit, OnDestroy {
     this.elapsed = current.elapsed;
     this.running = current.running;
 
-    // Start automatically when opening if timer was not running yet and has no time
-    if (!this.running && this.elapsed === 0) {
+    // Solo el primer uso arranca automáticamente; un registro reiniciado queda detenido.
+    if (!this.stopwatchService.hasRecord(this.assignmentId)) {
       this.stopwatchService.start(this.assignmentId);
     }
 

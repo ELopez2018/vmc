@@ -1,3 +1,5 @@
+import { ProgramValidations } from "./program-validations.interface";
+
 export interface Asignacion {
   tips: string;
   showtips: boolean;
@@ -44,13 +46,6 @@ export interface Publisher {
   username?: string | null;
   myCongregationId?: number;
   congregationId?: number;
-  alerts?: PublisherAlerts | null;
-}
-
-export interface PublisherAlerts {
-  info?: string[] | null;
-  /** Color CSS entregado por el backend, por ejemplo `#FF0000`. */
-  severity?: string | null;
 }
 
 export interface Designation {
@@ -103,6 +98,8 @@ export interface Program {
   congregation: Congregation;
   weeklyPrograms: WeeklyProgram[];
   event: string | null;
+  /** Solo las respuestas de escritura incluyen las validaciones de la congregación. */
+  validations?: ProgramValidations[];
 }
 
 export interface ProgramFormValues {
@@ -148,6 +145,7 @@ export interface WeeklyProgram {
   startTime?: BackendTime | null;
   room: string;
   notificationSentAt?: BackendDateTime | null;
+  validations?: ProgramValidations[];
 }
 export interface WeeklyProgramUpsertByTitleRequest {
   weeklyProgramId?: number;

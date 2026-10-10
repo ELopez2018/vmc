@@ -1,3 +1,5 @@
+import { ProgramValidations } from "./program-validations.interface";
+
 /** Modelos del CRUD de /weeklyProgram. No reutilizar el modelo legado WeeklyProgram. */
 export interface UserLite {
   id: number;
@@ -35,6 +37,7 @@ export interface WeeklyProgramResponse {
   startTime: string | null;
   room: string | null;
   notificationSentAt: string | null;
+  validations?: ProgramValidations[];
 }
 
 export interface WeeklyProgramCreateRequest {

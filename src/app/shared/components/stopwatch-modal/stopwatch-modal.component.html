@@ -10,8 +10,7 @@
     </div>
 
     <div class="stopwatch-actions">
-      <button class="btn-stopwatch btn-stop" (click)="toggleStop()" [class.btn-resume]="!running"
-        [disabled]="elapsed === 0 && !running">
+      <button class="btn-stopwatch btn-stop" (click)="toggleStop()" [class.btn-resume]="!running">
         <i [class]="running ? 'pi pi-pause' : 'pi pi-play'"></i>
         {{ running ? 'Parar' : 'Reanudar' }}
       </button>

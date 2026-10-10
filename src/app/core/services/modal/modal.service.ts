@@ -53,7 +53,14 @@ export class ModalService {
     return this.modalRef.result;
   }
 
-  public assignPublisherWeeklyProgram(assignment?: WeeklyProgram, assignmentType?: string, type?: string, room: string = "A", brothersOnly = false) {
+  public assignPublisherWeeklyProgram(
+    assignment?: WeeklyProgram,
+    assignmentType?: string,
+    type?: string,
+    room: string = "A",
+    brothersOnly = false,
+    week?: string | number | null,
+  ) {
     this.modalRef = this.openWideModal();
     this.modalRef.componentInstance.modalType = ModalTypeEnums.ASSIGN_PUB;
     this.modalRef.componentInstance.assignment = assignment;
@@ -61,7 +68,7 @@ export class ModalService {
     this.modalRef.componentInstance.type = type;
     this.modalRef.componentInstance.room = room;
     this.modalRef.componentInstance.brothersOnly = brothersOnly;
-    this.modalRef.componentInstance.week = assignment?.assignment?.meeting?.week ?? null;
+    this.modalRef.componentInstance.week = week ?? assignment?.assignment?.meeting?.week ?? null;
     return this.modalRef.result;
   }
 

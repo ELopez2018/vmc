@@ -20,7 +20,7 @@ import { ADMIN_EMAIL, MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { includesMeetingPartTitle, isCongregationBibleStudyAssignment, isSpeechAssignment, normalizeProgramTitle } from "./program-assignment.util";
 import { isExplainingBeliefsSpeechAssignment } from "src/app/core/utils/assignment-eligibility.util";
-import { map, Observable, of, switchMap } from "rxjs";
+import { map, Observable, of, switchMap, tap } from "rxjs";
 import { WeeklyProgramUpdateRequest } from "src/app/core/interfaces/weekly-programs.interface";
 
 type WeeklyPublisherField = "responsible" | "assistant";
@@ -94,7 +94,20 @@ export class ProgramsComponent implements OnInit, OnChanges {
   }
 
   private saveWeeklyProgram(weeklyProgram: WeeklyProgram) {
-    return this.weeklyProgramService.upsertByTitle(this.mapWeeklyProgramUpsertByTitleRequest(weeklyProgram));
+    return this.weeklyProgramService.upsertByTitle(this.mapWeeklyProgramUpsertByTitleRequest(weeklyProgram)).pipe(
+      tap((savedPrograms) => {
+        for (const saved of savedPrograms) {
+          const program = this.semanas.find((week) => week.id === saved.program);
+          const stored = program?.weeklyPrograms.find((row) => row.id === saved.id);
+          if (stored) {
+            Object.assign(stored, saved, { assignment: { ...stored.assignment, ...saved.assignment } });
+          } else if (program) {
+            program.weeklyPrograms = [...program.weeklyPrograms, saved];
+          }
+        }
+        this.updateWeeksForPrint();
+      }),
+    );
   }
 
   private updateWeeklyProgram(weeklyProgram: WeeklyProgram): Observable<WeeklyProgram> {
@@ -660,6 +673,9 @@ export class ProgramsComponent implements OnInit, OnChanges {
             return;
           }
 
+          // Las respuestas resumidas pueden omitir assignment.meeting.
+          // La semana del programa conserva la fecha necesaria para consultar candidatos.
+          const week = this.findProgramForItem(item)?.meeting?.week ?? weeklyProgram.assignment?.meeting?.week ?? null;
           this.modalService
             .assignPublisherWeeklyProgram(
               weeklyProgram,
@@ -667,6 +683,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
               target.modalType,
               target.room,
               isRestrictedExplainingBeliefsSpeech,
+              week,
             )
             .then((data: unknown) => this.handlePublisherSelection(item, target, weeklyProgram, data))
             .catch((error) => console.error("No se pudo abrir el selector de publicadores", error));

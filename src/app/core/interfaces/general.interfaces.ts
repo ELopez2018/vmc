@@ -1,5 +1,14 @@
-export interface ResponsePaginated {
-  content: Content[];
+/** Contrato común de lectura de páginas del API (índices basados en cero). */
+export interface PaginatedResponse<T> {
+  content: T[];
+  number?: number;
+  size?: number;
+  totalPages?: number;
+  totalElements?: number;
+  last?: boolean;
+}
+
+export interface ResponsePaginated extends PaginatedResponse<Content> {
   pageable: Pageable;
   totalPages: number;
   totalElements: number;

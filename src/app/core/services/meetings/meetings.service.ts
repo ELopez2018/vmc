@@ -33,10 +33,15 @@ interface ProgramOverviewResponse {
   weekNumber: number;
   weeklyBibleReading: string;
   meetingUrl?: string | null;
+  introTime?: number | null;
+  timeType?: string | null;
   openingSong?: string | null;
   intermediateSong?: string | null;
   congregation?: Congregation | null;
   finalSong?: string | null;
+  initialSong?: Meeting["initialSong"];
+  middleSong?: Meeting["middleSong"];
+  lastSong?: Meeting["lastSong"];
   startTimeOpeningSong?: BackendTime | null;
   startTimeIntro?: BackendTime | null;
   startTimeIntermediateSong?: BackendTime | null;
@@ -72,6 +77,11 @@ interface ProgramAssignmentOverviewResponse {
 
 /** Respuesta paginada de Spring Data del endpoint de programas. */
 type ProgramOverviewPageResponse = PaginatedResponse<ProgramOverviewResponse>;
+
+export interface WolPreviewResponse {
+  url: string;
+  html: string;
+}
 
 @Injectable({
   providedIn: "root",
@@ -122,6 +132,12 @@ export class MeetingsService {
   getUpdateWeeksFromJW(): Observable<any> {
     const url = `${this.server}/meetings/automatic`;
     return this.httpClient.get(url);
+  }
+
+  getWolPreview(url: string): Observable<WolPreviewResponse> {
+    return this.httpClient.get<WolPreviewResponse>(`${this.server}/meetings/wol-preview`, {
+      params: new HttpParams().set("url", url),
+    });
   }
   saveOrUpdateWeeklyProgram(weeklyProgram: WeeklyProgram) {
     const url = `${this.server}/meetings/weekly-program`;
@@ -232,10 +248,13 @@ export class MeetingsService {
       openingSong: response.openingSong ?? "",
       intermediateSong: response.intermediateSong ?? "",
       finalSong: response.finalSong ?? "",
+      initialSong: response.initialSong,
+      middleSong: response.middleSong,
+      lastSong: response.lastSong,
       weeklyBibleReading: response.weeklyBibleReading ?? "",
       url: response.meetingUrl ?? "",
-      introTime: 0,
-      timeType: "",
+      introTime: response.introTime ?? 0,
+      timeType: response.timeType ?? "",
     };
 
     return {

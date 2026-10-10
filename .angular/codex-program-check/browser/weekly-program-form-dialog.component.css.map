@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/pages/entre-semana/manager/weekly-programs-admin/weekly-program-form-dialog/weekly-program-form-dialog.component.scss"],
+  "sourcesContent": [".weekly-program-form { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; }\n.weekly-program-form__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }\n.weekly-program-form__wide { width: 100%; }\n.weekly-program-form__notice { margin: 0 0 16px; color: #9a3412; }\n@media (max-width: 620px) { .weekly-program-form__grid { grid-template-columns: 1fr; } }\n"],
+  "mappings": ";AAAA,CAAA;AAAuB,WAAA;AAAe,kBAAA;AAAwB,OAAA;AAAU,eAAA;;AACxE,CAAA;AAA6B,WAAA;AAAe,yBAAA,OAAA,CAAA,EAAA,OAAA,CAAA,EAAA;AAAkD,OAAA,EAAA;;AAC9F,CAAA;AAA6B,SAAA;;AAC7B,CAAA;AAA+B,UAAA,EAAA,EAAA;AAAkB,SAAA;;AACjD,OAAA,CAAA,SAAA,EAAA;AAA4B,GAH5B;AAGyD,2BAAA;;;",
+  "names": []
+}

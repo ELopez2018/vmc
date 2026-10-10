@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/pages/notifications/notifications.component.scss"],
+  "sourcesContent": [".table-wrap {\r\n  width: 100%;\r\n  overflow: auto;\r\n}\r\n\r\ntable {\r\n  width: 100%;\r\n  min-width: 900px;\r\n}\r\n\r\n.actions-col {\r\n  width: 120px;\r\n  white-space: nowrap;\r\n  text-align: center;\r\n}\r\n\r\n.actions-col button {\r\n  margin: 0 4px;\r\n}\r\n.btn-mat:disabled {\r\n  cursor: not-allowed;\r\n  pointer-events: all !important;\r\n  opacity: 0.6;\r\n}"],
+  "mappings": ";AAAA,CAAA;AACE,SAAA;AACA,YAAA;;AAGF;AACE,SAAA;AACA,aAAA;;AAGF,CAAA;AACE,SAAA;AACA,eAAA;AACA,cAAA;;AAGF,CANA,YAMA;AACE,UAAA,EAAA;;AAEF,CAAA,OAAA;AACE,UAAA;AACA,kBAAA;AACA,WAAA;;",
+  "names": []
+}

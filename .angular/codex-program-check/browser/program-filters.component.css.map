@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/components/program-filters/program-filters.component.scss"],
+  "sourcesContent": [":host {\n  display: block;\n}\n\n.program-filters {\n  display: grid;\n  gap: 0.9rem;\n  grid-template-columns: minmax(0, 1fr);\n  width: min(100%, 560px);\n}\n\n.program-filters__field {\n  color: #495057;\n  display: grid;\n  font-size: 0.85rem;\n  font-weight: 600;\n  gap: 0.35rem;\n  margin: 0;\n  min-width: 0;\n}\n\n.program-filters__button {\n  align-self: end;\n  height: 42px;\n  justify-content: center;\n  width: 100%;\n}\n\n:host ::ng-deep {\n  .program-filters__calendar,\n  .program-filters__calendar .p-calendar,\n  .program-filters__calendar .p-inputtext {\n    width: 100%;\n  }\n\n  .program-filters__calendar .p-inputtext {\n    min-width: 0;\n  }\n}\n\n@media (min-width: 576px) {\n  .program-filters {\n    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 120px;\n  }\n}\n"],
+  "mappings": ";AAAA;AACE,WAAA;;AAGF,CAAA;AACE,WAAA;AACA,OAAA;AACA,yBAAA,OAAA,CAAA,EAAA;AACA,SAAA,IAAA,IAAA,EAAA;;AAGF,CAAA;AACE,SAAA;AACA,WAAA;AACA,aAAA;AACA,eAAA;AACA,OAAA;AACA,UAAA;AACA,aAAA;;AAGF,CAAA;AACE,cAAA;AACA,UAAA;AACA,mBAAA;AACA,SAAA;;AAIA,MAAA,UAAA,CAAA;AAAA,MAAA,UAAA,CAAA,0BAAA,CAAA;AAAA,MAAA,UAAA,CAAA,0BAAA,CAAA;AAGE,SAAA;;AAGF,MAAA,UAAA,CANA,0BAMA,CANA;AAOE,aAAA;;AAIJ,OAAA,CAAA,SAAA,EAAA;AACE,GArCF;AAsCI,2BAAA,OAAA,CAAA,EAAA,KAAA,OAAA,CAAA,EAAA,KAAA;;;",
+  "names": []
+}

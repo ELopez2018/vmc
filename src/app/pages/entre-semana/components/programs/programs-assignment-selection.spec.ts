@@ -6,13 +6,14 @@ import { MeetingRoom, ModalResult, WeeklyProgramChangeType } from "src/app/core/
 import { AssignmentType } from "src/app/core/enums/assignments.enums";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.interface";
-import { Program } from "src/app/core/interfaces/reuniones.interface";
+import { Program, WeeklyProgram } from "src/app/core/interfaces/reuniones.interface";
 import { DataService } from "src/app/core/services/data/data.service";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
 import { ModalService } from "src/app/core/services/modal/modal.service";
 import { WeeklyProgramService } from "src/app/core/services/weeklyProgram/WeeklyProgram.service";
 import { UsersService } from "src/app/core/services/users/users.service";
 import { SearchPublisherComponent } from "src/app/shared/modal/modal-container/search-publisher/search-publisher.component";
+import { EntreSemanaComponent } from "../../entre-semana.component";
 import { ProgramsComponent } from "./programs.component";
 
 describe("Consulta de candidatos para asignaciones semanales", () => {
@@ -160,6 +161,8 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
     { title: "Hagamos revisitas", number: 5, responsible: AssignmentType.FOLLOWING_UP, assistant: AssignmentType.FOLLOWING_UP_ASSISTANT },
     { title: "Haga discípulos", number: 6, responsible: AssignmentType.MAKING_DISCIPLES, assistant: AssignmentType.MAKING_DISCIPLES_ASSISTANT },
     { title: "Hagamos discípulos", number: 6, responsible: AssignmentType.MAKING_DISCIPLES, assistant: AssignmentType.MAKING_DISCIPLES_ASSISTANT },
+    { title: "¿Qué diría?", number: 6, responsible: AssignmentType.WHAT_WOULD_YOU_SAY, assistant: AssignmentType.WHAT_WOULD_YOU_SAY_ASSISTANT },
+    { title: "¿Qué dirías?", number: 6, responsible: AssignmentType.WHAT_WOULD_YOU_SAY, assistant: AssignmentType.WHAT_WOULD_YOU_SAY_ASSISTANT },
   ];
 
   for (const part of parts) {
@@ -205,6 +208,20 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
           request.flush({ frequent: [], brothers: [], sisters: [] });
         });
       }
+    }
+  }
+
+  for (const title of ["¿Qué diría?", "¿Qué dirías?"]) {
+    for (const selection of selections) {
+      it(`reconoce ${title} para ${selection.role} en sala ${selection.room} desde EntreSemanaComponent`, () => {
+        const component = Object.create(EntreSemanaComponent.prototype) as EntreSemanaComponent;
+        component.selectAssignmentType({
+          assignment: { number: 6, title, sectionMeeting: SectionMeeting.SEAMOS_MEJORES_MAESTROS },
+        } as WeeklyProgram, selection.change);
+        expect(component.assignmentType).toBe(selection.role === "assistant"
+          ? AssignmentType.WHAT_WOULD_YOU_SAY_ASSISTANT
+          : AssignmentType.WHAT_WOULD_YOU_SAY);
+      });
     }
   }
 });

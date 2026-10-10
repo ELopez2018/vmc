@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/modal/modal-container/select-publisher/select-publisher.component.scss"],
+  "sourcesContent": [":host {\n  display: block;\n}\n.select_publisher {\n  max-height: min(90vh, 760px);\n  overflow-y: auto;\n  padding: 0.75rem;\n  width: 100%;\n\n  .container {\n    max-width: none;\n    padding: 0;\n  }\n}\n\n.table-container {\n  max-height: min(62vh, 520px);\n  overflow: auto;\n}\n\n@media (max-width: 575.98px) {\n  .select_publisher {\n    max-height: 100vh;\n  }\n\n  .table-container {\n    max-height: calc(100vh - 220px);\n  }\n}\n"],
+  "mappings": ";AAAA;AACE,WAAA;;AAEF,CAAA;AACE,cAAA,IAAA,IAAA,EAAA;AACA,cAAA;AACA,WAAA;AACA,SAAA;;AAEA,CANF,iBAME,CAAA;AACE,aAAA;AACA,WAAA;;AAIJ,CAAA;AACE,cAAA,IAAA,IAAA,EAAA;AACA,YAAA;;AAGF,OAAA,CAAA,SAAA,EAAA;AACE,GAlBF;AAmBI,gBAAA;;AAGF,GAVF;AAWI,gBAAA,KAAA,MAAA,EAAA;;;",
+  "names": []
+}

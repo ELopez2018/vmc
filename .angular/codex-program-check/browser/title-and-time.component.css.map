@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/modal/modal-container/title-and-time/title-and-time.component.scss"],
+  "sourcesContent": [".title-time-modal {\n  display: grid;\n  gap: 1rem;\n  padding: clamp(1rem, 4vw, 2rem);\n  width: 100%;\n}\n\n.title-time-modal__field {\n  display: grid;\n  gap: 0.35rem;\n  margin: 0;\n}\n\n.title-time-modal__field span {\n  color: #495057;\n  font-size: 0.9rem;\n  font-weight: 600;\n}\n\n.title-time-modal .btn {\n  justify-self: end;\n  min-height: 42px;\n  min-width: 120px;\n}\n\n@media (max-width: 575.98px) {\n  .title-time-modal .btn {\n    justify-self: stretch;\n  }\n}\n"],
+  "mappings": ";AAAA,CAAA;AACE,WAAA;AACA,OAAA;AACA,WAAA,MAAA,IAAA,EAAA,GAAA,EAAA;AACA,SAAA;;AAGF,CAAA;AACE,WAAA;AACA,OAAA;AACA,UAAA;;AAGF,CANA,wBAMA;AACE,SAAA;AACA,aAAA;AACA,eAAA;;AAGF,CAnBA,iBAmBA,CAAA;AACE,gBAAA;AACA,cAAA;AACA,aAAA;;AAGF,OAAA,CAAA,SAAA,EAAA;AACE,GA1BF,iBA0BE,CAPF;AAQI,kBAAA;;;",
+  "names": []
+}

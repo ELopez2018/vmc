@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/modal/modal-container/error-modal/error-modal.component.scss"],
+  "sourcesContent": [".error{\n  color: red;\n}\n.container {\n  background-color: white;\n  max-width: 100%;\n  min-height: 0;\n  width: 100%;\n}\n\n.wrapper {\n  margin: 0 !important;\n  padding: clamp(1rem, 5vw, 1.5rem) !important;\n}\n\n.header.h2,\n.resume {\n  font-size: clamp(1.1rem, 4vw, 1.5rem);\n}\n\n.message {\n  overflow-wrap: anywhere;\n}\n"],
+  "mappings": ";AAAA,CAAA;AACE,SAAA;;AAEF,CAAA;AACE,oBAAA;AACA,aAAA;AACA,cAAA;AACA,SAAA;;AAGF,CAAA;AACE,UAAA;AACA,WAAA,MAAA,IAAA,EAAA,GAAA,EAAA;;AAGF,CAAA,MAAA,CAAA;AAAA,CAAA;AAEE,aAAA,MAAA,MAAA,EAAA,GAAA,EAAA;;AAGF,CAAA;AACE,iBAAA;;",
+  "names": []
+}

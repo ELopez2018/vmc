@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/modal/modal-container/modal-container.component.scss"],
+  "sourcesContent": [":host {\n  display: block;\n  position: relative;\n}\n\n.modal-container__close {\n  position: absolute;\n  right: 0.85rem;\n  top: 0.85rem;\n  z-index: 2;\n}\n\r\n:host-context(.vmc-modal-window--print) {\r\n  height: 100%;\r\n  min-height: 0;\r\n}\r\n\r\n:host-context(.vmc-modal-window--print) app-printer,\r\n:host-context(.vmc-modal-window--print) app-assignment-sheet-printer {\r\n  display: block;\r\n  height: 100%;\r\n  min-height: 0;\r\n}\r\n"],
+  "mappings": ";AAAA;AACE,WAAA;AACA,YAAA;;AAGF,CAAA;AACE,YAAA;AACA,SAAA;AACA,OAAA;AACA,WAAA;;AAGF,cAAA,CAAA;AACE,UAAA;AACA,cAAA;;AAGF,cAAA,CAAA,yBAAA;AAAA,cAAA,CAAA,yBAAA;AAEE,WAAA;AACA,UAAA;AACA,cAAA;;",
+  "names": []
+}

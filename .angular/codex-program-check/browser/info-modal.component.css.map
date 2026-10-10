@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/modal/modal-container/info-modal/info-modal.component.scss"],
+  "sourcesContent": [".info-modal {\n  max-width: 100%;\n  width: 100%;\n}\n\n.info-modal .container {\n  max-width: 100%;\n}\n\n.info-modal .wrapper {\n  margin: 0 !important;\n  padding: clamp(1rem, 5vw, 1.5rem) !important;\n}\n\n.info-modal .header.h2,\n.info-modal .resume {\n  font-size: clamp(1.1rem, 4vw, 1.5rem);\n}\n\n.info-modal .message {\n  overflow-wrap: anywhere;\n}\n\n@media (min-width: 992px) {\n  .info-modal {\n    max-width: 100%;\n  }\n}\n"],
+  "mappings": ";AAAA,CAAA;AACE,aAAA;AACA,SAAA;;AAGF,CALA,WAKA,CAAA;AACE,aAAA;;AAGF,CATA,WASA,CAAA;AACE,UAAA;AACA,WAAA,MAAA,IAAA,EAAA,GAAA,EAAA;;AAGF,CAdA,WAcA,CAAA,MAAA,CAAA;AAAA,CAdA,WAcA,CAAA;AAEE,aAAA,MAAA,MAAA,EAAA,GAAA,EAAA;;AAGF,CAnBA,WAmBA,CAAA;AACE,iBAAA;;AAGF,OAAA,CAAA,SAAA,EAAA;AACE,GAxBF;AAyBI,eAAA;;;",
+  "names": []
+}

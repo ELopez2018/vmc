@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/modal/modal-container/loader/loader.component.scss"],
+  "sourcesContent": ["::ng-deep {\r\n  .modal-content {\r\n    background-color: rgba(255, 0, 0, 0) !important;\r\n    border: none;\r\n  }\r\n}\r\n"],
+  "mappings": ";AACE,UAAA,CAAA;AACE,oBAAA,KAAA,GAAA,EAAA,CAAA,EAAA,CAAA,EAAA;AACA,UAAA;;",
+  "names": []
+}

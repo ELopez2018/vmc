@@ -204,9 +204,9 @@ export interface Meeting {
   url: string;
   assignmentType?: any;
   weeklyBibleReading: string;
-  initialSong?: Song;
-  middleSong?: Song;
-  lastSong?: Song;
+  initialSong?: Song | null;
+  middleSong?: Song | null;
+  lastSong?: Song | null;
 }
 
 export interface Room {

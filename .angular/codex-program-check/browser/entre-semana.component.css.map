@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/pages/entre-semana/entre-semana.component.scss"],
+  "sourcesContent": [":host {\n  display: flex;\n  height: 100%;\n  min-height: 0;\n  min-width: 0;\n  overflow: hidden;\n}\n\n.entre-semana {\n  box-sizing: border-box;\n  display: flex;\n  flex: 1 1 0;\n  background-color: rgb(241, 239, 239);\n  min-height: 0;\n  min-width: 0;\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n  margin: 0 auto;\n}\n\n.entre-semana__clear-filter {\n  bottom: 24px;\n  position: fixed;\n  right: 24px;\n  z-index: 1050;\n}\n\r\n@media (min-width: 1366px) {\r\n  .entre-semana {\r\n    padding: 10px 20px 10px 20px;\r\n    margin: 0;\r\n  }\r\n}\n\n@media (max-width: 575.98px) {\n  .entre-semana__clear-filter {\n    bottom: 16px;\n    right: 16px;\n  }\n}\n\r\n"],
+  "mappings": ";AAAA;AACE,WAAA;AACA,UAAA;AACA,cAAA;AACA,aAAA;AACA,YAAA;;AAGF,CAAA;AACE,cAAA;AACA,WAAA;AACA,QAAA,EAAA,EAAA;AACA,oBAAA,IAAA,GAAA,EAAA,GAAA,EAAA;AACA,cAAA;AACA,aAAA;AACA,YAAA;AACA,YAAA;AACA,SAAA;AACA,UAAA,EAAA;;AAGF,CAAA;AACE,UAAA;AACA,YAAA;AACA,SAAA;AACA,WAAA;;AAGF,OAAA,CAAA,SAAA,EAAA;AACE,GArBF;AAsBI,aAAA,KAAA,KAAA,KAAA;AACA,YAAA;;;AAIJ,OAAA,CAAA,SAAA,EAAA;AACE,GAfF;AAgBI,YAAA;AACA,WAAA;;;",
+  "names": []
+}

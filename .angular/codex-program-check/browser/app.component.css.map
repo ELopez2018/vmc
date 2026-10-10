@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/app.component.scss"],
+  "sourcesContent": [".app-version-badge {\r\n  position: fixed;\r\n  left: 50%;\r\n  bottom: 12px;\r\n  transform: translateX(-50%);\r\n  z-index: 1200;\r\n  padding: 6px 10px;\r\n  border-radius: 999px;\r\n  font-size: 12px;\r\n  line-height: 1;\r\n  font-weight: 600;\r\n  color: #f5f7fb;\r\n  background: rgba(30, 41, 59, 0.86);\r\n  border: 1px solid rgba(255, 255, 255, 0.2);\r\n  backdrop-filter: blur(3px);\r\n}\r\n"],
+  "mappings": ";AAAA,CAAA;AACE,YAAA;AACA,QAAA;AACA,UAAA;AACA,aAAA,WAAA;AACA,WAAA;AACA,WAAA,IAAA;AACA,iBAAA;AACA,aAAA;AACA,eAAA;AACA,eAAA;AACA,SAAA;AACA,cAAA,KAAA,EAAA,EAAA,EAAA,EAAA,EAAA,EAAA;AACA,UAAA,IAAA,MAAA,KAAA,GAAA,EAAA,GAAA,EAAA,GAAA,EAAA;AACA,mBAAA,KAAA;;",
+  "names": []
+}

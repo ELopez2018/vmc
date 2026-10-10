@@ -34,6 +34,10 @@
   margin: 0;
 }
 
+.assignment-source__text {
+  white-space: pre-line;
+}
+
 .assignment-source__content :where(p, ul, ol) {
   margin: 0 0 6px;
 }

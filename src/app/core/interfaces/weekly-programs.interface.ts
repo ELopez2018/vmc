@@ -21,10 +21,10 @@ export interface AssignmentLite {
   sectionMeeting: string | null;
   time: number | null;
   timeType: string | null;
-  sourceText: string | null;
-  sourceHtml: string | null;
-  sourceLinks: string | null;
-  sourceUrl: string | null;
+  sourceText?: string | null;
+  sourceHtml?: string | null;
+  sourceLinks?: string | null;
+  sourceUrl?: string | null;
 }
 
 export interface WeeklyProgramResponse {

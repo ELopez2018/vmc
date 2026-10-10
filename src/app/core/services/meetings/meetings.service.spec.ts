@@ -87,9 +87,14 @@ describe('MeetingsService', () => {
         weekNumber: 39,
         weeklyBibleReading: "JEREMÍAS 36,37",
         meetingUrl: "https://wol.jw.org/example",
+        introTime: 5,
+        timeType: "mins.",
         openingSong: "74",
         intermediateSong: "142",
         finalSong: "134",
+        initialSong: { id: 74, songNumber: 74, title: "Canción inicial", source: "Fuente inicial" },
+        middleSong: { id: 142, songNumber: 142, title: "Canción intermedia", source: "Fuente intermedia" },
+        lastSong: { id: 134, songNumber: 134, title: "Canción final", source: "Fuente final" },
         startTimeOpeningSong: [18, 30],
         startTimeIntro: [18, 35],
         startTimeIntermediateSong: [19, 16],
@@ -107,6 +112,10 @@ describe('MeetingsService', () => {
             section: "TESOROS DE LA BIBLIA",
             duration: 10,
             durationUnit: "mins.",
+            sourceText: "Referencia bíblica",
+            sourceHtml: "<p>Referencia bíblica</p>",
+            sourceLinks: '[{"text":"Referencia","url":"https://wol.jw.org/es/wol/d/r4/lp-s/202026244"}]',
+            sourceUrl: "https://wol.jw.org/es/wol/d/r4/lp-s/202026244",
             responsible: {
               id: 131,
               fullName: "Leonardo Sánchez",
@@ -126,12 +135,28 @@ describe('MeetingsService', () => {
     expect(programs).toHaveSize(1);
     expect(programs[0].meeting.week).toBe(Date.UTC(2026, 8, 21));
     expect(programs[0].meeting.url).toBe("https://wol.jw.org/example");
+    expect(programs[0].meeting.introTime).toBe(5);
+    expect(programs[0].meeting.timeType).toBe("mins.");
+    expect(programs[0].meeting.initialSong).toEqual(jasmine.objectContaining({
+      songNumber: 74, title: "Canción inicial", source: "Fuente inicial",
+    }));
+    expect(programs[0].meeting.middleSong).toEqual(jasmine.objectContaining({
+      songNumber: 142, title: "Canción intermedia", source: "Fuente intermedia",
+    }));
+    expect(programs[0].meeting.lastSong).toEqual(jasmine.objectContaining({
+      songNumber: 134, title: "Canción final", source: "Fuente final",
+    }));
     expect(programs[0].congregation.id).toBe(2);
     expect(programs[0].weeklyPrograms[0]).toEqual(
       jasmine.objectContaining({ id: 5778, program: 731, room: "A", startTime: [18, 36] }),
     );
     expect(programs[0].weeklyPrograms[0].assignment).toEqual(
-      jasmine.objectContaining({ number: 1, sectionMeeting: "TESOROS DE LA BIBLIA", time: 10 }),
+      jasmine.objectContaining({
+        number: 1, sectionMeeting: "TESOROS DE LA BIBLIA", time: 10,
+        sourceText: "Referencia bíblica", sourceHtml: "<p>Referencia bíblica</p>",
+        sourceLinks: '[{"text":"Referencia","url":"https://wol.jw.org/es/wol/d/r4/lp-s/202026244"}]',
+        sourceUrl: "https://wol.jw.org/es/wol/d/r4/lp-s/202026244",
+      }),
     );
     expect(TestBed.inject(ProgramValidationsService).validationsFor(731, 131)?.severity).toBe("ERROR");
   });
@@ -156,5 +181,34 @@ describe('MeetingsService', () => {
     expect(request.request.params.get("page")).toBe("3");
     expect(request.request.params.get("size")).toBe("25");
     request.flush({ content: [], last: true });
+  });
+
+  it("requests the WOL preview through the API with the complete URL as a query parameter", () => {
+    const url = "https://wol.jw.org/es/wol/bc/r4/lp-s/202026244/1/0?ref=1&lang=es";
+    let html = "";
+    service.getWolPreview(url).subscribe((response) => html = response.html);
+    const request = httpTesting.expectOne((candidate) => candidate.url.endsWith("/meetings/wol-preview"));
+    expect(request.request.method).toBe("GET");
+    expect(request.request.params.get("url")).toBe(url);
+    request.flush({ url, html: "<p>Referencia</p>" });
+    expect(html).toBe("<p>Referencia</p>");
+  });
+
+  it("preserves null song relations and source fields for old weeks", () => {
+    let program!: Program;
+    service.getWeeksValids(2).subscribe((response) => program = response[0]);
+    httpTesting.expectOne((candidate) => candidate.url.endsWith("/meetings/programs/2")).flush({
+      content: [{ id: 1, week: [2026, 11, 16], initialSong: null, middleSong: null, lastSong: null,
+        openingSong: "74", intermediateSong: "142", finalSong: "134",
+        assignments: [{ id: 6, number: 6, title: "Parte antigua", section: "SEAMOS MEJORES MAESTROS",
+          sourceText: null, sourceHtml: null, sourceLinks: null, sourceUrl: null }],
+      }],
+    });
+    expect(program.meeting.initialSong).toBeNull();
+    expect(program.meeting.middleSong).toBeNull();
+    expect(program.meeting.lastSong).toBeNull();
+    expect(program.meeting.openingSong).toBe("74");
+    expect(program.weeklyPrograms[0].assignment.sourceHtml).toBeNull();
+    expect(program.weeklyPrograms[0].assignment.sourceLinks).toBeNull();
   });
 });

@@ -118,7 +118,7 @@
           {{ adapterTime(semana.startTimeOpeningSong) }}
         </span>
         <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
-          Canción {{ semana.meeting.initialSong?.songNumber }}
+          Canción {{ semana.meeting.initialSong?.songNumber ?? semana.meeting.openingSong }}
         </span>
         <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
           {{ semana.meeting.initialSong?.title }} {{ semana.meeting.initialSong?.source }}
@@ -185,7 +185,7 @@
             {{ adapterTime(semana.startTimeIntermediateSong) }}
           </span>
           <span class="fw-bold hover" (click)="onProgramChange(programChangeType.INTERMEDIATE_SONG)">
-            Canción {{ semana.meeting.middleSong?.songNumber }}
+            Canción {{ semana.meeting.middleSong?.songNumber ?? semana.meeting.intermediateSong }}
           </span>
           <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
             {{ semana.meeting.middleSong?.title }} {{ semana.meeting.middleSong?.source }}
@@ -221,7 +221,7 @@
           {{ adapterTime(semana.startTimeFinalSong) }}
         </span>
         <span class="fw-bold hover" (click)="onProgramChange(programChangeType.FINAL_SONG)">
-          Canción {{ semana.meeting.lastSong?.songNumber }}
+          Canción {{ semana.meeting.lastSong?.songNumber ?? semana.meeting.finalSong }}
         </span>
         <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
           {{ semana.meeting.lastSong?.title }} {{ semana.meeting.lastSong?.source }}

@@ -3,6 +3,9 @@
   "include": [
     "src/app/pages/entre-semana/components/programs/programs-migration.spec.ts",
     "src/app/pages/entre-semana/components/programs/programs-assignment-selection.spec.ts",
+    "src/app/core/services/meetings/meetings.service.spec.ts",
+    "src/app/core/services/program/program-validations.spec.ts",
+    "src/app/shared/components/assignment-source/*.spec.ts",
     "src/**/*.d.ts"
   ]
 }

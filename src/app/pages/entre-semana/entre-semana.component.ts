@@ -16,6 +16,7 @@ import { MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType, WeeklyProgr
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { environment } from "src/environments/environment";
+import { includesMeetingPartTitle } from "./components/programs/program-assignment.util";
 
 interface StoredDateFilter {
   fechaDesde: string;
@@ -406,10 +407,7 @@ export class EntreSemanaComponent implements OnInit {
   }
 
   private isWhatWouldYouSayTitle(title: string): boolean {
-    const normalizedTitle = title?.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    const normalizedPartTitle = MEETING_PARTS.WHAT_WOULD_YOU_SAY.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-
-    return normalizedTitle.includes(normalizedPartTitle);
+    return includesMeetingPartTitle(title, MEETING_PARTS.WHAT_WOULD_YOU_SAY);
   }
 
   private resolveWhatWouldYouSayAssignmentType(type: string): AssignmentType {

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/components/assignment-source/wol-preview.component.scss"],
+  "sourcesContent": [":host { display: block; }\n.modal-body { padding: 0; }\n.modal-title { overflow-wrap: anywhere; }\n.preview-status { padding: 2rem; text-align: center; }\n.spinner-border { margin-right: 0.5rem; }\n.wol-preview-frame { display: block; width: 100%; height: 65vh; border: 0; background: #fff; }\n"],
+  "mappings": ";AAAA;AAAQ,WAAA;;AACR,CAAA;AAAc,WAAA;;AACd,CAAA;AAAe,iBAAA;;AACf,CAAA;AAAkB,WAAA;AAAe,cAAA;;AACjC,CAAA;AAAkB,gBAAA;;AAClB,CAAA;AAAqB,WAAA;AAAgB,SAAA;AAAa,UAAA;AAAc,UAAA;AAAW,cAAA;;",
+  "names": []
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/modal/modal-container/add-assignment/add-assignment.component.scss"],
+  "sourcesContent": [".add-assig {\n  height: auto;\n  max-height: min(90vh, 780px);\n  overflow-y: auto;\n  padding: 0.75rem 0;\n  width: 100%;\n}\n\n.add-assig .container-fluid {\n  max-width: none;\n}\n\n.add-assig .table-responsive {\n  max-height: min(42vh, 360px);\n  overflow: auto;\n}\n\n@media (max-width: 575.98px) {\n  .add-assig {\n    max-height: 100vh;\n    padding: 0.5rem 0;\n  }\n\n  .add-assig h4 {\n    font-size: 1rem;\n    padding: 0.75rem 0.5rem !important;\n  }\n\n  .add-assig .row.mx-4 {\n    margin-left: 0.25rem !important;\n    margin-right: 0.25rem !important;\n  }\n\n  .add-assig .table-responsive {\n    max-height: 34vh;\n  }\n}\n"],
+  "mappings": ";AAAA,CAAA;AACE,UAAA;AACA,cAAA,IAAA,IAAA,EAAA;AACA,cAAA;AACA,WAAA,QAAA;AACA,SAAA;;AAGF,CARA,UAQA,CAAA;AACE,aAAA;;AAGF,CAZA,UAYA,CAAA;AACE,cAAA,IAAA,IAAA,EAAA;AACA,YAAA;;AAGF,OAAA,CAAA,SAAA,EAAA;AACE,GAlBF;AAmBI,gBAAA;AACA,aAAA,OAAA;;AAGF,GAvBF,UAuBE;AACE,eAAA;AACA,aAAA,QAAA;;AAGF,GA5BF,UA4BE,CAAA,GAAA,CAAA;AACE,iBAAA;AACA,kBAAA;;AAGF,GAjCF,UAiCE,CArBF;AAsBI,gBAAA;;;",
+  "names": []
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/shared/modal/modal-container/select-hour/select-hour.component.scss"],
+  "sourcesContent": [".select-hour-modal {\n  display: grid;\n  gap: 1rem;\n  padding: clamp(1rem, 5vw, 2rem);\n  width: 100%;\n}\n\n.select-hour-modal .btn {\n  min-height: 42px;\n  width: 100%;\n}\n"],
+  "mappings": ";AAAA,CAAA;AACE,WAAA;AACA,OAAA;AACA,WAAA,MAAA,IAAA,EAAA,GAAA,EAAA;AACA,SAAA;;AAGF,CAPA,kBAOA,CAAA;AACE,cAAA;AACA,SAAA;;",
+  "names": []
+}

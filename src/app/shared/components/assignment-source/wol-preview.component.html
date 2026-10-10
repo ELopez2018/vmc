@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <h2 class="modal-title fs-5" id="wol-preview-title">{{ referenceTitle }}</h2>
+  <button type="button" class="btn-close" aria-label="Cerrar vista previa" (click)="activeModal.close()"></button>
+</div>
+<div class="modal-body" [attr.aria-busy]="loading">
+  @if (loading) {
+    <div class="preview-status" role="status">
+      <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      Cargando referencia…
+    </div>
+  }
+  @if (error) {
+    <div class="preview-status" role="alert">
+      <p>{{ error }}</p>
+      @if (canOpenOriginal) {
+        <button type="button" class="btn btn-outline-primary" (click)="loadPreview()">Reintentar</button>
+      }
+    </div>
+  }
+  @if (previewHtml) {
+    <iframe class="wol-preview-frame" [srcdoc]="previewHtml" [title]="referenceTitle"
+      sandbox="allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer"></iframe>
+  }
+</div>
+<div class="modal-footer">
+  @if (canOpenOriginal) {
+    <a class="btn btn-outline-primary" [href]="url" target="_blank" rel="noopener noreferrer">Abrir en WOL</a>
+  }
+  <button type="button" class="btn btn-secondary" (click)="activeModal.close()">Cerrar</button>
+</div>

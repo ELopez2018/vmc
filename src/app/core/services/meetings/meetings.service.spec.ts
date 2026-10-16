@@ -24,6 +24,27 @@ describe('MeetingsService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('imports a WOL URL as JSON and reads source and message without a second POST', () => {
+    const url = 'https://wol.jw.org/es/wol/d/r4/lp-s/202026409';
+    const response = { source: '1. Parte | 10\n', message: 'Se crearon los programas de las congregaciones Central' };
+    service.importWeekFromWol(url).subscribe(result => expect(result).toEqual(response));
+    const request = httpTesting.expectOne(req => req.url.endsWith('/meetings/get-data-from-jw-by-week'));
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({ url });
+    expect(request.request.responseType).toBe('json');
+    request.flush(response);
+  });
+
+  it('preserves missing introduction data as null', () => {
+    service.getWeeksValids(1).subscribe(programs => {
+      expect(programs[0].meeting.introTime).toBeNull();
+      expect(programs[0].meeting.timeType).toBeNull();
+    });
+    httpTesting.expectOne(req => req.url.endsWith('/meetings/programs/1')).flush({
+      content: [{ id: 1, week: [2026, 10, 12], introTime: null, timeType: null }],
+    });
+  });
+
   it("updates a program with the flat ProgramUpdateRequest expected by the API", () => {
     const program = {
       id: 501,

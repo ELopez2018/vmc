@@ -144,7 +144,10 @@
           {{ adapterTime(semana.startTimeIntro) }}
         </span>
         <span class="hover ps-2" (click)="onProgramChange(programChangeType.INTRO_TIME)">
-          Palabras de introducción ({{ semana.meeting.introTime + " " + semana.meeting.timeType }})
+          Palabras de introducción
+          @if (semana.meeting.introTime !== null) {
+            ({{ semana.meeting.introTime }} {{ semana.meeting.timeType }})
+          }
         </span>
       </div>
     </div>

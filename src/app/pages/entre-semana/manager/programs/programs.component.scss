@@ -87,3 +87,15 @@ table {
     min-width: 0;
   }
 }
+.program-admin__import {
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
+}
+
+.program-admin__import-source {
+  margin-top: 16px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

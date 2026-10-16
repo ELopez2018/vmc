@@ -21,4 +21,15 @@ export class CongregationsService {
     const url = `${this.server}${this.api.CONGREGATIONS}/by-id?congregationId=${id}`;
     return this.httpClient.get<Congregation>(url);
   }
+
+  updateActivity(congregation: Congregation, acctive: boolean): Observable<Congregation> {
+    return this.httpClient.put<Congregation>(`${this.server}${this.api.CONGREGATIONS}/${congregation.id}`, {
+      id: congregation.id,
+      name: congregation.name,
+      number: congregation.number,
+      day: congregation.day,
+      hour: congregation.hour,
+      acctive,
+    });
+  }
 }

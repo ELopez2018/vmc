@@ -83,6 +83,11 @@ export interface WolPreviewResponse {
   html: string;
 }
 
+export interface WolWeekImportResponse {
+  source: string;
+  message: string;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -138,6 +143,10 @@ export class MeetingsService {
     return this.httpClient.get<WolPreviewResponse>(`${this.server}/meetings/wol-preview`, {
       params: new HttpParams().set("url", url),
     });
+  }
+
+  importWeekFromWol(url: string): Observable<WolWeekImportResponse> {
+    return this.httpClient.post<WolWeekImportResponse>(`${this.server}/meetings/get-data-from-jw-by-week`, { url });
   }
   saveOrUpdateWeeklyProgram(weeklyProgram: WeeklyProgram) {
     const url = `${this.server}/meetings/weekly-program`;
@@ -253,8 +262,8 @@ export class MeetingsService {
       lastSong: response.lastSong,
       weeklyBibleReading: response.weeklyBibleReading ?? "",
       url: response.meetingUrl ?? "",
-      introTime: response.introTime ?? 0,
-      timeType: response.timeType ?? "",
+      introTime: response.introTime ?? null,
+      timeType: response.timeType ?? null,
     };
 
     return {

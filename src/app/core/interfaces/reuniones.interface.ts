@@ -188,6 +188,7 @@ export interface Congregation {
   number: string;
   hour: string;
   day: number;
+  acctive?: boolean;
   assistantAdviser?: Publisher | undefined | null;
   fontColorPublisher?: string;
   deletedAt?: BackendDateTime | null;
@@ -197,8 +198,8 @@ export interface Meeting {
   week: number;
   weekNumber: number;
   openingSong: string;
-  introTime: number;
-  timeType: string;
+  introTime: number | null;
+  timeType: string | null;
   intermediateSong: string;
   finalSong: string;
   url: string;

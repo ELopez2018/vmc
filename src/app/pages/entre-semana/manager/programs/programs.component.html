@@ -1,4 +1,24 @@
 <section class="program-admin">
+  <form class="program-admin__import" [formGroup]="wolImportForm" (ngSubmit)="importWeek()">
+    <h3>Importar semana desde WOL</h3>
+    <p>Usa la URL de estudio de La Atalaya. Se generarán los programas pendientes de todas las congregaciones activas.</p>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>URL de WOL</mat-label>
+      <input matInput type="url" [formControl]="wolUrl" placeholder="https://wol.jw.org/es/wol/d/r4/lp-s/202026409">
+      <mat-error>Introduce una URL https://wol.jw.org/ válida.</mat-error>
+    </mat-form-field>
+    <button mat-flat-button color="primary" type="submit" [disabled]="importing || wolUrl.invalid">
+      {{ importing ? 'Importando…' : 'Importar semana' }}
+    </button>
+    @if (importing) {
+      <mat-progress-bar mode="indeterminate" aria-label="Importando semana"></mat-progress-bar>
+      <p role="status">Importando semana y generando programas…</p>
+    }
+    @if (importError) { <p role="alert">{{ importError }}</p> }
+    @if (importSource !== null) {
+      <pre class="program-admin__import-source" aria-live="polite">{{ importSource }}</pre>
+    }
+  </form>
   <div class="program-admin__toolbar">
     <div class="program-admin__filters">
       <mat-form-field appearance="outline">

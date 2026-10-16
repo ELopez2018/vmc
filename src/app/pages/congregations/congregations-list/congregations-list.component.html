@@ -27,6 +27,16 @@
       <th mat-header-cell *matHeaderCellDef>Hora</th>
       <td mat-cell *matCellDef="let c">{{ c.hour }}</td>
     </ng-container>
+    <ng-container matColumnDef="acctive">
+      <th mat-header-cell *matHeaderCellDef>Generación automática</th>
+      <td mat-cell *matCellDef="let c">
+        <mat-slide-toggle [checked]="c.acctive !== false" [disabled]="savingIds.has(c.id)"
+          [aria-label]="'Generación automática para ' + c.name"
+          (change)="toggleActivity(c, $event)">
+          {{ c.acctive !== false ? 'Activa' : 'Inactiva' }}
+        </mat-slide-toggle>
+      </td>
+    </ng-container>
     <!-- Color Fuente -->
     <ng-container matColumnDef="fontColorPublisher">
       <th mat-header-cell *matHeaderCellDef>Color Fuente</th>

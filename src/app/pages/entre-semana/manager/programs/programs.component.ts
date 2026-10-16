@@ -1,4 +1,5 @@
 import { CommonModule } from "@angular/common";
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Component, DestroyRef, OnInit, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { MatDialog } from "@angular/material/dialog";
@@ -10,6 +11,7 @@ import { MeetingsService } from "src/app/core/services/meetings/meetings.service
 import { ProgramService } from "src/app/core/services/program/program.service";
 import { MaterialModule } from "src/app/shared/material.module";
 import { Utils } from "src/app/shared/Utils";
+import Swal from "sweetalert2";
 import { ProgramFormDialogComponent } from "./program-form-dialog/program-form-dialog.component";
 
 interface WeekFilterOption {
@@ -20,12 +22,14 @@ interface WeekFilterOption {
 
 @Component({
   selector: "vmc-programs",
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, ReactiveFormsModule],
   templateUrl: "./programs.component.html",
   styleUrls: ["./programs.component.scss"],
 })
 export class ProgramsComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
+  private confirmingImport = false;
+  private destroyed = false;
 
   programList: Program[] = [];
   congregations: Congregation[] = [];
@@ -36,6 +40,11 @@ export class ProgramsComponent implements OnInit {
   selectedWeek: string | null = null;
   catalogLoading = true;
   loading = false;
+  importing = false;
+  importSource: string | null = null;
+  importError = "";
+  readonly wolUrl = new FormControl("", { nonNullable: true, validators: [Validators.required, Validators.pattern(/^https:\/\/wol\.jw\.org\/\S+$/)] });
+  readonly wolImportForm = new FormGroup({ url: this.wolUrl });
 
   constructor(
     private programService: ProgramService,
@@ -43,10 +52,87 @@ export class ProgramsComponent implements OnInit {
     private congregationsService: CongregationsService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-  ) {}
+  ) {
+    this.destroyRef.onDestroy(() => {
+      this.destroyed = true;
+      if (this.importing || this.confirmingImport) Swal.close();
+    });
+  }
 
   ngOnInit(): void {
     this.loadCatalogs();
+  }
+
+  async importWeek(): Promise<void> {
+    if (this.importing || this.confirmingImport || this.wolUrl.invalid) {
+      this.wolUrl.markAsTouched();
+      return;
+    }
+    this.confirmingImport = true;
+    let confirmed = false;
+    try {
+      const result = await Swal.fire({
+        title: "¿Importar semana desde WOL?",
+        text: "Si la semana ya existe, se actualizará. También se generarán los programas pendientes de todas las congregaciones activas.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, importar",
+        cancelButtonText: "Cancelar",
+        reverseButtons: true,
+      });
+      confirmed = result.isConfirmed;
+    } finally {
+      this.confirmingImport = false;
+    }
+    if (!confirmed || this.destroyed) {
+      return;
+    }
+    this.importing = true;
+    this.importError = "";
+    this.importSource = null;
+    this.wolUrl.disable();
+    void Swal.fire({
+      title: "Importando semana…",
+      text: "Se está importando o actualizando la semana y generando los programas pendientes. Espera a que termine el proceso.",
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => Swal.showLoading(),
+    });
+    this.meetingsService.importWeekFromWol(this.wolUrl.value.trim())
+      .pipe(
+        finalize(() => {
+          this.importing = false;
+          this.wolUrl.enable();
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (response) => {
+          this.importSource = response.source;
+          void Swal.fire({
+            title: "Importación completada",
+            text: response.message,
+            icon: "success",
+            confirmButtonText: "Entendido",
+          });
+          this.loadCatalogs();
+        },
+        error: (error) => {
+          const status = error?.status;
+          const fallback = status === 400 ? "Revisa la URL y la semana del documento WOL."
+            : status === 401 ? "Inicia sesión para importar la semana."
+            : status === 403 ? "No tienes autorización para importar semanas."
+            : "No se completó la importación. Puedes reintentar.";
+          this.importError = this.getErrorMessage(error?.error && typeof error.error === "object" ? error.error : error, fallback);
+          void Swal.fire({
+            title: "No se pudo importar la semana",
+            text: this.importError,
+            icon: "error",
+            confirmButtonText: "Entendido",
+          });
+        },
+      });
   }
 
   loadCatalogs(): void {

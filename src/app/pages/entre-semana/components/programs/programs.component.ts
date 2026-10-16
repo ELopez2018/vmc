@@ -20,7 +20,7 @@ import { ADMIN_EMAIL, MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { includesMeetingPartTitle, isCongregationBibleStudyAssignment, isSpeechAssignment, normalizeProgramTitle } from "./program-assignment.util";
 import { isExplainingBeliefsSpeechAssignment } from "src/app/core/utils/assignment-eligibility.util";
-import { map, Observable, of, switchMap, tap } from "rxjs";
+import { forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
 import { WeeklyProgramUpdateRequest } from "src/app/core/interfaces/weekly-programs.interface";
 
 type WeeklyPublisherField = "responsible" | "assistant";
@@ -701,9 +701,26 @@ export class ProgramsComponent implements OnInit, OnChanges {
             if (data === ModalResult.CLOSE) {
               return;
             }
-            item.startTime = data;
-            this.saveWeeklyProgram(item).subscribe((data) => {
-              console.log("saved startTime", data);
+            const program = this.findProgramForItem(item);
+            const rows = program?.weeklyPrograms.filter((row) => this.matchesAssignment(row.assignment, item.assignment)) ?? [];
+            if (!rows.length) {
+              void Swal.fire("No se pudo actualizar la hora", "No se encontró la asignación semanal. Actualiza el programa e inténtalo de nuevo.", "error");
+              return;
+            }
+            forkJoin(rows.map((row) => this.updateWeeklyProgram({ ...row, startTime: data }))).subscribe({
+              next: (savedRows) => {
+                savedRows.forEach((saved, index) => Object.assign(rows[index], saved));
+                item.startTime = savedRows.find((saved) => saved.id === item.id)?.startTime ?? savedRows[0].startTime;
+                this.updateWeeksForPrint();
+              },
+              error: (error) => {
+                void Swal.fire({
+                  title: "No se pudo actualizar la hora",
+                  text: error?.error?.message || "No se pudo guardar el cambio. Inténtalo de nuevo.",
+                  icon: "error",
+                  confirmButtonText: "Entendido",
+                });
+              },
             });
           })
           .catch((data) => {

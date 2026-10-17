@@ -6,6 +6,32 @@
     @if (loadError) {
     <div class="alert alert-danger" role="alert">{{ loadError }}</div>
     }
+    @if (weekStatusLoading) {
+    <div class="week-status-notice" role="status">Consultando asignaciones de ambas semanas…</div>
+    }
+    @if (weekStatusError) {
+    <div class="alert alert-warning" role="status">{{ weekStatusError }}</div>
+    }
+    <ng-template #publisherName let-item>
+      <span>{{ item.user.fullName }}</span>
+      <div class="publisher-week-status">
+        @if (weekStatuses.get(item.user.id); as status) {
+          @if (status.current.length) {
+          <span class="week-badge week-badge--current" [attr.title]="status.current.join('\n')">
+            Asignado esta semana
+          </span>
+          }
+          @if (status.previous.length) {
+          <span class="week-badge week-badge--previous" [attr.title]="status.previous.join('\n')">
+            Asignado la semana anterior
+          </span>
+          }
+        }
+        @for (message of assignmentAlerts(item.user.id); track $index) {
+        <span class="week-badge week-badge--alert" [attr.title]="message">{{ message }}</span>
+        }
+      </div>
+    </ng-template>
     <div class="row">
       <div class="col-md-12">
         <mat-tab-group animationDuration="0ms">
@@ -80,7 +106,9 @@
                         <mat-icon>{{ getSortIcon("usedPublishersDataSource", "fullName") }}</mat-icon>
                       </button>
                     </th>
-                    <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
+                    <td mat-cell *matCellDef="let item">
+                      <ng-container *ngTemplateOutlet="publisherName; context: { $implicit: item }"></ng-container>
+                    </td>
                   </ng-container>
 
                   <ng-container matColumnDef="allAssignments">
@@ -148,7 +176,9 @@
                         <mat-icon>{{ getSortIcon("usedPublishersAllByAssigDataSource", "fullName") }}</mat-icon>
                       </button>
                     </th>
-                    <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
+                    <td mat-cell *matCellDef="let item">
+                      <ng-container *ngTemplateOutlet="publisherName; context: { $implicit: item }"></ng-container>
+                    </td>
                   </ng-container>
 
                   <ng-container matColumnDef="allAssignments">
@@ -220,7 +250,9 @@
                         <mat-icon>{{ getSortIcon("maleDataSource", "fullName") }}</mat-icon>
                       </button>
                     </th>
-                    <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
+                    <td mat-cell *matCellDef="let item">
+                      <ng-container *ngTemplateOutlet="publisherName; context: { $implicit: item }"></ng-container>
+                    </td>
                   </ng-container>
 
                   <ng-container matColumnDef="estado">
@@ -298,7 +330,9 @@
                         <mat-icon>{{ getSortIcon("femaleDataSource", "fullName") }}</mat-icon>
                       </button>
                     </th>
-                    <td mat-cell *matCellDef="let item">{{ item.user.fullName }}</td>
+                    <td mat-cell *matCellDef="let item">
+                      <ng-container *ngTemplateOutlet="publisherName; context: { $implicit: item }"></ng-container>
+                    </td>
                   </ng-container>
 
                   <ng-container matColumnDef="estado">

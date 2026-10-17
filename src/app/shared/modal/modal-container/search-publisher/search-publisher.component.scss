@@ -296,3 +296,27 @@ mat-spinner {
 
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
+.publisher-week-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.week-badge {
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: normal;
+
+  &--current { color: #842029; background: #f8d7da; }
+  &--previous { color: #084298; background: #cfe2ff; }
+  &--alert { color: #664d03; background: #fff3cd; }
+}
+
+.week-status-notice {
+  padding: 8px;
+  color: #475569;
+}

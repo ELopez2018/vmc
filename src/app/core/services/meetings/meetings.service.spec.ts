@@ -5,6 +5,7 @@ import { Program } from "../../interfaces/reuniones.interface";
 import { MeetingsService } from "./meetings.service";
 import { ProgramValidationsService } from "../program/program-validations.service";
 import { environment } from "src/environments/environment";
+import { DataService } from "../data/data.service";
 
 describe('MeetingsService', () => {
   let service: MeetingsService;
@@ -43,6 +44,34 @@ describe('MeetingsService', () => {
     httpTesting.expectOne(req => req.url.endsWith('/meetings/programs/1')).flush({
       content: [{ id: 1, week: [2026, 10, 12], introTime: null, timeType: null }],
     });
+  });
+
+  it('preserves assignment tips from the API through the PDF model', () => {
+    let programs: Program[] = [];
+    service.getWeeksValids(2).subscribe(result => programs = result);
+    httpTesting.expectOne(req => req.url.endsWith('/meetings/programs/2')).flush({
+      content: [{ programId: 734, meetingId: 132, week: [2026, 10, 12], assignments: [
+        { id: 1, number: 3, title: 'Lectura de la Biblia', section: 'TESOROS DE LA BIBLIA', showTips: true, tips: 'Estudiante' },
+        { id: 2, number: 4, title: 'Empiece conversaciones', section: 'SEAMOS MEJORES MAESTROS', showTips: true, tips: 'Estudiante/Ayudante' },
+        { id: 3, number: 9, title: 'Estudio bíblico de la congregación', section: 'NUESTRA VIDA CRISTIANA', showTips: true, tips: 'Conductor/Lector' },
+        { id: 4, number: 1, title: 'Discurso', section: 'TESOROS DE LA BIBLIA', showTips: false, tips: 'Oculto' },
+        { id: 5, number: 2, title: 'Perlas', section: 'TESOROS DE LA BIBLIA' },
+      ] }],
+    });
+    const data = Object.create(DataService.prototype) as DataService;
+    (data as any).meetingsPDF$ = { next: jasmine.createSpy('next') };
+    const pdf = data.makePDfVersion(programs);
+    ['Estudiante', 'Estudiante/Ayudante', 'Conductor/Lector'].forEach(tips => {
+      const assignment = pdf[0].weeklyPrograms.find(row => row.assignment.tips === tips)!.assignment;
+      expect(assignment.showTips).toBeTrue();
+      expect(assignment.showTips ? assignment.tips : null).toBe(tips);
+    });
+    const hidden = pdf[0].weeklyPrograms.find(row => row.id === 4)!.assignment;
+    expect(hidden.showTips).toBeFalse();
+    expect(hidden.tips).toBe('Oculto');
+    const missing = pdf[0].weeklyPrograms.find(row => row.id === 5)!.assignment;
+    expect(missing.showTips).toBeFalse();
+    expect(missing.tips).toBeNull();
   });
 
   it("updates a program with the flat ProgramUpdateRequest expected by the API", () => {

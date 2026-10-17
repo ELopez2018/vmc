@@ -65,6 +65,8 @@ interface ProgramAssignmentOverviewResponse {
   section: string;
   duration?: number | null;
   durationUnit?: string | null;
+  showTips?: boolean | null;
+  tips?: string | null;
   sourceText?: string | null;
   sourceHtml?: string | null;
   sourceLinks?: string | null;
@@ -290,7 +292,8 @@ export class MeetingsService {
           sectionMeeting: assignment.section,
           time: assignment.duration ?? undefined,
           timeType: assignment.durationUnit ?? "",
-          showTips: false,
+          showTips: assignment.showTips ?? false,
+          tips: assignment.tips ?? null,
           sourceText: assignment.sourceText,
           sourceHtml: assignment.sourceHtml,
           sourceLinks: assignment.sourceLinks,

@@ -27,6 +27,8 @@ import { AssignmentType, normalizeAssignmentTypeValue, OTHER_PART_LIVING_AS_CHRI
 import { Subscription } from "rxjs";
 import { Combobox } from "src/app/pages/notifications/notifications.component";
 import { AssignmentTypesService } from "src/app/core/services/assignment-types/assignment-types.service";
+import { ProgramValidationsService } from "src/app/core/services/program/program-validations.service";
+import { previousWeek, publisherWeekStatuses, PublisherWeekStatus, weekDate } from "./publisher-week-status";
 
 interface AssignmentTypeMatcher {
   description: string;
@@ -72,6 +74,10 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   public frequentPublishers!: PublisherDto[];
   public showSpinner = true;
   public loadError = "";
+  public weekStatusLoading = false;
+  public weekStatusError = "";
+  public weekStatuses = new Map<number, PublisherWeekStatus>();
+  private selectedProgramId?: number;
   public congregation!: Congregation;
   public usedPublishersList: AssignmentCandidateViewModel[] = [];
   public female: any[] = [];
@@ -140,6 +146,8 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private usersService: UsersService,
     private assignmentTypesService: AssignmentTypesService,
+    private meetingsService: MeetingsService,
+    private programValidations: ProgramValidationsService,
   ) {
     this.subscrp();
   }
@@ -149,9 +157,9 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.assignmentType = normalizeAssignmentTypeValue(this.assignmentType);
-    this.dataService.getMeeting().subscribe((data) => {
+    this.subs.add(this.dataService.getMeeting().subscribe((data) => {
       this.allProgram.set(this.parseProgram(data));
-    });
+    }));
     this.getPublihersByAssignment();
   }
   parseProgram(program: Program[]): any {
@@ -256,7 +264,8 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
       this.loadError = "No se pudo determinar la semana de esta asignación. Cierra el selector y vuelve a cargar el programa.";
       return;
     }
-    const fecha = date.toISOString().split("T")[0];
+    const fecha = weekDate(timestamp);
+    this.loadWeekStatuses(fecha);
     const title = this.selectedAssignmentTitle;
     const sectionMeeting = this.programSelection ? undefined : this.assignment?.assignment?.sectionMeeting;
     const assignmentNumber = this.programSelection ? null : this.assignment?.assignment?.number ?? null;
@@ -288,6 +297,29 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
 
   checkIfYouParticipate1(): void {
     this.setParticipationCandidates(this.usedPublishersListAllByAssig);
+  }
+
+  private loadWeekStatuses(week: string): void {
+    this.weekStatuses = new Map();
+    this.selectedProgramId = undefined;
+    this.weekStatusLoading = true;
+    this.weekStatusError = "";
+    this.subs.add(this.meetingsService.getProgramsByDateRange(previousWeek(week), week, this.congregation.id).subscribe({
+      next: (programs) => {
+        this.weekStatuses = publisherWeekStatuses(programs, week);
+        this.selectedProgramId = programs.find((program) => weekDate(program.meeting.week) === week)?.id;
+        this.weekStatusLoading = false;
+      },
+      error: () => {
+        this.weekStatusLoading = false;
+        this.weekStatusError = "No se pudieron consultar las asignaciones de ambas semanas. Puedes seleccionar un publicador, pero sus indicadores no están disponibles.";
+      },
+    }));
+  }
+
+  public assignmentAlerts(userId: number): string[] {
+    if (this.selectedProgramId == null) return [];
+    return (this.programValidations.validationsFor(this.selectedProgramId, userId)?.items ?? []).map((item) => item.message).filter(Boolean);
   }
 
   private toCandidates(items: any[] | undefined): AssignmentCandidateViewModel[] {

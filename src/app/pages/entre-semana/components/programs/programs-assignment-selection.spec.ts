@@ -11,6 +11,8 @@ import { DataService } from "src/app/core/services/data/data.service";
 import { LoaderService } from "src/app/core/services/loader/loader.service";
 import { ModalService } from "src/app/core/services/modal/modal.service";
 import { WeeklyProgramService } from "src/app/core/services/weeklyProgram/WeeklyProgram.service";
+import { MeetingsService } from "src/app/core/services/meetings/meetings.service";
+import { ProgramValidationsService } from "src/app/core/services/program/program-validations.service";
 import { UsersService } from "src/app/core/services/users/users.service";
 import { SearchPublisherComponent } from "src/app/shared/modal/modal-container/search-publisher/search-publisher.component";
 import { EntreSemanaComponent } from "../../entre-semana.component";
@@ -61,7 +63,7 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
       const row = rows[index];
       const view = { ...row };
       component.changeWeeklyProgram(view, WeeklyProgramChangeType.RESPONSIBLE);
-      selector = new SearchPublisherComponent(dataService, TestBed.inject(LoaderService), TestBed.inject(UsersService), null!);
+      selector = new SearchPublisherComponent(dataService, TestBed.inject(LoaderService), TestBed.inject(UsersService), null!, { getProgramsByDateRange: () => of([]) } as unknown as MeetingsService, TestBed.inject(ProgramValidationsService));
       Object.assign(selector, modalInputs!);
       selector.onClicked.subscribe((publisher) => resolveSelection(publisher));
       selector.ngOnInit();
@@ -91,7 +93,7 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
     const dataService = {
       getCongregation$: () => of({ id: 2 }), getMeeting: () => of([]),
     } as unknown as DataService;
-    selector = new SearchPublisherComponent(dataService, TestBed.inject(LoaderService), TestBed.inject(UsersService), null!);
+    selector = new SearchPublisherComponent(dataService, TestBed.inject(LoaderService), TestBed.inject(UsersService), null!, { getProgramsByDateRange: () => of([]) } as unknown as MeetingsService, TestBed.inject(ProgramValidationsService));
     Object.assign(selector, {
       week: Date.UTC(2026, 10, 2), assignmentType: AssignmentType.OTHER_PART_LIVING_AS_CHRISTIANS,
       assignment: { assignment: { number: 7, title: "Compartamos lo que tenemos", sectionMeeting: SectionMeeting.NUESTRA_VIDA_CRISTIANA } },
@@ -129,7 +131,7 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
         const dataService = {
           getCongregation$: () => of(weeklyProgram.congregation), getMeeting: () => of([]),
         } as unknown as DataService;
-        selector = new SearchPublisherComponent(dataService, TestBed.inject(LoaderService), TestBed.inject(UsersService), null!);
+        selector = new SearchPublisherComponent(dataService, TestBed.inject(LoaderService), TestBed.inject(UsersService), null!, { getProgramsByDateRange: () => of([]) } as unknown as MeetingsService, TestBed.inject(ProgramValidationsService));
         Object.assign(selector, modalInputs);
         selector.ngOnInit();
 
@@ -187,7 +189,7 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
               getCongregation$: () => of(weeklyProgram.congregation),
               getMeeting: () => of([]),
             } as unknown as DataService;
-            selector = new SearchPublisherComponent(dataService, TestBed.inject(LoaderService), TestBed.inject(UsersService), null!);
+            selector = new SearchPublisherComponent(dataService, TestBed.inject(LoaderService), TestBed.inject(UsersService), null!, { getProgramsByDateRange: () => of([]) } as unknown as MeetingsService, TestBed.inject(ProgramValidationsService));
             Object.assign(selector, { assignment, assignmentType, type, room, brothersOnly, week });
             selector.ngOnInit();
             return Promise.resolve(ModalResult.CLOSE);

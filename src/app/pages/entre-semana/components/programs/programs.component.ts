@@ -20,7 +20,7 @@ import { ADMIN_EMAIL, MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { includesMeetingPartTitle, isCongregationBibleStudyAssignment, isSpeechAssignment, normalizeProgramTitle } from "./program-assignment.util";
 import { isExplainingBeliefsSpeechAssignment } from "src/app/core/utils/assignment-eligibility.util";
-import { forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
+import { forkJoin, map, Observable, of, switchMap, tap, throwError } from "rxjs";
 import { WeeklyProgramUpdateRequest } from "src/app/core/interfaces/weekly-programs.interface";
 
 type WeeklyPublisherField = "responsible" | "assistant";
@@ -111,26 +111,33 @@ export class ProgramsComponent implements OnInit, OnChanges {
   }
 
   private updateWeeklyProgram(weeklyProgram: WeeklyProgram): Observable<WeeklyProgram> {
-    if (weeklyProgram.id == null) {
-      throw new Error("La asignación semanal no tiene id.");
-    }
-
-    const assignmentId$ = weeklyProgram.assignment?.id != null
-      ? of(weeklyProgram.assignment.id)
-      : this.weeklyProgramService.findById(weeklyProgram.id).pipe(
+    const program = this.findProgramForItem(weeklyProgram);
+    const programId = weeklyProgram.program ?? program?.id;
+    // Una sala aún no creada puede obtener el assignmentId de la fila de la otra sala.
+    const sourceId = weeklyProgram.id ?? program?.weeklyPrograms.find((row) =>
+      row.id != null && this.matchesAssignment(row.assignment, weeklyProgram.assignment))?.id;
+    const context$ = weeklyProgram.assignment?.id != null && programId != null
+      ? of({ assignmentId: weeklyProgram.assignment.id, programId })
+      : sourceId == null
+        ? throwError(() => new Error("No se pudo identificar la asignación y su programa. Vuelve a cargar la semana."))
+        : this.weeklyProgramService.findById(sourceId).pipe(
           map((stored) => {
-            const assignmentId = stored.assignment?.id;
+            const assignmentId = weeklyProgram.assignment?.id ?? stored.assignment?.id;
+            const resolvedProgramId = programId ?? stored.programId;
 
             if (assignmentId == null) {
               throw new Error("No se pudo obtener el assignmentId de la asignación semanal.");
             }
 
-            return assignmentId;
+            if (resolvedProgramId == null) {
+              throw new Error("No se pudo obtener el programId de la asignación semanal.");
+            }
+            return { assignmentId, programId: resolvedProgramId };
           }),
         );
 
-    return assignmentId$.pipe(
-      switchMap((assignmentId) => this.saveWeeklyProgramUpdate(weeklyProgram, assignmentId)),
+    return context$.pipe(
+      switchMap((context) => this.saveWeeklyProgramUpdate({ ...weeklyProgram, program: context.programId }, context.assignmentId)),
     );
   }
 
@@ -147,17 +154,20 @@ export class ProgramsComponent implements OnInit, OnChanges {
       notificationSentAt: this.mapNotificationDateTime(weeklyProgram.notificationSentAt),
     };
 
-    return this.weeklyProgramService.updateById(weeklyProgram.id!, request).pipe(
+    const saved$ = weeklyProgram.id == null
+      ? this.weeklyProgramService.create(request)
+      : this.weeklyProgramService.updateById(weeklyProgram.id, request);
+    return saved$.pipe(
       map((saved) => ({
         ...weeklyProgram,
         id: saved.id,
         // El DTO resumido no incluye meeting ni showTips: conservar el contexto
         // necesario para volver a abrir el selector tras guardar al responsable.
-        assignment: saved.assignment ? { ...weeklyProgram.assignment, ...saved.assignment } : weeklyProgram.assignment,
+        assignment: { ...weeklyProgram.assignment, id: assignmentId, ...saved.assignment },
         responsible: saved.responsible,
         assistant: saved.assistant,
         congregation: saved.congregation ? { ...weeklyProgram.congregation, ...saved.congregation } : weeklyProgram.congregation,
-        program: saved.programId,
+        program: saved.programId ?? request.programId,
         startTime: saved.startTime,
         room: saved.room ?? "",
         notificationSentAt: saved.notificationSentAt,
@@ -168,7 +178,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
   private mapWeeklyProgramUpsertByTitleRequest(weeklyProgram: WeeklyProgram): WeeklyProgramUpsertByTitleRequest {
     return {
       weeklyProgramId: weeklyProgram.id,
-      programId: weeklyProgram.program,
+      programId: weeklyProgram.program ?? this.findProgramForItem(weeklyProgram)?.id,
       congregationId: weeklyProgram.congregation.id,
       title: weeklyProgram.assignment.title,
       number: weeklyProgram.assignment.number,
@@ -666,7 +676,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
       }
 
       this.resolveAssignmentType(item, type);
-      this.getOrCreateWeeklyProgramForRoom(item, target.room).subscribe({
+      this.getWeeklyProgramForRoom(item, target.room).subscribe({
         next: (weeklyProgram) => {
           if (!weeklyProgram) {
             console.error("No se encontró el programa semanal para la sala", target.room);
@@ -808,13 +818,14 @@ export class ProgramsComponent implements OnInit, OnChanges {
     }
   }
 
-  private getOrCreateWeeklyProgramForRoom(item: WeeklyProgramPdF, room: MeetingRoom): Observable<WeeklyProgram | null> {
+  private getWeeklyProgramForRoom(item: WeeklyProgramPdF, room: MeetingRoom): Observable<WeeklyProgram | null> {
+    const program = this.findProgramForItem(item);
     const existing = this.filterRoom(item, room);
     if (existing) {
+      existing.program ??= program?.id;
       return of(existing);
     }
 
-    const program = this.findProgramForItem(item);
     if (!program) {
       return of(null);
     }
@@ -822,30 +833,14 @@ export class ProgramsComponent implements OnInit, OnChanges {
     const weeklyProgram: WeeklyProgram = {
       assignment: item.assignment,
       congregation: item.congregation,
-      program: item.program,
+      program: program.id,
       startTime: item.startTime,
       room,
       responsible: null,
       assistant: null,
     };
 
-    return this.weeklyProgramService.save([weeklyProgram]).pipe(
-      map((savedPrograms) => {
-        const saved = savedPrograms.find((candidate) => this.matchesWeeklyProgram(candidate, item, room));
-        if (!saved) {
-          return null;
-        }
-
-        const stored = program.weeklyPrograms.find((candidate) => candidate.id === saved.id);
-        if (stored) {
-          Object.assign(stored, saved);
-          return stored;
-        }
-
-        program.weeklyPrograms = [...program.weeklyPrograms, saved];
-        return saved;
-      }),
-    );
+    return of(weeklyProgram);
   }
 
   private handlePublisherSelection(
@@ -864,6 +859,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
     }
 
     if (data == null) {
+      if (weeklyProgram.id == null) return;
       const role = target.field === "responsible" ? "responsable" : "ayudante";
       const roomSuffix = target.room === MeetingRoom.AUXILIARY ? " B" : "";
 
@@ -893,6 +889,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
 
     this.updateWeeklyProgram(request).subscribe({
       next: (saved) => {
+        this.storeWeeklyProgram(saved);
         Object.assign(weeklyProgram, saved);
         this.setPdfPublisher(item, target.viewField, publisher);
 
@@ -913,10 +910,18 @@ export class ProgramsComponent implements OnInit, OnChanges {
     item[field] = publisher;
   }
 
+  private storeWeeklyProgram(saved: WeeklyProgram): void {
+    const program = this.findProgramForItem(saved);
+    if (!program) return;
+    const stored = program.weeklyPrograms.find((row) => row.id === saved.id);
+    if (stored) Object.assign(stored, saved);
+    else program.weeklyPrograms = [...program.weeklyPrograms, saved];
+  }
+
   private findProgramForItem(item: WeeklyProgram): Program | undefined {
     return (
-      this.semanas.find((week) => week.id === item.program) ??
-      this.semanas.find((week) => week.weeklyPrograms.some((weeklyProgram) => weeklyProgram.id === item.id))
+      this.semanas?.find((week) => week.id != null && week.id === item.program) ??
+      this.semanas?.find((week) => item.id != null && week.weeklyPrograms.some((weeklyProgram) => weeklyProgram.id === item.id))
     );
   }
 

@@ -29,6 +29,8 @@ import { Combobox } from "src/app/pages/notifications/notifications.component";
 import { AssignmentTypesService } from "src/app/core/services/assignment-types/assignment-types.service";
 import { ProgramValidationsService } from "src/app/core/services/program/program-validations.service";
 import { previousWeek, publisherWeekStatuses, PublisherWeekStatus, weekDate } from "./publisher-week-status";
+import { daysLabel, nearFutureAssignmentLabel, nearFutureAssignmentWarning } from "./near-future-assignment";
+import Swal from "sweetalert2";
 
 interface AssignmentTypeMatcher {
   description: string;
@@ -223,14 +225,37 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
       }),
     );
   }
-  selected(item: any) {
+  async selected(item: any) {
     const publisher = this.resolveSelectedPublisher(item);
 
     if (this.brothersOnly && publisher?.gender !== "Masculino") {
       return;
     }
 
+    const warning = nearFutureAssignmentWarning(publisher, item?.inNearFuture);
+    if (warning) {
+      const result = await Swal.fire({
+        title: "Asignación próxima",
+        text: warning,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí",
+        cancelButtonText: "No",
+      });
+      if (!result.isConfirmed) return;
+    }
+
     this.onClicked.emit(publisher);
+  }
+
+  public nearFutureLabel(days: number | null | undefined): string {
+    return nearFutureAssignmentLabel(days);
+  }
+
+  public daysLabel(days: number): string {
+    return daysLabel(days);
   }
 
   clean() {
@@ -266,6 +291,11 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     }
     const fecha = weekDate(timestamp);
     this.loadWeekStatuses(fecha);
+    if (!this.assignmentType.trim()) {
+      this.showSpinner = false;
+      this.loadError = "No se pudo identificar el tipo de asignación para este título. Vuelve a cargar el programa.";
+      return;
+    }
     const title = this.selectedAssignmentTitle;
     const sectionMeeting = this.programSelection ? undefined : this.assignment?.assignment?.sectionMeeting;
     const assignmentNumber = this.programSelection ? null : this.assignment?.assignment?.number ?? null;
@@ -518,7 +548,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   }
 
   get frequentTableColumns(): string[] {
-    return ["fullName", "allAssignments", "lastAssignment", "dateLastAssignment", "more"];
+    return ["fullName", "allAssignments", "lastAssignment", "dateLastAssignment", "inNearFuture", "more"];
   }
 
   get compactHeaderText(): string {
@@ -526,7 +556,7 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
   }
 
   get historyTableColumns(): string[] {
-    return ["fullName", "allAssignments", "lastAssignment", "dateLastAssignment", "more"];
+    return ["fullName", "allAssignments", "lastAssignment", "dateLastAssignment", "inNearFuture", "more"];
   }
 
   public getEmptyStateMessage(section: EmptyStateSection): string {
@@ -638,6 +668,8 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
         return item?.lastAssignGlobal ?? "";
       case "daysSinceLastIntervention":
         return item?.daysSinceLastIntervention ?? Number.MAX_SAFE_INTEGER;
+      case "inNearFuture":
+        return item?.inNearFuture ?? Number.MAX_SAFE_INTEGER;
       default:
         return item?.[key] ?? "";
     }

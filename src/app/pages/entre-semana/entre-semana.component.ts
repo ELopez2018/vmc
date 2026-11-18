@@ -388,7 +388,7 @@ export class EntreSemanaComponent implements OnInit {
     if (title.includes(MEETING_PARTS.FOLLOWING_UP)) {
       return AssignmentType.FOLLOWING_UP;
     }
-    if (title.includes(MEETING_PARTS.EXPLAINING_YOUR_BELIEFS)) {
+    if (includesMeetingPartTitle(title, MEETING_PARTS.EXPLAINING_YOUR_BELIEFS)) {
       return AssignmentType.EXPLAINING_YOUR_BELIEFS;
     }
     if (this.isWhatWouldYouSayTitle(title)) {

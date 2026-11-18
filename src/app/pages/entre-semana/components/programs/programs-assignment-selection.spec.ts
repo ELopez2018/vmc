@@ -68,11 +68,11 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
       selector.onClicked.subscribe((publisher) => resolveSelection(publisher));
       selector.ngOnInit();
 
+      const publisher = { id: 80 + index, fullName: `Participante ${index}`, gender: "Masculino" };
       const query = http.expectOne((request) => request.url.endsWith("/users/by-congregation/participated-and-authorized-by-assignment"));
       expect(query.request.params.get("assignment")).toBe(parts[index].type);
       expect(query.request.params.get("assignmentNumber")).toBe(String(parts[index].number));
       expect(query.request.params.get("dateAssignment")).toBe("2026-11-02");
-      const publisher = { id: 80 + index, fullName: `Participante ${index}`, gender: "Masculino" };
       query.flush({ frequent: [], sisters: [], brothers: [{ user: publisher, history: {} }] });
       expect(selector.male.length).toBe(1);
       selector.selected(selector.male[0]);
@@ -80,6 +80,8 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
 
       const save = http.expectOne((request) => request.method === "PUT" && request.url.endsWith(`/weeklyProgram/${row.id}`));
       expect(save.request.body.responsibleId).toBe(publisher.id);
+      expect(save.request.body.assistantId).toBeNull();
+      expect(save.request.body.programId).toBe(501);
       const { meeting: omittedMeeting, ...assignment } = row.assignment;
       save.flush({ id: row.id, programId: 501, assignment, congregation: { id: 2 }, responsible: publisher, assistant: null, room: "A", startTime: null, notificationSentAt: null });
       expect(row.assignment.meeting).toBe(meeting as any);
@@ -105,6 +107,90 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
     expect(selector.loadError).toContain("No existe el tipo de autorización solicitado.");
     expect(selector.showSpinner).toBeFalse();
     expect(selector.male).toEqual([]);
+  });
+
+  it("consulta assignment3 en sala B el 2026-12-28 antes de crear la sala y luego guarda con programId", async () => {
+    const meeting = { id: 10, week: Date.UTC(2026, 11, 28) };
+    // La proyección de lectura puede omitir assignmentId y todavía no existir sala B.
+    const main = {
+      id: 901, program: 501, room: "A", congregation: { id: 2 },
+      assignment: { number: 3, title: "Lectura de la Biblia", sectionMeeting: SectionMeeting.TESOROS_DE_LA_BIBLIA, meeting },
+      responsible: { id: 70 },
+    } as WeeklyProgram;
+    const program = { id: 501, meeting, weeklyPrograms: [main] } as Program;
+    const view = { ...main, responsibleB: null } as WeeklyProgramPdF;
+    let inputs: Partial<SearchPublisherComponent> = {};
+    let resolveSelection!: (value: unknown) => void;
+    const open = jasmine.createSpy("open").and.callFake(() => ({
+      componentInstance: inputs, result: new Promise(resolve => { resolveSelection = resolve; }),
+    }));
+    const component = new ProgramsComponent(null!, new ModalService({ open } as unknown as NgbModal), null!, TestBed.inject(WeeklyProgramService), null!);
+    component.semanas = [program];
+    component.changeWeeklyProgram(view, WeeklyProgramChangeType.RESPONSIBLE_B);
+    expect(open).toHaveBeenCalledTimes(1);
+    http.expectNone(req => req.method === "POST" || req.method === "PUT");
+    selector = new SearchPublisherComponent(
+      { getCongregation$: () => of({ id: 2 }), getMeeting: () => of([program]) } as unknown as DataService,
+      TestBed.inject(LoaderService), TestBed.inject(UsersService), null!,
+      { getProgramsByDateRange: () => of([]) } as unknown as MeetingsService,
+      TestBed.inject(ProgramValidationsService),
+    );
+    Object.assign(selector, inputs);
+    selector.onClicked.subscribe(value => resolveSelection(value));
+    selector.ngOnInit();
+    const query = http.expectOne(req => req.url.endsWith("/users/by-congregation/participated-and-authorized-by-assignment"));
+    expect(query.request.method).toBe("GET");
+    expect(query.request.params.keys().sort()).toEqual(["assignment", "congregationId", "dateAssignment", "room", "assignmentTitle", "sectionMeeting", "assignmentNumber"].sort());
+    expect(query.request.params.get("assignment")).toBe("assignment3");
+    expect(query.request.params.get("congregationId")).toBe("2");
+    expect(query.request.params.get("dateAssignment")).toBe("2026-12-28");
+    expect(query.request.params.get("room")).toBe("B");
+    expect(query.request.params.get("assignmentTitle")).toBe("Lectura de la Biblia");
+    expect(query.request.params.get("sectionMeeting")).toBe("TESOROS DE LA BIBLIA");
+    expect(query.request.params.get("assignmentNumber")).toBe("3");
+    const publisher = { id: 81, fullName: "Lector sala B" };
+    query.flush({ frequent: [{ user: publisher, history: {} }], brothers: [], sisters: [] });
+    selector.selected(selector.usedPublishersList[0]);
+    await Promise.resolve();
+    http.expectOne(req => req.method === "GET" && req.url.endsWith("/weeklyProgram/901"))
+      .flush({ id: 901, programId: 501, assignment: { id: 301 } });
+    const save = http.expectOne(req => req.method === "POST" && req.url.endsWith("/weeklyProgram"));
+    expect(save.request.body.programId).toBe(501);
+    expect(save.request.body.assignmentId).toBe(301);
+    expect(save.request.body.room).toBe("B");
+    expect(save.request.body.responsibleId).toBe(81);
+    save.flush({ id: 902, programId: 501, assignment: { id: 301 }, responsible: publisher, room: "B" });
+    expect(program.weeklyPrograms.length).toBe(2);
+    expect(main.responsible?.id).toBe(70);
+    expect(view.responsibleB?.id).toBe(81);
+
+    // La siguiente apertura reutiliza la fila creada y no dispara otro POST.
+    inputs = {};
+    component.changeWeeklyProgram(view, WeeklyProgramChangeType.RESPONSIBLE_B);
+    expect(inputs.assignment?.id).toBe(902);
+    http.expectNone(req => req.method === "POST");
+    resolveSelection(ModalResult.CLOSE);
+    await Promise.resolve();
+  });
+
+  it("guarda el ayudante de sala B sin cambiar los demás participantes", async () => {
+    const assignment = { id: 301, number: 4, title: "Empiece conversaciones", sectionMeeting: SectionMeeting.SEAMOS_MEJORES_MAESTROS };
+    const row = { id: 902, program: 501, room: "B", congregation: { id: 2 }, assignment, responsible: { id: 80 } } as WeeklyProgram;
+    const view = { ...row, responsible: { id: 70 }, assistant: { id: 71 } } as WeeklyProgramPdF;
+    const publisher = { id: 81, fullName: "Ayudante B" };
+    const modal = { assignPublisherWeeklyProgram: () => Promise.resolve(publisher) } as unknown as ModalService;
+    const component = new ProgramsComponent(null!, modal, null!, TestBed.inject(WeeklyProgramService), null!);
+    component.semanas = [{ id: 501, meeting: { week: Date.UTC(2026, 10, 2) }, weeklyPrograms: [row] }] as Program[];
+    component.changeWeeklyProgram(view, WeeklyProgramChangeType.ASSISTANT_B);
+    await Promise.resolve();
+    const save = http.expectOne((request) => request.method === "PUT" && request.url.endsWith("/weeklyProgram/902"));
+    expect(save.request.body.responsibleId).toBe(80);
+    expect(save.request.body.assistantId).toBe(81);
+    expect(save.request.body.room).toBe("B");
+    save.flush({ id: 902, programId: 501, assignment, responsible: row.responsible, assistant: publisher, room: "B" });
+    expect(view.assistantB?.id).toBe(81);
+    expect(view.responsible?.id).toBe(70);
+    expect(view.assistant?.id).toBe(71);
   });
 
   for (const title of ["Predico con valor", "Discurso de Tesoros de la Biblia"]) {
@@ -163,6 +249,9 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
     { title: "Hagamos revisitas", number: 5, responsible: AssignmentType.FOLLOWING_UP, assistant: AssignmentType.FOLLOWING_UP_ASSISTANT },
     { title: "Haga discípulos", number: 6, responsible: AssignmentType.MAKING_DISCIPLES, assistant: AssignmentType.MAKING_DISCIPLES_ASSISTANT },
     { title: "Hagamos discípulos", number: 6, responsible: AssignmentType.MAKING_DISCIPLES, assistant: AssignmentType.MAKING_DISCIPLES_ASSISTANT },
+    { title: "Explique sus creencias", number: 6, responsible: AssignmentType.EXPLAINING_YOUR_BELIEFS, assistant: AssignmentType.EXPLAINING_YOUR_BELIEFS_ASSISTANT },
+    { title: "Expliquemos nuestras creencias", number: 6, responsible: AssignmentType.EXPLAINING_YOUR_BELIEFS, assistant: AssignmentType.EXPLAINING_YOUR_BELIEFS_ASSISTANT },
+    { title: "EXPLIQUEMOS NUESTRAS CREENCIAS", number: 6, responsible: AssignmentType.EXPLAINING_YOUR_BELIEFS, assistant: AssignmentType.EXPLAINING_YOUR_BELIEFS_ASSISTANT },
     { title: "¿Qué diría?", number: 6, responsible: AssignmentType.WHAT_WOULD_YOU_SAY, assistant: AssignmentType.WHAT_WOULD_YOU_SAY_ASSISTANT },
     { title: "¿Qué dirías?", number: 6, responsible: AssignmentType.WHAT_WOULD_YOU_SAY, assistant: AssignmentType.WHAT_WOULD_YOU_SAY_ASSISTANT },
   ];
@@ -183,7 +272,7 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
           } as WeeklyProgramPdF;
           const component = Object.create(ProgramsComponent.prototype) as ProgramsComponent;
           component.semanas = [];
-          spyOn<any>(component, "getOrCreateWeeklyProgramForRoom").and.returnValue(of(weeklyProgram));
+          spyOn<any>(component, "getWeeklyProgramForRoom").and.returnValue(of(weeklyProgram));
           const openSelector = jasmine.createSpy("assignPublisherWeeklyProgram").and.callFake((assignment, assignmentType, type, room, brothersOnly, week) => {
             const dataService = {
               getCongregation$: () => of(weeklyProgram.congregation),
@@ -200,6 +289,7 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
 
           expect(openSelector).toHaveBeenCalledWith(weeklyProgram, expectedAssignmentType, selection.role, selection.room, false, Date.UTC(2026, 10, 2));
           const request = http.expectOne((req) => req.url.endsWith("/users/by-congregation/participated-and-authorized-by-assignment"));
+          expect(request.request.method).toBe("GET");
           expect(request.request.params.get("assignment")).toBe(expectedAssignmentType);
           expect(request.request.params.get("room")).toBe(selection.room);
           expect(request.request.params.get("congregationId")).toBe("2");
@@ -208,6 +298,7 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
           expect(request.request.params.get("sectionMeeting")).toBe(SectionMeeting.SEAMOS_MEJORES_MAESTROS);
           expect(request.request.params.get("assignmentNumber")).toBe(String(number));
           request.flush({ frequent: [], brothers: [], sisters: [] });
+          http.expectNone((req) => req.url.endsWith("/assignment-balancing/pairs"));
         });
       }
     }

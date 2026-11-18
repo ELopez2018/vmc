@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Servers, Apis } from '../../constants/servers';
-import { concatMap, from, map, Observable, tap, toArray } from 'rxjs';
+import { concatMap, defer, from, map, Observable, of, switchMap, tap, toArray } from 'rxjs';
 import { WeeklyProgram, WeeklyProgramUpsertByTitleRequest } from '../../interfaces/reuniones.interface';
 import { WeeklyProgramCreateRequest, WeeklyProgramResponse, WeeklyProgramUpdateRequest } from '../../interfaces/weekly-programs.interface';
 import { WeeklyProgramDeleteResponse } from '../../interfaces/program-validations.interface';
@@ -39,7 +39,7 @@ export class WeeklyProgramService {
           responsible: saved.responsible,
           assistant: saved.assistant,
           congregation: saved.congregation ? { ...row.congregation, ...saved.congregation } : row.congregation,
-          program: saved.programId,
+          program: saved.programId ?? row.program,
           startTime: saved.startTime,
           room: saved.room ?? row.room,
           notificationSentAt: saved.notificationSentAt,
@@ -54,7 +54,11 @@ export class WeeklyProgramService {
     const url = `${this.server}${this.api.WEEKLYPROGRAM}/upsert-by-title`
     const body = weeklyProgram
 
-    return this.httpClient.post<WeeklyProgram[]>(url, body).pipe(
+    return defer(() => {
+      this.requireProgramId(body.programId);
+      return this.httpClient.post<WeeklyProgram[]>(url, body);
+    }).pipe(
+      map((rows) => rows.map((row) => ({ ...row, program: row.program ?? body.programId }))),
       tap((response) => this.programValidations.applyValidations(response[0]?.validations)),
     );
   }
@@ -65,15 +69,33 @@ export class WeeklyProgramService {
   }
 
   create(request: WeeklyProgramCreateRequest): Observable<WeeklyProgramResponse> {
-    return this.httpClient.post<WeeklyProgramResponse>(`${this.server}${this.api.WEEKLYPROGRAM}`, request).pipe(
+    return defer(() => {
+      this.requireProgramId(request.programId);
+      return this.httpClient.post<WeeklyProgramResponse>(`${this.server}${this.api.WEEKLYPROGRAM}`, request);
+    }).pipe(
+      map((response) => ({ ...response, programId: response.programId ?? request.programId })),
       tap((response) => this.programValidations.applyValidations(response.validations)),
     );
   }
 
   updateById(id: number, request: WeeklyProgramUpdateRequest): Observable<WeeklyProgramResponse> {
-    return this.httpClient.put<WeeklyProgramResponse>(`${this.server}${this.api.WEEKLYPROGRAM}/${id}`, { ...request, id }).pipe(
+    return defer(() => request.programId == null
+      ? this.findById(id).pipe(map((row) => row.programId))
+      : of(request.programId)).pipe(
+      switchMap((programId) => {
+        this.requireProgramId(programId);
+        return this.httpClient.put<WeeklyProgramResponse>(`${this.server}${this.api.WEEKLYPROGRAM}/${id}`, { ...request, id, programId }).pipe(
+          map((response) => ({ ...response, programId: response.programId ?? programId })),
+        );
+      }),
       tap((response) => this.programValidations.applyValidations(response.validations)),
     );
+  }
+
+  private requireProgramId(programId: number): void {
+    if (!Number.isInteger(programId) || programId <= 0) {
+      throw new Error('No se pudo identificar el programa de la asignación (programId). Vuelve a cargar la semana.');
+    }
   }
 
   delete(id: number): Observable<WeeklyProgramDeleteResponse> {

@@ -16,7 +16,7 @@ describe('Guardados consecutivos de asignaciones semanales', () => {
       congregation: { id: 1, name: 'Congregación', day: 2 },
     } as WeeklyProgram;
     const updateById = jasmine.createSpy('updateById').and.callFake((id, request) => of({
-      id, programId: request.programId,
+      id,
       assignment: { id: 301, title: 'Empiece conversaciones' },
       congregation: { id: 1, name: 'Congregación' },
       responsible: request.responsibleId ? { id: request.responsibleId } : null,
@@ -35,7 +35,53 @@ describe('Guardados consecutivos de asignaciones semanales', () => {
       expect(row.program).toBe(501);
     }
     expect(updateById).toHaveBeenCalledTimes(3);
+    expect(updateById.calls.allArgs().every((args) => args[1].programId === 501)).toBeTrue();
     expect(updateById.calls.mostRecent().args[1].assistantId).toBe(82);
+  });
+});
+
+describe('Recuperación de programId al asignar', () => {
+  let http: HttpTestingController;
+  let component: ProgramsComponent;
+  let row: WeeklyProgram;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+    http = TestBed.inject(HttpTestingController);
+    component = new ProgramsComponent(null!, null!, null!, TestBed.inject(WeeklyProgramService), null!);
+    row = { id: 901, room: 'B', assignment: { id: 301 }, congregation: { id: 2 }, responsible: { id: 81 }, assistant: { id: 82 } } as WeeklyProgram;
+    component.semanas = [{ id: 501, weeklyPrograms: [row] } as any];
+  });
+
+  afterEach(() => http.verify());
+
+  it('recupera el programa de la semana y lo conserva si el PUT no devuelve programId', async () => {
+    const saved = firstValueFrom((component as any).updateWeeklyProgram(row)) as Promise<WeeklyProgram>;
+    const request = http.expectOne(req => req.method === 'PUT');
+    expect(request.request.body.programId).toBe(501);
+    expect(request.request.body.responsibleId).toBe(81);
+    expect(request.request.body.assistantId).toBe(82);
+    request.flush({ id: 901, assignment: { id: 301 }, responsible: { id: 81 }, assistant: { id: 82 } });
+    expect((await saved).program).toBe(501);
+    http.expectNone(req => req.method === 'GET');
+  });
+
+  it('consulta la fila cuando no está en la semana y falta programId', async () => {
+    component.semanas = [];
+    const saved = firstValueFrom((component as any).updateWeeklyProgram(row)) as Promise<WeeklyProgram>;
+    http.expectOne(req => req.method === 'GET' && req.url.endsWith('/weeklyProgram/901')).flush({ id: 901, programId: 501, assignment: { id: 301 } });
+    const request = http.expectOne(req => req.method === 'PUT');
+    expect(request.request.body.programId).toBe(501);
+    expect(request.request.body.assistantId).toBe(82);
+    request.flush({ id: 901, assignment: { id: 301 } });
+    expect((await saved).program).toBe(501);
+  });
+
+  it('prepara la sala faltante sin guardarla antes de seleccionar y conserva el programa', async () => {
+    component.semanas[0].weeklyPrograms = [{ ...row, room: 'A' }];
+    const saved = firstValueFrom((component as any).getWeeklyProgramForRoom(row, 'B')) as Promise<WeeklyProgram>;
+    expect((await saved).program).toBe(501);
+    http.expectNone(req => req.method === 'POST');
   });
 });
 

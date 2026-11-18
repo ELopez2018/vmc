@@ -10,6 +10,10 @@ function normalizeAssignmentText(value?: string | null): string {
     .toLowerCase();
 }
 
+export function explainingBeliefsTitleVariants(): string[] {
+  return [MEETING_PARTS.EXPLAINING_YOUR_BELIEFS, "Explique sus creencias", "Expliquemos nuestras creencias"];
+}
+
 /** Identifica exclusivamente la variante Discurso de "Explique sus creencias". */
 export function isExplainingBeliefsSpeechAssignment(
   assignment?: Pick<Assignment, "title" | "sourceText" | "sourceHtml"> | null,
@@ -19,10 +23,9 @@ export function isExplainingBeliefsSpeechAssignment(
   }
 
   const normalizedTitle = normalizeAssignmentText(assignment.title);
-  const explainingBeliefsTitle = normalizeAssignmentText(MEETING_PARTS.EXPLAINING_YOUR_BELIEFS);
   const normalizedSource = normalizeAssignmentText(`${assignment.sourceText ?? ""} ${assignment.sourceHtml ?? ""}`);
   const isExplainingYourBeliefs =
-    explainingBeliefsTitle.length > 0 && normalizedTitle === explainingBeliefsTitle;
+    explainingBeliefsTitleVariants().some((title) => title.length > 0 && normalizedTitle === normalizeAssignmentText(title));
   const sourceContainsSpeech = normalizedSource.includes("discurso");
 
   return isExplainingYourBeliefs && sourceContainsSpeech;

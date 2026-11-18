@@ -1,6 +1,7 @@
 import { MEETING_PARTS } from "src/app/core/constants/program.constants";
 import { Assignment } from "src/app/core/interfaces/reuniones.interface";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
+import { explainingBeliefsTitleVariants } from "src/app/core/utils/assignment-eligibility.util";
 
 export function normalizeProgramTitle(value?: string | null): string {
   return (value ?? "")
@@ -19,6 +20,7 @@ export function includesMeetingPartTitle(title: string | null | undefined, meeti
     [MEETING_PARTS.STARTING_A_CONVERSATION, "Empiece conversaciones", "Empecemos conversaciones"],
     [MEETING_PARTS.FOLLOWING_UP, "Haga revisitas", "Hagamos revisitas"],
     [MEETING_PARTS.MAKING_DISCIPLES, "Haga discípulos", "Hagamos discípulos"],
+    explainingBeliefsTitleVariants(),
     [MEETING_PARTS.WHAT_WOULD_YOU_SAY, "¿Qué diría?", "¿Qué dirías?"],
   ];
   const meetingPartTitles = titleVariants.find(([catalogTitle]) => catalogTitle === meetingPartTitle) ?? [meetingPartTitle];

@@ -6,6 +6,7 @@ import { Publisher, Room } from "../../interfaces/reuniones.interface";
 import { AssignmentCandidatesResponse, PublisherHistoryItem } from "../../interfaces/publishers.interface";
 import { LoaderService } from "../loader/loader.service";
 import { normalizeAssignmentTypeValue } from "../../enums/assignments.enums";
+import { BalancedAssignmentPairRequest, BalancedAssignmentPairResponse } from "../../interfaces/assignment-balancing.interface";
 
 @Injectable({
   providedIn: "root",
@@ -21,6 +22,10 @@ export class UsersService {
   getAllUsers(): Observable<any> {
     const url = `${this.server}${this.api.USERS}`;
     return this.httpClient.get(url);
+  }
+
+  getBalancedAssignmentPairs(request: BalancedAssignmentPairRequest): Observable<BalancedAssignmentPairResponse> {
+    return this.httpClient.post<BalancedAssignmentPairResponse>(`${this.server}/assignment-balancing/pairs`, request);
   }
 
   getUsersByCongregation(congregationId: number): Observable<any> {

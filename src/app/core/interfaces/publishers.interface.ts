@@ -19,6 +19,8 @@ export interface UserAssignmentHistory {
   allAssignments: number;
   dateLastAssignment: AssignmentDate;
   daysSinceLastIntervention: number | null;
+  // Días desde dateAssignment hasta la próxima participación; null si no hay.
+  inNearFuture: number | null;
 }
 
 export interface UserByTypeResponse {
@@ -32,6 +34,7 @@ export interface AssignmentCandidateViewModel {
   allAssignments: number;
   dateLastAssignment: AssignmentDate;
   daysSinceLastIntervention: number | null;
+  inNearFuture: number | null;
   participate?: boolean;
 }
 
@@ -48,6 +51,7 @@ export function toAssignmentCandidate(item: UserByTypeResponse): AssignmentCandi
     allAssignments: item.history.allAssignments,
     dateLastAssignment: item.history.dateLastAssignment,
     daysSinceLastIntervention: item.history.daysSinceLastIntervention,
+    inNearFuture: item.history.inNearFuture ?? null,
   };
 }
 

@@ -109,6 +109,21 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
     expect(selector.male).toEqual([]);
   });
 
+  it("muestra un error local y no envía assignment vacío si no reconoce el título", () => {
+    selector = new SearchPublisherComponent(
+      { getCongregation$: () => of({ id: 2 }), getMeeting: () => of([]) } as unknown as DataService,
+      TestBed.inject(LoaderService), TestBed.inject(UsersService), null!,
+      { getProgramsByDateRange: () => of([]) } as unknown as MeetingsService,
+      TestBed.inject(ProgramValidationsService),
+    );
+    selector.week = "2026-12-28";
+    selector.assignmentType = "";
+    selector.ngOnInit();
+    expect(selector.loadError).toContain("No se pudo identificar el tipo de asignación");
+    expect(selector.showSpinner).toBeFalse();
+    http.expectNone(req => req.url.endsWith("/users/by-congregation/participated-and-authorized-by-assignment"));
+  });
+
   it("consulta assignment3 en sala B el 2026-12-28 antes de crear la sala y luego guarda con programId", async () => {
     const meeting = { id: 10, week: Date.UTC(2026, 11, 28) };
     // La proyección de lectura puede omitir assignmentId y todavía no existir sala B.

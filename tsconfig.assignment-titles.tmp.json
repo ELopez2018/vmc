@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.spec.json",
+  "include": [
+    "src/app/pages/entre-semana/components/programs/programs-migration.spec.ts",
+    "src/app/pages/entre-semana/components/programs/programs-assignment-selection.spec.ts",
+    "src/app/shared/modal/modal-container/search-publisher/search-publisher.component.spec.ts",
+    "src/app/core/services/weeklyProgram/weekly-program-program-id.spec.ts",
+    "src/app/core/utils/assignment-eligibility.util.spec.ts",
+    "src/**/*.d.ts"
+  ]
+}

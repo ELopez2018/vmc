@@ -10,7 +10,7 @@
   </div>
 </ng-template>
 
-<div class="program">
+<div class="program" [class.program--read-only]="readOnly">
   <div class="container-wrapper p-0 p-md-1">
     <div class="wrapper">
       @for (semana of semanasAllRooms; track semana.id) {
@@ -18,6 +18,8 @@
         [semana]="semana"
         [roomA]="RoomA"
         [room]="room"
+        [readOnly]="readOnly"
+        [collapseSourcesByDefault]="collapseSourcesByDefault"
         [isAdmin]="isAdmin"
         [porAsignar]="porAsignar"
         [meetingDay]="meetingDay"

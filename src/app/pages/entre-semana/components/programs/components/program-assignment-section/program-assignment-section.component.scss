@@ -374,3 +374,119 @@ legend {
     color: #856404;
   }
 }
+
+/* Las vistas por sala usan una misma línea de inicio para horarios, títulos y participantes. */
+:host(.room-view) legend {
+  width: 100%;
+}
+
+:host(.room-view) .program-assignment-row--single-room {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  column-gap: 0;
+  align-items: start;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+:host(.room-view) .program-assignment-row--single-room > :first-child,
+:host(.room-view) .program-assignment-row--single-room > :last-child {
+  width: 100%;
+  max-width: none !important;
+  flex: none !important;
+  min-width: 0;
+  margin: 0 !important;
+}
+
+:host(.room-view) .program-assignment-row--single-room > :first-child {
+  grid-column: 1;
+  padding-right: 0;
+}
+
+:host(.room-view) .program-assignment-row--single-room > :last-child {
+  grid-column: 2;
+  padding-left: 0;
+}
+
+:host(.room-view) .program-assignment-row--single-room > .d-none.d-xl-block,
+:host(.room-view) .assignment-collapse-button,
+:host(.room-view) vmc-assignment-source {
+  display: none !important;
+}
+
+:host(.room-view) .program-assignment-title {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  line-height: 1.2;
+}
+
+:host(.room-view) .program__title-asingment {
+  flex: 1 1 0;
+  min-width: 0;
+  margin-right: 14px;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+:host(.room-view) .assignment-stopwatch-btn,
+:host(.room-view) .assignment-stopwatch-controls,
+:host(.room-view) .inline-timer {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+:host(.room-view) .assignment-stopwatch-btn {
+  min-height: 20px;
+  height: 20px;
+  padding: 0 2px;
+}
+
+:host(.room-view) .inline-timer {
+  min-height: 20px;
+}
+
+:host(.room-view) .text-publisher {
+  line-height: 1.2;
+}
+
+:host(.room-view) .program-assignment-line,
+:host(.room-view) .big-title {
+  overflow: visible;
+}
+
+:host(.room-view) .big-title,
+:host(.room-view) .program__title-asingment {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 768px) and (max-width: 1180px) {
+  :host(.room-view) .program-assignment-row--single-room {
+    grid-template-columns: minmax(0, 68%) minmax(0, 1fr);
+    column-gap: 4px;
+  }
+
+  :host(.room-view) .program-assignment-row--teachers > :last-child .text-publisher {
+    display: inline;
+    margin-top: 0;
+  }
+
+  :host(.room-view) .title-number {
+    font-size: calc(1em - 2px);
+    font-weight: 400;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 767.98px) {
+  :host(.room-view) .program-assignment-row--single-room {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2px;
+  }
+
+  :host(.room-view) .program-assignment-row--single-room > :last-child {
+    grid-column: 1;
+    padding-left: 46px;
+  }
+}

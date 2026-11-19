@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, Output, inject } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, inject } from "@angular/core";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.interface";
 import { Publisher } from "src/app/core/interfaces/reuniones.interface";
@@ -23,11 +23,13 @@ import { isCongregationBibleStudyAssignment, isSpeechAssignment } from "../../pr
   styleUrls: ["./program-week.component.scss"],
   imports: [CommonModule, SharedModule, NgbTooltipModule, ProgramAssignmentSectionComponent],
 })
-export class ProgramWeekComponent {
+export class ProgramWeekComponent implements OnInit {
   private readonly programValidations = inject(ProgramValidationsService);
   @Input() public semana!: ProgramPdf;
   @Input() public roomA = false;
   @Input() public room = MeetingRoom.MAIN;
+  @Input() public readOnly = false;
+  @Input() public collapseSourcesByDefault = false;
   @Input() public isAdmin = false;
   @Input() public porAsignar = "por asignar";
   @Input() public meetingDay = 1;
@@ -44,9 +46,21 @@ export class ProgramWeekComponent {
   public readonly treasuresSection = SectionMeeting.TESOROS_DE_LA_BIBLIA;
   public readonly teachersSection = SectionMeeting.SEAMOS_MEJORES_MAESTROS;
   public readonly livingSection = SectionMeeting.NUESTRA_VIDA_CRISTIANA;
+  public sourcesInitiallyCollapsed = false;
+  public get showSharedMeetingParts(): boolean {
+    return !this.readOnly || this.room !== MeetingRoom.AUXILIARY;
+  }
+  public get showLivingSection(): boolean {
+    return this.roomA && this.showSharedMeetingParts;
+  }
   public readonly publisherTooltipPlacement = "top";
 
   private collapsedSectionKeys = new Set<string>();
+
+  public ngOnInit(): void {
+    this.sourcesInitiallyCollapsed = this.collapseSourcesByDefault && typeof window !== "undefined" &&
+      window.matchMedia("(min-width: 768px) and (max-width: 1180px)").matches;
+  }
 
   public showDayOfMeeting(fechaSemana: any): string {
     return Utils.showDayOfMeeting(fechaSemana, this.meetingDay, false, this.semana?.event);
@@ -65,14 +79,17 @@ export class ProgramWeekComponent {
   }
 
   public onProgramChange(type: string): void {
+    if (this.readOnly) return;
     this.programChange.emit({ program: this.semana, type });
   }
 
   public onWeeklyProgramChange(event: { item: WeeklyProgramPdF; type: string }): void {
+    if (this.readOnly) return;
     this.weeklyProgramChange.emit(event);
   }
 
   public onAddAssignment(event: { program: ProgramPdf; sectionMeeting: string }): void {
+    if (this.readOnly) return;
     this.addAssignment.emit(event);
   }
 

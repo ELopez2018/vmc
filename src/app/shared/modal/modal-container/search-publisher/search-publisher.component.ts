@@ -31,6 +31,7 @@ import { ProgramValidationsService } from "src/app/core/services/program/program
 import { previousWeek, publisherWeekStatuses, PublisherWeekStatus, weekDate } from "./publisher-week-status";
 import { daysLabel, nearFutureAssignmentLabel, nearFutureAssignmentWarning } from "./near-future-assignment";
 import Swal from "sweetalert2";
+import { assignmentAssistantRestriction, teachingAssignmentType } from "src/app/core/utils/assignment-eligibility.util";
 
 interface AssignmentTypeMatcher {
   description: string;
@@ -282,6 +283,16 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     this.male = [];
     this.female = [];
     this.updateDataSources();
+    if (!this.programSelection && this.assignment?.assignment) {
+      const persistedType = teachingAssignmentType(this.assignment.assignment, this.type === "assistant");
+      if (persistedType !== undefined) this.assignmentType = persistedType;
+      const restriction = this.type === "assistant" ? assignmentAssistantRestriction(this.assignment.assignment) : null;
+      if (restriction) {
+        this.showSpinner = false;
+        this.loadError = restriction;
+        return;
+      }
+    }
     const timestamp = this.week ?? this.assignment?.assignment?.meeting?.week;
     const date = new Date(timestamp ?? "");
     if (timestamp == null || !Number.isFinite(date.getTime())) {
@@ -293,14 +304,24 @@ export class SearchPublisherComponent implements OnInit, OnDestroy {
     this.loadWeekStatuses(fecha);
     if (!this.assignmentType.trim()) {
       this.showSpinner = false;
-      this.loadError = "No se pudo identificar el tipo de asignación para este título. Vuelve a cargar el programa.";
+      this.loadError = "No se pudo identificar el tipo de asignación. Revisa su categoría o vuelve a cargar el programa.";
       return;
     }
     const title = this.selectedAssignmentTitle;
     const sectionMeeting = this.programSelection ? undefined : this.assignment?.assignment?.sectionMeeting;
     const assignmentNumber = this.programSelection ? null : this.assignment?.assignment?.number ?? null;
     this.showSpinner = true;
-    this.usersService.getPublishersByAssignment(this.assignmentType, this.congregation.id, fecha, this.room, title, sectionMeeting, assignmentNumber).subscribe((data) => {
+    this.usersService.getPublishersByAssignment({
+      assignment: this.assignmentType,
+      congregationId: this.congregation.id,
+      dateAssignment: fecha,
+      room: this.room,
+      assignmentId: this.programSelection ? undefined : this.assignment?.assignment?.id,
+      participantRole: this.programSelection ? undefined : this.type === "assistant" ? "assistant" : "responsible",
+      assignmentTitle: title,
+      sectionMeeting,
+      assignmentNumber,
+    }).subscribe((data) => {
       // El backend ya entrega las categorías, autorización y orden inicial.
       // No se filtra ni ordena nada hasta que el usuario pulse una cabecera.
       this.usedPublishersList = this.toCandidates(data?.frequent);

@@ -19,7 +19,7 @@ import { ProgramWeekComponent } from "./components/program-week/program-week.com
 import { ADMIN_EMAIL, MEETING_PARTS, MeetingRoom, ModalResult, ProgramChangeType, WeeklyProgramChangeType } from "src/app/core/constants/program.constants";
 import { SectionMeeting } from "src/app/core/enums/meetings.enums";
 import { includesMeetingPartTitle, isCongregationBibleStudyAssignment, isSpeechAssignment, normalizeProgramTitle } from "./program-assignment.util";
-import { isExplainingBeliefsSpeechAssignment } from "src/app/core/utils/assignment-eligibility.util";
+import { assignmentAssistantRestriction, isExplainingBeliefsSpeechAssignment, teachingAssignmentType } from "src/app/core/utils/assignment-eligibility.util";
 import { forkJoin, map, Observable, of, switchMap, tap, throwError } from "rxjs";
 import { WeeklyProgramUpdateRequest } from "src/app/core/interfaces/weekly-programs.interface";
 
@@ -45,6 +45,8 @@ export class ProgramsComponent implements OnInit, OnChanges {
   @Input() public semanasAllRooms: ProgramPdf[] = [];
   @Input() public RoomA = false;
   @Input() public room = MeetingRoom.MAIN;
+  @Input() public readOnly = false;
+  @Input() public collapseSourcesByDefault = false;
   porAsignar = "por asignar";
   isAdmin = false;
   public congregation: Congregation = CongregationMock;
@@ -63,7 +65,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes["semanas"]) {
+    if (changes["semanas"] && !this.readOnly) {
       this.updateWeeksForPrint();
     }
   }
@@ -78,7 +80,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
       this.congregation = data;
       this.meetingDay = data.day;
     });
-    this.updateWeeksForPrint();
+    if (!this.readOnly) this.updateWeeksForPrint();
   }
 
   private updateWeeksForPrint(): void {
@@ -227,6 +229,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
   }
 
   changeProgram(program: Program, type: string) {
+    if (this.readOnly) return;
     console.log("changeProgram");
     let item = this.filterProgram(program) ?? program;
     switch (type) {
@@ -582,6 +585,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
   }
 
   selectAssignmentType(item: WeeklyProgram, type: string) {
+    const persistedType = teachingAssignmentType(item.assignment, this.isAssistantChange(type));
+    if (persistedType !== undefined) {
+      this.assignmentType = persistedType;
+      return;
+    }
     if (isSpeechAssignment(item.assignment)) {
       this.assignmentType = AssignmentType.SPEECH;
       return;
@@ -666,12 +674,14 @@ export class ProgramsComponent implements OnInit, OnChanges {
   }
 
   changeWeeklyProgram(item: WeeklyProgramPdF, type: string) {
+    if (this.readOnly) return;
     const target = this.getWeeklyPublisherTarget(type);
     const isRestrictedExplainingBeliefsSpeech = isExplainingBeliefsSpeechAssignment(item.assignment);
 
     if (target) {
-      if (target.field === "assistant" && isRestrictedExplainingBeliefsSpeech) {
-        this.showNoAssistantRestriction();
+      const assistantRestriction = assignmentAssistantRestriction(item.assignment);
+      if (target.field === "assistant" && (assistantRestriction || isRestrictedExplainingBeliefsSpeech || isSpeechAssignment(item.assignment))) {
+        this.showNoAssistantRestriction(assistantRestriction ?? undefined);
         return;
       }
 
@@ -758,11 +768,11 @@ export class ProgramsComponent implements OnInit, OnChanges {
     }
   }
 
-  private showNoAssistantRestriction(): void {
+  private showNoAssistantRestriction(message = "La fuente identifica esta parte como un discurso. Solo se puede asignar a hermanos y no lleva ayudante en ninguna sala."): void {
     this.modalService
       .info(
         "Asignación sin ayudante",
-        "La fuente identifica esta parte como un discurso. Solo se puede asignar a hermanos y no lleva ayudante en ninguna sala.",
+        message,
         ModalTitleEnums.INFORMACION,
         ModalTypeEnums.INFO,
       )
@@ -943,6 +953,7 @@ export class ProgramsComponent implements OnInit, OnChanges {
     );
   }
   addAssign(item: Program, sectionMeeting: string) {
+    if (this.readOnly) return;
     this.modalService.AddAssignment(item, sectionMeeting);
   }
 

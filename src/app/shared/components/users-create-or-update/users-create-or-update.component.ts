@@ -4,7 +4,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, Reac
 import { DateAdapter, MAT_DATE_LOCALE } from "@angular/material/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { ActivatedRoute } from "@angular/router";
-import { finalize, map, of, switchMap } from "rxjs";
+import { catchError, finalize, forkJoin, map, of, switchMap } from "rxjs";
 import { ApiErrorResponse, AssignmentType, AssignmentTypePermission, Congregation, Publisher } from "src/app/core/interfaces/reuniones.interface";
 import { AssignmentTypesService } from "src/app/core/services/assignment-types/assignment-types.service";
 import { CongregationsService } from "src/app/core/services/congregations/congregations.service";
@@ -41,6 +41,8 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   public isSaving = false;
   public isLoadingAssignmentTypes = false;
   public assignmentTypesLoadFailed = false;
+  public isLoadingPermissions = false;
+  public permissionsLoadFailed = false;
   public isDialog = false;
   public configuredPermissionProfiles: StoredPermissionProfiles = {
     elder: [],
@@ -92,8 +94,9 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       lastName: new FormControl(publisher.lastName, [Validators.maxLength(80)]),
       surname: new FormControl(publisher.surname, [Validators.maxLength(80)]),
       birthdate: new FormControl(publisher.birthdate),
+      frequency: new FormControl(publisher.frequency, [this.integerValidator]),
       gender: new FormControl(publisher.gender, [Validators.required]),
-      documentNumber: new FormControl(publisher.documentNumber),
+      documentNumber: new FormControl(publisher.documentNumber, [this.documentNumberValidator]),
       documentType: new FormControl(publisher.documentType, [Validators.required]),
       cellPhone: new FormControl(publisher.cellPhone, [Validators.maxLength(30)]),
       phone: new FormControl(publisher.phone, [Validators.maxLength(30)]),
@@ -114,8 +117,9 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       lastName: new FormControl(null, [Validators.maxLength(80)]),
       surname: new FormControl(null, [Validators.maxLength(80)]),
       birthdate: new FormControl(null),
+      frequency: new FormControl(null, [this.integerValidator]),
       gender: new FormControl("Femenino", [Validators.required]),
-      documentNumber: new FormControl(null),
+      documentNumber: new FormControl(null, [this.documentNumberValidator]),
       documentType: new FormControl("CC", [Validators.required]),
       cellPhone: new FormControl(null, [Validators.maxLength(30)]),
       phone: new FormControl(null, [Validators.maxLength(30)]),
@@ -131,7 +135,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   }
 
   get disabledSave(): boolean {
-    return this.isSaving || this.isLoadingAssignmentTypes;
+    return this.isSaving || this.isLoadingAssignmentTypes || this.isLoadingPermissions || this.permissionsLoadFailed;
   }
 
   getAllCong(): void {
@@ -142,12 +146,12 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   }
 
   save(): void {
-    if (this.isLoadingAssignmentTypes) {
-      this.notify.warning("Espera a que terminen de cargar los tipos de asignación.", "Cargando");
+    if (this.isLoadingAssignmentTypes || this.isLoadingPermissions) {
+      this.notify.warning("Espera a que terminen de cargar los permisos.", "Cargando");
       return;
     }
 
-    if (this.assignmentTypesLoadFailed) {
+    if (this.assignmentTypesLoadFailed || this.permissionsLoadFailed) {
       this.notify.error("No se pueden guardar permisos sin cargar los tipos de asignación.", "Error");
       return;
     }
@@ -158,7 +162,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       return;
     }
 
-    const publisher = this.buildPublisherPayload();
+    const publisher = this.usersService.convertUserToSaveRequest(this.buildPublisherPayload());
     this.isSaving = true;
 
     this.usersService
@@ -168,7 +172,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
           const userId = savedPublisher.id ?? publisher.id;
 
           if (!userId || this.assignmentTypes.length === 0) {
-            return of(savedPublisher);
+            return of({ savedPublisher, permissionsSaved: true });
           }
 
           return this.userAssignmentTypesService
@@ -180,32 +184,37 @@ export class UsersCreateOrUpdateComponent implements OnInit {
               })),
             })
             .pipe(
-              map((assignmentTypePermissions) => ({
-                ...savedPublisher,
-                assignmentTypePermissions,
-              })),
+              map((assignmentTypePermissions) => ({ savedPublisher: { ...savedPublisher, assignmentTypePermissions }, permissionsSaved: true })),
+              catchError((error) => of({ savedPublisher, permissionsSaved: false, error })),
             );
         }),
         finalize(() => (this.isSaving = false)),
       )
       .subscribe({
-        next: (savedPublisher) => {
-          this.notify.success("El publicador fue almacenado correctamente.", "Listo");
+        next: (result) => {
+          const savedPublisher = result.savedPublisher;
+          if (!result.permissionsSaved) {
+            this.notify.error(`La ficha se guardó, pero los permisos no: ${this.getErrorMessage("error" in result ? result.error : null, "Error de permisos")}`, "Guardado parcial", 12000);
+          } else {
+            this.notify.success("El publicador fue almacenado correctamente.", "Listo");
+          }
           this.currentPublisher = savedPublisher;
           this.userId = savedPublisher.id ?? this.userId;
           this.dataService.getPublishersFromDB();
 
-          if (this.isDialog) {
+          const signedInUser = this.dataService.getCurrentPublisherSnapshot();
+          if (signedInUser?.id === this.userId && signedInUser.email !== publisher.email) {
+            this.notify.warning("Tu correo de acceso cambió. Inicia sesión de nuevo.", "Sesión actualizada");
+            this.dataService.logout();
+            return;
+          }
+
+          if (this.isDialog && result.permissionsSaved) {
             this.dialogRef?.close(savedPublisher);
             return;
           }
 
-          if (!this.userId) {
-            this.formulario.reset();
-            this.makeForm();
-          } else {
-            this.makeFormWithData(savedPublisher);
-          }
+          this.loadPublisherById(this.userId!);
         },
         error: (error) => this.notify.error(this.getErrorMessage(error, "No se puede guardar."), "No se puede guardar", 12000),
       });
@@ -216,6 +225,11 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       congregation: this.congregationSelected,
       congregationId: this.congregationSelected?.id ?? null,
     });
+  }
+
+  onCongregationIdChange(congregationId: number): void {
+    const congregation = this.allCongregations.find(item => item.id === congregationId);
+    this.formulario.patchValue({ congregationId, congregation: congregation ?? null });
   }
 
   closeDialog(): void {
@@ -348,9 +362,16 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   }
 
   private loadPublisherById(userId: number): void {
-    this.usersService.getById(userId).subscribe({
-      next: (publisher) => this.makeFormWithData(publisher),
-      error: (error) => this.notify.error(this.getErrorMessage(error, "No se pudo cargar el publicador."), "Error"),
+    this.isLoadingPermissions = true;
+    this.permissionsLoadFailed = false;
+    forkJoin({ publisher: this.usersService.getById(userId), permissions: this.userAssignmentTypesService.getByUser(userId) })
+      .pipe(finalize(() => (this.isLoadingPermissions = false)))
+      .subscribe({
+      next: ({ publisher, permissions }) => this.makeFormWithData({ ...publisher, assignmentTypePermissions: permissions }),
+      error: (error) => {
+        this.permissionsLoadFailed = true;
+        this.notify.error(this.getErrorMessage(error, "No se pudo cargar el publicador o sus permisos."), "Error");
+      },
     });
   }
 
@@ -359,7 +380,8 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       return;
     }
 
-    const currentPermissions = this.permissions.length > 0 ? this.permissions : this.currentPublisher?.assignmentTypePermissions;
+    const currentPermissions = this.formulario.get("assignmentTypePermissions")?.dirty
+      ? this.permissions : this.currentPublisher?.assignmentTypePermissions;
 
     const control = this.formulario.get("assignmentTypePermissions");
     control?.setValue(this.buildAssignmentTypePermissions(currentPermissions));
@@ -523,6 +545,18 @@ export class UsersCreateOrUpdateComponent implements OnInit {
     return hasInvalidPermission ? { assignmentTypePermissions: true } : null;
   }
 
+  private integerValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    return value === null || value === "" || (String(value).trim() !== "" && /^-?\d+$/.test(String(value)) && Number.isSafeInteger(Number(value)))
+      ? null : { integer: true };
+  }
+
+  private documentNumberValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    return value === null || value === "" || (/^(0|[1-9]\d*)$/.test(String(value)) && Number.isSafeInteger(Number(value)))
+      ? null : { documentNumber: true };
+  }
+
   private buildPublisherPayload(): Publisher {
     const values = this.formulario.getRawValue();
     const congregationId = values.congregationId ?? this.currentPublisher?.congregationId ?? this.currentPublisher?.myCongregationId ?? values.congregation?.id ?? this.congregationSelected?.id;
@@ -536,6 +570,8 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       ...this.currentPublisher,
       ...values,
       fullName: this.buildFullName(values),
+      documentNumber: values.documentNumber === null || values.documentNumber === "" ? null : Number(values.documentNumber),
+      frequency: values.frequency === null || values.frequency === "" ? null : Number(values.frequency),
       congregation,
       congregationId,
       myCongregationId: congregationId,
@@ -549,7 +585,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
   }
 
   private buildFullName(values: any): string {
-    const nameParts = [values.firstName, values.secondName, values.surname, values.lastName].filter(Boolean);
+    const nameParts = [values.firstName, values.secondName, values.lastName, values.surname].filter(Boolean);
     const generatedFullName = nameParts.join(" ").trim();
     const currentFullName = values.fullName ?? this.currentPublisher?.fullName ?? "";
     const hasIncompleteNameParts = !values.surname && !values.lastName;
@@ -588,6 +624,14 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       messages.push("El correo electrónico no tiene un formato válido");
     }
 
+    if (this.formulario.get("documentNumber")?.invalid) {
+      messages.push("El número de documento debe ser un entero seguro sin ceros iniciales");
+    }
+
+    if (this.formulario.get("frequency")?.invalid) {
+      messages.push("El intervalo debe ser un número entero seguro de días");
+    }
+
     if (this.formulario.get("assignmentTypePermissions")?.invalid) {
       messages.push("Los permisos de asignación no están completos");
     }
@@ -604,12 +648,12 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       return error;
     }
 
-    const fieldErrors = error?.errors;
+    const fieldErrors = error?.error?.errors ?? error?.errors;
 
     if (Array.isArray(fieldErrors) && fieldErrors.length > 0) {
       return fieldErrors.map((item) => item.message).join(". ");
     }
 
-    return error?.message ?? error?.error?.message ?? fallback;
+    return typeof error?.error === "string" ? error.error : (error?.error?.message ?? error?.message ?? fallback);
   }
 }

@@ -31,6 +31,7 @@
   @for (item of sectionItems; track item.id) {
   @if (sectionMeeting == treasuresSection) {
   <div class="row px-3 program__tesoros program-assignment-row"
+    [class.program-assignment-row--single-room]="singleRoom"
     [class.program-assignment-row--treasures-assignment-3]="item.assignment.number == 3"
     [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     @if (item.assignment.number == 1 || item.assignment.number == 2) {
@@ -132,7 +133,7 @@
       }
     </div>
 
-    <div class="col-md-3 mb-3 mb-md-0 program-assignment-detail">
+    <div class="col-md-3 mb-3 mb-md-0 program-assignment-detail" *ngIf="!singleRoom">
       @if (item.assignment.number == 3) {
       <div class="d-md-none text-title-custom">Sala auxiliar</div>
       <span class="hover text-publisher" [ngStyle]="getPublisherAlertStyle(item.responsibleB)"
@@ -143,8 +144,8 @@
       </span>
       }
     </div>
-    <div class="col-md-2 mb-3 mb-md-0 program-assignment-detail">
-      @if (item.assignment.number == 3) {
+    <div class="mb-3 mb-md-0 program-assignment-detail" [class.col-md-2]="!singleRoom" [class.col-md-5]="singleRoom">
+      @if (item.assignment.number == 3 && !singleRoom) {
       <div class="d-md-none text-title-custom">Sala principal</div>
       }
       <span class="hover text-publisher" [ngStyle]="getPublisherAlertStyle(item.responsible)"
@@ -160,6 +161,7 @@
 
   @if (sectionMeeting == teachersSection) {
   <div class="row px-3 program__tesoros program-assignment-row program-assignment-row--teachers"
+    [class.program-assignment-row--single-room]="singleRoom"
     [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     <div class="col-md-5 mt-1">
       <div class="row program-assignment-line">
@@ -212,7 +214,7 @@
       }
     </div>
 
-    <div class="col-md-3 pe-0 mb-3 mb-md-0 program-assignment-detail">
+    <div class="col-md-3 pe-0 mb-3 mb-md-0 program-assignment-detail" *ngIf="!singleRoom">
       <div class="d-md-none text-title-custom">Sala auxiliar</div>
       <span class="hover text-publisher" [ngStyle]="getPublisherAlertStyle(item.responsibleB)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE_B)"
@@ -220,7 +222,7 @@
         tooltipClass="tooltip-publisher-alert">
         {{ item?.responsibleB?.fullName ?? porAsignar }}
       </span>
-      @if (!isSpeech(item) && !isExplainingBeliefsSpeech(item)) {
+      @if (item.assignment.participationMode !== 'SOLO' && !isSpeech(item) && !isExplainingBeliefsSpeech(item)) {
       <span class="hover text-publisher" [ngStyle]="getPublisherAlertStyle(item.assistantB)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT_B)"
         [ngbTooltip]="getPublisherAlertText(item.assistantB)" [placement]="publisherTooltipPlacement" container="body"
@@ -230,15 +232,15 @@
       }
     </div>
 
-    <div class="col-md-3 mb-3 pe-0 mb-md-0 program-assignment-detail">
-      <div class="d-md-none text-title-custom">Sala principal</div>
+    <div class="mb-3 pe-0 mb-md-0 program-assignment-detail" [class.col-md-3]="!singleRoom" [class.col-md-6]="singleRoom">
+      @if (!singleRoom) { <div class="d-md-none text-title-custom">Sala principal</div> }
       <span class="hover text-publisher" [ngStyle]="getPublisherAlertStyle(item.responsible)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.RESPONSIBLE)"
         [ngbTooltip]="getPublisherAlertText(item.responsible)" [placement]="publisherTooltipPlacement" container="body"
         tooltipClass="tooltip-publisher-alert">
         {{ item?.responsible?.fullName ?? porAsignar }}
       </span>
-      @if (!isSpeech(item) && !isExplainingBeliefsSpeech(item)) {
+      @if (item.assignment.participationMode !== 'SOLO' && !isSpeech(item) && !isExplainingBeliefsSpeech(item)) {
       <span class="hover text-publisher" [ngStyle]="getPublisherAlertStyle(item.assistant)"
         (click)="onWeeklyProgramChange(item, weeklyProgramChangeType.ASSISTANT)"
         [ngbTooltip]="getPublisherAlertText(item.assistant)" [placement]="publisherTooltipPlacement" container="body"
@@ -253,6 +255,7 @@
   @if (sectionMeeting == livingSection) {
   @if (!isCongregationBibleStudy(item)) {
   <div class="row px-3 program__tesoros program-assignment-row"
+    [class.program-assignment-row--single-room]="singleRoom"
     [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)">
     <div class="col-md-9">
       <div class="row program-assignment-line">
@@ -304,6 +307,7 @@
   </div>
   } @else {
   <div class="row px-3 program__tesoros program-assignment-row"
+    [class.program-assignment-row--single-room]="singleRoom"
     [class.program-assignment-row--collapsed]="isAssignmentCollapsed(item)"
     [class.program-assignment-row--pending-title]="needsOverseerTalkTitle(item)">
     <div class="col-md-8">

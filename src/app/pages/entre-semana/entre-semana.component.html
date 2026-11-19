@@ -1,9 +1,28 @@
 <div class="entre-semana">
-  <vmc-programs [semanas]="semanas" [semanasAllRooms]="semanasAllRooms" [RoomA]="true" [room]="meetingRoom.MAIN"
-    (filtrar)="consultar($event)"
-  ></vmc-programs>
+  <mat-tab-group class="entre-semana__rooms" animationDuration="0ms" [preserveContent]="true"
+    (selectedIndexChange)="selectedRoomTab = $event">
+    <mat-tab label="Principal">
+      <ng-template matTabContent>
+        <vmc-programs [semanas]="semanas" [semanasAllRooms]="semanasAllRooms"
+          [RoomA]="true" [room]="meetingRoom.MAIN" [collapseSourcesByDefault]="true"
+          (filtrar)="consultar($event)"></vmc-programs>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Sala principal">
+      <ng-template matTabContent>
+        <vmc-programs [semanas]="semanas" [semanasAllRooms]="semanasSalaPrincipalVista"
+          [RoomA]="true" [room]="meetingRoom.MAIN" [readOnly]="true"></vmc-programs>
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Sala auxiliar">
+      <ng-template matTabContent>
+        <vmc-programs [semanas]="semanas" [semanasAllRooms]="semanasSalaAuxiliarVista"
+          [RoomA]="true" [room]="meetingRoom.AUXILIARY" [readOnly]="true"></vmc-programs>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
 
-  @if (hasStoredDateFilter) {
+  @if (hasStoredDateFilter && selectedRoomTab === 0) {
     <button
       mat-fab
       type="button"

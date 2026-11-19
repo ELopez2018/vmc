@@ -1,5 +1,27 @@
 import { Publisher } from "./reuniones.interface";
 
+export type AssignmentParticipantRole = "responsible" | "assistant";
+export type AssignmentCandidatesSort =
+  | "lastAssignmentAsc"
+  | "lastAssignmentDesc"
+  | "lastGlobalAssignmentAsc"
+  | "lastGlobalAssignmentDesc";
+
+/** Contexto del selector. El título y el número describen la parte actual, no su historial. */
+export interface AssignmentCandidatesRequest {
+  assignment: string;
+  congregationId: number;
+  dateAssignment: string;
+  room: string;
+  assignmentId?: number;
+  participantRole?: AssignmentParticipantRole;
+  assignmentTitle: string;
+  sectionMeeting?: string;
+  assignmentNumber?: number | null;
+  /** Si se omite, el backend usa lastGlobalAssignmentAsc. */
+  sort?: AssignmentCandidatesSort;
+}
+
 export interface PublisherDto {
   total: number;
   publisher: Publisher;
@@ -15,8 +37,11 @@ export interface ResponsibleCountDTO {
 export type AssignmentDate = string | number | [number, number, number] | null;
 
 export interface UserAssignmentHistory {
+  /** Última fecha del tipo y rol consultados, considerando ambas salas. */
   lastAssignment: AssignmentDate;
+  /** Total global de participaciones; no es el contador del tipo o rol. */
   allAssignments: number;
+  /** Última participación global, incluidos los cargos del programa. */
   dateLastAssignment: AssignmentDate;
   daysSinceLastIntervention: number | null;
   // Días desde dateAssignment hasta la próxima participación; null si no hay.

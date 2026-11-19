@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, OnDestroy, Output, inject } from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from "@angular/core";
 import { NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { ProgramPdf, WeeklyProgramPdF } from "src/app/core/interfaces/print-pdf.interface";
 import { Publisher } from "src/app/core/interfaces/reuniones.interface";
@@ -22,13 +22,16 @@ import { isExplainingBeliefsSpeechAssignment } from "src/app/core/utils/assignme
   styleUrls: ["./program-assignment-section.component.scss"],
   imports: [CommonModule, SharedModule, NgbTooltipModule, AssignmentSourceComponent, StopwatchModalComponent],
 })
-export class ProgramAssignmentSectionComponent implements OnDestroy {
+export class ProgramAssignmentSectionComponent implements OnInit, OnDestroy {
   private readonly programValidations = inject(ProgramValidationsService);
   @Input() public week!: ProgramPdf;
   @Input() public sectionMeeting = "";
   @Input() public title = "";
   @Input() public legendClass = "";
   @Input() public room = MeetingRoom.MAIN;
+  @Input() public readOnly = false;
+  @Input() public singleRoom = false;
+  @Input() public collapseSourcesByDefault = false;
   @Input() public isAdmin = false;
   @Input() public porAsignar = "por asignar";
   @Input() public renderFieldset = true;
@@ -50,6 +53,14 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
   private clickTimers = new Map<number, ReturnType<typeof setTimeout>>();
 
   constructor(public stopwatchService: StopwatchService) {}
+
+  public ngOnInit(): void {
+    if (this.collapseSourcesByDefault) {
+      for (const item of this.sectionItems) {
+        this.collapsedAssignmentKeys.add(this.getAssignmentCollapseKey(item));
+      }
+    }
+  }
 
   public ngOnDestroy(): void {
     this.clickTimers.forEach((t) => clearTimeout(t));
@@ -131,10 +142,12 @@ export class ProgramAssignmentSectionComponent implements OnDestroy {
   }
 
   public onAddAssignment(): void {
+    if (this.readOnly) return;
     this.addAssignment.emit({ program: this.week, sectionMeeting: this.sectionMeeting });
   }
 
   public onWeeklyProgramChange(item: WeeklyProgramPdF, type: string): void {
+    if (this.readOnly) return;
     this.weeklyProgramChange.emit({ item, type });
   }
 

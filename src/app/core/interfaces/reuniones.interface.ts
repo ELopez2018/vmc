@@ -26,6 +26,7 @@ export interface Publisher {
   lastName?: string | null;
   surname: string;
   birthdate?: string | null;
+  frequency?: number | null;
   gender?: string | null;
   documentNumber?: number | null;
   documentType?: string | null;
@@ -46,6 +47,26 @@ export interface Publisher {
   username?: string | null;
   myCongregationId?: number;
   congregationId?: number;
+}
+
+/** Campos que acepta POST /users. No incluye relaciones ni credenciales de la entidad. */
+export interface UserSaveRequest {
+  id?: number | null;
+  fullName: string | null;
+  firstName: string | null;
+  secondName: string | null;
+  lastName: string | null;
+  surname: string | null;
+  email: string | null;
+  documentNumber: number | null;
+  documentType: string | null;
+  cellPhone: string | null;
+  phone: string | null;
+  gender: string | null;
+  frequency: number | null;
+  birthdate: string | null;
+  congregationId: number;
+  image: string | null;
 }
 
 export interface Designation {
@@ -166,7 +187,15 @@ export interface AssignmentSourceLink {
   text: string;
   url: string;
 }
-export interface Assignment {
+/** Metadatos opcionales de etapa 2. Su clasificación pertenece al backend. */
+export interface AssignmentIdentityMetadata {
+  /** Código del dominio; no es un ID de permiso ni la clave del request legado. */
+  categoryCode?: string | null;
+  /** UNKNOWN y null no prueban que la parte admita ayudante. */
+  participationMode?: "PAIR" | "SOLO" | "UNKNOWN" | null;
+}
+
+export interface Assignment extends AssignmentIdentityMetadata {
   id?: number;
   time?: number;
   timeType: string;

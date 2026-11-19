@@ -155,7 +155,9 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
     selector.ngOnInit();
     const query = http.expectOne(req => req.url.endsWith("/users/by-congregation/participated-and-authorized-by-assignment"));
     expect(query.request.method).toBe("GET");
-    expect(query.request.params.keys().sort()).toEqual(["assignment", "congregationId", "dateAssignment", "room", "assignmentTitle", "sectionMeeting", "assignmentNumber"].sort());
+    expect(query.request.params.keys().sort()).toEqual(["assignment", "congregationId", "dateAssignment", "room", "assignmentTitle", "sectionMeeting", "assignmentNumber", "participantRole"].sort());
+    expect(query.request.params.get("assignmentId")).toBeNull();
+    expect(query.request.params.get("participantRole")).toBe("responsible");
     expect(query.request.params.get("assignment")).toBe("assignment3");
     expect(query.request.params.get("congregationId")).toBe("2");
     expect(query.request.params.get("dateAssignment")).toBe("2026-12-28");
@@ -271,6 +273,91 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
     { title: "¿Qué dirías?", number: 6, responsible: AssignmentType.WHAT_WOULD_YOU_SAY, assistant: AssignmentType.WHAT_WOULD_YOU_SAY_ASSISTANT },
   ];
 
+  const categories = [
+    { code: 'STARTING_A_CONVERSATION', type: AssignmentType.STARTING_A_CONVERSATION },
+    { code: 'FOLLOWING_UP', type: AssignmentType.FOLLOWING_UP },
+    { code: 'MAKING_DISCIPLES', type: AssignmentType.MAKING_DISCIPLES },
+    { code: 'EXPLAINING_BELIEFS', type: AssignmentType.EXPLAINING_YOUR_BELIEFS },
+    { code: 'WHAT_WOULD_YOU_SAY', type: AssignmentType.WHAT_WOULD_YOU_SAY },
+    { code: 'SPEECH', type: AssignmentType.SPEECH },
+  ];
+  for (const category of categories) {
+    for (const selection of selections.filter(item => category.code !== 'SPEECH' || item.role !== 'assistant')) {
+      it(`usa ${category.code} con título editado para ${selection.role} ${selection.room}`, () => {
+        const weeklyProgram = {
+          id: 901, program: 501, room: selection.room, congregation: { id: 2 },
+          assignment: { id: 301, title: 'Título completamente editado', number: 8,
+            sectionMeeting: SectionMeeting.SEAMOS_MEJORES_MAESTROS, categoryCode: category.code,
+            participationMode: category.code === 'SPEECH' ? 'SOLO' : 'PAIR',
+          },
+        } as WeeklyProgram;
+        const expected = selection.role === 'assistant' ? `${category.type}Assistant` : category.type;
+        const component = Object.create(ProgramsComponent.prototype) as ProgramsComponent;
+        component.selectAssignmentType(weeklyProgram, selection.change);
+        expect(component.assignmentType).toBe(expected);
+        const legacy = Object.create(EntreSemanaComponent.prototype) as EntreSemanaComponent;
+        legacy.selectAssignmentType(weeklyProgram, selection.change);
+        expect(legacy.assignmentType).toBe(expected);
+        selector = new SearchPublisherComponent(
+          { getCongregation$: () => of({ id: 2 }), getMeeting: () => of([]) } as unknown as DataService,
+          TestBed.inject(LoaderService), TestBed.inject(UsersService), null!,
+          { getProgramsByDateRange: () => of([]) } as unknown as MeetingsService, TestBed.inject(ProgramValidationsService),
+        );
+        // Incluso una clave heredada contradictoria se sustituye con la identidad recibida.
+        Object.assign(selector, { assignment: weeklyProgram, assignmentType: 'speech', type: selection.role, room: selection.room, week: '2026-12-28' });
+        selector.ngOnInit();
+        const query = http.expectOne(req => req.url.endsWith('/participated-and-authorized-by-assignment'));
+        expect(query.request.params.get('assignment')).toBe(expected);
+        expect(query.request.params.get('assignmentId')).toBe('301');
+        expect(query.request.params.get('assignmentTitle')).toBe('Título completamente editado');
+        expect(query.request.params.get('participantRole')).toBe(selection.role);
+        expect(query.request.params.get('room')).toBe(selection.room);
+        query.flush({ frequent: [], brothers: [], sisters: [] });
+      });
+    }
+  }
+  for (const participationMode of ['SOLO', 'UNKNOWN'] as const) {
+    for (const room of ['A', 'B']) {
+      it(`aplica la política transitoria de ayudante ${room} con modalidad ${participationMode}`, () => {
+        selector = new SearchPublisherComponent(
+          { getCongregation$: () => of({ id: 2 }), getMeeting: () => of([]) } as unknown as DataService,
+          TestBed.inject(LoaderService), TestBed.inject(UsersService), null!,
+          { getProgramsByDateRange: () => of([]) } as unknown as MeetingsService, TestBed.inject(ProgramValidationsService),
+        );
+        Object.assign(selector, { assignmentType: 'explainingYourBeliefsAssistant', type: 'assistant', room, week: '2026-12-28',
+          assignment: { assignment: { id: 301, categoryCode: 'EXPLAINING_BELIEFS', participationMode, sectionMeeting: SectionMeeting.SEAMOS_MEJORES_MAESTROS } },
+        });
+        selector.ngOnInit();
+        if (participationMode === 'UNKNOWN') {
+          const query = http.expectOne(req => req.url.endsWith('/participated-and-authorized-by-assignment'));
+          expect(query.request.params.get('assignment')).toBe('explainingYourBeliefsAssistant');
+          expect(query.request.params.get('assignmentId')).toBe('301');
+          expect(query.request.params.get('participantRole')).toBe('assistant');
+          expect(query.request.params.get('room')).toBe(room);
+          query.flush({ frequent: [], brothers: [], sisters: [] });
+          expect(selector.loadError).toBe('');
+        } else {
+          expect(selector.loadError).toContain('no admite ayudante');
+          http.expectNone(req => req.url.endsWith('/participated-and-authorized-by-assignment'));
+        }
+        expect(selector.showSpinner).toBeFalse();
+        http.expectNone(req => req.method === 'POST' || req.method === 'PUT');
+      });
+    }
+  }
+
+  for (const number of [1, 3, 7, 8]) {
+    it(`no clasifica una parte desconocida de maestros por su número ${number}`, () => {
+      const row = { assignment: { number, title: 'Tema sin categoría', sectionMeeting: SectionMeeting.SEAMOS_MEJORES_MAESTROS } } as WeeklyProgram;
+      const component = Object.create(ProgramsComponent.prototype) as ProgramsComponent;
+      component.selectAssignmentType(row, WeeklyProgramChangeType.RESPONSIBLE);
+      expect(component.assignmentType).toBe('');
+      const legacy = Object.create(EntreSemanaComponent.prototype) as EntreSemanaComponent;
+      legacy.selectAssignmentType(row, WeeklyProgramChangeType.RESPONSIBLE);
+      expect(legacy.assignmentType).toBe('');
+    });
+  }
+
   for (const part of parts) {
     const title = part.title;
     for (const number of [part.number, 7, 8]) {
@@ -306,6 +393,8 @@ describe("Consulta de candidatos para asignaciones semanales", () => {
           const request = http.expectOne((req) => req.url.endsWith("/users/by-congregation/participated-and-authorized-by-assignment"));
           expect(request.request.method).toBe("GET");
           expect(request.request.params.get("assignment")).toBe(expectedAssignmentType);
+          expect(request.request.params.get("assignmentId")).toBe("301");
+          expect(request.request.params.get("participantRole")).toBe(selection.role);
           expect(request.request.params.get("room")).toBe(selection.room);
           expect(request.request.params.get("congregationId")).toBe("2");
           expect(request.request.params.get("dateAssignment")).toBe("2026-11-02");

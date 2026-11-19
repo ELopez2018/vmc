@@ -11,6 +11,10 @@
   color: inherit;
 }
 
+.program__body--room-view legend {
+  width: 100%;
+}
+
 .program__body {
   background-color: white;
 }
@@ -209,6 +213,41 @@ $icon-size: 42px;
     margin-bottom: 8px;
   }
 }
+
+@media (min-width: 768px) and (max-width: 1180px) {
+  .program__body--room-view .room-summary-line {
+    display: grid;
+    grid-template-columns: minmax(0, 68%) minmax(0, 1fr);
+    column-gap: 4px;
+    align-items: start;
+  }
+
+  .program__body--room-view .room-summary-line > :first-child {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    max-width: none;
+  }
+
+  .program__body--room-view .room-summary-line > .text-title-custom {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: end;
+    width: auto;
+    max-width: none;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+
+  .program__body--room-view .room-summary-line > .text-publisher {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    max-width: none;
+    padding-left: 0;
+  }
+}
+
 
 @media (min-width: 1366px) {
   .program__header {

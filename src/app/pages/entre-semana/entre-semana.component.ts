@@ -17,6 +17,8 @@ import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { environment } from "src/environments/environment";
 import { includesMeetingPartTitle } from "./components/programs/program-assignment.util";
+import { teachingAssignmentType } from "src/app/core/utils/assignment-eligibility.util";
+import { programViewForRoom } from "./components/programs/program-room-view.util";
 
 interface StoredDateFilter {
   fechaDesde: string;
@@ -50,7 +52,10 @@ export class EntreSemanaComponent implements OnInit {
   public showSpinner = false;
   private meetingDay = 1;
   public semanasAllRooms: ProgramPdf[] = [];
+  public semanasSalaPrincipalVista: ProgramPdf[] = [];
+  public semanasSalaAuxiliarVista: ProgramPdf[] = [];
   public hasStoredDateFilter = false;
+  public selectedRoomTab = 0;
   loaderService = inject(LoaderService);
   constructor(
     private meetingsService: MeetingsService,
@@ -89,6 +94,7 @@ export class EntreSemanaComponent implements OnInit {
     this.loadedCongregationId = this.congregation.id;
     this.semanas = [];
     this.semanasAllRooms = [];
+    this.updateRoomViews([]);
     this.programList = [];
     this.requestedPages.clear();
     this.loadedPages.clear();
@@ -146,8 +152,14 @@ export class EntreSemanaComponent implements OnInit {
     this.programList = loadedPrograms;
     this.semanas = [...this.programList];
     this.semanasAllRooms = this.dataService.makePDfVersion([...this.programList]);
+    this.updateRoomViews(this.programList);
     this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, this.programList)];
     this.dataService.setMeeting([...this.programList]);
+  }
+
+  private updateRoomViews(programs: Program[]): void {
+    this.semanasSalaPrincipalVista = programViewForRoom(programs, MeetingRoom.MAIN);
+    this.semanasSalaAuxiliarVista = programViewForRoom(programs, MeetingRoom.AUXILIARY);
   }
 
   private hideInitialLoaderIfReady(page: number, data: Program[]): void {
@@ -353,6 +365,11 @@ export class EntreSemanaComponent implements OnInit {
   }
 
   selectAssignmentType(item: WeeklyProgram, type: string) {
+    const persistedType = teachingAssignmentType(item.assignment, type === WeeklyProgramChangeType.ASSISTANT || type === WeeklyProgramChangeType.ASSISTANT_B);
+    if (persistedType !== undefined) {
+      this.assignmentType = persistedType;
+      return;
+    }
     switch (item.assignment.number) {
       case 1:
         this.assignmentType = AssignmentType.ASSIGNMENT_1;
@@ -430,7 +447,7 @@ export class EntreSemanaComponent implements OnInit {
     switch (type) {
       case WeeklyProgramChangeType.RESPONSIBLE:
         this.modalService
-          .assignPublisherWeeklyProgram(item, this.assignmentType)
+          .assignPublisherWeeklyProgram(item, this.assignmentType, "responsible", item.room)
           .then((data) => {
             item.responsible = data;
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe((data) => {
@@ -443,7 +460,7 @@ export class EntreSemanaComponent implements OnInit {
         break;
       case WeeklyProgramChangeType.ASSISTANT:
         this.modalService
-          .assignPublisherWeeklyProgram(item, this.assignmentType)
+          .assignPublisherWeeklyProgram(item, this.assignmentType, "assistant", item.room)
           .then((data) => {
             item.assistant = data;
             this.meetingsService.saveOrUpdateWeeklyProgram(item).subscribe((data) => {
@@ -518,6 +535,7 @@ export class EntreSemanaComponent implements OnInit {
     this.semanas = this.filterWeekByRoom(MeetingRoom.MAIN, weeks);
     this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, weeks)];
     this.semanasAllRooms = this.dataService.makePDfVersion([...weeks]);
+    this.updateRoomViews(weeks);
     this.dataService.setMeeting([...weeks]);
   }
 
@@ -547,6 +565,7 @@ export class EntreSemanaComponent implements OnInit {
     this.semanas = [];
     this.semanasSalaAuxiliar = [];
     this.semanasAllRooms = [];
+    this.updateRoomViews([]);
     this.dataService.setMeeting([]);
 
     this.meetingsService
@@ -562,6 +581,7 @@ export class EntreSemanaComponent implements OnInit {
           this.semanas = [...data];
           this.semanasSalaAuxiliar = [...this.filterWeekByRoom(MeetingRoom.AUXILIARY, data)];
           this.semanasAllRooms = this.dataService.makePDfVersion(data);
+          this.updateRoomViews(data);
           this.dataService.setMeeting([...data]);
           this.loaderService.hideMatspinner();
         },
@@ -588,6 +608,7 @@ export class EntreSemanaComponent implements OnInit {
     this.semanas = [];
     this.semanasSalaAuxiliar = [];
     this.semanasAllRooms = [];
+    this.updateRoomViews([]);
     this.dataService.setMeeting([]);
     this.loaderService.showMatspinner();
     this.getPrograms();

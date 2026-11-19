@@ -1,7 +1,7 @@
 import { provideHttpClient } from "@angular/common/http";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { Program } from "../../interfaces/reuniones.interface";
+import { AssignmentIdentityMetadata, Program } from "../../interfaces/reuniones.interface";
 import { MeetingsService } from "./meetings.service";
 import { ProgramValidationsService } from "../program/program-validations.service";
 import { environment } from "src/environments/environment";
@@ -45,6 +45,40 @@ describe('MeetingsService', () => {
       content: [{ id: 1, week: [2026, 10, 12], introTime: null, timeType: null }],
     });
   });
+
+  const identities: AssignmentIdentityMetadata[] = [
+    { categoryCode: "EXPLAINING_BELIEFS", participationMode: "PAIR" },
+    { categoryCode: "EXPLAINING_BELIEFS", participationMode: "SOLO" },
+    { categoryCode: "EXPLAINING_BELIEFS", participationMode: "UNKNOWN" },
+    { categoryCode: null, participationMode: null },
+    {},
+  ];
+  for (const identity of identities) {
+    it(`conserva identidad opcional ${JSON.stringify(identity)} al adaptar programas y PDF`, () => {
+      let programs: Program[] = [];
+      service.getWeeksValids(2).subscribe(result => programs = result);
+      httpTesting.expectOne(req => req.url.endsWith('/meetings/programs/2')).flush({
+        content: [{ programId: 734, meetingId: 132, week: [2026, 12, 28], assignments: [{
+          id: 901, assignmentId: 301, number: 6, title: 'Título editado',
+          section: 'SEAMOS MEJORES MAESTROS', room: 'B', ...identity,
+          sourceText: 'Fuente', sourceHtml: '<p>Fuente</p>', sourceLinks: '[]', sourceUrl: 'https://wol.jw.org/example',
+        }] }],
+      });
+      const data = Object.create(DataService.prototype) as DataService;
+      (data as any).meetingsPDF$ = { next: jasmine.createSpy('next') };
+      const pdf = data.makePDfVersion(programs);
+      for (const assignment of [programs[0].weeklyPrograms[0].assignment, pdf[0].weeklyPrograms[0].assignment]) {
+        expect(assignment.id).toBe(301);
+        expect(assignment.title).toBe('Título editado');
+        expect(assignment.categoryCode).toBe(identity.categoryCode);
+        expect(assignment.participationMode).toBe(identity.participationMode);
+        expect(assignment.sourceText).toBe('Fuente');
+        expect(assignment.sourceHtml).toBe('<p>Fuente</p>');
+        expect(assignment.sourceLinks).toBe('[]');
+        expect(assignment.sourceUrl).toBe('https://wol.jw.org/example');
+      }
+    });
+  }
 
   it('preserves assignment tips from the API through the PDF model', () => {
     let programs: Program[] = [];

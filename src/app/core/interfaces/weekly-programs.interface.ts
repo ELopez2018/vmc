@@ -1,4 +1,5 @@
 import { ProgramValidations } from "./program-validations.interface";
+import { AssignmentIdentityMetadata } from "./reuniones.interface";
 
 /** Modelos del CRUD de /weeklyProgram. No reutilizar el modelo legado WeeklyProgram. */
 export interface UserLite {
@@ -14,7 +15,7 @@ export interface CongregationLite {
   number: string | null;
 }
 
-export interface AssignmentLite {
+export interface AssignmentLite extends AssignmentIdentityMetadata {
   id: number;
   number: number | null;
   title: string | null;

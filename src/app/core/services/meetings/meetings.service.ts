@@ -4,6 +4,7 @@ import { Servers } from "../../constants/servers";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import {
   BackendTime,
+  AssignmentIdentityMetadata,
   Congregation,
   Meeting,
   Program,
@@ -56,7 +57,7 @@ interface ProgramOverviewResponse {
   validations?: PersonValidation[];
 }
 
-interface ProgramAssignmentOverviewResponse {
+interface ProgramAssignmentOverviewResponse extends AssignmentIdentityMetadata {
   weeklyProgramId?: number;
   assignmentId?: number;
   id: number;
@@ -287,6 +288,8 @@ export class MeetingsService {
         id: assignment.weeklyProgramId ?? assignment.id,
         assignment: {
           id: assignment.assignmentId,
+          categoryCode: assignment.categoryCode,
+          participationMode: assignment.participationMode,
           title: assignment.title,
           number: assignment.number,
           sectionMeeting: assignment.section,

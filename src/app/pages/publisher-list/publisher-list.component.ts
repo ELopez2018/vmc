@@ -90,13 +90,20 @@ export class PublisherListComponent {
       confirmButtonText: "Sí, bórralo!",
     }).then((result) => {
       if (result.isConfirmed) {
-        this.userService.delete(publisherSelected).subscribe(() => {
-          this.publisherList = this.publisherList.filter((p) => p.id !== publisherSelected.id);
+        this.userService.delete(publisherSelected).subscribe({
+          next: () => {
+          this.dataService.getPublishersFromDB();
           Swal.fire({
             title: "Borrado",
             text: "Registro borrado correctamente.",
             icon: "success",
           });
+          },
+          error: (error) => Swal.fire({
+            title: "No se pudo borrar",
+            text: typeof error?.error === "string" ? error.error : (error?.error?.message ?? "Intenta de nuevo."),
+            icon: "error",
+          }),
         });
       }
     });

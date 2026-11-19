@@ -71,6 +71,9 @@ export class DataService {
   public getPublisher(): Observable<Publisher> {
     return this.publisher$.pipe(filter((publisher): publisher is Publisher => publisher !== null && !!publisher.id));
   }
+  public getCurrentPublisherSnapshot(): Publisher | null {
+    return this.publisher$.value;
+  }
 
   public setMeeting(meetings: Program[]) {
     this.weekPrograms = [...meetings];

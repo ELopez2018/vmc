@@ -1,4 +1,5 @@
 <div class="container-fluid p-0 program__body pb-4 pt-1 mb-4 shadow-page"
+  [class.program__body--room-view]="readOnly"
   [class.program__body--special]="isSpecialEventWeek">
   @if (isAssemblyWeek) {
   <div class="program-event-shell">
@@ -38,6 +39,7 @@
       <div class="program__title pt-2">Programa para la reunión de entre semana</div>
     </div>
     <div class="col-12 col-md-12 col-xl-2 d-flex justify-content-end pe-5 py-2">
+      @if (!readOnly) {
       <div class="d-flex justify-content-end">
         <a class="me-2 program-filter-icon" (click)="openFilters.emit()">
           <mat-icon class="icon-lg hover">calendar_month</mat-icon>
@@ -65,11 +67,13 @@
           </button>
         </mat-menu>
       </div>
+      }
     </div>
   </div>
 
   <div class="mt-3 program__reunion pe-xl-4">
-    <div class="row px-3">
+    @if (showSharedMeetingParts) {
+    <div class="row px-3" [class.room-summary-line]="readOnly">
       <div class="col-md-7 fw-bold text-md-start">
         <a href="{{ semana.meeting.url }}" target="_blank">
           {{ showDayOfMeeting(semana.meeting.week) }}
@@ -96,7 +100,7 @@
     </div>
 
     @if (roomA) {
-    <div class="row px-3">
+    <div class="row px-3" [class.room-summary-line]="readOnly">
       <div class="col-md-6"></div>
       <div class="col-md-3 text-md-end text-title-custom">Consejero de la sala auxiliar:</div>
       <div class="col-md-3 text-md-start hover text-publisher">
@@ -111,7 +115,7 @@
     }
 
     @if (roomA) {
-    <div class="row px-3 program-line">
+    <div class="row px-3 program-line" [class.room-summary-line]="readOnly">
       <div class="col-md-7 ps-2 ps-xl-3 text-md-start">
         <span class="ms-md-1"></span>
         <span class="program-time-start hover" (click)="onProgramChange(programChangeType.START_TIME_OPENING_SONG)">
@@ -152,18 +156,21 @@
       </div>
     </div>
     }
+    }
 
     <vmc-program-assignment-section [week]="semana" [sectionMeeting]="treasuresSection" title="TESOROS DE LA BIBLIA"
-      legendClass="program__title-tesoros" [room]="room" [isAdmin]="isAdmin" [porAsignar]="porAsignar"
+      [class.room-view]="readOnly"
+      legendClass="program__title-tesoros" [room]="room" [isAdmin]="isAdmin && !readOnly" [readOnly]="readOnly" [singleRoom]="readOnly" [collapseSourcesByDefault]="sourcesInitiallyCollapsed" [porAsignar]="porAsignar"
       (addAssignment)="onAddAssignment($event)"
       (weeklyProgramChange)="onWeeklyProgramChange($event)"></vmc-program-assignment-section>
 
     <vmc-program-assignment-section [week]="semana" [sectionMeeting]="teachersSection" title="SEAMOS MEJORES MAESTROS"
-      legendClass="program__title-maestros" [room]="room" [isAdmin]="isAdmin" [porAsignar]="porAsignar"
+      [class.room-view]="readOnly"
+      legendClass="program__title-maestros" [room]="room" [isAdmin]="isAdmin && !readOnly" [readOnly]="readOnly" [singleRoom]="readOnly" [collapseSourcesByDefault]="sourcesInitiallyCollapsed" [porAsignar]="porAsignar"
       (addAssignment)="onAddAssignment($event)"
       (weeklyProgramChange)="onWeeklyProgramChange($event)"></vmc-program-assignment-section>
 
-    @if (roomA) {
+    @if (showLivingSection) {
     <fieldset>
       <legend class="program__title-vida program-section-legend my-md-2">
         <span class="section-title-text">NUESTRA VIDA CRISTIANA</span>
@@ -172,7 +179,7 @@
             aria-label="Colapsar seccion" (click)="toggleSection(livingSection)">
             <mat-icon>{{ isSectionCollapsed(livingSection) ? "expand_more" : "expand_less" }}</mat-icon>
           </button>
-          @if (isAdmin) {
+          @if (isAdmin && !readOnly) {
           <button class="section-action-button" type="button" aria-label="Editar seccion"
             (click)="addAssignment.emit({ program: semana, sectionMeeting: livingSection })">
             <mat-icon>edit</mat-icon>
@@ -197,13 +204,14 @@
       </div>
 
       <vmc-program-assignment-section [week]="semana" [sectionMeeting]="livingSection" title="" legendClass=""
-        [room]="room" [isAdmin]="false" [porAsignar]="porAsignar" [renderFieldset]="false"
+        [class.room-view]="readOnly"
+        [room]="room" [isAdmin]="false" [readOnly]="readOnly" [singleRoom]="readOnly" [collapseSourcesByDefault]="sourcesInitiallyCollapsed" [porAsignar]="porAsignar" [renderFieldset]="false"
         (weeklyProgramChange)="onWeeklyProgramChange($event)"></vmc-program-assignment-section>
       }
     </fieldset>
     }
 
-    @if (roomA) {
+    @if (showLivingSection) {
     <div class="row px-3 program-line">
       <div class="col-md-7 mt-1">
         <span class="ms-md-1"></span>
@@ -216,8 +224,8 @@
     </div>
     }
 
-    @if (roomA) {
-    <div class="row px-3 program-line">
+    @if (showLivingSection) {
+    <div class="row px-3 program-line" [class.room-summary-line]="readOnly">
       <div class="col-md-7 mt-1">
         <span class="ms-md-1"></span>
         <span class="program-time-start hover" (click)="onProgramChange(programChangeType.START_TIME_FINAL_SONG)">

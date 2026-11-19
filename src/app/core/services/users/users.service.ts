@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Apis, Servers } from "../../constants/servers";
 import { finalize, Observable, tap } from "rxjs";
-import { Publisher, Room } from "../../interfaces/reuniones.interface";
-import { AssignmentCandidatesResponse, PublisherHistoryItem } from "../../interfaces/publishers.interface";
+import { Designation, Publisher, Room, UserSaveRequest } from "../../interfaces/reuniones.interface";
+import { AssignmentCandidatesRequest, AssignmentCandidatesResponse, PublisherHistoryItem } from "../../interfaces/publishers.interface";
 import { LoaderService } from "../loader/loader.service";
 import { normalizeAssignmentTypeValue } from "../../enums/assignments.enums";
 import { BalancedAssignmentPairRequest, BalancedAssignmentPairResponse } from "../../interfaces/assignment-balancing.interface";
@@ -38,30 +38,31 @@ export class UsersService {
     );
   }
 
-  save(publisher: Publisher): Observable<any> {
+  save(publisher: UserSaveRequest): Observable<Publisher> {
     const url = `${this.server}${this.api.USERS}`;
-    return this.httpClient.post<Publisher>(url, this.convertUserToSaveRequest(publisher)).pipe(tap((data) => console.log(data)));
+    return this.httpClient.post<Publisher>(url, publisher);
   }
 
-  delete(publisher: Publisher): Observable<any> {
+  delete(publisher: Pick<Publisher, "id">): Observable<Publisher> {
     const url = `${this.server}${this.api.USERS}`;
 
-    return this.httpClient
-      .delete<Publisher>(url, {
-        body: this.convertUserToSaveRequest(publisher),
-      })
-      .pipe(tap((data) => console.log(data)));
+    return this.httpClient.delete<Publisher>(url, { body: { id: publisher.id } });
   }
 
-  getPublishersByAssignment(
-    assignment: string,
-    congregationId: number,
-    dateAssignment: string,
-    room: string,
-    assignmentTitle: string,
-    sectionMeeting?: string,
-    assignmentNumber?: number | null,
-  ): Observable<AssignmentCandidatesResponse> {
+  getDesignations(userId: number): Observable<Designation[]> {
+    return this.httpClient.get<Designation[]>(`${this.server}${this.api.USERS}/${userId}/designations`);
+  }
+
+  addDesignation(userId: number, designationId: number): Observable<Designation[]> {
+    return this.httpClient.post<Designation[]>(`${this.server}${this.api.USERS}/${userId}/designations`, { designationId });
+  }
+
+  removeDesignation(userId: number, designationId: number): Observable<void> {
+    return this.httpClient.delete<void>(`${this.server}${this.api.USERS}/${userId}/designations/${designationId}`);
+  }
+
+  getPublishersByAssignment(request: AssignmentCandidatesRequest): Observable<AssignmentCandidatesResponse> {
+    const { assignment, congregationId, dateAssignment, room, assignmentTitle, sectionMeeting, assignmentNumber } = request;
     this.loaderService.setLoaderSearchPublisher(true);
     const assignmentType = normalizeAssignmentTypeValue(assignment);
     let params = new HttpParams()
@@ -77,6 +78,17 @@ export class UsersService {
 
     if (assignmentNumber != null) {
       params = params.set("assignmentNumber", String(assignmentNumber));
+    }
+
+    // La misma asignación se usa en ambas salas; el rol identifica la columna del participante.
+    if (request.assignmentId != null) {
+      params = params.set("assignmentId", String(request.assignmentId));
+    }
+    if (request.participantRole) {
+      params = params.set("participantRole", request.participantRole);
+    }
+    if (request.sort) {
+      params = params.set("sort", request.sort);
     }
 
     const url = `${this.server}${this.api.USERS}/by-congregation/participated-and-authorized-by-assignment`;
@@ -98,7 +110,7 @@ export class UsersService {
     sectionMeeting?: string,
     assignmentNumber?: number | null,
   ): Observable<AssignmentCandidatesResponse> {
-    return this.getPublishersByAssignment(assignment, congregationId, dateAssignment, room, assignmentTitle, sectionMeeting, assignmentNumber);
+    return this.getPublishersByAssignment({ assignment, congregationId, dateAssignment, room, assignmentTitle, sectionMeeting, assignmentNumber });
   }
 
   getPublishersHistoryByCongregation(congregationId: number, dateAssignment: string, room?: string, assignmentTitle?: string): Observable<PublisherHistoryItem[]> {
@@ -125,24 +137,24 @@ export class UsersService {
     );
   }
 
-  convertUserToSaveRequest(user: any): any {
+  convertUserToSaveRequest(user: Publisher): UserSaveRequest {
     return {
-      id: user.id,
-      fullName: user.fullName,
-      firstName: user.firstName,
-      secondName: user.secondName,
-      lastName: user.lastName,
-      surname: user.surname,
-      image: user.image,
-      email: user.email,
-      documentNumber: user.documentNumber,
-      documentType: user.documentType,
-      cellPhone: user.cellPhone,
-      phone: user.phone,
-      gender: user.gender,
-      birthdate: user.birthdate,
-      congregationId: user.congregationId ?? user.myCongregationId ?? user.congregation?.id,
-      assignmentTypePermissions: user.assignmentTypePermissions ?? [],
+      ...(user.id ? { id: user.id } : {}),
+      fullName: user.fullName ?? null,
+      firstName: user.firstName ?? null,
+      secondName: user.secondName ?? null,
+      lastName: user.lastName ?? null,
+      surname: user.surname ?? null,
+      image: user.image ?? null,
+      email: user.email ?? null,
+      documentNumber: user.documentNumber ?? null,
+      documentType: user.documentType ?? null,
+      cellPhone: user.cellPhone ?? null,
+      phone: user.phone ?? null,
+      gender: user.gender ?? null,
+      frequency: user.frequency ?? null,
+      birthdate: user.birthdate ?? null,
+      congregationId: user.congregationId ?? user.myCongregationId ?? user.congregation?.id ?? 0,
     };
   }
 }

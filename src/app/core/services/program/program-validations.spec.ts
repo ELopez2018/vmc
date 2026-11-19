@@ -119,7 +119,7 @@ describe("Migración de validaciones del programa", () => {
 
   it("crea una fila con ids, conserva la fuente y aplica sus validaciones", () => {
     const row = {
-      assignment: { id: 3, meeting: { id: 5 }, showTips: true, sourceHtml: "<p>Fuente</p>" },
+      assignment: { id: 3, meeting: { id: 5 }, showTips: true, sourceHtml: "<p>Fuente</p>", categoryCode: "EXPLAINING_BELIEFS", participationMode: "PAIR" },
       program: 100, congregation: { id: 2 }, room: "B", startTime: [19, 30],
     } as WeeklyProgram;
     let saved: WeeklyProgram;
@@ -127,9 +127,13 @@ describe("Migración de validaciones del programa", () => {
     const request = http.expectOne((candidate) => candidate.url.endsWith("/weeklyProgram"));
     expect(request.request.body).toEqual(jasmine.objectContaining({ assignmentId: 3, programId: 100, room: "B", startTime: "19:30" }));
     expect(Array.isArray(request.request.body)).toBeFalse();
+    expect(request.request.body.categoryCode).toBeUndefined();
+    expect(request.request.body.participationMode).toBeUndefined();
     request.flush({ id: 7, assignment: { id: 3 }, programId: 100, room: "B", validations: updated });
     expect(saved!.assignment.sourceHtml).toBe("<p>Fuente</p>");
     expect(saved!.assignment.meeting.id).toBe(5);
+    expect(saved!.assignment.categoryCode).toBe("EXPLAINING_BELIEFS");
+    expect(saved!.assignment.participationMode).toBe("PAIR");
     expectReplaced();
   });
 

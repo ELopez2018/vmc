@@ -13,6 +13,10 @@ export class UserAssignmentTypesService {
 
   constructor(private httpClient: HttpClient) {}
 
+  getByUser(userId: number): Observable<AssignmentTypePermission[]> {
+    return this.httpClient.get<AssignmentTypePermission[]>(`${this.server}${this.api.USER_ASSIGNMENT_TYPES}/users/${userId}`);
+  }
+
   updateBulk(request: UserAssignmentTypeBulkUpdateRequest): Observable<AssignmentTypePermission[]> {
     const url = `${this.server}${this.api.USER_ASSIGNMENT_TYPES}/bulk`;
 

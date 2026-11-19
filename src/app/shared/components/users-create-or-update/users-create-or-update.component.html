@@ -128,6 +128,7 @@
       <mat-form-field appearance="outline">
         <mat-label>Intervalo entre participaciones (días)</mat-label>
         <input matInput type="number" step="1" formControlName="frequency">
+        <mat-hint>Intervalo mínimo en días para Seamos mejores maestros</mat-hint>
         @if (formulario.get("frequency")?.hasError("integer")) {
         <mat-error>Usa un número entero de días</mat-error>
         }

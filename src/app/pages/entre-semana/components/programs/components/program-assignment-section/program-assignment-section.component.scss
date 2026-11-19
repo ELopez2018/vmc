@@ -82,6 +82,12 @@ legend {
   white-space: nowrap;
 }
 
+@media (min-width: 768px) {
+  .program-time-start {
+    transform: translateX(10px);
+  }
+}
+
 .program-assignment-title {
   flex: 1 1 0;
   max-width: calc(100% - 50px);

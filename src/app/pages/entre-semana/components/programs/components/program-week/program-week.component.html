@@ -72,7 +72,6 @@
   </div>
 
   <div class="mt-3 program__reunion pe-xl-4">
-    @if (showSharedMeetingParts) {
     <div class="row px-3" [class.room-summary-line]="readOnly">
       <div class="col-md-7 fw-bold text-md-start">
         <a href="{{ semana.meeting.url }}" target="_blank">
@@ -99,6 +98,7 @@
       }
     </div>
 
+    @if (showSharedMeetingParts) {
     @if (roomA) {
     <div class="row px-3" [class.room-summary-line]="readOnly">
       <div class="col-md-6"></div>
@@ -188,13 +188,13 @@
         </span>
       </legend>
       @if (!isSectionCollapsed(livingSection)) {
-      <div class="row px-3 program-line">
+      <div class="row px-3 program-line program-line--intermediate-song">
         <div class="col-md-12 mt-1">
           <span class="program-time-start hover"
             (click)="onProgramChange(programChangeType.START_TIME_INTERMEDIATE_SONG)">
             {{ adapterTime(semana.startTimeIntermediateSong) }}
           </span>
-          <span class="fw-bold hover" (click)="onProgramChange(programChangeType.INTERMEDIATE_SONG)">
+          <span class="fw-bold hover program-intermediate-song-title" (click)="onProgramChange(programChangeType.INTERMEDIATE_SONG)">
             Canción {{ semana.meeting.middleSong?.songNumber ?? semana.meeting.intermediateSong }}
           </span>
           <span class="ms-md-2 fw-bold hover" (click)="onProgramChange(programChangeType.OPENING_SONG)">
@@ -212,7 +212,7 @@
     }
 
     @if (showLivingSection) {
-    <div class="row px-3 program-line">
+    <div class="row px-3 program-line program-line--closing">
       <div class="col-md-7 mt-1">
         <span class="ms-md-1"></span>
         <span class="program-time-start hover" (click)="onProgramChange(programChangeType.START_TIME_CONCLUSION_WORDS)">
@@ -225,7 +225,7 @@
     }
 
     @if (showLivingSection) {
-    <div class="row px-3 program-line" [class.room-summary-line]="readOnly">
+    <div class="row px-3 program-line program-line--closing" [class.room-summary-line]="readOnly">
       <div class="col-md-7 mt-1">
         <span class="ms-md-1"></span>
         <span class="program-time-start hover" (click)="onProgramChange(programChangeType.START_TIME_FINAL_SONG)">

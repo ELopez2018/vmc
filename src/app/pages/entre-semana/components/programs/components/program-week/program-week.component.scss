@@ -159,6 +159,21 @@ legend {
   white-space: nowrap;
 }
 
+/* La canción intermedia comparte la columna horaria de las asignaciones. */
+@media (min-width: 768px) {
+  .program-line--intermediate-song .program-time-start {
+    transform: translateX(7px);
+  }
+
+  .program-intermediate-song-title {
+    margin-left: 8px;
+  }
+
+  .program-line--closing .program-time-start {
+    transform: translateX(4px);
+  }
+}
+
 $icon-size: 42px;
 
 .icon-lg {

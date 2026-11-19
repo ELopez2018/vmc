@@ -33,6 +33,7 @@ interface StoredPermissionProfiles {
 })
 export class UsersCreateOrUpdateComponent implements OnInit {
   private readonly permissionProfilesStorageKey = "vmc.assignment-permission-profiles";
+  private readonly defaultFrequencyDays = 30;
   public congregationSelected!: Congregation;
   public formulario!: FormGroup;
   public allCongregations: Congregation[] = [];
@@ -117,7 +118,7 @@ export class UsersCreateOrUpdateComponent implements OnInit {
       lastName: new FormControl(null, [Validators.maxLength(80)]),
       surname: new FormControl(null, [Validators.maxLength(80)]),
       birthdate: new FormControl(null),
-      frequency: new FormControl(null, [this.integerValidator]),
+      frequency: new FormControl(this.defaultFrequencyDays, [this.integerValidator]),
       gender: new FormControl("Femenino", [Validators.required]),
       documentNumber: new FormControl(null, [this.documentNumberValidator]),
       documentType: new FormControl("CC", [Validators.required]),
